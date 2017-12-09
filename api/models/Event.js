@@ -25,5 +25,24 @@ module.exports = {
       defaultsTo: 'pending',
     },
 
+    owner: {
+      model: 'client',
+    },
+
+    news: {
+      collection: 'news',
+      via: 'event',
+    },
+
+    headerImage: {
+      collection: 'headerImage',
+      via: 'event',
+    },
+
+    notifications: {
+      collection: 'notifications',
+      via: 'event',
+    },
+
   }
 };

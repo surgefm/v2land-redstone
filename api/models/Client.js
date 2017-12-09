@@ -9,7 +9,17 @@ module.exports = {
 
   attributes: {
 
-    pets: {
+    events: {
+      collection: 'event',
+      via: 'owner',
+    },
+
+    subscriptions: {
+      collection: 'subscription',
+      via: 'owner',
+    },
+
+    auths: {
       collection: 'auth',
       via: 'owner',
     },

@@ -25,5 +25,10 @@ module.exports = {
       defaultsTo: '',
     },
 
+    event: {
+      model:'event',
+      unique: true,
+    },
+
   }
 };

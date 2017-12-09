@@ -39,5 +39,9 @@ module.exports = {
       defaultsTo: 'pending',
     },
 
+    event: {
+      model: 'event',
+    },
+
   }
 };

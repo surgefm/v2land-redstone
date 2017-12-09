@@ -19,5 +19,9 @@ module.exports = {
       required: true,
     },
 
+    event: {
+      model: 'event',
+    },
+
   }
 };
