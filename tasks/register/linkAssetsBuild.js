@@ -10,7 +10,7 @@
  *   http://sailsjs.org/documentation/anatomy/my-app/tasks/register/link-assets-build-js
  *
  */
-module.exports = function(grunt) {
+module.exports = function (grunt) {
   grunt.registerTask('linkAssetsBuild', [
     'sails-linker:devJsRelative',
     'sails-linker:devStylesRelative',
@@ -18,5 +18,5 @@ module.exports = function(grunt) {
     'sails-linker:devJsRelativeJade',
     'sails-linker:devStylesRelativeJade',
     'sails-linker:devTplJade'
-  ]);
-};
+  ])
+}

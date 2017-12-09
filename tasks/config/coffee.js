@@ -10,8 +10,7 @@
  *   https://github.com/gruntjs/grunt-contrib-coffee
  *
  */
-module.exports = function(grunt) {
-
+module.exports = function (grunt) {
   grunt.config.set('coffee', {
     dev: {
       options: {
@@ -27,7 +26,7 @@ module.exports = function(grunt) {
         ext: '.js'
       }]
     }
-  });
+  })
 
-  grunt.loadNpmTasks('grunt-contrib-coffee');
-};
+  grunt.loadNpmTasks('grunt-contrib-coffee')
+}

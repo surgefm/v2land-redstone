@@ -15,8 +15,7 @@
  *   https://github.com/tomusdrw/grunt-sync
  *
  */
-module.exports = function(grunt) {
-
+module.exports = function (grunt) {
   grunt.config.set('sync', {
     dev: {
       files: [{
@@ -25,7 +24,7 @@ module.exports = function(grunt) {
         dest: '.tmp/public'
       }]
     }
-  });
+  })
 
-  grunt.loadNpmTasks('grunt-sync');
-};
+  grunt.loadNpmTasks('grunt-sync')
+}

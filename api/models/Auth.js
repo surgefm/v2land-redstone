@@ -11,11 +11,11 @@ module.exports = {
 
     site: {
       type: 'text',
-      required: true,
+      required: true
     },
 
     profileId: {
-      type: 'string',
+      type: 'string'
     },
 
     // TODO: profile
@@ -24,28 +24,28 @@ module.exports = {
     // },
 
     token: {
-      type: 'string',
+      type: 'string'
     },
 
     tokenSecret: {
-      type: 'string',
+      type: 'string'
     },
 
     accessToken: {
-      type: 'string',
+      type: 'string'
     },
 
     accessTokenSecret: {
-      type: 'string',
+      type: 'string'
     },
 
     redirect: {
-      type: 'text',
+      type: 'text'
     },
 
     owner: {
-      model: 'client',
-    },
+      model: 'client'
+    }
 
   }
-};
+}

@@ -11,37 +11,37 @@ module.exports = {
 
     url: {
       type: 'string',
-      required: true,
+      required: true
     },
 
     source: {
       type: 'string',
-      required: true,
+      required: true
     },
 
     title: {
       type: 'string',
-      required: true,
+      required: true
     },
 
     abstract: {
       type: 'text',
-      required: true,
+      required: true
     },
 
     time: {
       type: 'date',
-      required: true,
+      required: true
     },
 
     status: {
       type: 'string',
-      defaultsTo: 'pending',
+      defaultsTo: 'pending'
     },
 
     event: {
-      model: 'event',
-    },
+      model: 'event'
+    }
 
   }
-};
+}

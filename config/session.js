@@ -21,8 +21,7 @@ module.exports.session = {
   * of your users, forcing them to log in again.                             *
   *                                                                          *
   ***************************************************************************/
-  secret: '970a14748cf639a4aa3d7b0d60cc9cac',
-
+  secret: '970a14748cf639a4aa3d7b0d60cc9cac'
 
   /***************************************************************************
   *                                                                          *
@@ -62,7 +61,6 @@ module.exports.session = {
   // pass: <redis auth password>,
   // prefix: 'sess:',
 
-
   /***************************************************************************
   *                                                                          *
   * Uncomment the following lines to set up a MongoDB session store that can *
@@ -97,4 +95,4 @@ module.exports.session = {
   //   }
   // }
 
-};
+}

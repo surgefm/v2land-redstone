@@ -19,8 +19,7 @@
  *   https://github.com/gruntjs/grunt-contrib-copy
  *
  */
-module.exports = function(grunt) {
-
+module.exports = function (grunt) {
   grunt.config.set('copy', {
     dev: {
       files: [{
@@ -38,7 +37,7 @@ module.exports = function(grunt) {
         dest: 'www'
       }]
     }
-  });
+  })
 
-  grunt.loadNpmTasks('grunt-contrib-copy');
-};
+  grunt.loadNpmTasks('grunt-contrib-copy')
+}

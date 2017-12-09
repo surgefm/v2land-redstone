@@ -11,24 +11,24 @@ module.exports = {
 
     imageUrl: {
       type: 'string',
-      required: true,
+      required: true
     },
 
     source: {
       type: 'string',
-      required: true,
+      required: true
     },
 
     sourceUrl: {
       type: 'string',
       required: false,
-      defaultsTo: '',
+      defaultsTo: ''
     },
 
     event: {
-      model:'event',
-      unique: true,
-    },
+      model: 'event',
+      unique: true
+    }
 
   }
-};
+}
