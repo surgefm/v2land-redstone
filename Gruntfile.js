@@ -15,7 +15,7 @@
 module.exports = function (grunt) {
   // Load the include-all library in order to require all of our grunt
   // configurations and task registrations dynamically.
-  var includeAll
+  let includeAll
   try {
     includeAll = require('include-all')
   } catch (e0) {
@@ -60,8 +60,8 @@ module.exports = function (grunt) {
   }
 
   // Load task functions
-  var taskConfigurations = loadTasks('./tasks/config'),
-    registerDefinitions = loadTasks('./tasks/register')
+  let taskConfigurations = loadTasks('./tasks/config')
+  let registerDefinitions = loadTasks('./tasks/register')
 
   // (ensure that a default task exists)
   if (!registerDefinitions.default) {

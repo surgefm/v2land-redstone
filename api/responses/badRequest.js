@@ -61,11 +61,9 @@ module.exports = function badRequest (data, options) {
   // work, just send JSON.
   if (options.view) {
     return res.view(options.view, { data: viewData, title: 'Bad Request' })
-  }
-
-  // If no second argument provided, try to serve the implied view,
-  // but fall back to sending JSON(P) if no view can be inferred.
-  else {
+  } else {
+    // If no second argument provided, try to serve the implied view,
+    // but fall back to sending JSON(P) if no view can be inferred.
     return res.guessView({ data: viewData, title: 'Bad Request' }, function couldNotGuessView () {
       return res.jsonx(data)
     })
