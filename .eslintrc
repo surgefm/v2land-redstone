@@ -1,4 +1,7 @@
 {
-  "extends": "standard",
+  "extends": [
+    "eslint:recommended",
+    "google"
+  ],
   "parser": "babel-eslint"
 }
