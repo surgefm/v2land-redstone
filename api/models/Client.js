@@ -11,19 +11,19 @@ module.exports = {
 
     events: {
       collection: 'event',
-      via: 'owner'
+      via: 'owner',
     },
 
     subscriptions: {
       collection: 'subscription',
-      via: 'owner'
+      via: 'owner',
     },
 
     auths: {
       collection: 'auth',
-      via: 'owner'
-    }
+      via: 'owner',
+    },
 
-  }
+  },
 
-}
+};

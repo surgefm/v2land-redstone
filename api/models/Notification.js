@@ -11,17 +11,17 @@ module.exports = {
 
     time: {
       type: 'date',
-      required: true
+      required: true,
     },
 
     mode: {
       type: 'string',
-      required: true
+      required: true,
     },
 
     event: {
-      model: 'event'
-    }
+      model: 'event',
+    },
 
-  }
-}
+  },
+};

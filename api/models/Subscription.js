@@ -11,7 +11,7 @@ module.exports = {
 
     mode: {
       type: 'string',
-      required: true
+      required: true,
     },
 
     // contact: {
@@ -21,18 +21,18 @@ module.exports = {
 
     status: {
       type: 'string',
-      defaultsTo: 'active'
+      defaultsTo: 'active',
     },
 
     unsubscribeId: {
       type: 'string',
-      required: true
+      required: true,
     },
 
     owner: {
-      model: 'client'
-    }
+      model: 'client',
+    },
 
-  }
+  },
 
-}
+};

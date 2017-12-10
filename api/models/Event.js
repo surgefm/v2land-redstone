@@ -11,38 +11,38 @@ module.exports = {
 
     name: {
       type: 'string',
-      required: true
+      required: true,
     },
 
     description: {
       type: 'text',
-      required: false
+      required: false,
     },
 
     status: {
       type: 'string',
       required: true,
-      defaultsTo: 'pending'
+      defaultsTo: 'pending',
     },
 
     owner: {
-      model: 'client'
+      model: 'client',
     },
 
     news: {
       collection: 'news',
-      via: 'event'
+      via: 'event',
     },
 
     headerImage: {
       collection: 'headerImage',
-      via: 'event'
+      via: 'event',
     },
 
     notifications: {
       collection: 'notification',
-      via: 'event'
-    }
+      via: 'event',
+    },
 
-  }
-}
+  },
+};
