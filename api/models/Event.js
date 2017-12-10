@@ -40,9 +40,8 @@ module.exports = {
     },
 
     notifications: {
-      collection: 'notifications',
-      via: 'event',
+      collection: 'notification',
+      via: 'event'
     },
-
   }
 };
