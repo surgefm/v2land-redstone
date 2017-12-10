@@ -10,7 +10,7 @@ module.exports = {
   attributes: {
 
     imageUrl: {
-      type: 'string',
+      type: 'url',
       required: true,
     },
 
@@ -20,9 +20,8 @@ module.exports = {
     },
 
     sourceUrl: {
-      type: 'string',
+      type: 'url',
       required: false,
-      defaultsTo: '',
     },
 
     event: {

@@ -29,7 +29,7 @@ module.exports = {
       required: true
     },
 
-    owner: {
+    subscriber: {
       model: 'client',
     },
 
