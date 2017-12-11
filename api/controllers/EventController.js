@@ -10,7 +10,7 @@ module.exports = {
     let name = req.param('name');
     let event = await Event.findOne({
       or: [
-        { id: parseInt(name, 10) > -1 ? parseInt(name, 10) : -1 },
+        { id: parseInt(name) > -1 ? parseInt(name) : -1 },
         { name },
       ],
     })
