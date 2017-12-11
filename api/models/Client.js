@@ -24,6 +24,6 @@ module.exports = {
       via: 'owner',
     },
 
-  }
+  },
 
 };

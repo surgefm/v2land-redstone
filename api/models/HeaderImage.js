@@ -26,9 +26,9 @@ module.exports = {
     },
 
     event: {
-      model:'event',
+      model: 'event',
       unique: true,
     },
 
-  }
+  },
 };

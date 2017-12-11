@@ -34,5 +34,9 @@
     "url": "git://github.com/Simon/v2land-redstone.git"
   },
   "author": "Simon",
-  "license": ""
+  "license": "",
+  "devDependencies": {
+    "babel-eslint": "^8.0.3",
+    "sails-hook-eslint": "^1.0.3"
+  }
 }

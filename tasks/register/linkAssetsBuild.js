@@ -17,6 +17,6 @@ module.exports = function(grunt) {
     'sails-linker:devTpl',
     'sails-linker:devJsRelativeJade',
     'sails-linker:devStylesRelativeJade',
-    'sails-linker:devTplJade'
+    'sails-linker:devTplJade',
   ]);
 };
