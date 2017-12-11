@@ -18,6 +18,13 @@
 
 module.exports.policies = {
 
+  NewsController: {
+    'findOne': true,
+    'update': true,
+    'getAllPendingNews': true,
+    '*': false,
+  }
+
   /***************************************************************************
   *                                                                          *
   * Default policy for all controllers and actions (`true` allows public     *
@@ -47,4 +54,4 @@ module.exports.policies = {
 		// before letting any users feed our rabbits
 		// feed : ['isNiceToAnimals', 'hasRabbitFood']
 	// }
-}
+};

@@ -34,7 +34,9 @@ module.exports.routes = {
 
   '/': {
     view: 'homepage'
-  }
+  },
+
+  '/news/pending': 'NewsController.getAllPendingNews'
 
   /***************************************************************************
   *                                                                          *
