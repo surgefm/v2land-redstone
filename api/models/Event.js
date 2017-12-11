@@ -12,7 +12,7 @@ module.exports = {
     name: {
       type: 'string',
       required: true,
-      unique: true
+      unique: true,
     },
 
     description: {
@@ -29,7 +29,7 @@ module.exports = {
 
     subscribers: {
       collection: 'client',
-      via: 'events'
+      via: 'events',
     },
 
     news: {
@@ -39,8 +39,7 @@ module.exports = {
     },
 
     headerImage: {
-      collection: 'headerImage',
-      via: 'event',
+      model: 'headerImage',
     },
 
     notifications: {
