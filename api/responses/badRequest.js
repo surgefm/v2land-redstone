@@ -44,13 +44,13 @@ module.exports = function badRequest(data, options) {
 
   // If second argument is a string, we take that to mean it refers to a view.
   // If it was omitted, use an empty object (`{}`)
-  options = (typeof options === 'string') ? {view: options} : options || {};
+  options = (typeof options === 'string') ? { view: options } : options || {};
 
   // Attempt to prettify data for views, if it's a non-error object
   let viewData = data;
   if (!(viewData instanceof Error) && typeof viewData === 'object') {
     try {
-      viewData = require('util').inspect(data, {depth: null});
+      viewData = require('util').inspect(data, { depth: null });
     } catch (e) {
       viewData = undefined;
     }
@@ -60,11 +60,11 @@ module.exports = function badRequest(data, options) {
   // Otherwise try to guess an appropriate view, or if that doesn't
   // work, just send JSON.
   if (options.view) {
-    return res.view(options.view, {data: viewData, title: 'Bad Request'});
+    return res.view(options.view, { data: viewData, title: 'Bad Request' });
   } else {
     // If no second argument provided, try to serve the implied view,
     // but fall back to sending JSON(P) if no view can be inferred.
-    return res.guessView({data: viewData, title: 'Bad Request'}, function couldNotGuessView() {
+    return res.guessView({ data: viewData, title: 'Bad Request' }, function couldNotGuessView() {
       return res.jsonx(data);
     });
   }
