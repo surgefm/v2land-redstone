@@ -4,5 +4,5 @@ API_PATH=api/**
 eslint:
 	$(EXE_PATH) $(API_PATH)
 
-fix:
+eslint-fix:
 	$(EXE_PATH) $(API_PATH) --fix
