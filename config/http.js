@@ -59,7 +59,6 @@ module.exports.http = {
     //     return next();
     // }
 
-
   /***************************************************************************
   *                                                                          *
   * The body parser that will handle incoming multipart HTTP requests. By    *
@@ -77,7 +76,7 @@ module.exports.http = {
 
     // bodyParser: require('skipper')({strict: true})
 
-  },
+  }
 
   /***************************************************************************
   *                                                                          *
@@ -90,4 +89,4 @@ module.exports.http = {
   ***************************************************************************/
 
   // cache: 31557600000
-};
+}

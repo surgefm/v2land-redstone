@@ -30,7 +30,7 @@ module.exports.connections = {
   ***************************************************************************/
   localDiskDb: {
     adapter: 'sails-disk'
-  },
+  }
 
   postgresql: {
     adapter: 'sails-postgresql',
@@ -79,4 +79,4 @@ module.exports.connections = {
   *                                                                          *
   ***************************************************************************/
 
-};
+}

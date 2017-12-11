@@ -1,0 +1,16 @@
+{
+  "extends": [
+    "eslint:recommended",
+    "google"
+  ],
+  "parser": "babel-eslint",
+  "env": {
+    "node": true
+  },
+  "rules": {
+    "switch-colon-spacing": 0,
+    "valid-jsdoc": 0,
+    "max-len": 0,
+    "no-console": 0
+  }
+}

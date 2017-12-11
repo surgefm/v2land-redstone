@@ -45,8 +45,9 @@ module.exports = {
 
     notifications: {
       collection: 'notification',
-      via: 'event'
+      via: 'event',
     },
 
-  }
+  },
+
 };
