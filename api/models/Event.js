@@ -12,6 +12,7 @@ module.exports = {
     name: {
       type: 'string',
       required: true,
+      unique: true
     },
 
     description: {
@@ -23,15 +24,18 @@ module.exports = {
       type: 'string',
       required: true,
       defaultsTo: 'pending',
+      enum: ['pending', 'admitted', 'rejected', 'removed'],
     },
 
-    owner: {
-      model: 'client',
+    subscribers: {
+      collection: 'client',
+      via: 'events'
     },
 
     news: {
       collection: 'news',
       via: 'event',
+      dominant: true,
     },
 
     headerImage: {
@@ -45,4 +49,5 @@ module.exports = {
     },
 
   },
+
 };

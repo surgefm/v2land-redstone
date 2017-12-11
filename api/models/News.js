@@ -10,7 +10,7 @@ module.exports = {
   attributes: {
 
     url: {
-      type: 'string',
+      type: 'url',
       required: true,
     },
 
@@ -27,6 +27,7 @@ module.exports = {
     abstract: {
       type: 'text',
       required: true,
+      size: 150,
     },
 
     time: {
@@ -37,6 +38,7 @@ module.exports = {
     status: {
       type: 'string',
       defaultsTo: 'pending',
+      enum: ['pending', 'admitted', 'rejected', 'removed'],
     },
 
     event: {
