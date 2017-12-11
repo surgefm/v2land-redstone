@@ -26,7 +26,14 @@ module.exports.policies = {
   },
 
   EventController: {
+    'create': true,
+    'findEvent': true,
     'getEvent': true,
+    'updateHeaderImage': true,
+    '*': false,
+  },
+
+  HeaderImageController: {
     '*': false,
   },
 
