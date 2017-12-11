@@ -6,6 +6,8 @@
   "keywords": [],
   "dependencies": {
     "ejs": "^2.5.5",
+    "eslint": "^4.13.0",
+    "eslint-config-google": "^0.9.1",
     "grunt": "1.0.1",
     "grunt-contrib-clean": "1.0.0",
     "grunt-contrib-coffee": "1.0.0",

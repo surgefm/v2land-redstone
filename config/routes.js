@@ -36,7 +36,9 @@ module.exports.routes = {
     view: 'homepage'
   },
 
-  '/news/pending': 'NewsController.getAllPendingNews'
+  'GET /news/pending': 'NewsController.getAllPendingNews',
+
+  'GET /event/:name': 'EventController.getEvent',
 
   /***************************************************************************
   *                                                                          *

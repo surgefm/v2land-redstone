@@ -23,7 +23,12 @@ module.exports.policies = {
     'update': true,
     'getAllPendingNews': true,
     '*': false,
-  }
+  },
+
+  EventController: {
+    'getEvent': true,
+    '*': false,
+  },
 
   /***************************************************************************
   *                                                                          *
