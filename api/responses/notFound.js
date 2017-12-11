@@ -46,13 +46,13 @@ module.exports = function notFound(data, options) {
 
   // If second argument is a string, we take that to mean it refers to a view.
   // If it was omitted, use an empty object (`{}`)
-  options = (typeof options === 'string') ? {view: options} : options || {};
+  options = (typeof options === 'string') ? { view: options } : options || {};
 
   // Attempt to prettify data for views, if it's a non-error object
   let viewData = data;
   if (!(viewData instanceof Error) && typeof viewData === 'object') {
     try {
-      viewData = require('util').inspect(data, {depth: null});
+      viewData = require('util').inspect(data, { depth: null });
     } catch (e) {
       viewData = undefined;
     }
@@ -62,11 +62,11 @@ module.exports = function notFound(data, options) {
   // Otherwise try to guess an appropriate view, or if that doesn't
   // work, just send JSON.
   if (options.view) {
-    return res.view(options.view, {data: viewData, title: 'Not Found'});
+    return res.view(options.view, { data: viewData, title: 'Not Found' });
   } else {
     // If no second argument provided, try to serve the default view,
     // but fall back to sending JSON(P) if any errors occur.
-    return res.view('404', {data: viewData, title: 'Not Found'}, function(err, html) {
+    return res.view('404', { data: viewData, title: 'Not Found' }, function(err, html) {
     // If a view error occured, fall back to JSON(P).
       if (err) {
       //
