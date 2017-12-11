@@ -26,13 +26,13 @@ module.exports = {
 
     unsubscribeId: {
       type: 'string',
-      required: true
+      required: true,
     },
 
     subscriber: {
       model: 'client',
     },
 
-  }
+  },
 
 };
