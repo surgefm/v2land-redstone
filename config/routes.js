@@ -35,6 +35,8 @@ module.exports.routes = {
   '/': {
     view: 'homepage'
   },
+  
+  'POST /login': 'ClientController.login',
 
   'GET /news/pending': 'NewsController.getAllPendingNews',
 

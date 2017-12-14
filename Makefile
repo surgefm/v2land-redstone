@@ -1,6 +1,6 @@
 EXE_PATH=./node_modules/.bin/eslint
-API_PATH=api/**.js
-TEST_PATH=tests/**.js
+API_PATH=api/**/*.js
+TEST_PATH=tests/**/*.js
 
 eslint:
 	$(EXE_PATH) $(API_PATH)

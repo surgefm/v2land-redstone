@@ -9,6 +9,16 @@ module.exports = {
 
   attributes: {
 
+    username: {
+      type: 'text',
+      required: true,
+    },
+
+    password: {
+      type: 'text',
+      required: true,
+    },
+
     events: {
       collection: 'event',
       via: 'subscribers',

@@ -5,6 +5,7 @@
   "description": "a Sails application",
   "keywords": [],
   "dependencies": {
+    "bcrypt": "^1.0.3",
     "ejs": "^2.5.5",
     "eslint": "^4.13.0",
     "eslint-config-google": "^0.9.1",
