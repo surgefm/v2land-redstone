@@ -38,6 +38,7 @@ module.exports.routes = {
 
   'POST /login': 'ClientController.login',
   'POST /logout': 'ClientController.logout',
+  'POST /register': 'ClientController.register',
 
   'GET /news/pending': 'NewsController.getAllPendingNews',
 

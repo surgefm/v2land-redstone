@@ -21,7 +21,7 @@ module.exports = {
         req.session.userId = user.id;
 
         res.send(200, {
-          message: 'Success',
+          message: 'success',
         });
       } else {
         res.send(404, {
@@ -39,7 +39,7 @@ module.exports = {
     delete req.session.userId;
 
     res.send(200, {
-      message: 'Success',
+      message: 'success',
     });
   },
 
@@ -62,7 +62,9 @@ module.exports = {
             return res.serverError(err);
           }
 
-          return res.ok();
+          return res.send(200, {
+            message: 'success',
+          });
         });
       });
     });

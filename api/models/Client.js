@@ -12,6 +12,7 @@ module.exports = {
     username: {
       type: 'text',
       required: true,
+      unique: true,
       username: true,
     },
 
@@ -36,15 +37,15 @@ module.exports = {
       via: 'owner',
     },
 
-    types: {
-      username: (value) => {
-        return _.isString(value) && value.length >= 4;
-      },
-      password: (value) => {
-        return _.isString(value) && value.length >= 6 && value.match(/[a-z]/i) && value.match(/[0-9]/);
-      },
-    },
+  },
 
+  types: {
+    username: (value) => {
+      return _.isString(value) && value.length >= 4;
+    },
+    password: (value) => {
+      return _.isString(value) && value.length >= 6 && value.match(/[a-z]/i) && value.match(/[0-9]/);
+    },
   },
 
 };
