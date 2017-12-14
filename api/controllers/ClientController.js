@@ -18,6 +18,8 @@ module.exports = {
 
     if (user) {
       if (bcrypt.compareSync(data.password, user.password)) {
+        req.session.userId = user.id;
+
         res.send(200, {
           message: 'Success',
         });
