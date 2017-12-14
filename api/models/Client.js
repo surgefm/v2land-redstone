@@ -12,11 +12,13 @@ module.exports = {
     username: {
       type: 'text',
       required: true,
+      username: true,
     },
 
     password: {
       type: 'text',
       required: true,
+      password: true,
     },
 
     events: {
@@ -32,6 +34,15 @@ module.exports = {
     auths: {
       collection: 'auth',
       via: 'owner',
+    },
+
+    types: {
+      username: (value) => {
+        return _.isString(value) && value.length >= 4;
+      },
+      password: (value) => {
+        return _.isString(value) && value.length >= 6 && value.match(/[a-z]/i) && value.match(/[0-9]/);
+      },
     },
 
   },
