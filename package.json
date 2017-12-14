@@ -6,6 +6,7 @@
   "keywords": [],
   "dependencies": {
     "bcrypt": "^1.0.3",
+    "colors": "^1.1.2",
     "ejs": "^2.5.5",
     "eslint": "^4.13.0",
     "eslint-config-google": "^0.9.1",
