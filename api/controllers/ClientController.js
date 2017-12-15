@@ -84,6 +84,27 @@ module.exports = {
       res.serverError(err);
     }
   },
+
+  getClientDetail: async (req, res) => {
+    let clientId = req.session.clientId;
+
+    if (!clientId) {
+      return res.status(401).json({
+        message: '你还未登录',
+      });
+    }
+
+    let client = await Client.findOne({ id: clientId });
+    if (!client) {
+      delete req.session.clientId;
+      return res.status(404).json({
+        message: '未找到该用户',
+      });
+    }
+
+    delete client.password;
+
+    res.status(200).json(client);
   },
 
 };
