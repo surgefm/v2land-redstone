@@ -9,6 +9,19 @@ module.exports = {
 
   attributes: {
 
+    username: {
+      type: 'text',
+      required: true,
+      unique: true,
+      username: true,
+    },
+
+    password: {
+      type: 'text',
+      required: true,
+      password: true,
+    },
+
     events: {
       collection: 'event',
       via: 'subscribers',
@@ -24,6 +37,15 @@ module.exports = {
       via: 'owner',
     },
 
+  },
+
+  types: {
+    username: (value) => {
+      return _.isString(value) && value.length >= 4;
+    },
+    password: (value) => {
+      return _.isString(value) && value.length >= 6 && value.match(/[a-z]/i) && value.match(/[0-9]/);
+    },
   },
 
 };

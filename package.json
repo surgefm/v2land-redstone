@@ -5,6 +5,8 @@
   "description": "a Sails application",
   "keywords": [],
   "dependencies": {
+    "bcrypt": "^1.0.3",
+    "colors": "^1.1.2",
     "ejs": "^2.5.5",
     "eslint": "^4.13.0",
     "eslint-config-google": "^0.9.1",
@@ -21,6 +23,7 @@
     "grunt-sails-linker": "~0.10.1",
     "grunt-sync": "0.5.2",
     "include-all": "^1.0.0",
+    "mocha": "^4.0.1",
     "rc": "1.0.1",
     "sails": "~0.12.14",
     "sails-disk": "~0.10.9",
@@ -38,6 +41,7 @@
   "author": "Simon",
   "license": "",
   "devDependencies": {
-    "babel-eslint": "^8.0.3"
+    "babel-eslint": "^8.0.3",
+    "supertest": "^3.0.0"
   }
 }

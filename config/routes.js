@@ -36,6 +36,10 @@ module.exports.routes = {
     view: 'homepage'
   },
 
+  'POST /login': 'ClientController.login',
+  'POST /logout': 'ClientController.logout',
+  'POST /register': 'ClientController.register',
+
   'GET /news/pending': 'NewsController.getAllPendingNews',
 
   'GET /event/:eventName': 'EventController.getEvent',
