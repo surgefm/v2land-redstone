@@ -3,6 +3,9 @@ API_PATH=api/**/*.js
 SCRIPT_PATH=scripts/**/*.js
 TEST_PATH=tests/**/*.js
 
+bootstrap:
+	node ./scripts/session-bootstrap.js
+
 eslint:
 	$(EXE_PATH) $(API_PATH)
 	$(EXE_PATH) $(SCRIPT_PATH)
