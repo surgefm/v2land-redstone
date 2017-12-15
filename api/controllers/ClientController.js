@@ -12,62 +12,78 @@ module.exports = {
   login: async (req, res) => {
     let data = req.body;
 
-    let user = await Client.findOne({
+    let client = await Client.findOne({
       username: data.username,
     });
 
-    if (user) {
-      if (bcrypt.compareSync(data.password, user.password)) {
-        req.session.userId = user.id;
-
-        res.send(200, {
-          message: 'success',
-        });
-      } else {
-        res.send(404, {
-          message: 'Invalid password',
-        });
-      }
-    } else {
-      res.send(404, {
-        message: 'User not found',
+    if (!client) {
+      return res.status(404).json({
+        message: '未找到该用户',
       });
     }
+
+    let verified = await bcrypt.compare(data.password, client.password);
+
+    if (!verified) {
+      return res.status(401).json({
+        message: '错误的用户名/邮箱/密码',
+      });
+    }
+
+    req.session.clientId = client.id;
+
+    res.status(200).json({
+      message: '登录成功',
+    });
   },
 
   logout: (req, res) => {
-    delete req.session.userId;
+    delete req.session.clientId;
 
     res.send(200, {
-      message: 'success',
+      message: '成功退出登录',
     });
   },
 
-  register: (req, res) => {
+  register: async (req, res) => {
     let data = req.body;
+    let salt;
+    let hash;
 
-    bcrypt.genSalt(10, (err, salt) => {
-      if (err) {
-        res.send(500, {
-          message: 'Error occurs when generateing salt',
-        });
-      }
-
-      bcrypt.hash(data.password, salt, (err, hash) => {
-        Client.create({
-          username: data.username,
-          password: hash,
-        }).exec((err, finn) => {
-          if (err) {
-            return res.serverError(err);
-          }
-
-          return res.send(200, {
-            message: 'success',
-          });
-        });
+    let client = await Client.findOne({ username: data.username });
+    if (client) {
+      return res.status(406).json({
+        message: '该用户名/邮箱已被占用',
       });
-    });
+    }
+
+    try {
+      salt = await bcrypt.genSalt(10);
+    } catch (err) {
+      return res.status(500).json({
+        message: 'Error occurs when generateing salt',
+      });
+    }
+
+    try {
+      hash = await bcrypt.hash(data.password, salt);
+    } catch (err) {
+      return res.status(500).json({
+        message: 'Error occurs when generateing hash',
+      });
+    }
+
+    try {
+      await Client.create({
+        username: data.username,
+        password: hash,
+      });
+
+      res.status(201).json({ message: '注册成功' });
+    } catch (err) {
+      res.serverError(err);
+    }
+  },
   },
 
 };
