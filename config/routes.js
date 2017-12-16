@@ -43,6 +43,8 @@ module.exports.routes = {
   'GET /news/pending': 'NewsController.getAllPendingNews',
 
   'GET /event/:eventName': 'EventController.getEvent',
+  'GET /event': 'EventController.getEventList',
+  'POST /event': 'EventController.getEventList',
   'POST /event/:eventName/header_image': 'EventController.updateHeaderImage',
   'PUT /event/:eventName/header_image': 'EventController.updateHeaderImage',
 

@@ -32,6 +32,68 @@ let EventController = {
     }
   },
 
+  getEventList: async (req, res) => {
+    let page = 1;
+
+    if (req.body && req.body.page) {
+      page = req.body.page;
+    }
+    if (req.query && req.query.page) {
+      page = req.query.page;
+    }
+
+    let events = await Event.find({
+      where: { status: 'admitted' },
+      sort: 'updatedAt DESC',
+    })
+      .paginate({
+        page,
+        limit: 10,
+      })
+      .populate('headerImage');
+
+    res.status(200).json({ eventList: events });
+  },
+
+  createNews: async (req, res) => {
+    let name = req.param('eventName');
+    let data = req.body;
+    let news;
+
+    if (!data.url) {
+      return res.status(400).json({
+        message: '错误的请求格式',
+      });
+    }
+
+    let event = await EventController.findEvent(name);
+
+    if (!event) {
+      return res.status(404).json({
+        message: '未找到改事件',
+      });
+    }
+
+    data.event = event.id;
+
+    let existingNews = await News.findOne({ url: data.url });
+    if (existingNews && existingNews.status !== 'pending') {
+      return res.status(409).json({
+        message: '审核队列内已有相同链接的新闻',
+      });
+    }
+
+    try {
+      news = await News.create(data);
+    } catch (err) {
+      return res.status(400).json({
+        message: err.message,
+      });
+    }
+
+    res.status(201).json(news);
+  },
+
   updateHeaderImage: async (req, res) => {
     let name = req.param('eventName');
     let event = await EventController.findEvent(name);
