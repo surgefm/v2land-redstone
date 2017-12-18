@@ -38,6 +38,7 @@ module.exports.routes = {
 
   'POST /login': 'ClientController.login',
   '/logout': 'ClientController.logout',
+  '/role': 'ClientController.role',
   'POST /register': 'ClientController.register',
   'GET /client/me': 'ClientController.getClientDetail',
 

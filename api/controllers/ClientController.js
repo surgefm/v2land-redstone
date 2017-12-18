@@ -85,6 +85,46 @@ module.exports = {
     }
   },
 
+  role: async (req, res) => {
+    let clientId = req.session.clientId;
+
+    if (!clientId) {
+      return res.status(401).json({
+        message: '你还未登录',
+      });
+    }
+
+    let client = await Client.findOne({ id: clientId });
+    if (!client) {
+      return res.status(404).json({
+        message: '未找到该用户',
+      });
+    }
+
+    if (req.method === 'GET') {
+      return res.send(200, {
+        role: client.role,
+      });
+    } else if (req.method === 'POST') {
+      let data = req.body;
+      client.role = data.role;
+      let err = await client.save();
+      if (err) {
+        return res.send(500, {
+          message: '更新用户组失败',
+        });
+      } else {
+        return res.send(200, {
+          message: '更新用户组成功',
+        });
+      }
+    } else {
+      return res.status(500).json({
+        message: '不合法的方法',
+      });
+    }
+  },
+
   getClientDetail: async (req, res) => {
     let clientId = req.session.clientId;
 

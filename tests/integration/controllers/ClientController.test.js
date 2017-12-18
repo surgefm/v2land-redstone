@@ -27,6 +27,26 @@ describe('ClientController', function() {
     });
   });
 
+  describe('#role()', function() {
+    it('shoule return role of a user', function(done) {
+      agent
+        .get('/role')
+        .expect(200, {
+          role: 'contributor',
+        }, done);
+    });
+    it('should change role of a user', function(done) {
+      agent
+        .post('/role')
+        .send({
+          role: 'admin',
+        })
+        .expect(200, {
+          message: '更新用户组成功',
+        }, done);
+    });
+  });
+
   describe('#getClientDetail()', function() {
     it('should return client\'s information', function(done) {
       agent
