@@ -21,14 +21,7 @@ describe('ClientModel', function() {
 
         Client.destroy({
           username: 'test',
-          password: 'test6666666',
-        }).exec((err) => {
-          if (err) {
-            done(err);
-          }
-
-          done();
-        });
+        }).exec(done);
       });
     });
   });

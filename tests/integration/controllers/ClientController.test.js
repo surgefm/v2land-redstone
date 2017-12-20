@@ -12,26 +12,59 @@ describe('ClientController', function() {
         .send({ username: 'test_controller', password: 'test_controller' })
         .expect(201, {
           message: '注册成功',
-        }, done);
+        }, () => {
+          Client.destroy({
+            username: 'test_controller',
+          }).exec(done);
+        });
     });
   });
 
   describe('#login()', function() {
     it('should return success', function(done) {
       agent
-        .post('/login')
-        .send({ username: 'test_controller', password: 'test_controller' })
-        .expect(200, {
-          message: '登录成功',
-        }, done);
+        .post('/register')
+        .send({ username: 'test_login', password: 'test_login' })
+        .expect(201, {
+          message: '注册成功',
+        }, () => {
+          agent
+            .post('/login')
+            .send({ username: 'test_login', password: 'test_login' })
+            .expect(200, {
+              message: '登录成功',
+            }, () => {
+              Client.destroy({
+                username: 'test_login',
+              }).exec(done);
+            });
+        });
     });
   });
 
   describe('#getClientDetail()', function() {
     it('should return client\'s information', function(done) {
       agent
-        .get('/client/me')
-        .expect(200, done);
+        .post('/register')
+        .send({ username: 'test_detail', password: 'test_detail' })
+        .expect(201, {
+          message: '注册成功',
+        }, () => {
+          agent
+            .post('/login')
+            .send({ username: 'test_detail', password: 'test_detail' })
+            .expect(200, {
+              message: '登录成功',
+            }, () => {
+              agent
+                .get('/client/me')
+                .expect(200, () => {
+                  Client.destroy({
+                    username: 'test_detail',
+                  }).exec(done);
+                });
+            });
+        });
     });
   });
 
