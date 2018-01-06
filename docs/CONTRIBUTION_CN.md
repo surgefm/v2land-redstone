@@ -40,7 +40,7 @@ v2land-redstone 是一个用 [sails](https://sailsjs.com/) 重构的后端，目
 ### 开始开发
 
 ```sh
-$ git clone https://github.com/v2land/v2land-api.git
+$ git clone https://github.com/v2land/v2land-redstone.git
 $ yarn install
 ```
 
