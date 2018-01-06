@@ -54,6 +54,7 @@ $ yarn install
 - 测试相关 -> test/xxx
 - 文档相关 -> doc/xxx
 - API 重构相关 -> api/xxx
+- 修复 bugs 相关 -> fix/xxx
 
 ### 代码规范
 
