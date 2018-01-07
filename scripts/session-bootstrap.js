@@ -12,6 +12,8 @@ const client = new Client(postgresConfig);
 client.connect();
 
 client.query(content, (err, res) => {
-  console.log(err, res);
+  if (err) {
+    console.log(err.code === '42P07');
+  }
   client.end();
 });
