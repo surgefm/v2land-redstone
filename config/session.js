@@ -21,7 +21,15 @@ module.exports.session = {
   * of your users, forcing them to log in again.                             *
   *                                                                          *
   ***************************************************************************/
-  secret: '970a14748cf639a4aa3d7b0d60cc9cac'
+  secret: '970a14748cf639a4aa3d7b0d60cc9cac',
+
+  adapter: 'sails-pg-session',
+
+  database: process.env.POSTGRES_DB || 'v2land',
+  host: process.env.POSTGRES_HOST || '127.0.0.1',
+  user: process.env.POSTGRES_USER || 'postgres',
+  password: process.env.POSTGRES_PWD,
+  port: 5432,
 
   /***************************************************************************
   *                                                                          *
