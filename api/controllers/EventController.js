@@ -37,8 +37,7 @@ let EventController = {
 
     if (req.body && req.body.page) {
       page = req.body.page;
-    }
-    if (req.query && req.query.page) {
+    } else if (req.query && req.query.page) {
       page = req.query.page;
     }
 
