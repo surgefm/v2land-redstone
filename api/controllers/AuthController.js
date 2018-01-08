@@ -7,6 +7,43 @@
 
 module.exports = {
 
+  authorize: async (req, res) => {
+    if (!(req.body && req.body.authId)) {
+      return res.status(400).json({
+        message: '缺少参数：authId',
+      });
+    }
+
+    let auth = await Auth.findOne({ id: req.body.authId });
+    if (!auth || !auth.profile) {
+      return res.status(404).json({
+        message: '未找到该绑定信息',
+      });
+    }
+
+    let { expireTime, owner } = JSON.parse(auth.profile);
+    if (!owner || owner !== req.sessionID) {
+      return res.status(403).json({
+        message: '你无权进行该绑定',
+      });
+    } else if (!expireTime || Date.now() > expireTime) {
+      return res.status(403).json({
+        message: '已过绑定时效，请重新发起绑定',
+      });
+    }
+
+    auth.owner = req.body.clientId;
+    await auth.save();
+
+    res.status(201).json({
+      message: '绑定成功',
+    });
+  },
+
+  unauthorize: async (req, res) => {
+
+  },
+
   twitter: async (req, res) => {
     let oa = sails.config.oauth.twitter;
 
@@ -133,10 +170,12 @@ module.exports = {
       await account.save();
       res.status(201).json(account);
     } else {
-      response.expireTime = Date.now() + 1000 * 60 * 60 * 12; // expires in 12 hours.
-      response.owner = req.sessionID;
-      response = JSON.stringify(response);
+      let profile = Object.assign({}, response);
+      profile.expireTime = Date.now() + 1000 * 60 * 60 * 12; // expires in 12 hours.
+      profile.owner = req.sessionID;
+      account.profile = JSON.stringify(profile);
       await account.save();
+
       if (!account.owner) {
         res.status(202).json({
           name: 'authentication required',

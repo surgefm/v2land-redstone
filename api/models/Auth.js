@@ -18,10 +18,9 @@ module.exports = {
       type: 'string',
     },
 
-    // TODO: profile
-    // "profile": {
-    //   "type": "object"
-    // },
+    "profile": {
+      "type": "text",
+    },
 
     token: {
       type: 'string',
