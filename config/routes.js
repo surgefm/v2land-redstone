@@ -48,6 +48,10 @@ module.exports.routes = {
   'POST /event/:eventName/header_image': 'EventController.updateHeaderImage',
   'PUT /event/:eventName/header_image': 'EventController.updateHeaderImage',
 
+  'GET /auth/twitter': 'AuthController.twitter',
+  'GET /auth/twitter/callback': 'AuthController.twitterCallback',
+  'GET /auth/twitter/redirect': 'AuthController.twitterRedirect',
+
   /***************************************************************************
   *                                                                          *
   * Custom routes here...                                                    *

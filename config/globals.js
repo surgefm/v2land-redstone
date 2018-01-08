@@ -10,6 +10,8 @@
  */
 module.exports.globals = {
 
+  api: process.env.API || 'https://a.langchao.co',
+
   /****************************************************************************
   *                                                                           *
   * Expose the lodash installed in Sails core as a global variable. If this   *

@@ -38,6 +38,12 @@ module.exports.policies = {
     '*': false,
   },
 
+  AuthController: {
+    'twitter': true,
+    'twitterRedirect': true,
+    'twitterCallback': true,
+  }
+
   /***************************************************************************
   *                                                                          *
   * Default policy for all controllers and actions (`true` allows public     *
