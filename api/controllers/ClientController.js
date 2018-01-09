@@ -125,7 +125,6 @@ module.exports = {
         });
       }
 
-      console.log('fuck');
       let targetRole = targetClient.role;
 
       if (roles.indexOf(currentRole) <= roles.indexOf(targetRole)
