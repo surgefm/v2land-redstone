@@ -40,9 +40,11 @@ module.exports.policies = {
 
   AuthController: {
     'authorize': true,
+    'unauthorize': true,
     'twitter': true,
     'twitterRedirect': true,
     'twitterCallback': true,
+    '*': false,
   }
 
   /***************************************************************************

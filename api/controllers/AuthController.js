@@ -41,7 +41,30 @@ module.exports = {
   },
 
   unauthorize: async (req, res) => {
+    if (!(req.body && req.body.authId)) {
+      return res.status(400).json({
+        message: '缺少参数：authId',
+      });
+    }
 
+    let auth = await Auth.findOne({ id: req.body.authId });
+    if (!auth) {
+      return res.status(404).json({
+        message: '未找到该绑定信息',
+      });
+    }
+
+    if (auth.owner !== req.session.clientId) {
+      return res.status(403).json({
+        message: '你无权进行该绑定',
+      });
+    }
+
+    await auth.destroy();
+
+    res.status(201).json({
+      message: '成功解除绑定',
+    });
   },
 
   twitter: async (req, res) => {
