@@ -85,6 +85,73 @@ module.exports = {
     }
   },
 
+  role: async (req, res) => {
+    let clientId = req.session.clientId;
+
+    if (!clientId) {
+      return res.status(401).json({
+        message: '你还未登录',
+      });
+    }
+
+    let client = await Client.findOne({ id: clientId });
+    if (!client) {
+      return res.status(404).json({
+        message: '未找到该用户',
+      });
+    }
+
+    let currentRole = client.role;
+
+    if (req.method === 'GET') {
+      return res.send(200, {
+        role: currentRole,
+      });
+    } else if (req.method === 'POST') {
+      let data = req.body;
+
+      let roles = ['admin', 'manager', 'contributor'];
+
+      if (typeof data.id !== 'number') {
+        return res.status(500).json({
+          message: 'id 参数错误',
+        });
+      }
+
+      let targetClient = await Client.findOne({ id: data.id });
+      if (!targetClient) {
+        return res.status(404).json({
+          message: '未找到目标用户',
+        });
+      }
+
+      let targetRole = targetClient.role;
+
+      if (roles.indexOf(currentRole) <= roles.indexOf(targetRole)
+        && currentRole !== 'admin') {
+        return res.send(500, {
+          message: '您无权更改此用户权限',
+        });
+      }
+
+      client.role = data.role;
+      let err = await client.save();
+      if (err) {
+        return res.send(500, {
+          message: '更新用户组失败',
+        });
+      } else {
+        return res.send(200, {
+          message: '更新用户组成功',
+        });
+      }
+    } else {
+      return res.status(500).json({
+        message: '不合法的方法',
+      });
+    }
+  },
+
   getClientDetail: async (req, res) => {
     let clientId = req.session.clientId;
 

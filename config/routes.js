@@ -36,10 +36,11 @@ module.exports.routes = {
     view: 'homepage'
   },
 
-  'POST /login': 'ClientController.login',
-  '/logout': 'ClientController.logout',
-  'POST /register': 'ClientController.register',
+  'POST /client/register': 'ClientController.register',
   'GET /client/me': 'ClientController.getClientDetail',
+  'POST /client/login': 'ClientController.login',
+  '/client/role': 'ClientController.role',
+  '/client/logout': 'ClientController.logout',
 
   'GET /news/pending': 'NewsController.getAllPendingNews',
 
