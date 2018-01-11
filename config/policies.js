@@ -16,8 +16,19 @@
  * http://sailsjs.org/#!/documentation/reference/sails.config/sails.config.policies.html
  */
 
-
 module.exports.policies = {
+
+  NewsController: {
+    'findOne': true,
+    'update': true,
+    'getAllPendingNews': true,
+    '*': false,
+  },
+
+  EventController: {
+    'getEvent': true,
+    '*': false,
+  },
 
   /***************************************************************************
   *                                                                          *

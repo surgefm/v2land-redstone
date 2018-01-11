@@ -17,21 +17,19 @@
  * automatically.
  */
 
-module.exports = function notFound (data, options) {
-
+module.exports = function notFound(data, options) {
   // Get access to `req`, `res`, & `sails`
-  var req = this.req;
-  var res = this.res;
-  var sails = req._sails;
+  let req = this.req;
+  let res = this.res;
+  let sails = req._sails;
 
   // Set status code
   res.status(404);
 
   // Log error to console
   if (data !== undefined) {
-    sails.log.verbose('Sending 404 ("Not Found") response: \n',data);
-  }
-  else sails.log.verbose('Sending 404 ("Not Found") response');
+    sails.log.verbose('Sending 404 ("Not Found") response: \n', data);
+  } else sails.log.verbose('Sending 404 ("Not Found") response');
 
   // Only include errors in response if application environment
   // is not set to 'production'.  In production, we shouldn't
@@ -51,12 +49,11 @@ module.exports = function notFound (data, options) {
   options = (typeof options === 'string') ? { view: options } : options || {};
 
   // Attempt to prettify data for views, if it's a non-error object
-  var viewData = data;
-  if (!(viewData instanceof Error) && 'object' == typeof viewData) {
+  let viewData = data;
+  if (!(viewData instanceof Error) && typeof viewData === 'object') {
     try {
-      viewData = require('util').inspect(data, {depth: null});
-    }
-    catch(e) {
+      viewData = require('util').inspect(data, { depth: null });
+    } catch (e) {
       viewData = undefined;
     }
   }
@@ -66,29 +63,25 @@ module.exports = function notFound (data, options) {
   // work, just send JSON.
   if (options.view) {
     return res.view(options.view, { data: viewData, title: 'Not Found' });
-  }
-
-  // If no second argument provided, try to serve the default view,
-  // but fall back to sending JSON(P) if any errors occur.
-  else return res.view('404', { data: viewData, title: 'Not Found' }, function (err, html) {
-
+  } else {
+    // If no second argument provided, try to serve the default view,
+    // but fall back to sending JSON(P) if any errors occur.
+    return res.view('404', { data: viewData, title: 'Not Found' }, function(err, html) {
     // If a view error occured, fall back to JSON(P).
-    if (err) {
+      if (err) {
       //
       // Additionally:
       // • If the view was missing, ignore the error but provide a verbose log.
-      if (err.code === 'E_VIEW_FAILED') {
-        sails.log.verbose('res.notFound() :: Could not locate view for error page (sending JSON instead).  Details: ',err);
+        if (err.code === 'E_VIEW_FAILED') {
+          sails.log.verbose('res.notFound() :: Could not locate view for error page (sending JSON instead).  Details: ', err);
+        } else {
+          // Otherwise, if this was a more serious error, log to the console with the details.
+          sails.log.warn('res.notFound() :: When attempting to render error page view, an error occured (sending JSON instead).  Details: ', err);
+        }
+        return res.jsonx(data);
       }
-      // Otherwise, if this was a more serious error, log to the console with the details.
-      else {
-        sails.log.warn('res.notFound() :: When attempting to render error page view, an error occured (sending JSON instead).  Details: ', err);
-      }
-      return res.jsonx(data);
-    }
 
-    return res.send(html);
-  });
-
+      return res.send(html);
+    });
+  }
 };
-

@@ -1,3 +1,4 @@
+/* eslint no-unused-vars: 0 */
 /**
  * grunt/pipeline.js
  *
@@ -11,19 +12,17 @@
  *   https://github.com/balderdashy/sails-docs/blob/master/anatomy/myApp/tasks/pipeline.js.md
  */
 
-
 // CSS files to inject in order
 //
 // (if you're using LESS with the built-in default config, you'll want
 //  to change `assets/styles/importer.less` instead.)
-var cssFilesToInject = [
-  'styles/**/*.css'
+let cssFilesToInject = [
+  'styles/**/*.css',
 ];
-
 
 // Client-side javascript files to inject in order
 // (uses Grunt-style wildcard/glob/splat expressions)
-var jsFilesToInject = [
+let jsFilesToInject = [
 
   // Load sails.io before everything else
   'js/dependencies/sails.io.js',
@@ -33,9 +32,8 @@ var jsFilesToInject = [
 
   // All of the rest of your client-side js files
   // will be injected here in no particular order.
-  'js/**/*.js'
+  'js/**/*.js',
 ];
-
 
 // Client-side HTML templates are injected using the sources below
 // The ordering of these templates shouldn't matter.
@@ -46,18 +44,12 @@ var jsFilesToInject = [
 // with the linker, no problem-- you'll just want to make sure the precompiled
 // templates get spit out to the same file.  Be sure and check out `tasks/README.md`
 // for information on customizing and installing new tasks.
-var templateFilesToInject = [
-  'templates/**/*.html'
+let templateFilesToInject = [
+  'templates/**/*.html',
 ];
 
-
-
-
-
-
-
 // Default path for public folder (see documentation for more information)
-var tmpPath = '.tmp/public/';
+let tmpPath = '.tmp/public/';
 
 // Prefix relative paths to source files so they point to the proper locations
 // (i.e. where the other Grunt tasks spit them out, or in some cases, where
@@ -81,7 +73,5 @@ module.exports.templateFilesToInject = templateFilesToInject.map(function(tplPat
   if (tplPath[0] === '!') {
     return require('path').join('!assets/', tplPath.substr(1));
   }
-  return require('path').join('assets/',tplPath);
+  return require('path').join('assets/', tplPath);
 });
-
-
