@@ -117,4 +117,4 @@ nbproject
 .idea
 .node_history
 
-yarn.lock
+package-lock.json

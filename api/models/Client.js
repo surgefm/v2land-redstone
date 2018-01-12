@@ -22,6 +22,13 @@ module.exports = {
       password: true,
     },
 
+    role: {
+      type: 'text',
+      required: true,
+      enum: ['admin', 'manager', 'contributor'],
+      defaultsTo: 'contributor',
+    },
+
     events: {
       collection: 'event',
       via: 'subscribers',
