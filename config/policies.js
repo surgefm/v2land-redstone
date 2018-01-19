@@ -44,6 +44,9 @@ module.exports.policies = {
     'twitter': true,
     'twitterRedirect': true,
     'twitterCallback': true,
+    'weibo': true,
+    'weiboRedirect': true,
+    'weiboCallback': true,
     '*': false,
   }
 

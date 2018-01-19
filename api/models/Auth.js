@@ -18,8 +18,8 @@ module.exports = {
       type: 'string',
     },
 
-    "profile": {
-      "type": "text",
+    profile: {
+      type: 'text',
     },
 
     token: {
@@ -35,6 +35,10 @@ module.exports = {
     },
 
     accessTokenSecret: {
+      type: 'string',
+    },
+
+    refreshToken: {
       type: 'string',
     },
 

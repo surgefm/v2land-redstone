@@ -44,5 +44,8 @@ module.exports.routes = {
   'GET /auth/twitter': 'AuthController.twitter',
   'GET /auth/twitter/callback': 'AuthController.twitterCallback',
   'GET /auth/twitter/redirect': 'AuthController.twitterRedirect',
+  'GET /auth/weibo': 'AuthController.weibo',
+  'GET /auth/weibo/callback': 'AuthController.weiboCallback',
+  'GET /auth/weibo/redirect': 'AuthController.weiboRedirect',
 
 }
