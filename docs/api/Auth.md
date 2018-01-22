@@ -199,12 +199,12 @@ _When redirecting, Weibo will add two properties in the URL query: `code` and `s
 |:---------|:------|
 | message | string |
 
-## Twitter Redirect
+## Weibo Redirect
 Authenticate with Weibo and start the authorization procedure. The client should not request this API manually. It's all done automatically by `/auth/weibo/callback`.
 
 | Property | Value |
 |:---------|:------|
-| URL | /auth/twitter/redirect |
+| URL | /auth/weibo/redirect |
 | Method | GET |
 | Required Logged in | false |
 
