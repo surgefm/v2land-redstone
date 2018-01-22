@@ -17,9 +17,9 @@
 
 ## 开发
 
-v2land-redstone 是一个用 [sails](https://sailsjs.com/) 重构的后端，目前我们线上用的是一个用 Loopback 开发的 [v2land-api](https://github.com/v2land/v2land-api)，已经不会再更新。
+v2land-redstone 是一个用 [Sails](https://sailsjs.com/) 重构的后端，目前我们线上的后端采用 Loopback 开发 [v2land-api](https://github.com/v2land/v2land-api)，已经不会再更新。
 
-如果您想要参与到 redstone 的开发当中，您可以做的事情有：
+如果您想要参与到 Redstone 的开发当中，您可以做的事情有：
 
 - API 的实现
 - 数据库的设计
@@ -46,7 +46,7 @@ $ yarn install
 
 ### 分支
 
-开发时，新分支的命名应该保持规范。
+开发时，新分支的命名应该保持规范。大部分情况下，新分支应基于 `develop` 分支建立。
 
 所有和 features 有关的分支以 feature 命名，如此类推：
 
@@ -72,7 +72,7 @@ $ make eslint-fix
 
 ## 测试
 
-redstone 的测试包含两部分：单元测试和完整性测试，以下命令可以运行所有测试（包括 eslint）：
+Redstone 的测试包含两部分：单元测试和完整性测试，以下命令可以运行所有测试（包括 eslint）：
 
 ```sh
 $ make test
@@ -88,4 +88,4 @@ $ make test-completeness
 
 ## 提交 Pull Request
 
-当您完成开发之后，您就可以给我们的 dev 分支提交 PR，我们感谢您的付出和支持。
+当您完成开发之后，您就可以给我们的 `develop` 分支提交 PR，我们感谢您的付出和支持。
