@@ -95,7 +95,7 @@ Redirect the client to Twitter's OAuth page.
 ### Return Data
 #### 307 Successfully redirect the client to Twitter's OAuth page.
 #### 503 The site has not enabled Twitter authentication.
-If you are the website maintainer and want to enable Twitter authentication, please configure TWITTER_KEY and TWITTER_SECRET as your environment variables. You can find both values by creating an app on [Twitter Application Management](https://apps.twitter.com/).
+If you are the website maintainer and want to enable Twitter authentication, please configure `TWITTER_KEY` and `TWITTER_SECRET` as your environment variables. You can find both values by creating an app on [Twitter Application Management](https://apps.twitter.com/).
 
 ## Twitter Callback
 The callback API Twitter redirect the client to after the client authorize our site to visit his or her Twitter account.
@@ -172,7 +172,7 @@ Redirect the client to Sina Weibo's OAuth page.
 ### Return Data
 #### 307 Successfully redirect the client to Weibo's OAuth page.
 #### 503 The site has not enabled Weibo authentication.
-If you are the website maintainer and want to enable Weibo authentication, please configure WEIBO_KEY and WEIBO_SECRET as your environment variables. You can find both values by creating an app on [微博开放平台](http://open.weibo.com/).
+If you are the website maintainer and want to enable Weibo authentication, please configure `WEIBO_KEY` and `WEIBO_SECRET` as your environment variables. You can find both values by creating an app on [微博开放平台](http://open.weibo.com/).
 
 ## Weibo Callback
 The callback API Weibo redirect the client to after the client authorize our site to visit his or her Weibo account.
