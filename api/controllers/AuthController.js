@@ -59,7 +59,7 @@ module.exports = {
 
     if (auth.owner !== req.session.clientId) {
       return res.status(403).json({
-        message: '你无权进行该绑定',
+        message: '你无权进行该解绑',
       });
     }
 
@@ -110,16 +110,27 @@ module.exports = {
       });
     }
 
-    let oa = sails.config.oauth.twitter;
     let token = req.query.oauth_token;
     let verifier = req.query.oauth_verifier;
 
-    let auth = await Auth.findOne({ token });
-    if (!auth) {
-      return res.status(404).json({
-        message: '未找到该绑定信息',
+    res.status(200).send(
+      `<!DOCTYPE html>` +
+      `<body><script>window.location="${sails.config.globals.api}` +
+      `/auth/twitter/redirect?token=${token}` +
+      `&verifier=${verifier}` +
+      `</script></body>`
+    );
+  },
+
+  twitterRedirect: async (req, res) => {
+    if (!(req.query && req.query.token && req.query.verifier)) {
+      return res.status(400).json({
+        message: '请求缺少 token 或 verifier',
       });
     }
+
+    let oa = sails.config.oauth.twitter;
+    let { token, verifier } = req.query;
 
     let getAccessToken = () => {
       return new Promise((resolve, reject) => {
@@ -137,28 +148,7 @@ module.exports = {
 
     let { accessToken, accessTokenSecret } = await getAccessToken();
 
-    res.status(200).send(
-      `<!DOCTYPE html>` +
-      `<body><script>window.location="${sails.config.globals.api}` +
-      `/auth/twitter/redirect?accessToken=${accessToken}` +
-      `&accessTokenSecret=${accessTokenSecret}` +
-      `&authId=${auth.id}"` +
-      `</script></body>`
-    );
-  },
-
-  twitterRedirect: async (req, res) => {
-    if (!(req.query && req.query.accessToken &&
-      req.query.accessTokenSecret && req.query.authId)) {
-      return res.status(400).json({
-        message: '请求缺少 accessToken、accessTokenSecret 或 authId',
-      });
-    }
-
-    let oa = sails.config.oauth.twitter;
-    let { accessToken, accessTokenSecret, authId } = req.query;
-
-    let auth = await Auth.findOne({ id: authId });
+    let auth = await Auth.findOne({ token });
     if (!auth) {
       return res.status(404).json({
         message: '未找到该绑定信息',
