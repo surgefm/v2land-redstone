@@ -240,8 +240,23 @@ module.exports = {
       });
     }
 
-    let oa = sails.config.oauth.weibo;
-    let { code, state } = req.query;
+    res.status(200).send(
+      `<!DOCTYPE html>` +
+      `<body><script>window.location="${sails.config.globals.api}` +
+      `/auth/weibo/redirect?code=${code}` +
+      `&authId=${state}` +
+      `"</script></body>`
+    );
+  },
+
+  weiboRedirect: async (req, res) => {
+    if (!(req.query && req.query.code && req.query.authId)) {
+      return res.status(400).json({
+        message: '请求缺少 code 或 authId',
+      });
+    }
+
+    let { code, authId } = req.query;
 
     let getAccessToken = () => {
       return new Promise((resolve, reject) => {
@@ -260,25 +275,6 @@ module.exports = {
     };
 
     let { accessToken, refreshToken } = await getAccessToken();
-
-    res.status(200).send(
-      `<!DOCTYPE html>` +
-      `<body><script>window.location="${sails.config.globals.api}` +
-      `/auth/weibo/redirect?accessToken=${accessToken}` +
-      `&refreshToken=${refreshToken || ''}` +
-      `&authId=${state}` +
-      `"</script></body>`
-    );
-  },
-
-  weiboRedirect: async (req, res) => {
-    if (!(req.query && req.query.accessToken && req.query.authId)) {
-      return res.status(400).json({
-        message: '请求缺少 accessToken 或 authId',
-      });
-    }
-
-    let { accessToken, refreshToken, authId } = req.query;
 
     let auth = await Auth.findOne({ id: authId });
     if (!auth) {
