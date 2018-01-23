@@ -1,5 +1,22 @@
 # Auth
 
+## Options
+Get the available third-party authorization option list.
+
+| Property | Value |
+|:---------|:------|
+| URL | /auth/options |
+| Method | GET |
+| Return Data Form | JSON |
+| Required Logged in | false |
+
+### Return Data
+#### 200 Fetch the list successfully
+| Property | Type |
+|:---------|:------|
+| twitter | boolean |
+| weibo | boolean |
+
 ## Authorize
 The authorization does not complete automatically in some occasions, mostly because the client was not logged in during the authorization step or the third-party account has already been authorized to another client. In these cases, the authorization has to be completed manually.
 
