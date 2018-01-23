@@ -10,6 +10,13 @@ const queryString = require('query-string');
 
 module.exports = {
 
+  options: (req, res) => {
+    res.status(200).json({
+      twitter: sails.config.oauth.twitter ? true : false,
+      weibo: sails.config.oauth.weibo ? true : false,
+    });
+  },
+
   authorize: async (req, res) => {
     if (!(req.body && req.body.authId)) {
       return res.status(400).json({

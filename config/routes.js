@@ -39,6 +39,7 @@ module.exports.routes = {
   'POST /event/:eventName/header_image': 'EventController.updateHeaderImage',
   'PUT /event/:eventName/header_image': 'EventController.updateHeaderImage',
 
+  'GET /auth/options': 'AuthController.options',
   'POST /auth': 'AuthController.authorize',
   'DELETE /auth': 'AuthController.unauthorize',
   'GET /auth/twitter': 'AuthController.twitter',
