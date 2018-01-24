@@ -23,5 +23,10 @@ module.exports = {
       model: 'event',
     },
 
+    subscriptions: {
+      collection: 'subscription',
+      via: 'notification',
+    },
+
   },
 };

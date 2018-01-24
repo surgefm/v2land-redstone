@@ -47,6 +47,11 @@ module.exports = {
       via: 'event',
     },
 
+    subscriptions: {
+      collection: 'subscription',
+      via: 'event',
+    },
+
   },
 
 };

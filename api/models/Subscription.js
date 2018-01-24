@@ -22,6 +22,7 @@ module.exports = {
     status: {
       type: 'string',
       defaultsTo: 'active',
+      enum: ['active', 'unsubscribed'],
     },
 
     unsubscribeId: {
@@ -31,6 +32,14 @@ module.exports = {
 
     subscriber: {
       model: 'client',
+    },
+
+    event: {
+      model: 'event',
+    },
+
+    notification: {
+      model: 'notification',
     },
 
   },
