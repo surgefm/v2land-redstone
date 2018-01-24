@@ -14,10 +14,10 @@ module.exports = {
       required: true,
     },
 
-    // contact: {
-    //   type: 'object',
-    //   required: true,
-    // },
+    contact: {
+      type: 'text',
+      required: true,
+    },
 
     status: {
       type: 'string',
