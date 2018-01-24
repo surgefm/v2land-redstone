@@ -31,6 +31,8 @@ module.exports.policies = {
     'getEvent': true,
     'updateEvent': true,
     'getEventList': true,
+    'getPendingNews': true,
+    'createNews': true,
     'updateHeaderImage': true,
     '*': false,
   },

@@ -13,7 +13,10 @@ let EventController = {
         { name: eventName },
       ],
     })
-      .populate('news')
+      .populate('news', {
+        where: { status: 'admitted' },
+        sort: 'createdAt DESC',
+      })
       .populate('headerImage');
 
     return event;
@@ -30,6 +33,24 @@ let EventController = {
         message: '未找到该事件',
       });
     }
+  },
+
+  getPendingNews: async (req, res) => {
+    let name = req.param('eventName');
+    let event = await EventController.findEvent(name);
+
+    if (!event) {
+      return res.status(404).json({
+        message: '未找到该事件',
+      });
+    }
+
+    let newsCollection = await News.find({
+      status: 'pending',
+      event: event.id,
+    });
+
+    return res.status(200).json({ newsCollection });
   },
 
   updateEvent: async (req, res) => {
@@ -95,7 +116,7 @@ let EventController = {
 
     if (!data.url) {
       return res.status(400).json({
-        message: '错误的请求格式',
+        message: '缺少 url 参数',
       });
     }
 
@@ -108,23 +129,21 @@ let EventController = {
     }
 
     data.event = event.id;
+    data.status = 'pending';
 
-    let existingNews = await News.findOne({ url: data.url });
-    if (existingNews && existingNews.status !== 'pending') {
+    let existingNews = await News.findOne({ url: data.url, event: event.id });
+    if (existingNews) {
       return res.status(409).json({
-        message: '审核队列内已有相同链接的新闻',
+        message: '审核队列或新闻合辑内已有相同链接的新闻',
       });
     }
 
     try {
       news = await News.create(data);
+      res.status(201).json(news);
     } catch (err) {
-      return res.status(400).json({
-        message: err.message,
-      });
+      return res.status(err.status).json(err);
     }
-
-    res.status(201).json(news);
   },
 
   updateHeaderImage: async (req, res) => {
