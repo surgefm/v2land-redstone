@@ -32,6 +32,40 @@ let EventController = {
     }
   },
 
+  updateEvent: async (req, res) => {
+    let name = req.param('eventName');
+    let event = await EventController.findEvent(name);
+
+    if (!req.body) {
+      return res.status(400).json({
+        message: '缺少参数',
+      });
+    }
+
+    if (!event) {
+      return res.status(404).json({
+        message: '未找到该事件',
+      });
+    }
+
+    for (let attribute of ['name', 'description', 'status']) {
+      if (req.body[attribute]) {
+        event[attribute] = req.body[attribute];
+      }
+    }
+
+    try {
+      await event.save();
+
+      res.status(201).json({
+        message: '修改成功',
+        event,
+      });
+    } catch (err) {
+      res.status(err.status).json(err);
+    }
+  },
+
   getEventList: async (req, res) => {
     let page = 1;
 
@@ -69,7 +103,7 @@ let EventController = {
 
     if (!event) {
       return res.status(404).json({
-        message: '未找到改事件',
+        message: '未找到该事件',
       });
     }
 

@@ -29,6 +29,7 @@ module.exports.policies = {
     'create': true,
     'findEvent': true,
     'getEvent': true,
+    'updateEvent': true,
     'getEventList': true,
     'updateHeaderImage': true,
     '*': false,

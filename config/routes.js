@@ -46,7 +46,7 @@ module.exports.routes = {
 
   'GET /event/:eventName': 'EventController.getEvent',
   'GET /event': 'EventController.getEventList',
-  'POST /event': 'EventController.getEventList',
+  'PUT /event/:eventName': 'EventController.updateEvent',
   'POST /event/:eventName/header_image': 'EventController.updateHeaderImage',
   'PUT /event/:eventName/header_image': 'EventController.updateHeaderImage',
 
