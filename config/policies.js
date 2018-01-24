@@ -30,6 +30,11 @@ module.exports.policies = {
     '*': false,
   },
 
+  SubscriptionController: {
+    'unsubscribe': true,
+    '*': false,
+  },
+
   /***************************************************************************
   *                                                                          *
   * Default policy for all controllers and actions (`true` allows public     *
