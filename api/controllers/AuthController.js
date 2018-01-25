@@ -24,14 +24,14 @@ module.exports = {
       });
     }
 
-    let auth = await Auth.findOne({ id: req.body.authId });
+    const auth = await Auth.findOne({ id: req.body.authId });
     if (!auth || !auth.profile) {
       return res.status(404).json({
         message: '未找到该绑定信息',
       });
     }
 
-    let { expireTime, owner } = JSON.parse(auth.profile);
+    const { expireTime, owner } = JSON.parse(auth.profile);
     if (!owner || owner !== req.sessionID) {
       return res.status(403).json({
         message: '你无权进行该绑定',
@@ -57,7 +57,7 @@ module.exports = {
       });
     }
 
-    let auth = await Auth.findOne({ id: req.body.authId });
+    const auth = await Auth.findOne({ id: req.body.authId });
     if (!auth) {
       return res.status(404).json({
         message: '未找到该绑定信息',
@@ -78,7 +78,7 @@ module.exports = {
   },
 
   twitter: async (req, res) => {
-    let oa = sails.config.oauth.twitter;
+    const oa = sails.config.oauth.twitter;
 
     if (!oa) {
       return res.status(503).json({
@@ -86,7 +86,7 @@ module.exports = {
       });
     }
 
-    let getToken = () => {
+    const getToken = () => {
       return new Promise((resolve, reject) => {
         oa.getOAuthRequestToken((err, token, tokenSecret, result) => {
           if (err) return reject(err);
@@ -95,7 +95,7 @@ module.exports = {
       });
     };
 
-    let { token, tokenSecret } = await getToken();
+    const { token, tokenSecret } = await getToken();
 
     await Auth.create({
       site: 'twitter',
@@ -117,8 +117,8 @@ module.exports = {
       });
     }
 
-    let token = req.query.oauth_token;
-    let verifier = req.query.oauth_verifier;
+    const token = req.query.oauth_token;
+    const verifier = req.query.oauth_verifier;
 
     res.status(200).send(
       `<!DOCTYPE html>` +
@@ -136,10 +136,10 @@ module.exports = {
       });
     }
 
-    let oa = sails.config.oauth.twitter;
-    let { token, verifier } = req.query;
+    const oa = sails.config.oauth.twitter;
+    const { token, verifier } = req.query;
 
-    let getAccessToken = () => {
+    const getAccessToken = () => {
       return new Promise((resolve, reject) => {
         oa.getOAuthAccessToken(
           token,
@@ -153,16 +153,16 @@ module.exports = {
       });
     };
 
-    let { accessToken, accessTokenSecret } = await getAccessToken();
+    const { accessToken, accessTokenSecret } = await getAccessToken();
 
-    let auth = await Auth.findOne({ token });
+    const auth = await Auth.findOne({ token });
     if (!auth) {
       return res.status(404).json({
         message: '未找到该绑定信息',
       });
     }
 
-    let getResponse = () => {
+    const getResponse = () => {
       return new Promise((resolve, reject) => {
         oa.get(
           'https://api.twitter.com/1.1/account/verify_credentials.json',
@@ -176,15 +176,15 @@ module.exports = {
       });
     };
 
-    let response = await getResponse();
+    const response = await getResponse();
 
     auth.profileId = response.id_str;
-    let sameAuth = await Auth.findOne({
+    const sameAuth = await Auth.findOne({
       site: 'twitter',
       profileId: response.id_str,
     });
 
-    let account = sameAuth || auth;
+    const account = sameAuth || auth;
     account.accessToken = accessToken;
     account.accessTokenSecret = accessTokenSecret;
 
@@ -193,7 +193,7 @@ module.exports = {
       await account.save();
       res.status(201).json(account);
     } else {
-      let profile = Object.assign({}, response);
+      const profile = Object.assign({}, response);
       profile.expireTime = Date.now() + 1000 * 60 * 60 * 12; // expires in 12 hours.
       profile.owner = req.sessionID;
       account.profile = JSON.stringify(profile);
@@ -206,7 +206,7 @@ module.exports = {
           authId: account.id,
         });
       } else {
-        let conflict = await Client.findOne({ id: account.owner });
+        const conflict = await Client.findOne({ id: account.owner });
         console.log(conflict, account);
         res.status(202).json({
           name: 'already connected',
@@ -218,7 +218,7 @@ module.exports = {
   },
 
   weibo: async (req, res) => {
-    let oa = sails.config.oauth.weibo;
+    const oa = sails.config.oauth.weibo;
 
     if (!oa) {
       return res.status(503).json({
@@ -226,13 +226,13 @@ module.exports = {
       });
     }
 
-    let auth = await Auth.create({
+    const auth = await Auth.create({
       site: 'weibo',
       owner: req.session.clientId,
       redirect: req.query ? req.query.redirect : '',
     });
 
-    let callback = sails.config.globals.api + '/auth/weibo/callback';
+    const callback = sails.config.globals.api + '/auth/weibo/callback';
 
     res.redirect(307, oa.getAuthorizeUrl({
       redirect_uri: callback,
@@ -263,9 +263,9 @@ module.exports = {
       });
     }
 
-    let { code, authId } = req.query;
+    const { code, authId } = req.query;
 
-    let getAccessToken = () => {
+    const getAccessToken = () => {
       return new Promise((resolve, reject) => {
         oa.getOAuthAccessToken(
           code,
@@ -281,36 +281,36 @@ module.exports = {
       });
     };
 
-    let { accessToken, refreshToken } = await getAccessToken();
+    const { accessToken, refreshToken } = await getAccessToken();
 
-    let auth = await Auth.findOne({ id: authId });
+    const auth = await Auth.findOne({ id: authId });
     if (!auth) {
       return res.status(404).json({
         message: '未找到该绑定信息',
       });
     }
 
-    let response = await axios.post(
+    const response = await axios.post(
       'https://api.weibo.com/oauth2/get_token_info?access_token=' + accessToken,
       { access_token: accessToken }
     );
     auth.profileId = response.data.uid;
 
-    let query = queryString.stringify({
+    const query = queryString.stringify({
       access_token: accessToken,
       uid: response.data.uid,
     });
 
-    let { data } = await axios.get(
+    const { data } = await axios.get(
       'https://api.weibo.com/2/users/show.json?' + query
     );
 
-    let sameAuth = await Auth.findOne({
+    const sameAuth = await Auth.findOne({
       site: 'weibo',
       profileId: response.data.uid,
     });
 
-    let account = sameAuth || auth;
+    const account = sameAuth || auth;
     account.accessToken = accessToken;
     account.refreshToken = refreshToken;
 
@@ -319,7 +319,7 @@ module.exports = {
       await account.save();
       res.status(201).json(account);
     } else {
-      let profile = Object.assign({}, data);
+      const profile = Object.assign({}, data);
       profile.expireTime = Date.now() + 1000 * 60 * 60 * 12; // expires in 12 hours.
       profile.owner = req.sessionID;
       account.profile = JSON.stringify(profile);
@@ -332,7 +332,7 @@ module.exports = {
           authId: account.id,
         });
       } else {
-        let conflict = await Client.findOne({ id: account.owner });
+        const conflict = await Client.findOne({ id: account.owner });
         console.log(conflict, account);
         res.status(202).json({
           name: 'already connected',
