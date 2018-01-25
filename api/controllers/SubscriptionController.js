@@ -62,6 +62,12 @@ module.exports = {
       ],
     });
 
+    if (!event) {
+      return res.status(404).json({
+        message: '未找到该事件',
+      });
+    }
+
     let time = await NotificationService.getNextTime(mode, event);
     let notification = await Notification.findOrCreate({
       mode,

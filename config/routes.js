@@ -47,7 +47,8 @@ module.exports.routes = {
   'GET /event/:name': 'EventController.getEvent',
 
   'GET /subscription/unsubscribe': 'SubscriptionController.unsubscribe',
-
+  'POST /subscription/:eventName': 'SUbscriptionController.subscribe',
+  
   /***************************************************************************
   *                                                                          *
   * Custom routes here...                                                    *

@@ -32,6 +32,7 @@ module.exports.policies = {
 
   SubscriptionController: {
     'unsubscribe': true,
+    'subscribe': true,
     '*': false,
   },
 
