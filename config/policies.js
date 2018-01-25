@@ -17,6 +17,14 @@
  */
 
 module.exports.policies = {
+  ClientController: {
+    'login': true,    
+    'register': true,
+    'role': 'isLoggedIn',
+    'getClientDetail': 'isLoggedIn',
+    'logout': 'isLoggedIn',    
+    '*': false,
+  },
 
   NewsController: {
     'findOne': true,
