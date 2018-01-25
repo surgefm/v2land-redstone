@@ -26,9 +26,30 @@ module.exports.policies = {
   },
 
   EventController: {
+    'create': true,
+    'findEvent': true,
     'getEvent': true,
+    'getEventList': true,
+    'updateHeaderImage': true,
     '*': false,
   },
+
+  HeaderImageController: {
+    '*': false,
+  },
+
+  AuthController: {
+    'options': true,
+    'authorize': true,
+    'unauthorize': true,
+    'twitter': true,
+    'twitterRedirect': true,
+    'twitterCallback': true,
+    'weibo': true,
+    'weiboRedirect': true,
+    'weiboCallback': true,
+    '*': false,
+  }
 
   /***************************************************************************
   *                                                                          *

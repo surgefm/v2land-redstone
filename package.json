@@ -5,6 +5,7 @@
   "description": "a Sails application",
   "keywords": [],
   "dependencies": {
+    "axios": "^0.17.1",
     "bcrypt": "^1.0.3",
     "colors": "^1.1.2",
     "ejs": "^2.5.5",
@@ -24,6 +25,8 @@
     "grunt-sync": "0.5.2",
     "include-all": "^1.0.0",
     "mocha": "^4.0.1",
+    "oauth": "^0.9.15",
+    "query-string": "^5.0.1",
     "rc": "1.0.1",
     "sails": "~0.12.14",
     "sails-disk": "~0.10.9",
