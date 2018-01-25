@@ -17,6 +17,10 @@ module.exports = {
     mode: {
       type: 'string',
       required: true,
+      enum: [
+        'new', '7DaysSinceLatestNews',
+        'daily', 'weekly', 'monthly',
+      ],
     },
 
     event: {

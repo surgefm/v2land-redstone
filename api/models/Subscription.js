@@ -14,6 +14,12 @@ module.exports = {
       required: true,
     },
 
+    method: {
+      type: 'string',
+      required: true,
+      enum: ['twitter', 'weibo', 'twitterAt', 'weiboAt', 'email'],
+    },
+
     contact: {
       type: 'text',
       required: true,

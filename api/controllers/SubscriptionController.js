@@ -44,4 +44,91 @@ module.exports = {
     }
   },
 
+  subscribe: async (req, res) => {
+    if (!(req.body && req.body.mode &&
+      req.body.contact && req.body.method)) {
+      return res.status(400).json({
+        message: '缺少参数 mode、contact 或 method',
+      });
+    }
+
+    let { mode, contact, method } = req.body;
+
+    let eventName = req.param('eventName');
+    let event = await Event.findOne({
+      or: [
+        { id: parseInt(eventName) > -1 ? parseInt(eventName) : -1 },
+        { name: eventName },
+      ],
+    });
+
+    let time = await NotificationService.getNextTime(mode, event);
+    let notification = await Notification.findOrCreate({
+      mode,
+      time,
+      event: event.id,
+    });
+
+    let subscription = await Subscription.findOne({
+      subscriber: req.session.clientId,
+      notification: notification.id,
+      mode,
+      contact,
+      method,
+    });
+
+    if (subscription) {
+      return res.status(200).json({
+        message: '已有相同关注',
+        subscription,
+      });
+    }
+
+    if (['twitter', 'twitterAt'].includes(method)) {
+      let auth = await Auth.findOne({
+        site: 'twitter',
+        profileId: contact,
+        owner: req.session.clientId,
+      });
+
+      if (!auth) {
+        return res.status(406).json({
+          message: '您尚未绑定 Twitter，无法采用该推送方式',
+        });
+      }
+    } else if (['weibo', 'weiboAt'].includes(method)) {
+      let auth = await Auth.findOne({
+        site: 'weibo',
+        id: contact,
+        owner: req.session.clientId,
+      });
+
+      if (!auth) {
+        return res.status(406).json({
+          message: '您尚未绑定微博，无法采用该推送方式',
+        });
+      }
+    }
+
+    try {
+      let unsubscribeId = Math.floor(Math.random() * 100000000) + Date.now();
+      subscription = await Subscription.create({
+        subscriber: req.session.clientId,
+        notification: notification.id,
+        event: event.id,
+        mode,
+        contact,
+        method,
+        unsubscribeId,
+      });
+
+      res.status(201).json({
+        message: '关注成功',
+        subscription,
+      });
+    } catch (err) {
+      res.status(err.status).json(err);
+    }
+  },
+
 };
