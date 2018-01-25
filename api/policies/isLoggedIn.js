@@ -7,8 +7,23 @@
  *
  */
 
+module.exports = function(req, res, next) {
+    // console.log("req.session.clientId = " + req.session.clientId);
+    if (clientIdIsValid(req.session.clientId)) {
+        return next();
+    } else {
+        // behaviour if not logged in
+        return res.forbidden('You must log in to visit this page.');
+    }
+};
+
+/**
+ * clientIdIsValid
+ *
+ * @description :: Check if the clientId is undefined or invalid
+ */
 function clientIdIsValid(clientId) {
-    if(!clientId) return false;
+    if (!clientId) return false;
     let client = Client.findOne({ id: clientId });
     if (!client) {
         delete req.session.clientId;
@@ -16,16 +31,3 @@ function clientIdIsValid(clientId) {
     }
     return true;
 }
-
-module.exports = function(req, res, next) {
-
-    // console.log("req.session.clientId = " + req.session.clientId);
-    if(clientIdIsValid(req.session.clientId)) {
-        return next();
-    }
-    else { 
-        // behaviour if not logged in
-        return res.forbidden('You must log in to visit this page.');
-    }
-};
-  
