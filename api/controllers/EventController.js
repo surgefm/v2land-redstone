@@ -6,25 +6,10 @@
  */
 
 let EventController = {
-  findEvent: async (eventName) => {
-    let event = await Event.findOne({
-      or: [
-        { id: parseInt(eventName) > -1 ? parseInt(eventName) : -1 },
-        { name: eventName },
-      ],
-    })
-      .populate('news', {
-        where: { status: 'admitted' },
-        sort: 'createdAt DESC',
-      })
-      .populate('headerImage');
-
-    return event;
-  },
 
   getEvent: async (req, res) => {
     let name = req.param('eventName');
-    let event = await EventController.findEvent(name);
+    let event = await EventService.findEvent(name);
 
     if (event) {
       res.status(200).json(event);
@@ -37,7 +22,7 @@ let EventController = {
 
   getPendingNews: async (req, res) => {
     let name = req.param('eventName');
-    let event = await EventController.findEvent(name);
+    let event = await EventService.findEvent(name);
 
     if (!event) {
       return res.status(404).json({
@@ -55,7 +40,7 @@ let EventController = {
 
   updateEvent: async (req, res) => {
     let name = req.param('eventName');
-    let event = await EventController.findEvent(name);
+    let event = await EventService.findEvent(name);
 
     if (!req.body) {
       return res.status(400).json({
@@ -120,7 +105,7 @@ let EventController = {
       });
     }
 
-    let event = await EventController.findEvent(name);
+    let event = await EventService.findEvent(name);
 
     if (!event) {
       return res.status(404).json({
@@ -148,7 +133,7 @@ let EventController = {
 
   updateHeaderImage: async (req, res) => {
     let name = req.param('eventName');
-    let event = await EventController.findEvent(name);
+    let event = await EventService.findEvent(name);
 
     if (!event) {
       return res.status(404).json({
