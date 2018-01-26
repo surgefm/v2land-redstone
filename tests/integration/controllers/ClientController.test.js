@@ -1,4 +1,4 @@
-let request = require('supertest');
+const request = require('supertest');
 let agent;
 
 describe('ClientController', function() {

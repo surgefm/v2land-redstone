@@ -41,6 +41,19 @@ module.exports.policies = {
     '*': false,
   },
 
+  AuthController: {
+    'options': true,
+    'authorize': true,
+    'unauthorize': true,
+    'twitter': true,
+    'twitterRedirect': true,
+    'twitterCallback': true,
+    'weibo': true,
+    'weiboRedirect': true,
+    'weiboCallback': true,
+    '*': false,
+  }
+
   /***************************************************************************
   *                                                                          *
   * Default policy for all controllers and actions (`true` allows public     *

@@ -5,11 +5,11 @@
  * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
  */
 
-let EventController = {
+const EventController = {
 
   getEvent: async (req, res) => {
-    let name = req.param('eventName');
-    let event = await EventService.findEvent(name);
+    const name = req.param('eventName');
+    const event = await EventService.findEvent(name);
 
     if (event) {
       res.status(200).json(event);
@@ -21,8 +21,8 @@ let EventController = {
   },
 
   getPendingNews: async (req, res) => {
-    let name = req.param('eventName');
-    let event = await EventService.findEvent(name);
+    const name = req.param('eventName');
+    const event = await EventService.findEvent(name);
 
     if (!event) {
       return res.status(404).json({
@@ -30,7 +30,7 @@ let EventController = {
       });
     }
 
-    let newsCollection = await News.find({
+    const newsCollection = await News.find({
       status: 'pending',
       event: event.id,
     });
@@ -39,8 +39,8 @@ let EventController = {
   },
 
   updateEvent: async (req, res) => {
-    let name = req.param('eventName');
-    let event = await EventService.findEvent(name);
+    const name = req.param('eventName');
+    const event = await EventService.findEvent(name);
 
     if (!req.body) {
       return res.status(400).json({
@@ -54,7 +54,7 @@ let EventController = {
       });
     }
 
-    for (let attribute of ['name', 'description', 'status']) {
+    for (const attribute of ['name', 'description', 'status']) {
       if (req.body[attribute]) {
         event[attribute] = req.body[attribute];
       }
@@ -81,7 +81,7 @@ let EventController = {
       page = req.query.page;
     }
 
-    let events = await Event.find({
+    const events = await Event.find({
       where: { status: 'admitted' },
       sort: 'updatedAt DESC',
     })
@@ -95,8 +95,8 @@ let EventController = {
   },
 
   createNews: async (req, res) => {
-    let name = req.param('eventName');
-    let data = req.body;
+    const name = req.param('eventName');
+    const data = req.body;
     let news;
 
     if (!data.url) {
@@ -105,7 +105,7 @@ let EventController = {
       });
     }
 
-    let event = await EventService.findEvent(name);
+    const event = await EventService.findEvent(name);
 
     if (!event) {
       return res.status(404).json({
@@ -116,7 +116,7 @@ let EventController = {
     data.event = event.id;
     data.status = 'pending';
 
-    let existingNews = await News.findOne({ url: data.url, event: event.id });
+    const existingNews = await News.findOne({ url: data.url, event: event.id });
     if (existingNews) {
       return res.status(409).json({
         message: '审核队列或新闻合辑内已有相同链接的新闻',
@@ -132,8 +132,8 @@ let EventController = {
   },
 
   updateHeaderImage: async (req, res) => {
-    let name = req.param('eventName');
-    let event = await EventService.findEvent(name);
+    const name = req.param('eventName');
+    const event = await EventService.findEvent(name);
 
     if (!event) {
       return res.status(404).json({
@@ -155,7 +155,7 @@ let EventController = {
 
     let headerImage = { event: event.id };
 
-    for (let attribute of ['imageUrl', 'source', 'sourceUrl']) {
+    for (const attribute of ['imageUrl', 'source', 'sourceUrl']) {
       if (req.body[attribute]) {
         headerImage[attribute] = req.body[attribute];
       }

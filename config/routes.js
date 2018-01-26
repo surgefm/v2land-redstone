@@ -22,16 +22,6 @@
 
 module.exports.routes = {
 
-  /***************************************************************************
-  *                                                                          *
-  * Make the view located at `views/homepage.ejs` (or `views/homepage.jade`, *
-  * etc. depending on your default view engine) your home page.              *
-  *                                                                          *
-  * (Alternatively, remove this and add an `index.html` file in your         *
-  * `assets` directory)                                                      *
-  *                                                                          *
-  ***************************************************************************/
-
   '/': {
     view: 'homepage'
   },
@@ -52,14 +42,14 @@ module.exports.routes = {
   'POST /event/:eventName/header_image': 'EventController.updateHeaderImage',
   'PUT /event/:eventName/header_image': 'EventController.updateHeaderImage',
 
-  /***************************************************************************
-  *                                                                          *
-  * Custom routes here...                                                    *
-  *                                                                          *
-  * If a request to a URL doesn't match any of the custom routes above, it   *
-  * is matched against Sails route blueprints. See `config/blueprints.js`    *
-  * for configuration options and examples.                                  *
-  *                                                                          *
-  ***************************************************************************/
+  'GET /auth/options': 'AuthController.options',
+  'POST /auth': 'AuthController.authorize',
+  'DELETE /auth': 'AuthController.unauthorize',
+  'GET /auth/twitter': 'AuthController.twitter',
+  'GET /auth/twitter/callback': 'AuthController.twitterCallback',
+  'GET /auth/twitter/redirect': 'AuthController.twitterRedirect',
+  'GET /auth/weibo': 'AuthController.weibo',
+  'GET /auth/weibo/callback': 'AuthController.weiboCallback',
+  'GET /auth/weibo/redirect': 'AuthController.weiboRedirect',
 
 }
