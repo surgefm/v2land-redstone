@@ -4,14 +4,14 @@ const process = require('process');
 
 let ok;
 
-let modelList = fs.readdirSync('api/models');
+const modelList = fs.readdirSync('api/models');
 ok = true;
 modelList.forEach((val) => {
-  let regexResult = /(.+)\.js/.exec(val);
+  const regexResult = /(.+)\.js/.exec(val);
   if (regexResult) {
-    let name = regexResult[1];
+    const name = regexResult[1];
 
-    let testPath = `tests/integration/models/${name}.test.js`;
+    const testPath = `tests/integration/models/${name}.test.js`;
 
     if (!fs.existsSync(testPath)) {
       console.error(`${colors.red('Test completeness error: ')}${testPath}`);
@@ -20,14 +20,14 @@ modelList.forEach((val) => {
   }
 });
 
-let controllerList = fs.readdirSync('api/controllers');
+const controllerList = fs.readdirSync('api/controllers');
 
 controllerList.forEach((val) => {
-  let regexResult = /(.+)\.js/.exec(val);
+  const regexResult = /(.+)\.js/.exec(val);
   if (regexResult) {
-    let name = regexResult[1];
+    const name = regexResult[1];
 
-    let testPath = `tests/integration/controllers/${name}.test.js`;
+    const testPath = `tests/integration/controllers/${name}.test.js`;
 
     if (!fs.existsSync(testPath)) {
       console.error(`${colors.red('Test completeness error: ')}${testPath}`);

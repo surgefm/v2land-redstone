@@ -1,4 +1,4 @@
-let sails = require('sails');
+const sails = require('sails');
 
 before(function(done) {
   // Increase the Mocha timeout so that Sails has enough time to lift.
