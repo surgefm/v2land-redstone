@@ -5,7 +5,7 @@ module.exports = {
   },
 
   updateForNewNews: async (event, news) => {
-    let latestNews = await News.findOne({
+    const latestNews = await News.findOne({
       where: { event: event.id, status: 'admitted' },
       order: 'time DESC',
     });
@@ -14,14 +14,14 @@ module.exports = {
       return;
     }
 
-    let notificationCollection = await Notification.find({
+    const notificationCollection = await Notification.find({
       event: event.id,
       mode: ['new', '7DaysSinceLatestNews'],
     });
 
-    for (let notification of notificationCollection) {
-      let mode = ModeService[notification.mode];
-      let time = await mode.update(notification, event, news);
+    for (const notification of notificationCollection) {
+      const mode = ModeService[notification.mode];
+      const time = await mode.update(notification, event, news);
       notification.time = time;
       await notification.save();
     }

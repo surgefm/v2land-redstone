@@ -14,7 +14,7 @@ module.exports = {
       });
     }
 
-    let subscription = await Subscription.findOne(req.query);
+    const subscription = await Subscription.findOne(req.query);
     if (!subscription) {
       return res.status(404).json({
         message: '未找到该关注',
@@ -24,7 +24,7 @@ module.exports = {
     subscription.status = 'unsubscribed';
     await subscription.save();
 
-    let otherSubscriptions = await Subscription.find({
+    const otherSubscriptions = await Subscription.find({
       subscriber: subscription.subscriber,
       event: subscription.event,
       id: { '!': subscription.id },
@@ -52,15 +52,10 @@ module.exports = {
       });
     }
 
-    let { mode, contact, method } = req.body;
+    const { mode, contact, method } = req.body;
 
-    let eventName = req.param('eventName');
-    let event = await Event.findOne({
-      or: [
-        { id: parseInt(eventName) > -1 ? parseInt(eventName) : -1 },
-        { name: eventName },
-      ],
-    });
+    const eventName = req.param('eventName');
+    const event = await EventService.findEvent(eventName);
 
     if (!event) {
       return res.status(404).json({
@@ -68,8 +63,8 @@ module.exports = {
       });
     }
 
-    let time = await NotificationService.getNextTime(mode, event);
-    let notification = await Notification.findOrCreate({
+    const time = await NotificationService.getNextTime(mode, event);
+    const notification = await Notification.findOrCreate({
       mode,
       time,
       event: event.id,
@@ -91,7 +86,7 @@ module.exports = {
     }
 
     if (['twitter', 'twitterAt'].includes(method)) {
-      let auth = await Auth.findOne({
+      const auth = await Auth.findOne({
         site: 'twitter',
         profileId: contact,
         owner: req.session.clientId,
@@ -103,7 +98,7 @@ module.exports = {
         });
       }
     } else if (['weibo', 'weiboAt'].includes(method)) {
-      let auth = await Auth.findOne({
+      const auth = await Auth.findOne({
         site: 'weibo',
         id: contact,
         owner: req.session.clientId,
@@ -117,7 +112,7 @@ module.exports = {
     }
 
     try {
-      let unsubscribeId = Math.floor(Math.random() * 100000000) + Date.now();
+      const unsubscribeId = Math.floor(Math.random() * 100000000) + Date.now();
       subscription = await Subscription.create({
         subscriber: req.session.clientId,
         notification: notification.id,

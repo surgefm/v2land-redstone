@@ -1,6 +1,6 @@
 const time = require('time');
 
-let modeCollection = {
+const modeCollection = {
 
   'new': {
     new: async (event) => {
@@ -30,7 +30,7 @@ let modeCollection = {
 
   '7DaysSinceLatestNews': {
     new: async (event) => {
-      let newsCollection = await News.find({
+      const newsCollection = await News.find({
         where: { status: 'admitted', event: event.id },
         order: 'time DESC',
       });
@@ -38,7 +38,7 @@ let modeCollection = {
       if (newsCollection.length === 0) {
         return new Date('1/1/3000');
       } else {
-        let date = new time.Date(newsCollection[0].time, 'Asia/Shanghai');
+        const date = new time.Date(newsCollection[0].time, 'Asia/Shanghai');
         date.setHours(8);
         date.setMinutes(0);
         date.setSeconds(0);
@@ -65,7 +65,7 @@ let modeCollection = {
 
   'daily': {
     new: async () => {
-      let date = new time.Date();
+      const date = new time.Date();
 
       date.setTimezone('Asia/Shanghai');
       date.setHours(8);
@@ -90,7 +90,7 @@ let modeCollection = {
 
   'weekly': {
     new: async () => {
-      let date = new time.Date();
+      const date = new time.Date();
 
       date.setTimezone('Asia/Shanghai');
       date.setHours(8);
@@ -115,7 +115,7 @@ let modeCollection = {
 
   'monthly': {
     new: async () => {
-      let date = new time.Date();
+      const date = new time.Date();
 
       date.setTimezone('Asia/Shanghai');
       date.setHours(8);
