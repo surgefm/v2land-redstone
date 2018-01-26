@@ -64,9 +64,7 @@ describe('ClientController', function() {
         }, () => {
           agent
             .get('/client/me')
-            .expect(401, {
-              message: '你还未登录',
-            }, done);
+            .expect(403, done);
         });
     });
   });
@@ -75,9 +73,7 @@ describe('ClientController', function() {
     it('should logout after the client ID stored in session does not exist', function(done) {
       agent
         .get('/client/me')
-        .expect(401, {
-          message: '你还未登录',
-        }, done);
+        .expect(403, done);
     });
   });
 });
