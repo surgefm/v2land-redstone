@@ -54,11 +54,24 @@ module.exports = {
 
     const { mode, contact, method } = req.body;
 
+    if (!ModeService[mode]) {
+      return res.status(404).json({
+        name: 'Subscribing mode not found.',
+        message: '未找到该关注模式',
+      });
+    }
+
     const eventName = req.param('eventName');
-    const event = await EventService.findEvent(eventName);
+    const event = await Event.findOne({
+      or: [
+        { id: parseInt(eventName) > -1 ? parseInt(eventName) : -1 },
+        { name: eventName },
+      ],
+    });
 
     if (!event) {
       return res.status(404).json({
+        name: 'Event not found.',
         message: '未找到该事件',
       });
     }
