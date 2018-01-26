@@ -6,6 +6,7 @@ let env = process.env;
 let twitter = (env.TWITTER_KEY && env.TWITTER_SECRET) ? {} : null;
 let weibo = (env.WEIBO_KEY && env.WEIBO_SECRET) ? {} : null;
 
+if (twitter) {
   twitter = new OAuth(
     'https://api.twitter.com/oauth/request_token',
     'https://api.twitter.com/oauth/access_token',
