@@ -64,7 +64,9 @@ describe('ClientController', function() {
         }, () => {
           agent
             .get('/client/me')
-            .expect(403, done);
+            .expect(401, {
+              message: '请在登录后进行该操作',
+            }, done);
         });
     });
   });
@@ -73,7 +75,9 @@ describe('ClientController', function() {
     it('should logout after the client ID stored in session does not exist', function(done) {
       agent
         .get('/client/me')
-        .expect(403, done);
+        .expect(401, {
+          message: '请在登录后进行该操作',
+        }, done);
     });
   });
 });
