@@ -76,6 +76,12 @@ module.exports = {
       });
     }
 
+    if (event.status !== 'admitted') {
+      return res.status(406).json({
+        message: '该事件并不处于开放状态',
+      });
+    }
+
     const time = await NotificationService.getNextTime(mode, event);
     const notification = await Notification.findOrCreate({
       mode,
