@@ -50,4 +50,6 @@ module.exports.routes = {
   'GET /auth/weibo/callback': 'AuthController.weiboCallback',
   'GET /auth/weibo/redirect': 'AuthController.weiboRedirect',
 
+  'POST /upload': 'UploadController.upload',
+
 }

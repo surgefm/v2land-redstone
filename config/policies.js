@@ -49,6 +49,10 @@ module.exports.policies = {
     'weiboRedirect': true,
     'weiboCallback': true,
     '*': false,
+  },
+
+  UploadController: {
+    'upload': true,
   }
 
   /***************************************************************************
