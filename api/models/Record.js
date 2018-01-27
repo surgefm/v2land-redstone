@@ -5,7 +5,7 @@ module.exports = {
     model: {
       type: 'string',
       required: true,
-      enum: ['Event', 'News', 'Client', 'HeaderImage', 'Subscription'],
+      enum: ['Event', 'News', 'Client', 'HeaderImage', 'Subscription', 'Auth'],
     },
 
     targetId: {
