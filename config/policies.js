@@ -34,6 +34,12 @@ module.exports.policies = {
     '*': false,
   },
 
+  SubscriptionController: {
+    'unsubscribe': true,
+    'subscribe': true,
+    '*': false,
+  },
+
   HeaderImageController: {
     '*': false,
   },
@@ -49,7 +55,7 @@ module.exports.policies = {
     'weiboRedirect': true,
     'weiboCallback': true,
     '*': false,
-  }
+  },
 
   /***************************************************************************
   *                                                                          *

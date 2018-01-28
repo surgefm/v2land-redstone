@@ -34,6 +34,9 @@ module.exports.routes = {
 
   'GET /news/pending': 'NewsController.getAllPendingNews',
 
+  'GET /subscription/unsubscribe': 'SubscriptionController.unsubscribe',
+  'POST /subscription/:eventName': 'SUbscriptionController.subscribe',
+  
   'GET /event/:eventName': 'EventController.getEvent',
   'GET /event': 'EventController.getEventList',
   'POST /event': 'EventController.getEventList',
