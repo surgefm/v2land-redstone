@@ -5,6 +5,7 @@
   "description": "a Sails application",
   "keywords": [],
   "dependencies": {
+    "aws-sdk": "^2.188.0",
     "axios": "^0.17.1",
     "bcrypt": "^1.0.3",
     "colors": "^1.1.2",
@@ -25,6 +26,8 @@
     "grunt-sync": "0.5.2",
     "include-all": "^1.0.0",
     "mocha": "^4.0.1",
+    "nodemailer": "^4.4.2",
+    "nodemailer-express-handlebars": "^2.0.0",
     "oauth": "^0.9.15",
     "query-string": "^5.0.1",
     "rc": "1.0.1",
