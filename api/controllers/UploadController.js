@@ -6,7 +6,7 @@
  */
 
 const s3 = require('skipper-s3');
-const md5 = require('md5');
+const generateFilename = require('../../utils/generateFilename');
 
 module.exports = {
 
@@ -18,17 +18,14 @@ module.exports = {
       });
     }
 
-    const filename = req.file('file')._files[0].stream.filename;
-    const parts = filename.split('.');
-    const extension = parts[parts.length - 1];
-    const newFilename = md5(Date.now() + Math.random() * 9999 + filename) + '.' + extension;
+    const filename = generateFilename(req.file('file')._files[0].stream);
 
     req.file('file').upload({
       adapter: s3,
       key: S3_ID,
       secret: S3_KEY,
       bucket: S3_BUCKET,
-      saveAs: newFilename,
+      saveAs: filename,
       headers: {
         'x-amz-acl': 'public-read',
       },
