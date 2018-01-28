@@ -14,14 +14,21 @@ module.exports = {
       required: true,
     },
 
-    // contact: {
-    //   type: 'object',
-    //   required: true,
-    // },
+    method: {
+      type: 'string',
+      required: true,
+      enum: ['twitter', 'weibo', 'twitterAt', 'weiboAt', 'email'],
+    },
+
+    contact: {
+      type: 'text',
+      required: true,
+    },
 
     status: {
       type: 'string',
       defaultsTo: 'active',
+      enum: ['active', 'unsubscribed'],
     },
 
     unsubscribeId: {
@@ -31,6 +38,14 @@ module.exports = {
 
     subscriber: {
       model: 'client',
+    },
+
+    event: {
+      model: 'event',
+    },
+
+    notification: {
+      model: 'notification',
     },
 
   },

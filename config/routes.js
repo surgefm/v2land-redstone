@@ -34,6 +34,9 @@ module.exports.routes = {
 
   'GET /news/pending': 'NewsController.getAllPendingNews',
 
+  'GET /subscription/unsubscribe': 'SubscriptionController.unsubscribe',
+  'POST /subscription/:eventName': 'SUbscriptionController.subscribe',
+  
   'GET /event/:eventName': 'EventController.getEvent',
   'GET /event': 'EventController.getEventList',
   'POST /event': 'EventController.getEventList',
@@ -49,5 +52,7 @@ module.exports.routes = {
   'GET /auth/weibo': 'AuthController.weibo',
   'GET /auth/weibo/callback': 'AuthController.weiboCallback',
   'GET /auth/weibo/redirect': 'AuthController.weiboRedirect',
+
+  'POST /upload': 'UploadController.upload',
 
 }
