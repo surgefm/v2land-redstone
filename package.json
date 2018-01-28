@@ -25,6 +25,7 @@
     "grunt-sails-linker": "~0.10.1",
     "grunt-sync": "0.5.2",
     "include-all": "^1.0.0",
+    "md5": "^2.2.1",
     "mocha": "^4.0.1",
     "nodemailer": "^4.4.2",
     "nodemailer-express-handlebars": "^2.0.0",
@@ -34,6 +35,7 @@
     "sails": "~0.12.14",
     "sails-disk": "~0.10.9",
     "sails-postgresql": "^0.11.4",
+    "skipper-s3": "^0.5.9",
     "time": "^0.12.0"
   },
   "scripts": {

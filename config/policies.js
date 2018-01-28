@@ -57,6 +57,11 @@ module.exports.policies = {
     '*': false,
   },
 
+  UploadController: {
+    'upload': true,
+    '*': false,
+  },
+
   /***************************************************************************
   *                                                                          *
   * Default policy for all controllers and actions (`true` allows public     *
