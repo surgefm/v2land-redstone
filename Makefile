@@ -14,7 +14,7 @@ eslint-fix:
 	$(EXE_PATH) $(TEST_PATH) --fix
 
 test: eslint
-	node ./node_modules/mocha/bin/mocha tests/bootstrap.test.js tests/integration/**/*.test.js;
+	node ./node_modules/mocha/bin/mocha tests/bootstrap.test.js tests/integration/**/*.test.js --exit;
 
 test-completeness:
 	node ./scripts/completeness.js

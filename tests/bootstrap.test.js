@@ -2,7 +2,7 @@ const sails = require('sails');
 
 before(function(done) {
   // Increase the Mocha timeout so that Sails has enough time to lift.
-  this.timeout(20000);
+  this.timeout(30000);
 
   sails.lift({
     // configuration for testing purposes
@@ -13,8 +13,7 @@ before(function(done) {
   });
 });
 
-after(async (done) => {
+after(function(done) {
   // here you can clear fixtures, etc.
-  await sails.lower();
-  process.exit();
+  sails.lower(done);
 });
