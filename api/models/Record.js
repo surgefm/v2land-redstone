@@ -15,7 +15,7 @@ module.exports = {
       ],
     },
 
-    targetId: {
+    target: {
       type: 'number',
       required: true,
     },

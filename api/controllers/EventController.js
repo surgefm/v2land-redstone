@@ -90,6 +90,20 @@ const EventController = {
       });
     }
 
+    const record = {
+      model: 'News',
+      target: news.id,
+      operation: 'create',
+      action: 'createNews',
+      data: news,
+    };
+
+    if (req.session.clientId) {
+      record.client = req.session.clientId;
+    }
+
+    await Record.create(record);
+
     res.status(201).json(news);
   },
 
