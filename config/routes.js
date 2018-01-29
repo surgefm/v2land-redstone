@@ -22,37 +22,37 @@
 
 module.exports.routes = {
 
-  /***************************************************************************
-  *                                                                          *
-  * Make the view located at `views/homepage.ejs` (or `views/homepage.jade`, *
-  * etc. depending on your default view engine) your home page.              *
-  *                                                                          *
-  * (Alternatively, remove this and add an `index.html` file in your         *
-  * `assets` directory)                                                      *
-  *                                                                          *
-  ***************************************************************************/
-
   '/': {
     view: 'homepage'
   },
 
-  'POST /login': 'ClientController.login',
-  '/logout': 'ClientController.logout',
-  'POST /register': 'ClientController.register',
+  'POST /client/register': 'ClientController.register',
   'GET /client/me': 'ClientController.getClientDetail',
+  'POST /client/login': 'ClientController.login',
+  '/client/role': 'ClientController.role',
+  '/client/logout': 'ClientController.logout',
 
   'GET /news/pending': 'NewsController.getAllPendingNews',
 
-  'GET /event/:name': 'EventController.getEvent',
+  'GET /subscription/unsubscribe': 'SubscriptionController.unsubscribe',
+  'POST /subscription/:eventName': 'SUbscriptionController.subscribe',
+  
+  'GET /event/:eventName': 'EventController.getEvent',
+  'GET /event': 'EventController.getEventList',
+  'POST /event': 'EventController.getEventList',
+  'POST /event/:eventName/header_image': 'EventController.updateHeaderImage',
+  'PUT /event/:eventName/header_image': 'EventController.updateHeaderImage',
 
-  /***************************************************************************
-  *                                                                          *
-  * Custom routes here...                                                    *
-  *                                                                          *
-  * If a request to a URL doesn't match any of the custom routes above, it   *
-  * is matched against Sails route blueprints. See `config/blueprints.js`    *
-  * for configuration options and examples.                                  *
-  *                                                                          *
-  ***************************************************************************/
+  'GET /auth/options': 'AuthController.options',
+  'POST /auth': 'AuthController.authorize',
+  'DELETE /auth': 'AuthController.unauthorize',
+  'GET /auth/twitter': 'AuthController.twitter',
+  'GET /auth/twitter/callback': 'AuthController.twitterCallback',
+  'GET /auth/twitter/redirect': 'AuthController.twitterRedirect',
+  'GET /auth/weibo': 'AuthController.weibo',
+  'GET /auth/weibo/callback': 'AuthController.weiboCallback',
+  'GET /auth/weibo/redirect': 'AuthController.weiboRedirect',
+
+  'POST /upload': 'UploadController.upload',
 
 }

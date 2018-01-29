@@ -1,4 +1,4 @@
-let request = require('supertest');
+const request = require('supertest');
 let agent;
 
 describe('ClientController', function() {
@@ -14,7 +14,7 @@ describe('ClientController', function() {
       agent = request.agent(sails.hooks.http.app);
 
       agent
-        .post('/register')
+        .post('/client/register')
         .send({ username: 'testAccountRegister', password: 'testPassword' })
         .expect(201, {
           message: '注册成功',
@@ -25,7 +25,7 @@ describe('ClientController', function() {
   describe('#login/logout()', function() {
     before(function(done) {
       agent
-        .post('/register')
+        .post('/client/register')
         .send({ username: 'testAccountLogin', password: 'testPassword' })
         .expect(201, {
           message: '注册成功',
@@ -40,7 +40,7 @@ describe('ClientController', function() {
 
     it('should return success', function(done) {
       agent
-        .post('/login')
+        .post('/client/login')
         .send({
           username: 'testAccountLogin',
           password: 'testPassword',
@@ -58,7 +58,7 @@ describe('ClientController', function() {
 
     it('should log out successfully', function(done) {
       agent
-        .get('/logout')
+        .get('/client/logout')
         .expect(200, {
           message: '成功退出登录',
         }, () => {

@@ -7,7 +7,7 @@
 
 module.exports = {
   getAllPendingNews: async (req, res) => {
-    let newsCollection = await News.find({
+    const newsCollection = await News.find({
       status: 'pending',
     });
 

@@ -15,7 +15,6 @@ eslint-fix:
 
 test: eslint
 	node ./node_modules/mocha/bin/mocha tests/bootstrap.test.js tests/integration/**/*.test.js;
-	node ./scripts/completeness.js
 
 test-completeness:
 	node ./scripts/completeness.js

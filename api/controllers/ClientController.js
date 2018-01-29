@@ -10,9 +10,9 @@ const bcrypt = require('bcrypt');
 module.exports = {
 
   login: async (req, res) => {
-    let data = req.body;
+    const data = req.body;
 
-    let client = await Client.findOne({
+    const client = await Client.findOne({
       username: data.username,
     });
 
@@ -22,7 +22,7 @@ module.exports = {
       });
     }
 
-    let verified = await bcrypt.compare(data.password, client.password);
+    const verified = await bcrypt.compare(data.password, client.password);
 
     if (!verified) {
       return res.status(401).json({
@@ -46,11 +46,11 @@ module.exports = {
   },
 
   register: async (req, res) => {
-    let data = req.body;
+    const data = req.body;
     let salt;
     let hash;
 
-    let client = await Client.findOne({ username: data.username });
+    const client = await Client.findOne({ username: data.username });
     if (client) {
       return res.status(406).json({
         message: '该用户名/邮箱已被占用',
@@ -85,8 +85,8 @@ module.exports = {
     }
   },
 
-  getClientDetail: async (req, res) => {
-    let clientId = req.session.clientId;
+  role: async (req, res) => {
+    const clientId = req.session.clientId;
 
     if (!clientId) {
       return res.status(401).json({
@@ -94,7 +94,74 @@ module.exports = {
       });
     }
 
-    let client = await Client.findOne({ id: clientId });
+    const client = await Client.findOne({ id: clientId });
+    if (!client) {
+      return res.status(404).json({
+        message: '未找到该用户',
+      });
+    }
+
+    const currentRole = client.role;
+
+    if (req.method === 'GET') {
+      return res.send(200, {
+        role: currentRole,
+      });
+    } else if (req.method === 'POST') {
+      const data = req.body;
+
+      const roles = ['admin', 'manager', 'contributor'];
+
+      if (typeof data.id !== 'number') {
+        return res.status(500).json({
+          message: 'id 参数错误',
+        });
+      }
+
+      const targetClient = await Client.findOne({ id: data.id });
+      if (!targetClient) {
+        return res.status(404).json({
+          message: '未找到目标用户',
+        });
+      }
+
+      const targetRole = targetClient.role;
+
+      if (roles.indexOf(currentRole) <= roles.indexOf(targetRole)
+        && currentRole !== 'admin') {
+        return res.send(500, {
+          message: '您无权更改此用户权限',
+        });
+      }
+
+      client.role = data.role;
+      const err = await client.save();
+      if (err) {
+        return res.send(500, {
+          message: '更新用户组失败',
+        });
+      } else {
+        return res.send(200, {
+          message: '更新用户组成功',
+        });
+      }
+    } else {
+      return res.status(500).json({
+        message: '不合法的方法',
+      });
+    }
+  },
+
+  getClientDetail: async (req, res) => {
+    const clientId = req.session.clientId;
+
+    if (!clientId) {
+      return res.status(401).json({
+        message: '你还未登录',
+      });
+    }
+
+    const client = await Client.findOne({ id: clientId });
     if (!client) {
       delete req.session.clientId;
       return res.status(404).json({
