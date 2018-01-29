@@ -23,7 +23,7 @@ module.exports.session = {
   ***************************************************************************/
   secret: '970a14748cf639a4aa3d7b0d60cc9cac',
 
-  adapter: 'sails-pg-session',
+  adapter: 'v2land-sails-pg-session',
 
   database: process.env.POSTGRES_DB || 'v2land',
   host: process.env.POSTGRES_HOST || '127.0.0.1',

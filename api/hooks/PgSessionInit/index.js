@@ -8,7 +8,7 @@ module.exports = function PgSessionInit(sails) {
     initialize: function(cb) {
       const postgresConfig = {...sails.config.connections.postgresql}; // copy the config
       delete postgresConfig['adapter'];
-      const content = fs.readFileSync('node_modules/sails-pg-session/sql/sails-pg-session-support.sql', 'utf8');
+      const content = fs.readFileSync('node_modules/v2land-sails-pg-session/sql/sails-pg-session-support.sql', 'utf8');
 
       const client = new Client(postgresConfig);
       client.connect();
