@@ -11,6 +11,6 @@ module.exports = {
       status: 'pending',
     });
 
-    return res.status(200).json(newsCollection);
+    return res.status(200).json({ newsCollection });
   },
 };
