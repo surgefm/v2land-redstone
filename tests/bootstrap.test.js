@@ -13,7 +13,8 @@ before(function(done) {
   });
 });
 
-after(function(done) {
+after(async (done) => {
   // here you can clear fixtures, etc.
-  sails.lower(done);
+  await sails.lower();
+  process.exit();
 });
