@@ -37,6 +37,17 @@ module.exports.policies = {
     '*': false,
   },
 
+  ClientController: {
+    'updateClient': true,
+    'findClient': true,
+    'register': true,
+    'getClientDetail': true,
+    'login': true,
+    'role': true,
+    'logout': true,
+    '*': false,
+  },
+
   SubscriptionController: {
     'unsubscribe': true,
     'subscribe': true,
