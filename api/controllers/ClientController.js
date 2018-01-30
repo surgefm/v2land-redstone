@@ -175,6 +175,61 @@ module.exports = {
     }
   },
 
+  updateClient: async (req, res) => {
+    if (!req.body) {
+      return res.status(400).json({
+        message: '缺少修改信息',
+      });
+    }
+
+    const name = req.param('clientName');
+    const client = await ClientService.findClient(name);
+
+    if (!client) {
+      return res.status(404).json({
+        message: '未找到该用户',
+      });
+    }
+
+    client.username = req.body.username;
+
+    try {
+      await client.save();
+      res.status(201).json({
+        message: '修改成功',
+        client,
+      });
+    } catch (err) {
+      return res.status(err.status).json(err);
+    }
+
+    const data = { ...client };
+    delete data.password;
+
+    await Record.create({
+      model: 'Client',
+      operation: 'update',
+      action: 'updateClient',
+      target: client.id,
+      client: req.session.clientId,
+      data,
+    });
+  },
+
+  findClient: async (req, res) => {
+    const name = req.param('clientName');
+    const client = await ClientService.findClient(name);
+
+    if (!client) {
+      return res.status(404).json({
+        message: '未找到该用户',
+      });
+    }
+
+    // Should determine how much information to send based on client's group.
+    return res.status(200).json({ client });
+  },
+
   getClientDetail: async (req, res) => {
     const clientId = req.session.clientId;
 
@@ -184,7 +239,7 @@ module.exports = {
       });
     }
 
-    const client = await Client.findOne({ id: clientId });
+    const client = await ClientService.findClient(clientId);
     if (!client) {
       delete req.session.clientId;
       return res.status(404).json({
@@ -192,9 +247,7 @@ module.exports = {
       });
     }
 
-    delete client.password;
-
-    res.status(200).json(client);
+    res.status(200).json({ client });
   },
 
 };
