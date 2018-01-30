@@ -89,4 +89,64 @@ describe('EventController', function() {
         .end(done);
     });
   });
+
+  describe('header image', function() {
+    before(function(done) {
+      Event.destroy({
+        name: '浪潮今天发布了吗？',
+      }).exec((err) => {
+        HeaderImage.destroy({
+          imageUrl: 'https://assets.v2land.net/750x200/default.jpg',
+        }).exec(() => {
+          Event.create({
+            name: '浪潮今天发布了吗？',
+            description: '浪潮今天发布了吗？',
+          }).exec(done);
+        });
+      });
+    });
+
+    after(function(done) {
+      Event.destroy({
+        name: '浪潮今天发布了吗？',
+      }).exec(() => {
+        HeaderImage.destroy({
+          imageUrl: 'https://assets.v2land.net/750x200/default.jpg',
+        }).exec(done);
+      });
+    });
+
+    it('should return success', function(done) {
+      agent = request.agent(sails.hooks.http.app);
+
+      agent
+        .post(`/event/${urlencode('浪潮今天发布了吗？')}/header_image`)
+        .send({
+          imageUrl: 'https://assets.v2land.net/750x200/default.jpg',
+          source: '浪潮',
+          sourceUrl: 'https://langchao.co/',
+        })
+        .expect(201, (err, res) => {
+          if (err) {
+            console.log(res.body);
+          }
+          done(err, res);
+        });
+        // .end(done);
+    });
+
+    // it('should not return success', function(done) {
+    //   agent = request.agent(sails.hooks.http.app);
+
+    //   agent
+    //     .post(`/event/${urlencode('浪潮今天发布了吗？')}/header_image`)
+    //     .send({
+    //       imageUrl: '<script></script>',
+    //       source: '浪潮',
+    //       sourceUrl: 'https://langchao.co/',
+    //     })
+    //     .expect(201)
+    //     .end(done);
+    // });
+  });
 });
