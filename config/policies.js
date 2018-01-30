@@ -20,15 +20,15 @@ module.exports.policies = {
 
   NewsController: {
     'findOne': true,
-    'update': true,
+    'updateNews': true,
     'getAllPendingNews': true,
     '*': false,
   },
 
   EventController: {
-    'create': true,
     'findEvent': true,
     'getEvent': true,
+    'createEvent': true,
     'updateEvent': true,
     'getEventList': true,
     'getPendingNews': true,

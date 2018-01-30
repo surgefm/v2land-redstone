@@ -28,19 +28,21 @@ module.exports.routes = {
 
   'POST /client/register': 'ClientController.register',
   'GET /client/me': 'ClientController.getClientDetail',
-  'GET /client/:clientName': 'ClientController.findClient',
-  'PUT /client/:clientName': 'ClientController.updateClient',
   'POST /client/login': 'ClientController.login',
   '/client/role': 'ClientController.role',
   '/client/logout': 'ClientController.logout',
+  'GET /client/:clientName': 'ClientController.findClient',
+  'PUT /client/:clientName': 'ClientController.updateClient',
 
   'GET /news/pending': 'NewsController.getAllPendingNews',
+  'PUT /news/:news': 'NewsController.updateNews',
 
   'GET /subscription/unsubscribe': 'SubscriptionController.unsubscribe',
   'POST /subscription/:eventName': 'SUbscriptionController.subscribe',
   
   'GET /event/:eventName': 'EventController.getEvent',
   'GET /event': 'EventController.getEventList',
+  'POST /event': 'EventController.createEvent',
   'PUT /event/:eventName': 'EventController.updateEvent',
   'GET /event/:eventName/pending': 'EventController.getPendingNews',
   'POST /event/:eventName/news': 'EventController.createNews',

@@ -38,6 +38,43 @@ const EventController = {
     return res.status(200).json({ newsCollection });
   },
 
+  createEvent: async (req, res) => {
+    if (!(req.body && req.body.name && req.body.description)) {
+      return res.status(400).json({
+        message: '缺少参数 name 或 description',
+      });
+    }
+
+    const { name, description } = req.body;
+    let event = await EventService.findEvent(name);
+
+    if (event) {
+      return res.status(409).json({
+        message: '已有同名事件或事件正在审核中',
+      });
+    }
+
+    try {
+      event = await Event.create({ name, description });
+
+      res.status(201).json({
+        message: '提交成功，该事件在社区管理员审核通过后将很快开放',
+        event,
+      });
+    } catch (err) {
+      return res.status(err.status).json(err);
+    }
+
+    await Record.create({
+      model: 'Event',
+      operation: 'create',
+      action: 'createEvent',
+      client: req.session.clientId,
+      data: event,
+      target: event.id,
+    });
+  },
+
   updateEvent: async (req, res) => {
     const name = req.param('eventName');
     const event = await EventService.findEvent(name);
