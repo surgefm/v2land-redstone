@@ -35,6 +35,7 @@ module.exports.routes = {
   '/client/logout': 'ClientController.logout',
 
   'GET /news/pending': 'NewsController.getAllPendingNews',
+  'PUT /news/:news': 'NewsController.updateNews',
 
   'GET /subscription/unsubscribe': 'SubscriptionController.unsubscribe',
   'POST /subscription/:eventName': 'SUbscriptionController.subscribe',
