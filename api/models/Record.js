@@ -16,7 +16,7 @@ module.exports = {
     },
 
     target: {
-      type: 'number',
+      type: 'integer',
       required: true,
     },
 
@@ -41,6 +41,7 @@ module.exports = {
         'updateNewsStatus',
         'updateNewsDetail',
         'createSubscription',
+        'updateSubscription',
         'cancelSubscription',
         'createClient',
         'updateClientRole',

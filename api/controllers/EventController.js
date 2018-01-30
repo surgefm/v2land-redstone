@@ -68,7 +68,25 @@ const EventController = {
         event,
       });
     } catch (err) {
-      res.status(err.status).json(err);
+      return res.status(err.status).json(err);
+    }
+
+    const record = {
+      model: 'Event',
+      operation: 'update',
+      data: event,
+      client: req.session.clientId,
+      target: event.id,
+    };
+
+    if (req.body.status) {
+      record.action = 'UpdateEventStatus';
+      await Record.create(record);
+    }
+
+    if (req.body.name || req.body.description) {
+      record.action = 'UpdateEventDetail';
+      await Record.create(record);
     }
   },
 
@@ -130,18 +148,14 @@ const EventController = {
       return res.status(err.status).json(err);
     }
 
-    const record = {
+    await Record.create({
       model: 'News',
       target: news.id,
       operation: 'create',
       action: 'createNews',
       data: news,
-      client: req.session.clientId || null,
-    };
-
-    await Record.create(record);
-
-    res.status(201).json(news);
+      client: req.session.clientId,
+    });
   },
 
   updateHeaderImage: async (req, res) => {
@@ -190,6 +204,15 @@ const EventController = {
 
     res.status(201).json({
       message: event.headerImage ? '修改成功' : '添加成功',
+    });
+
+    await Record.create({
+      model: 'HeaderImage',
+      target: headerImage.id,
+      operation: req.method === 'POST' ? 'create' : 'update',
+      action: req.method === 'POST' ? 'createEventHeaderImage' : 'updateEventHeaderImage',
+      data: headerImage,
+      client: req.session.clientId,
     });
   },
 };
