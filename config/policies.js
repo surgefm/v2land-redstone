@@ -20,17 +20,31 @@ module.exports.policies = {
 
   NewsController: {
     'findOne': true,
-    'update': true,
+    'updateNews': true,
     'getAllPendingNews': true,
     '*': false,
   },
 
   EventController: {
-    'create': true,
     'findEvent': true,
     'getEvent': true,
+    'createEvent': true,
+    'updateEvent': true,
     'getEventList': true,
+    'getPendingNews': true,
+    'createNews': true,
     'updateHeaderImage': true,
+    '*': false,
+  },
+
+  ClientController: {
+    'updateClient': true,
+    'findClient': true,
+    'register': true,
+    'getClientDetail': true,
+    'login': true,
+    'role': true,
+    'logout': true,
     '*': false,
   },
 
@@ -54,6 +68,11 @@ module.exports.policies = {
     'weibo': true,
     'weiboRedirect': true,
     'weiboCallback': true,
+    '*': false,
+  },
+
+  UploadController: {
+    'upload': true,
     '*': false,
   },
 

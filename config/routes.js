@@ -31,15 +31,21 @@ module.exports.routes = {
   'POST /client/login': 'ClientController.login',
   '/client/role': 'ClientController.role',
   '/client/logout': 'ClientController.logout',
+  'GET /client/:clientName': 'ClientController.findClient',
+  'PUT /client/:clientName': 'ClientController.updateClient',
 
   'GET /news/pending': 'NewsController.getAllPendingNews',
+  'PUT /news/:news': 'NewsController.updateNews',
 
   'GET /subscription/unsubscribe': 'SubscriptionController.unsubscribe',
   'POST /subscription/:eventName': 'SUbscriptionController.subscribe',
   
   'GET /event/:eventName': 'EventController.getEvent',
   'GET /event': 'EventController.getEventList',
-  'POST /event': 'EventController.getEventList',
+  'POST /event': 'EventController.createEvent',
+  'PUT /event/:eventName': 'EventController.updateEvent',
+  'GET /event/:eventName/pending': 'EventController.getPendingNews',
+  'POST /event/:eventName/news': 'EventController.createNews',
   'POST /event/:eventName/header_image': 'EventController.updateHeaderImage',
   'PUT /event/:eventName/header_image': 'EventController.updateHeaderImage',
 
@@ -52,5 +58,7 @@ module.exports.routes = {
   'GET /auth/weibo': 'AuthController.weibo',
   'GET /auth/weibo/callback': 'AuthController.weiboCallback',
   'GET /auth/weibo/redirect': 'AuthController.weiboRedirect',
+
+  'POST /upload': 'UploadController.upload',
 
 }

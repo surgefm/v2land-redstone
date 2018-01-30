@@ -6,22 +6,10 @@
  */
 
 const EventController = {
-  findEvent: async (eventName) => {
-    const event = await Event.findOne({
-      or: [
-        { id: parseInt(eventName) > -1 ? parseInt(eventName) : -1 },
-        { name: eventName },
-      ],
-    })
-      .populate('news')
-      .populate('headerImage');
-
-    return event;
-  },
 
   getEvent: async (req, res) => {
     const name = req.param('eventName');
-    const event = await EventController.findEvent(name);
+    const event = await EventService.findEvent(name);
 
     if (event) {
       res.status(200).json(event);
@@ -29,6 +17,95 @@ const EventController = {
       res.status(404).json({
         message: '未找到该事件',
       });
+    }
+  },
+
+  getPendingNews: async (req, res) => {
+    const name = req.param('eventName');
+    const event = await EventService.findEvent(name);
+
+    if (!event) {
+      return res.status(404).json({
+        message: '未找到该事件',
+      });
+    }
+
+    const newsCollection = await News.find({
+      status: 'pending',
+      event: event.id,
+    });
+
+    return res.status(200).json({ newsCollection });
+  },
+
+  createEvent: async (req, res) => {
+    if (!(req.body && req.body.name && req.body.description)) {
+      return res.status(400).json({
+        message: '缺少参数 name 或 description',
+      });
+    }
+
+    const { name, description } = req.body;
+    let event = await EventService.findEvent(name);
+
+    if (event) {
+      return res.status(409).json({
+        message: '已有同名事件或事件正在审核中',
+      });
+    }
+
+    try {
+      event = await Event.create({ name, description });
+
+      res.status(201).json({
+        message: '提交成功，该事件在社区管理员审核通过后将很快开放',
+        event,
+      });
+    } catch (err) {
+      return res.status(err.status).json(err);
+    }
+
+    await Record.create({
+      model: 'Event',
+      operation: 'create',
+      action: 'createEvent',
+      client: req.session.clientId,
+      data: event,
+      target: event.id,
+    });
+  },
+
+  updateEvent: async (req, res) => {
+    const name = req.param('eventName');
+    const event = await EventService.findEvent(name);
+
+    if (!req.body) {
+      return res.status(400).json({
+        message: '缺少参数',
+      });
+    }
+
+    if (!event) {
+      return res.status(404).json({
+        message: '未找到该事件',
+      });
+    }
+
+    for (const attribute of ['name', 'description', 'status']) {
+      if (req.body[attribute]) {
+        event[attribute] = req.body[attribute];
+      }
+    }
+
+    try {
+      await event.save();
+
+      res.status(201).json({
+        message: '修改成功',
+        event,
+      });
+    } catch (err) {
+      res.status(err.status).json(err);
     }
   },
 
@@ -61,41 +138,39 @@ const EventController = {
 
     if (!data.url) {
       return res.status(400).json({
-        message: '错误的请求格式',
+        message: '缺少 url 参数',
       });
     }
 
-    const event = await EventController.findEvent(name);
+    const event = await EventService.findEvent(name);
 
     if (!event) {
       return res.status(404).json({
-        message: '未找到改事件',
+        message: '未找到该事件',
       });
     }
 
     data.event = event.id;
+    data.status = 'pending';
 
-    const existingNews = await News.findOne({ url: data.url });
-    if (existingNews && existingNews.status !== 'pending') {
+    const existingNews = await News.findOne({ url: data.url, event: event.id });
+    if (existingNews) {
       return res.status(409).json({
-        message: '审核队列内已有相同链接的新闻',
+        message: '审核队列或新闻合辑内已有相同链接的新闻',
       });
     }
 
     try {
       news = await News.create(data);
+      res.status(201).json(news);
     } catch (err) {
-      return res.status(400).json({
-        message: err.message,
-      });
+      return res.status(err.status).json(err);
     }
-
-    res.status(201).json(news);
   },
 
   updateHeaderImage: async (req, res) => {
     const name = req.param('eventName');
-    const event = await EventController.findEvent(name);
+    const event = await EventService.findEvent(name);
 
     if (!event) {
       return res.status(404).json({
