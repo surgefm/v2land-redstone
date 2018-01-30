@@ -1,5 +1,6 @@
 const request = require('supertest');
 const urlencode = require('urlencode');
+const assert = require('assert');
 let agent;
 
 describe('EventController', function() {
@@ -90,7 +91,7 @@ describe('EventController', function() {
     });
   });
 
-  describe('header image', function() {
+  describe('Event\'s header image', function() {
     before(async function() {
       await Event.destroy({
         name: '浪潮今天发布了吗？',
@@ -155,6 +156,63 @@ describe('EventController', function() {
           sourceUrl: 'https://langchao.co/',
         })
         .expect(400, done);
+    });
+  });
+
+  describe('Event List', function() {
+    before(async function() {
+      await Event.destroy({
+        name: '浪潮测试1',
+      });
+      await Event.destroy({
+        name: '浪潮测试2',
+      });
+      await Event.destroy({
+        name: '浪潮测试3',
+      });
+      await Event.create({
+        name: '浪潮测试1',
+        status: 'admitted',
+        description: '浪潮测试1',
+      });
+      await Event.create({
+        name: '浪潮测试2',
+        status: 'admitted',
+        description: '浪潮测试2',
+      });
+      await Event.create({
+        name: '浪潮测试3',
+        status: 'admitted',
+        description: '浪潮测试3',
+      });
+    });
+    after(async function() {
+      await Event.destroy({
+        name: '浪潮测试1',
+      });
+      await Event.destroy({
+        name: '浪潮测试2',
+      });
+      await Event.destroy({
+        name: '浪潮测试3',
+      });
+    });
+    it('should have list', async function() {
+      agent = request.agent(sails.hooks.http.app);
+
+      agent
+        .get(`/event`)
+        .send()
+        .expect(200, (err, res) => {
+          if (err) {
+            done(err, res);
+          }
+          const eventList = res.body.eventList;
+          assert.equal(eventList.length, 3);
+          eventList.forEach((value, index) => {
+            assert.equal(value.name, '浪潮测试' + (3 - index));
+          });
+        });
     });
   });
 });
