@@ -39,6 +39,7 @@ module.exports.routes = {
   
   'GET /event/:eventName': 'EventController.getEvent',
   'GET /event': 'EventController.getEventList',
+  'POST /event': 'EventController.createEvent',
   'PUT /event/:eventName': 'EventController.updateEvent',
   'GET /event/:eventName/pending': 'EventController.getPendingNews',
   'POST /event/:eventName/news': 'EventController.createNews',
