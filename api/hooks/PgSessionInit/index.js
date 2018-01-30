@@ -18,6 +18,7 @@ module.exports = function PgSessionInit(sails) {
           console.log('PgSession init success');
           client.end();
         } else {
+          console.log(err);
           client.end();
           throw err;
         }
