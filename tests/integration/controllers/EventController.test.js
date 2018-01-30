@@ -4,16 +4,16 @@ let agent;
 
 describe('EventController', function() {
   describe('createEvent', function() {
-    before(function(done) {
-      Event.destroy({
+    before(async function() {
+      await Event.destroy({
         name: '浪潮今天发布啦',
-      }).exec(done);
+      });
     });
 
-    after(function(done) {
-      Event.destroy({
+    after(async function() {
+      await Event.destroy({
         name: '浪潮今天发布啦',
-      }).exec(done);
+      });
     });
 
     it('should return success', function(done) {
@@ -91,28 +91,28 @@ describe('EventController', function() {
   });
 
   describe('header image', function() {
-    before(function(done) {
-      Event.destroy({
+    before(async function() {
+      await Event.destroy({
         name: '浪潮今天发布了吗？',
-      }).exec((err) => {
-        HeaderImage.destroy({
-          sourceUrl: 'https://langchao.co/',
-        }).exec(() => {
-          Event.create({
-            name: '浪潮今天发布了吗？',
-            description: '浪潮今天发布了吗？',
-          }).exec(done);
-        });
+      });
+
+      await HeaderImage.destroy({
+        sourceUrl: 'https://langchao.co/',
+      });
+
+      await Event.create({
+        name: '浪潮今天发布了吗？',
+        description: '浪潮今天发布了吗？',
       });
     });
 
-    after(function(done) {
-      Event.destroy({
+    after(async function() {
+      await Event.destroy({
         name: '浪潮今天发布了吗？',
-      }).exec(() => {
-        HeaderImage.destroy({
-          sourceUrl: 'https://langchao.co/',
-        }).exec(done);
+      });
+
+      await HeaderImage.destroy({
+        sourceUrl: 'https://langchao.co/',
       });
     });
 
