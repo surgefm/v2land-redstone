@@ -50,7 +50,7 @@ module.exports = {
     let salt;
     let hash;
 
-    const client = await Client.findOne({ username: data.username });
+    let client = await Client.findOne({ username: data.username });
     if (client) {
       return res.status(406).json({
         message: '该用户名/邮箱已被占用',
@@ -74,15 +74,26 @@ module.exports = {
     }
 
     try {
-      await Client.create({
+      client = await Client.create({
         username: data.username,
         password: hash,
       });
 
       res.status(201).json({ message: '注册成功' });
     } catch (err) {
-      res.serverError(err);
+      return res.serverError(err);
     }
+
+    client = { ...client };
+    delete client.password;
+    await Record.create({
+      model: 'Client',
+      target: client.id,
+      data: client,
+      operation: 'create',
+      action: 'createClient',
+      client: req.session.clientId, // Although in most cases it's null.
+    });
   },
 
   role: async (req, res) => {
@@ -141,8 +152,20 @@ module.exports = {
           message: '更新用户组失败',
         });
       } else {
-        return res.send(200, {
+        res.send(200, {
           message: '更新用户组成功',
+        });
+
+        const data = { ...client };
+        delete data.password;
+
+        await Record.create({
+          model: 'Client',
+          target: client.id,
+          operation: 'update',
+          action: 'updateClientRole',
+          data,
+          client: req.session.clientId,
         });
       }
     } else {
