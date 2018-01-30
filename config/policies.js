@@ -26,9 +26,9 @@ module.exports.policies = {
   },
 
   EventController: {
-    'create': true,
     'findEvent': true,
     'getEvent': true,
+    'createEvent': true,
     'updateEvent': true,
     'getEventList': true,
     'getPendingNews': true,
