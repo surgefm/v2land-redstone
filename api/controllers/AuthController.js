@@ -48,6 +48,22 @@ module.exports = {
     res.status(201).json({
       message: '绑定成功',
     });
+
+    const data = {
+      id: auth.id,
+      site: auth.site,
+      profileId: auth.profileId,
+      owner: auth.owner,
+    };
+
+    await Record.create({
+      model: 'Auth',
+      target: data.id,
+      data,
+      client: req.session.clientId,
+      operation: 'update',
+      action: 'authorizeThirdPartyAccount',
+    });
   },
 
   unauthorize: async (req, res) => {
@@ -70,10 +86,26 @@ module.exports = {
       });
     }
 
+    const data = {
+      id: auth.id,
+      site: auth.site,
+      profileId: auth.profileId,
+      owner: auth.owner,
+    };
+
     await auth.destroy();
 
     res.status(201).json({
       message: '成功解除绑定',
+    });
+
+    await Record.create({
+      model: 'Auth',
+      target: data.id,
+      data,
+      client: req.session.clientId,
+      operation: 'update',
+      action: 'unauthorizeThirdPartyAccount',
     });
   },
 

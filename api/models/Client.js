@@ -44,6 +44,11 @@ module.exports = {
       via: 'owner',
     },
 
+    records: {
+      collection: 'record',
+      via: 'client',
+    },
+
   },
 
   types: {

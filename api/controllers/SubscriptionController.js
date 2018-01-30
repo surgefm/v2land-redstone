@@ -42,6 +42,15 @@ module.exports = {
         message: '成功取消关注。',
       });
     }
+
+    await Record.create({
+      model: 'Subscription',
+      operation: 'update',
+      action: 'cancelSubscription',
+      target: subscription.id,
+      data: subscription,
+      client: req.session.clientId,
+    });
   },
 
   subscribe: async (req, res) => {
@@ -147,8 +156,17 @@ module.exports = {
         subscription,
       });
     } catch (err) {
-      res.status(err.status).json(err);
+      return res.status(err.status).json(err);
     }
+
+    await Record.create({
+      model: 'Subscription',
+      target: subscription.id,
+      client: req.session.clientId,
+      data: subscription,
+      operation: 'create',
+      action: 'createSubscription',
+    });
   },
 
 };
