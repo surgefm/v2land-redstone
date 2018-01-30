@@ -68,6 +68,16 @@ describe('EventController', function() {
         .end(done);
     });
 
+    it('should return success', function(done) {
+      agent = request.agent(sails.hooks.http.app);
+
+      agent
+        .get(`/event/${urlencode('浪潮今天发布啦')}`)
+        .send()
+        .expect(200)
+        .end(done);
+    });
+
     it('should return 404', function(done) {
       agent = request.agent(sails.hooks.http.app);
 
