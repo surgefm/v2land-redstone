@@ -108,22 +108,26 @@ const EventController = {
       return res.status(err.status).json(err);
     }
 
-    const record = {
-      model: 'Event',
-      operation: 'update',
-      data: event,
-      client: req.session.clientId,
-      target: event.id,
-    };
+    try {
+      const record = {
+        model: 'Event',
+        operation: 'update',
+        data: event,
+        client: req.session.clientId,
+        target: event.id,
+      };
 
-    if (req.body.status) {
-      record.action = 'UpdateEventStatus';
-      await Record.create(record);
-    }
+      if (req.body.status) {
+        record.action = 'updateEventStatus';
+        await Record.create(record);
+      }
 
-    if (req.body.name || req.body.description) {
-      record.action = 'UpdateEventDetail';
-      await Record.create(record);
+      if (req.body.name || req.body.description) {
+        record.action = 'updateEventDetail';
+        await Record.create(record);
+      }
+    } catch (err) {
+      console.log(err);
     }
   },
 
@@ -243,12 +247,13 @@ const EventController = {
       message: event.headerImage ? '修改成功' : '添加成功',
     });
 
+    const data = headerImage.id ? headerImage : headerImage[0];
     await Record.create({
       model: 'HeaderImage',
-      target: headerImage.id,
+      target: data.id,
       operation: req.method === 'POST' ? 'create' : 'update',
       action: req.method === 'POST' ? 'createEventHeaderImage' : 'updateEventHeaderImage',
-      data: headerImage,
+      data: data,
       client: req.session.clientId,
     });
   },

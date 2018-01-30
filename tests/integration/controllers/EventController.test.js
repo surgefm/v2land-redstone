@@ -93,22 +93,18 @@ describe('EventController', function() {
 
   describe('Event\'s header image', function() {
     before(async function() {
-      try {
-        await Event.destroy({
-          name: '浪潮今天发布了吗？',
-        });
+      await Event.destroy({
+        name: '浪潮今天发布了吗？',
+      });
 
-        await HeaderImage.destroy({
-          sourceUrl: 'https://langchao.co/',
-        });
+      await HeaderImage.destroy({
+        sourceUrl: 'https://langchao.co/',
+      });
 
-        await Event.create({
-          name: '浪潮今天发布了吗？',
-          description: '浪潮今天发布了吗？',
-        });
-      } catch (err) {
-        throw err;
-      }
+      await Event.create({
+        name: '浪潮今天发布了吗？',
+        description: '浪潮今天发布了吗？',
+      });
     });
 
     after(async function() {
