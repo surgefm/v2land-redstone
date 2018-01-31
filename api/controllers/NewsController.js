@@ -31,13 +31,16 @@ module.exports = {
     }
 
     try {
+      const query = {
+        client: req.session.clientId,
+        where: { id: news.id },
+        model: 'news',
+      };
       if (data.status) {
         news = await SQLService.update({
           action: 'updateNewsStatus',
-          client: req.session.clientId,
           data: { status: data.status },
-          where: { id: news.id },
-          model: 'news',
+          ...query,
         });
       }
 
@@ -45,10 +48,8 @@ module.exports = {
       if (Object.getOwnPropertyNames(data).length > 0) {
         news = await SQLService.update({
           action: 'updateNewsDetail',
-          client: req.session.clientId,
           data: news,
-          where: { id: news.id },
-          model: 'news',
+          ...query,
         });
       }
 

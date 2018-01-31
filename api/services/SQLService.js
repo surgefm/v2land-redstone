@@ -115,8 +115,6 @@ const SQLService = {
 
     query += ' RETURNING *';
 
-    console.log(query, values);
-
     return SQLService.query({
       model,
       action,
