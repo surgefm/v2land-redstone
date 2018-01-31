@@ -56,10 +56,10 @@ const SQLService = {
 
     data = SQLService.cleanData(model, data);
     let dataSize = 0;
-    let query = `INSERT INTO ${model}(`;
+    let query = `INSERT INTO "${model}"(`;
     for (const i in data) {
       if (!['createdAt', 'updatedAt', 'id'].includes(i) && data[i]) {
-        query += i + ', ';
+        query += `"${i}", `;
         dataSize++;
       }
     }
@@ -68,7 +68,6 @@ const SQLService = {
       query += '$' + i + ', ';
     }
     query += '$' + (dataSize + 1) + ', $' + (dataSize + 1) + ') RETURNING *';
-
     const values = [];
     Object.getOwnPropertyNames(data).forEach((value, i) => {
       values[i] = data[value];
@@ -95,7 +94,7 @@ const SQLService = {
     let query = `UPDATE ${model} SET `;
     for (const i in data) {
       if (!['createdAt', 'updatedAt', 'id', 'constructor'].includes(i) && data[i]) {
-        query += `${i} = $${++dataSize}, `;
+        query += `"${i}" = $${++dataSize}, `;
         if (i !== 'time') {
           values.push(data[i]);
         } else {
@@ -109,12 +108,14 @@ const SQLService = {
     query += `"updatedAt" = $${dataSize + 1} WHERE `;
     for (const i in where) {
       if (where[i]) {
-        query += `${i} = ${where[i]}, `;
+        query += `"${i}" = ${where[i]}, `;
       }
     }
     query = query.slice(0, -2);
 
     query += ' RETURNING *';
+
+    console.log(query, values);
 
     return SQLService.query({
       model,
