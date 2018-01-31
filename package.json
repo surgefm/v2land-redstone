@@ -30,7 +30,7 @@
     "nodemailer": "^4.4.2",
     "nodemailer-express-handlebars": "^2.0.0",
     "oauth": "^0.9.15",
-    "pg": "^7.4.0",
+    "pg": "^7.4.1",
     "query-string": "^5.0.1",
     "rc": "1.0.1",
     "sails": "~0.12.14",

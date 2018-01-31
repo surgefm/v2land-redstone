@@ -3281,7 +3281,7 @@ pg@4.5.5:
     pgpass "0.0.3"
     semver "^4.1.0"
 
-pg@^7.4.0, pg@^7.4.1:
+pg@^7.4.1:
   version "7.4.1"
   resolved "https://registry.yarnpkg.com/pg/-/pg-7.4.1.tgz#f3411c8ddf9f692322fe05e7017a1888e47f78f1"
   dependencies:

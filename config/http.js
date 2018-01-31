@@ -8,6 +8,8 @@
  * For more information on configuration, check out:
  * http://sailsjs.org/#!/documentation/reference/sails.config/sails.config.http.html
  */
+const { Pool } = require('pg');
+const { connections } = require('./connections');
 
 module.exports.http = {
 
@@ -53,6 +55,12 @@ module.exports.http = {
   * Example custom middleware; logs each request to the console.              *
   *                                                                           *
   ****************************************************************************/
+    pg: async function (req, res, next) {
+      const pool = new Pool(connections.postgresql);
+      req.pgPool = pool;
+      next();
+    }
+
 
     // myRequestLogger: function (req, res, next) {
     //     console.log("Requested :: ", req.method, req.url);
