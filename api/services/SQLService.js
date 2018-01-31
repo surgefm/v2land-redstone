@@ -17,14 +17,14 @@ const SQLService = {
     `, [model, operation, action, client, data, target, createdAt || now, updatedAt || now]);
   },
 
-  validate: (model, data) => {
+  validate: (model, data, presentOnly) => {
     return new Promise((resolve, reject) => {
       model = model.toLowerCase();
       if (!sails.models[model]) {
         reject(new Error('未找到该模型'));
       }
 
-      sails.models[model].validate(data, (err) => {
+      sails.models[model].validate(data, presentOnly, (err) => {
         if (err) {
           reject(err);
         } else {
@@ -86,6 +86,12 @@ const SQLService = {
 
   update: async ({ model, where, data, action, client }) => {
     model = model.toLowerCase();
+    try {
+      await SQLService.validate(model, data, true);
+    } catch (err) {
+      throw err;
+    }
+
     const now = new Date();
 
     data = SQLService.cleanData(model, data);
