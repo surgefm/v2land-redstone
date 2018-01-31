@@ -6,7 +6,6 @@
  */
 
 const s3 = require('skipper-s3');
-const generateFilename = require('../../utils/generateFilename');
 
 module.exports = {
 
@@ -18,7 +17,7 @@ module.exports = {
       });
     }
 
-    const filename = generateFilename(req.file('file')._files[0].stream);
+    const filename = UtilService.generateFilename(req.file('file')._files[0].stream);
 
     req.file('file').upload({
       adapter: s3,

@@ -5,8 +5,6 @@
  * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
  */
 
-const sqlHelper = require('../../utils/sqlHelper');
-
 const EventController = {
 
   getEvent: async (req, res) => {
@@ -47,8 +45,7 @@ const EventController = {
       });
     }
 
-    const { name, description } = req.body;
-    let event = await EventService.findEvent(name);
+    let event = await EventService.findEvent(req.body.name);
 
     if (event) {
       return res.status(409).json({
@@ -56,40 +53,24 @@ const EventController = {
       });
     }
 
-    const client = await req.pgPool.connect();
+    req.body.status = 'pending';
 
     try {
-      const now = new Date();
-      await client.query(`BEGIN`);
-      await client.query(`
-        INSERT INTO event(name, description, status, "createdAt", "updatedAt")
-        VALUES ($1, $2 , 'pending', $3, $3)`, [name, description, now]);
-      const queryRes = await client.query(`SELECT * FROM event WHERE name=$1`, [name]);
-      event = queryRes.rows[0];
-      await sqlHelper.insertRecord(client, {
-        model: 'Event',
-        operation: 'create',
+      event = await SQLService.create({
+        model: 'event',
+        data: req.body,
         action: 'createEvent',
         client: req.session.clientId,
-        data: event,
-        target: event.id,
-        createdAt: now,
-        updatedAt: now,
       });
-      await client.query(`COMMIT`);
 
       res.status(201).json({
         message: '提交成功，该事件在社区管理员审核通过后将很快开放',
         event,
       });
     } catch (err) {
-      await client.query(`ROLLBACK`);
-      sails.log.error(err);
       return res.status(500).json({
         message: '服务器发生未知错误，请联系开发者。',
       });
-    } finally {
-      client.release();
     }
   },
 
@@ -200,46 +181,18 @@ const EventController = {
       });
     }
 
-    const client = await req.pgPool.connect();
-
     try {
-      const now = new Data();
-      await client.query(`BEGIN`);
-      const result = await client.query(`
-      INSERT INTO news(url, source, title, abstract, time, status, event, "createdAt", "updatedAt")
-        VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *
-      `, [
-        data.url,
-        data.source,
-        data.title,
-        data.abstract,
-        data.time,
-        data.status,
-        data.event,
-        now,
-        now,
-      ]);
-      news = result.rows[0];
-      await sqlHelper.insertRecord(client, {
-        model: 'News',
-        target: news.id,
-        operation: 'create',
+      news = await SQLService.create({
+        model: 'news',
+        data,
         action: 'createNews',
-        data: news,
         client: req.session.clientId,
-        createdAt: now,
-        updatedAt: now,
       });
-      await client.query(`COMMIT`);
-      res.status(201).json(news);
+      res.status(201).json({ news });
     } catch (err) {
-      await client.query(`ROLLBACK`);
-      sails.log.error(err);
       return res.status(500).json({
         message: '服务器发生未知错误，请联系开发者',
       });
-    } finally {
-      client.release();
     }
   },
 
@@ -265,7 +218,7 @@ const EventController = {
       });
     }
 
-    const headerImage = { event: event.id };
+    let headerImage = { event: event.id };
 
     for (const attribute of ['imageUrl', 'source', 'sourceUrl']) {
       if (req.body[attribute]) {
@@ -273,67 +226,29 @@ const EventController = {
       }
     }
 
-    const client = await req.pgPool.connect();
-
     try {
-      let id;
-      const now = new Date();
-      await client.query(`BEGIN`);
-      if (req.method === 'PUT') {
-        const keysArr = [];
-        const valuesArr = [];
-        let counter = 1;
-        for (const key in headerImage) {
-          if (Object.prototype.hasOwnProperty.call(headerImage, key)) {
-            keysArr.push(`"${key}"=$${counter++} `);
-            valuesArr.push(headerImage[key]);
-          }
-        }
-        keysArr.push(`"updatedAt"=${counter++}`);
-        valuesArr.push(now);
-        valuesArr.push(event.id);
-        const result = await client.query(`
-          UPDATE headerimage SET ${keysArr.join(',')} 
-          WHERE event=$${counter++} RETURNING id`, valuesArr);
-        id = result.rows[0].id;
-        // headerImage = await HeaderImage.update({ event: event.id }, headerImage);
-        // await Event.update({ id: event.id }, { headerImage: headerImage[0].id });
-      } else {
-        const result = await client.query(`
-        INSERT INTO headerimage("imageUrl", "source", "sourceUrl", event, "createdAt", "updatedAt") 
-        VALUES ($1, $2, $3, $4, $5, $6) RETURNING id`, [
-          headerImage['imageUrl'],
-          headerImage['source'],
-          headerImage['sourceUrl'],
-          event.id,
-          now,
-          now,
-        ]);
-        id = result.rows[0].id;
-      }
-      await sqlHelper.insertRecord(client, {
-        model: 'HeaderImage',
-        operation: req.method === 'POST' ? 'create' : 'update',
-        action: req.method === 'POST' ? 'createEventHeaderImage' : 'updateEventHeaderImage',
-        client: req.session.clientId,
+      const data = {
+        where: { event: event.id },
         data: headerImage,
-        target: id,
-        createdAt: now,
-        updatedAt: now,
-      });
-      await client.query(`COMMIT`);
+        action: 'updateEventHeaderImage',
+        client: req.session.clientId,
+        model: 'HeaderImage',
+      };
+      if (req.method === 'PUT') {
+        headerImage = await SQLService.update(data);
+      } else {
+        headerImage = await SQLService.create(data);
+      }
     } catch (err) {
-      await client.query(`ROLLBACK`);
       sails.log.error(err);
       return res.status(500).json({
         message: '服务器发生未知错误，请联系开发者',
       });
-    } finally {
-      client.release();
     }
 
     res.status(201).json({
       message: event.headerImage ? '修改成功' : '添加成功',
+      headerImage,
     });
   },
 };

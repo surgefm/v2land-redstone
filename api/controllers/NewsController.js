@@ -18,7 +18,7 @@ module.exports = {
     const id = req.param('news');
     const data = req.body;
 
-    const news = await News.findOne({ id });
+    let news = await News.findOne({ id });
 
     if (!news) {
       return res.status(404).json({
@@ -31,32 +31,33 @@ module.exports = {
     }
 
     try {
-      await news.save();
+      if (data.status) {
+        news = await SQLService.update({
+          action: 'updateNewsStatus',
+          client: req.session.clientId,
+          data: { status: data.status },
+          where: { id: news.id },
+          model: 'news',
+        });
+      }
+
+      delete data.status;
+      if (Object.getOwnPropertyNames(data).length > 0) {
+        news = await SQLService.update({
+          action: 'updateNewsDetail',
+          client: req.session.clientId,
+          data: news,
+          where: { id: news.id },
+          model: 'news',
+        });
+      }
+
       res.status(201).json({
         message: '修改成功',
         news,
       });
     } catch (err) {
       return res.status(err.status).json(err);
-    }
-
-    const record = {
-      model: 'News',
-      operation: 'update',
-      target: news.id,
-      data: news,
-      client: req.session.clientId,
-    };
-
-    if (data.status) {
-      record.action = 'updateNewsStatus',
-      await Record.create(record);
-    }
-
-    delete data.status;
-    if (JSON.stringify(data) !== '{}') {
-      record.action = 'updateNewsDetail';
-      await Record.create();
     }
   },
 
