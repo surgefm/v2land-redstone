@@ -1,8 +1,12 @@
 language: node_js
+services:
+  - postgresql
 node_js:
   - "8"
 env:
   - CXX=g++-4.8
+before_script:
+  - psql -c 'create database v2land;' -U postgres
 script: make test
 notifications:
   slack: v2land:xoeT2IXt8yCaUfMxoBbXrSZD

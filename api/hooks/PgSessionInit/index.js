@@ -14,7 +14,7 @@ module.exports = function PgSessionInit(sails) {
       client.connect();
 
       client.query(content, (err, res) => {
-        if (typeof err === 'undefined') { // success
+        if (!err) { // success
           console.log('PgSession init success');
           client.end();
         } else if (err.code !== '42P07') {
