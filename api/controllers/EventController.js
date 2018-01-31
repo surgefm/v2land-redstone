@@ -83,6 +83,7 @@ const EventController = {
         event,
       });
     } catch (err) {
+      await client.query(`ROLLBACK`);
       sails.log.error(err);
       return res.status(500).json({
         message: '服务器发生未知错误，请联系开发者。',
@@ -238,7 +239,7 @@ const EventController = {
       });
     }
 
-    let headerImage = { event: event.id };
+    const headerImage = { event: event.id };
 
     for (const attribute of ['imageUrl', 'source', 'sourceUrl']) {
       if (req.body[attribute]) {
@@ -246,32 +247,67 @@ const EventController = {
       }
     }
 
+    const client = await req.pgPool.connect();
+
     try {
+      let id;
+      const now = new Date();
+      await client.query(`BEGIN`);
       if (req.method === 'PUT') {
-        headerImage = await HeaderImage.update({ event: event.id }, headerImage);
-        await Event.update({ id: event.id }, { headerImage: headerImage[0].id });
+        const keysArr = [];
+        const valuesArr = [];
+        let counter = 1;
+        for (const key in headerImage) {
+          if (Object.prototype.hasOwnProperty.call(headerImage, key)) {
+            keysArr.push(`"${key}"=$${counter++} `);
+            valuesArr.push(headerImage[key]);
+          }
+        }
+        keysArr.push(`"updatedAt"=${counter++}`);
+        valuesArr.push(now);
+        valuesArr.push(event.id);
+        const result = await client.query(`
+          UPDATE headerimage SET ${keysArr.join(',')} 
+          WHERE event=$${counter++} RETURNING id`, valuesArr);
+        id = result.rows[0].id;
+        // headerImage = await HeaderImage.update({ event: event.id }, headerImage);
+        // await Event.update({ id: event.id }, { headerImage: headerImage[0].id });
       } else {
-        headerImage = await HeaderImage.create(headerImage);
-        await Event.update({ id: event.id }, { headerImage: headerImage.id });
+        const result = await client.query(`
+        INSERT INTO headerimage("imageUrl", "source", "sourceUrl", event, "createdAt", "updatedAt") 
+        VALUES ($1, $2, $3, $4, $5, $6) RETURNING id`, [
+          headerImage['imageUrl'],
+          headerImage['source'],
+          headerImage['sourceUrl'],
+          event.id,
+          now,
+          now,
+        ]);
+        id = result.rows[0].id;
       }
-    } catch (err) {
-      return res.status(400).json({
-        message: err.message,
+      await sqlHelper.insertRecord(client, {
+        model: 'HeaderImage',
+        operation: req.method === 'POST' ? 'create' : 'update',
+        action: req.method === 'POST' ? 'createEventHeaderImage' : 'updateEventHeaderImage',
+        client: req.session.clientId,
+        data: headerImage,
+        target: id,
+        createdAt: now,
+        updatedAt: now,
       });
+      await client.query(`COMMIT`);
+    } catch (err) {
+      await client.query(`ROLLBACK`);
+      sails.log.error(err);
+      return res.status(500).json({
+        message: '服务器发生未知错误，请联系开发者',
+      });
+    } finally {
+      client.release();
     }
 
     res.status(201).json({
       message: event.headerImage ? '修改成功' : '添加成功',
-    });
-
-    const data = headerImage.id ? headerImage : headerImage[0];
-    await Record.create({
-      model: 'HeaderImage',
-      target: data.id,
-      operation: req.method === 'POST' ? 'create' : 'update',
-      action: req.method === 'POST' ? 'createEventHeaderImage' : 'updateEventHeaderImage',
-      data: data,
-      client: req.session.clientId,
     });
   },
 };
