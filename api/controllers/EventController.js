@@ -82,7 +82,6 @@ const EventController = {
     } finally {
       client.release();
     }
-
   },
 
   updateEvent: async (req, res) => {
