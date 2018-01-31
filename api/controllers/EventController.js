@@ -5,6 +5,8 @@
  * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
  */
 
+const sqlHelper = require('../../utils/sqlHelper');
+
 const EventController = {
 
   getEvent: async (req, res) => {
@@ -64,10 +66,16 @@ const EventController = {
         VALUES ($1, $2 , 'pending', $3, $3)`, [name, description, now]);
       const queryRes = await client.query(`SELECT * FROM event WHERE name=$1`, [name]);
       event = queryRes.rows[0];
-      await client.query(`
-        INSERT INTO record(model, operation, action, client, data, target, "createdAt", "updatedAt")
-        VALUES ('Event', 'create', 'createEvent', $1, $2, $3, $4, $4)
-      `, [req.session.clientId, event, event.id, now]);
+      await sqlHelper.insertRecord(client, {
+        model: 'Event',
+        operation: 'create',
+        action: 'createEvent',
+        client: req.session.clientId,
+        data: event,
+        target: event.id,
+        createdAt: now,
+        updatedAt: now,
+      });
       await client.query(`COMMIT`);
 
       res.status(201).json({
