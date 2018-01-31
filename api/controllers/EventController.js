@@ -200,21 +200,47 @@ const EventController = {
       });
     }
 
+    const client = await req.pgPool.connect();
+
     try {
-      news = await News.create(data);
+      const now = new Data();
+      await client.query(`BEGIN`);
+      const result = await client.query(`
+      INSERT INTO news(url, source, title, abstract, time, status, event, "createdAt", "updatedAt")
+        VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *
+      `, [
+        data.url,
+        data.source,
+        data.title,
+        data.abstract,
+        data.time,
+        data.status,
+        data.event,
+        now,
+        now,
+      ]);
+      news = result.rows[0];
+      await sqlHelper.insertRecord(client, {
+        model: 'News',
+        target: news.id,
+        operation: 'create',
+        action: 'createNews',
+        data: news,
+        client: req.session.clientId,
+        createdAt: now,
+        updatedAt: now,
+      });
+      await client.query(`COMMIT`);
       res.status(201).json(news);
     } catch (err) {
-      return res.status(err.status).json(err);
+      await client.query(`ROLLBACK`);
+      sails.log.error(err);
+      return res.status(500).json({
+        message: '服务器发生未知错误，请联系开发者',
+      });
+    } finally {
+      client.release();
     }
-
-    await Record.create({
-      model: 'News',
-      target: news.id,
-      operation: 'create',
-      action: 'createNews',
-      data: news,
-      client: req.session.clientId,
-    });
   },
 
   updateHeaderImage: async (req, res) => {
