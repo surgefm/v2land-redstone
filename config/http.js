@@ -11,6 +11,14 @@
 const { Pool } = require('pg');
 const { connections } = require('./connections');
 
+function pgPoolInit() {
+  const pool = new Pool(connections.postgresql);
+  return function (req, res, next) {
+    req.pgPool = pool;
+    next();
+  } 
+}
+
 module.exports.http = {
 
   /****************************************************************************
@@ -32,34 +40,31 @@ module.exports.http = {
   *                                                                          *
   ***************************************************************************/
 
-    // order: [
-    //   'startRequestTimer',
-    //   'cookieParser',
-    //   'session',
-    //   'myRequestLogger',
-    //   'bodyParser',
-    //   'handleBodyParserError',
-    //   'compress',
-    //   'methodOverride',
-    //   'poweredBy',
-    //   '$custom',
-    //   'router',
-    //   'www',
-    //   'favicon',
-    //   '404',
-    //   '500'
-    // ],
+    order: [
+      'startRequestTimer',
+      'cookieParser',
+      'session',
+      'myRequestLogger',
+      'bodyParser',
+      'handleBodyParserError',
+      'compress',
+      'methodOverride',
+      'poweredBy',
+      '$custom',
+      'pgPool',
+      'router',
+      'www',
+      'favicon',
+      '404',
+      '500'
+    ],
 
   /****************************************************************************
   *                                                                           *
   * Example custom middleware; logs each request to the console.              *
   *                                                                           *
   ****************************************************************************/
-    pg: async function (req, res, next) {
-      const pool = new Pool(connections.postgresql);
-      req.pgPool = pool;
-      next();
-    }
+    pgPool: pgPoolInit(),
 
 
     // myRequestLogger: function (req, res, next) {

@@ -54,25 +54,35 @@ const EventController = {
       });
     }
 
+    const client = await req.pgPool.connect();
+
     try {
-      event = await Event.create({ name, description });
+      const now = new Date();
+      await client.query(`BEGIN`);
+      await client.query(`
+        INSERT INTO event(name, description, status, "createdAt", "updatedAt")
+        VALUES ($1, $2 , 'pending', $3, $3)`, [name, description, now]);
+      const queryRes = await client.query(`SELECT * FROM event WHERE name=$1`, [name]);
+      event = queryRes.rows[0];
+      await client.query(`
+        INSERT INTO record(model, operation, action, client, data, target, "createdAt", "updatedAt")
+        VALUES ('Event', 'create', 'createEvent', $1, $2, $3, $4, $4)
+      `, [req.session.clientId, event, event.id, now]);
+      await client.query(`COMMIT`);
 
       res.status(201).json({
         message: '提交成功，该事件在社区管理员审核通过后将很快开放',
         event,
       });
     } catch (err) {
-      return res.status(err.status).json(err);
+      sails.log.error(err);
+      return res.status(500).json({
+        message: '服务器发生未知错误，请联系开发者。',
+      });
+    } finally {
+      client.release();
     }
 
-    await Record.create({
-      model: 'Event',
-      operation: 'create',
-      action: 'createEvent',
-      client: req.session.clientId,
-      data: event,
-      target: event.id,
-    });
   },
 
   updateEvent: async (req, res) => {
