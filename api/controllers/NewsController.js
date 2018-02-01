@@ -18,7 +18,7 @@ module.exports = {
     const id = req.param('news');
     const data = req.body;
 
-    const news = await News.findOne({ id });
+    let news = await News.findOne({ id });
 
     if (!news) {
       return res.status(404).json({
@@ -26,37 +26,48 @@ module.exports = {
       });
     }
 
+    const changes = {};
     for (const i of ['url', 'source', 'title', 'abstract', 'time', 'status']) {
-      news[i] = data[i];
+      if (data[i] && data[i] !== news[i]) {
+        changes[i] = data[i];
+      }
+    }
+
+    if (Object.getOwnPropertyNames(changes).length === 0) {
+      return res.status(200).json({
+        message: '什么变化也没有发生',
+      });
     }
 
     try {
-      await news.save();
+      const query = {
+        client: req.session.clientId,
+        where: { id: news.id },
+        model: 'news',
+      };
+      if (changes.status) {
+        news = await SQLService.update({
+          action: 'updateNewsStatus',
+          data: { status: changes.status },
+          ...query,
+        });
+      }
+
+      delete changes.status;
+      if (Object.getOwnPropertyNames(changes).length > 0) {
+        news = await SQLService.update({
+          action: 'updateNewsDetail',
+          data: changes,
+          ...query,
+        });
+      }
+
       res.status(201).json({
         message: '修改成功',
         news,
       });
     } catch (err) {
-      return res.status(err.status).json(err);
-    }
-
-    const record = {
-      model: 'News',
-      operation: 'update',
-      target: news.id,
-      data: news,
-      client: req.session.clientId,
-    };
-
-    if (data.status) {
-      record.action = 'updateNewsStatus',
-      await Record.create(record);
-    }
-
-    delete data.status;
-    if (JSON.stringify(data) !== '{}') {
-      record.action = 'updateNewsDetail';
-      await Record.create();
+      return res.serverError(err);
     }
   },
 

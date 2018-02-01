@@ -15,6 +15,7 @@ function pgPoolInit() {
   const pool = new Pool(connections.postgresql);
   return function (req, res, next) {
     req.pgPool = pool;
+    sails.pgPool = pool;
     next();
   } 
 }

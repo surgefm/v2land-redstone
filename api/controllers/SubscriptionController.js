@@ -21,8 +21,13 @@ module.exports = {
       });
     }
 
-    subscription.status = 'unsubscribed';
-    await subscription.save();
+    await SQLService.update({
+      model: 'subscription',
+      action: 'cancelSubscription',
+      where: { id: subscription.id },
+      client: req.session.clientId,
+      data: { status: 'unsubscribed' },
+    });
 
     const otherSubscriptions = await Subscription.find({
       subscriber: subscription.subscriber,
@@ -42,15 +47,6 @@ module.exports = {
         message: '成功取消关注。',
       });
     }
-
-    await Record.create({
-      model: 'Subscription',
-      operation: 'update',
-      action: 'cancelSubscription',
-      target: subscription.id,
-      data: subscription,
-      client: req.session.clientId,
-    });
   },
 
   subscribe: async (req, res) => {
@@ -140,8 +136,8 @@ module.exports = {
     }
 
     try {
-      const unsubscribeId = Math.floor(Math.random() * 100000000) + Date.now();
-      subscription = await Subscription.create({
+      const unsubscribeId = SubscriptionService.generateUnsubscribeId();
+      subscription = {
         subscriber: req.session.clientId,
         notification: notification.id,
         event: event.id,
@@ -149,6 +145,13 @@ module.exports = {
         contact,
         method,
         unsubscribeId,
+      };
+
+      subscription = await SQLService.create({
+        model: 'subscription',
+        action: 'createSubscription',
+        client: req.session.clientId,
+        data: subscription,
       });
 
       res.status(201).json({
@@ -156,17 +159,8 @@ module.exports = {
         subscription,
       });
     } catch (err) {
-      return res.status(err.status).json(err);
+      return res.serverError(err);
     }
-
-    await Record.create({
-      model: 'Subscription',
-      target: subscription.id,
-      client: req.session.clientId,
-      data: subscription,
-      operation: 'create',
-      action: 'createSubscription',
-    });
   },
 
 };

@@ -4921,6 +4921,12 @@ waterline-sequel@0.5.7:
   dependencies:
     lodash "3.10.0"
 
+waterline-sequel@^0.6.4:
+  version "0.6.4"
+  resolved "https://registry.yarnpkg.com/waterline-sequel/-/waterline-sequel-0.6.4.tgz#cfe1255efccbedf68ee538ba138464d37e303297"
+  dependencies:
+    lodash "3.10.1"
+
 waterline@~0.11.0:
   version "0.11.12"
   resolved "https://registry.yarnpkg.com/waterline/-/waterline-0.11.12.tgz#332564e6c0b42ae3ca5cdacfb882846eb40e6f1e"
