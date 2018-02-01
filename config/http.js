@@ -8,18 +8,6 @@
  * For more information on configuration, check out:
  * http://sailsjs.org/#!/documentation/reference/sails.config/sails.config.http.html
  */
-const { Pool } = require('pg');
-const { connections } = require('./connections');
-
-function pgPoolInit() {
-  const pool = new Pool(connections.postgresql);
-  return function (req, res, next) {
-    req.pgPool = pool;
-    sails.pgPool = pool;
-    next();
-  } 
-}
-
 module.exports.http = {
 
   /****************************************************************************
@@ -52,7 +40,6 @@ module.exports.http = {
       'methodOverride',
       'poweredBy',
       '$custom',
-      'pgPool',
       'router',
       'www',
       'favicon',
@@ -65,7 +52,6 @@ module.exports.http = {
   * Example custom middleware; logs each request to the console.              *
   *                                                                           *
   ****************************************************************************/
-    pgPool: pgPoolInit(),
 
 
     // myRequestLogger: function (req, res, next) {
