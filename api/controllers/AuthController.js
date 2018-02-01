@@ -93,7 +93,12 @@ module.exports = {
       owner: auth.owner,
     };
 
-    await auth.destroy();
+    await SQLService.destroy({
+      model: 'auth',
+      action: 'unauthorizeThirdPartyAccount',
+      client: req.session.clientId,
+      where: { id: auth.id },
+    });
 
     res.status(201).json({
       message: '成功解除绑定',

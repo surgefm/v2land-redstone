@@ -26,8 +26,17 @@ module.exports = {
       });
     }
 
+    const changes = {};
     for (const i of ['url', 'source', 'title', 'abstract', 'time', 'status']) {
-      news[i] = data[i];
+      if (data[i] && data[i] !== news[i]) {
+        changes[i] = data[i];
+      }
+    }
+
+    if (Object.getOwnPropertyNames(changes).length === 0) {
+      return res.status(400).json({
+        message: '你想修改什么？',
+      });
     }
 
     try {
@@ -36,19 +45,19 @@ module.exports = {
         where: { id: news.id },
         model: 'news',
       };
-      if (data.status) {
+      if (changes.status) {
         news = await SQLService.update({
           action: 'updateNewsStatus',
-          data: { status: data.status },
+          data: { status: changes.status },
           ...query,
         });
       }
 
-      delete data.status;
-      if (Object.getOwnPropertyNames(data).length > 0) {
+      delete changes.status;
+      if (Object.getOwnPropertyNames(changes).length > 0) {
         news = await SQLService.update({
           action: 'updateNewsDetail',
-          data: news,
+          data: changes,
           ...query,
         });
       }

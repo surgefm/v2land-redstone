@@ -88,41 +88,47 @@ const EventController = {
       });
     }
 
+    const changes = {};
     for (const attribute of ['name', 'description', 'status']) {
-      if (req.body[attribute]) {
-        event[attribute] = req.body[attribute];
+      if (req.body[attribute] && req.body[attribute] !== event[attribute]) {
+        changes[attribute] = req.body[attribute];
       }
     }
 
+    if (Object.getOwnPropertyNames(changes).length === 0) {
+      return res.status(400).json({
+        message: '你想修改什么？',
+      });
+    }
+
     try {
-      await event.save();
+      const query = {
+        model: 'event',
+        client: req.session.clientId,
+        where: { id: event.id },
+      };
+
+      if (changes.status) {
+        await SQLService.update({
+          action: 'updateEventStatus',
+          data: { status: changes.status },
+          ...query,
+        });
+      }
+
+      delete changes.status;
+      if (Object.getOwnPropertyNames(changes).length > 0) {
+        await SQLService.update({
+          action: 'updateEventStatus',
+          data: changes,
+          ...query,
+        });
+      }
 
       res.status(201).json({
         message: '修改成功',
         event,
       });
-    } catch (err) {
-      return res.status(err.status).json(err);
-    }
-
-    try {
-      const record = {
-        model: 'Event',
-        operation: 'update',
-        data: event,
-        client: req.session.clientId,
-        target: event.id,
-      };
-
-      if (req.body.status) {
-        record.action = 'updateEventStatus';
-        await Record.create(record);
-      }
-
-      if (req.body.name || req.body.description) {
-        record.action = 'updateEventDetail';
-        await Record.create(record);
-      }
     } catch (err) {
       return res.serverError(err);
     }
@@ -226,14 +232,19 @@ const EventController = {
       const data = {
         where: { event: event.id },
         data: headerImage,
-        action: 'updateEventHeaderImage',
         client: req.session.clientId,
         model: 'HeaderImage',
       };
       if (req.method === 'PUT') {
-        headerImage = await SQLService.update(data);
+        headerImage = await SQLService.update({
+          action: 'updateEventHeaderImage',
+          ...data,
+        });
       } else {
-        headerImage = await SQLService.create(data);
+        headerImage = await SQLService.create({
+          action: 'createEventHeaderImage',
+          ...data,
+        });
       }
     } catch (err) {
       return res.serverError(err);
