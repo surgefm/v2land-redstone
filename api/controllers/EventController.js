@@ -120,7 +120,7 @@ const EventController = {
       delete changes.status;
       if (Object.getOwnPropertyNames(changes).length > 0) {
         await SQLService.update({
-          action: 'updateEventStatus',
+          action: 'updateEventDetail',
           data: changes,
           ...query,
         });
