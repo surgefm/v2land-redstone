@@ -140,9 +140,7 @@ describe('EventController', function() {
           source: '浪潮',
           sourceUrl: 'https://langchao.co/',
         })
-        .expect(201, {
-          message: '修改成功',
-        }, done);
+        .expect(201, done);
     });
 
     it('should not return success', function(done) {

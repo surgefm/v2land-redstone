@@ -24,15 +24,20 @@ const SQLService = {
     `, [model, operation, action, client, data, target, createdAt, updatedAt]);
   },
 
-  validate: async (model, data, presentOnly) => {
-    model = model.toLowerCase();
-    if (!sails.models[model]) {
-      reject(new Error('未找到该模型'));
-    }
+  validate: (model, data, presentOnly) => {
+    return new Promise((resolve, reject) => {
+      model = model.toLowerCase();
+      if (!sails.models[model]) {
+        reject(new Error('未找到该模型'));
+      }
 
-    sails.models[model].validate(data, presentOnly, (err) => {
-      if (err) throw err;
-      return;
+      sails.models[model].validate(data, presentOnly, (err) => {
+        console.log(1111, !!err);
+        if (err) {
+          reject(err);
+        }
+        resolve();
+      });
     });
   },
 
@@ -49,7 +54,7 @@ const SQLService = {
   create: async ({ model, data, action, client }) => {
     model = model.toLowerCase();
     await SQLService.validate(model, data);
-    const sequel = new Sequel(sails.models[model].schema, sequelOptions);
+    const sequel = new Sequel(sails.models, sequelOptions);
 
     const now = new Date();
 
@@ -69,35 +74,36 @@ const SQLService = {
   },
 
   update: async ({ model, where, data, action, client }) => {
-    try {
-      model = model.toLowerCase();
-      await SQLService.validate(model, data, true);
-      const sequel = new Sequel(sails.models[model].schema, sequelOptions);
+    model = model.toLowerCase();
+    await SQLService.validate(model, data, true);
+    const sequel = new Sequel(sails.models, {
+      schemaName: model,
+      ...sequelOptions,
+    });
 
-      const now = new Date();
-      data = SQLService.cleanData(model, data);
+    const now = new Date();
+    data = SQLService.cleanData(model, data);
 
-      data.updatedAt = now;
-      const query = sequel.create(model, data);
+    data.updatedAt = now;
+    const query = sequel.update(model, where, data);
+    query.query = query.query.replace('  "', ' WHERE "');
 
-      console.log(query.query);
-      return SQLService.query({
-        model,
-        action,
-        client,
-        operation: 'update',
-        ...query,
-      });
-    } catch (err) {
-      console.log(err);
-    }
+    return SQLService.query({
+      model,
+      action,
+      client,
+      operation: 'update',
+      ...query,
+    });
   },
 
   destroy: async ({ model, action, where, client }) => {
     const time = new Date();
-    const sequel = new Sequel(sails.models[model].schema, sequelOptions);
-
     model = model.toLowerCase();
+    const sequel = new Sequel(sails.models, {
+      schemaName: model,
+      ...sequelOptions,
+    });
 
     where = SQLService.cleanData(model, where);
     const query = sequel.destroy(model, where);
@@ -114,12 +120,39 @@ const SQLService = {
 
   query: async ({ model, operation, query, values, action, client, time }) => {
     const pg = await sails.pgPool.connect();
+    model = model.toLowerCase();
+    const Model = sails.models[model];
 
     try {
       await pg.query(`BEGIN`);
 
       const response = await pg.query(query, values);
       let object = response.rows[0];
+
+      for (const i of Model.associations) {
+        const Associate = sails.models[i.model];
+        const sequel = new Sequel(sails.models, {
+          schemaName: i.model,
+          ...sequelOptions,
+        });
+        if (!i.collection) {
+          let alias;
+          for (const j of Associate.associations) {
+            if (j.model === model) {
+              alias = j.alias;
+              break;
+            }
+          }
+          if (!alias) break;
+          const change = {};
+          change[alias] = object.id;
+          const q = sequel.update(i.model, {
+            id: object[i.alias],
+          }, change);
+          q.query = q.query.replace('  "', ' WHERE "');
+          await pg.query(q.query, q.values);
+        }
+      }
 
       model = model[0].toUpperCase() + model.slice(1);
       model = (model === 'Headerimage') ? 'HeaderImage' : model;

@@ -36,6 +36,7 @@ module.exports = {
     if (Object.getOwnPropertyNames(changes).length === 0) {
       return res.status(200).json({
         message: '什么变化也没有发生',
+        news,
       });
     }
 
