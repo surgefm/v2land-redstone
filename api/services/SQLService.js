@@ -32,7 +32,6 @@ const SQLService = {
       }
 
       sails.models[model].validate(data, presentOnly, (err) => {
-        console.log(1111, !!err);
         if (err) {
           reject(err);
         }
