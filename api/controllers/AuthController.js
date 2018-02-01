@@ -86,13 +86,6 @@ module.exports = {
       });
     }
 
-    const data = {
-      id: auth.id,
-      site: auth.site,
-      profileId: auth.profileId,
-      owner: auth.owner,
-    };
-
     await SQLService.destroy({
       model: 'auth',
       action: 'unauthorizeThirdPartyAccount',
@@ -102,15 +95,6 @@ module.exports = {
 
     res.status(201).json({
       message: '成功解除绑定',
-    });
-
-    await Record.create({
-      model: 'Auth',
-      target: data.id,
-      data,
-      client: req.session.clientId,
-      operation: 'update',
-      action: 'unauthorizeThirdPartyAccount',
     });
   },
 

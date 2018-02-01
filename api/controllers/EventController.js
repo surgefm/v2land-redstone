@@ -96,8 +96,8 @@ const EventController = {
     }
 
     if (Object.getOwnPropertyNames(changes).length === 0) {
-      return res.status(400).json({
-        message: '你想修改什么？',
+      return res.status(200).json({
+        message: '什么变化也没有发生',
       });
     }
 
