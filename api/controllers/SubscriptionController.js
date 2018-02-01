@@ -156,7 +156,7 @@ module.exports = {
         subscription,
       });
     } catch (err) {
-      return res.status(err.status).json(err);
+      return res.serverError(err);
     }
 
     await Record.create({

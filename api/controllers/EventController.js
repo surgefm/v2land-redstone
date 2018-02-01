@@ -68,9 +68,7 @@ const EventController = {
         event,
       });
     } catch (err) {
-      return res.status(500).json({
-        message: '服务器发生未知错误，请联系开发者。',
-      });
+      return res.serverError(err);
     }
   },
 
@@ -126,7 +124,7 @@ const EventController = {
         await Record.create(record);
       }
     } catch (err) {
-      console.log(err);
+      return res.serverError(err);
     }
   },
 
@@ -190,9 +188,7 @@ const EventController = {
       });
       res.status(201).json({ news });
     } catch (err) {
-      return res.status(500).json({
-        message: '服务器发生未知错误，请联系开发者',
-      });
+      return res.serverError(err);
     }
   },
 
@@ -240,10 +236,7 @@ const EventController = {
         headerImage = await SQLService.create(data);
       }
     } catch (err) {
-      sails.log.error(err);
-      return res.status(500).json({
-        message: '服务器发生未知错误，请联系开发者',
-      });
+      return res.serverError(err);
     }
 
     res.status(201).json({

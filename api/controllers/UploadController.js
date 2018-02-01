@@ -30,7 +30,7 @@ module.exports = {
       },
     }, (err, file) => {
       if (err) {
-        return res.error(err);
+        return res.serverError(err);
       } else {
         return res.status(201).json({
           message: '上传成功',

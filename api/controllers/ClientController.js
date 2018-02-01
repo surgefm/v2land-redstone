@@ -167,6 +167,8 @@ module.exports = {
           data,
           client: req.session.clientId,
         });
+      } catch (err) {
+        return res.serverError(err);
       }
     } else {
       return res.status(500).json({
@@ -200,7 +202,7 @@ module.exports = {
         client,
       });
     } catch (err) {
-      return res.status(err.status).json(err);
+      return res.serverError(err);
     }
 
     const data = { ...client };
