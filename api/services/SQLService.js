@@ -1,3 +1,9 @@
+const Sequel = require('waterline-sequel');
+const sequelOptions = {
+  canReturnValues: true,
+  escapeInserts: true,
+};
+
 const SQLService = {
 
   createRecord: async (pgClient, {
@@ -43,108 +49,66 @@ const SQLService = {
   create: async ({ model, data, action, client }) => {
     model = model.toLowerCase();
     await SQLService.validate(model, data);
+    const sequel = new Sequel(sails.models[model].schema, sequelOptions);
 
     const now = new Date();
 
     data = SQLService.cleanData(model, data);
-    let dataSize = 0;
-    let query = `INSERT INTO "${model}"(`;
-    const values = [];
-    for (const i in data) {
-      if (!['createdAt', 'updatedAt', 'id', 'constructor'].includes(i) && data[i]) {
-        query += `"${i}", `;
-        dataSize++;
-        if (i !== 'time') {
-          values.push(data[i]);
-        } else {
-          values.push(new Date(data[i]));
-        }
-      }
-    }
-    query += `"createdAt", "updatedAt") VALUES (`;
-    for (let i = 1; i <= dataSize; i++) {
-      query += '$' + i + ', ';
-    }
-    query += '$' + (dataSize + 1) + ', $' + (dataSize + 1) + ') RETURNING *';
+    data.createdAt = now;
+    data.updatedAt = now;
+    const query = sequel.create(model, data);
 
-    values.push(now);
     return await SQLService.query({
       model,
       action,
       client,
       operation: 'create',
-      query,
-      values,
+      time: now,
+      ...query,
     });
   },
 
   update: async ({ model, where, data, action, client }) => {
-    model = model.toLowerCase();
-    await SQLService.validate(model, data, true);
+    try {
+      model = model.toLowerCase();
+      await SQLService.validate(model, data, true);
+      const sequel = new Sequel(sails.models[model].schema, sequelOptions);
 
-    const now = new Date();
+      const now = new Date();
+      data = SQLService.cleanData(model, data);
 
-    data = SQLService.cleanData(model, data);
-    const values = [];
-    let query = `UPDATE ${model} SET `;
-    for (const i in data) {
-      if (!['createdAt', 'updatedAt', 'id', 'constructor'].includes(i) && data[i]) {
-        query += `"${i}" = $${values.length + 1}, `;
-        values.push(i !== 'time' ? data[i] : new Date(data[i]));
-      }
+      data.updatedAt = now;
+      const query = sequel.create(model, data);
+
+      console.log(query.query);
+      return SQLService.query({
+        model,
+        action,
+        client,
+        operation: 'update',
+        ...query,
+      });
+    } catch (err) {
+      console.log(err);
     }
-
-    query += `"updatedAt" = $${values.length + 1} WHERE `;
-    values.push(now);
-
-    for (const i in where) {
-      if (where[i]) {
-        query += `"${i}" = $${values.length + 1}, `;
-        values.push(i !== 'time' ? where[i] : new Date(where[i]));
-      }
-    }
-    query = query.slice(0, -2);
-
-    query += ' RETURNING *';
-
-    return SQLService.query({
-      model,
-      action,
-      client,
-      operation: 'update',
-      query,
-      values,
-    });
   },
 
   destroy: async ({ model, action, where, client }) => {
     const time = new Date();
+    const sequel = new Sequel(sails.models[model].schema, sequelOptions);
 
     model = model.toLowerCase();
-    await SQLService.validate(model, where, true);
 
     where = SQLService.cleanData(model, where);
-    const values = [];
-
-    let query = `DELETE FROM ${model} WHERE `;
-    for (const i in where) {
-      if (where[i]) {
-        query += `"${i}" = $${values.length + 1}, `;
-        values.push(i !== 'time' ? where[i] : new Date(where[i]));
-      }
-    }
-
-    query = query.slice(0, -2);
-    query += ' RETURNING *';
+    const query = sequel.destroy(model, where);
 
     return SQLService.query({
       model,
       action,
       client,
       operation: 'destroy',
-      query,
-      values,
       time,
+      ...query,
     });
   },
 
@@ -158,6 +122,8 @@ const SQLService = {
       let object = response.rows[0];
 
       model = model[0].toUpperCase() + model.slice(1);
+      model = (model === 'Headerimage') ? 'HeaderImage' : model;
+
       if (model.toLowerCase === 'auth') {
         object = {
           id: object.id,
