@@ -45,8 +45,7 @@ const EventController = {
       });
     }
 
-    const { name, description } = req.body;
-    let event = await EventService.findEvent(name);
+    let event = await EventService.findEvent(req.body.name);
 
     if (event) {
       return res.status(409).json({
@@ -54,25 +53,23 @@ const EventController = {
       });
     }
 
+    req.body.status = 'pending';
+
     try {
-      event = await Event.create({ name, description });
+      event = await SQLService.create({
+        model: 'event',
+        data: req.body,
+        action: 'createEvent',
+        client: req.session.clientId,
+      });
 
       res.status(201).json({
         message: '提交成功，该事件在社区管理员审核通过后将很快开放',
         event,
       });
     } catch (err) {
-      return res.status(err.status).json(err);
+      return res.serverError(err);
     }
-
-    await Record.create({
-      model: 'Event',
-      operation: 'create',
-      action: 'createEvent',
-      client: req.session.clientId,
-      data: event,
-      target: event.id,
-    });
   },
 
   updateEvent: async (req, res) => {
@@ -91,43 +88,50 @@ const EventController = {
       });
     }
 
+    const changes = {};
     for (const attribute of ['name', 'description', 'status']) {
-      if (req.body[attribute]) {
-        event[attribute] = req.body[attribute];
+      if (req.body[attribute] && req.body[attribute] !== event[attribute]) {
+        changes[attribute] = req.body[attribute];
       }
     }
 
+    if (Object.getOwnPropertyNames(changes).length === 0) {
+      return res.status(200).json({
+        message: '什么变化也没有发生',
+        event,
+      });
+    }
+
     try {
-      await event.save();
+      const query = {
+        model: 'event',
+        client: req.session.clientId,
+        where: { id: event.id },
+      };
+
+      if (changes.status) {
+        await SQLService.update({
+          action: 'updateEventStatus',
+          data: { status: changes.status },
+          ...query,
+        });
+      }
+
+      delete changes.status;
+      if (Object.getOwnPropertyNames(changes).length > 0) {
+        await SQLService.update({
+          action: 'updateEventDetail',
+          data: changes,
+          ...query,
+        });
+      }
 
       res.status(201).json({
         message: '修改成功',
         event,
       });
     } catch (err) {
-      return res.status(err.status).json(err);
-    }
-
-    try {
-      const record = {
-        model: 'Event',
-        operation: 'update',
-        data: event,
-        client: req.session.clientId,
-        target: event.id,
-      };
-
-      if (req.body.status) {
-        record.action = 'updateEventStatus';
-        await Record.create(record);
-      }
-
-      if (req.body.name || req.body.description) {
-        record.action = 'updateEventDetail';
-        await Record.create(record);
-      }
-    } catch (err) {
-      console.log(err);
+      return res.serverError(err);
     }
   },
 
@@ -183,20 +187,16 @@ const EventController = {
     }
 
     try {
-      news = await News.create(data);
-      res.status(201).json(news);
+      news = await SQLService.create({
+        model: 'news',
+        data,
+        action: 'createNews',
+        client: req.session.clientId,
+      });
+      res.status(201).json({ news });
     } catch (err) {
-      return res.status(err.status).json(err);
+      return res.serverError(err);
     }
-
-    await Record.create({
-      model: 'News',
-      target: news.id,
-      operation: 'create',
-      action: 'createNews',
-      data: news,
-      client: req.session.clientId,
-    });
   },
 
   updateHeaderImage: async (req, res) => {
@@ -230,31 +230,30 @@ const EventController = {
     }
 
     try {
+      const data = {
+        where: { event: event.id },
+        data: headerImage,
+        client: req.session.clientId,
+        model: 'HeaderImage',
+      };
       if (req.method === 'PUT') {
-        headerImage = await HeaderImage.update({ event: event.id }, headerImage);
-        await Event.update({ id: event.id }, { headerImage: headerImage[0].id });
+        headerImage = await SQLService.update({
+          action: 'updateEventHeaderImage',
+          ...data,
+        });
       } else {
-        headerImage = await HeaderImage.create(headerImage);
-        await Event.update({ id: event.id }, { headerImage: headerImage.id });
+        headerImage = await SQLService.create({
+          action: 'createEventHeaderImage',
+          ...data,
+        });
       }
     } catch (err) {
-      return res.status(400).json({
-        message: err.message,
-      });
+      return res.serverError(err);
     }
 
     res.status(201).json({
       message: event.headerImage ? '修改成功' : '添加成功',
-    });
-
-    const data = headerImage.id ? headerImage : headerImage[0];
-    await Record.create({
-      model: 'HeaderImage',
-      target: data.id,
-      operation: req.method === 'POST' ? 'create' : 'update',
-      action: req.method === 'POST' ? 'createEventHeaderImage' : 'updateEventHeaderImage',
-      data: data,
-      client: req.session.clientId,
+      headerImage,
     });
   },
 };

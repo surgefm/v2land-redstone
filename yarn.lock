@@ -3281,7 +3281,7 @@ pg@4.5.5:
     pgpass "0.0.3"
     semver "^4.1.0"
 
-pg@^7.4.0, pg@^7.4.1:
+pg@^7.4.1:
   version "7.4.1"
   resolved "https://registry.yarnpkg.com/pg/-/pg-7.4.1.tgz#f3411c8ddf9f692322fe05e7017a1888e47f78f1"
   dependencies:
@@ -4920,6 +4920,12 @@ waterline-sequel@0.5.7:
   resolved "https://registry.yarnpkg.com/waterline-sequel/-/waterline-sequel-0.5.7.tgz#1d7e4328babfad8a31bd3fb26a86d71800ad828d"
   dependencies:
     lodash "3.10.0"
+
+waterline-sequel@^0.6.4:
+  version "0.6.4"
+  resolved "https://registry.yarnpkg.com/waterline-sequel/-/waterline-sequel-0.6.4.tgz#cfe1255efccbedf68ee538ba138464d37e303297"
+  dependencies:
+    lodash "3.10.1"
 
 waterline@~0.11.0:
   version "0.11.12"

@@ -118,7 +118,7 @@ module.exports = {
       return res.send(200, {
         role: currentRole,
       });
-    } else if (req.method === 'POST') {
+    } else if (req.method === 'PUT') {
       const data = req.body;
 
       const roles = ['admin', 'manager', 'contributor'];
@@ -145,31 +145,23 @@ module.exports = {
         });
       }
 
-      client.role = data.role;
-      const err = await client.save();
-      if (err) {
-        return res.send(500, {
-          message: '更新用户组失败',
+      try {
+        await SQLService.update({
+          where: { id: client.id },
+          model: 'client',
+          data: { role: targetRole },
+          client: req.session.clientId,
+          action: 'updateClientRole',
         });
-      } else {
+
         res.send(200, {
           message: '更新用户组成功',
         });
-
-        const data = { ...client };
-        delete data.password;
-
-        await Record.create({
-          model: 'Client',
-          target: client.id,
-          operation: 'update',
-          action: 'updateClientRole',
-          data,
-          client: req.session.clientId,
-        });
+      } catch (err) {
+        return res.serverError(err);
       }
     } else {
-      return res.status(500).json({
+      return res.status(400).json({
         message: '不合法的方法',
       });
     }
@@ -191,29 +183,29 @@ module.exports = {
       });
     }
 
-    client.username = req.body.username;
+    const changes = [];
+    for (const i of ['username']) {
+      if (req.body[i] && req.body[i] !== client[i]) {
+        changes.push(i);
+      }
+    }
 
     try {
-      await client.save();
+      await SQLService.update({
+        action: 'updateClientDetail',
+        model: 'client',
+        client: req.session.clientId,
+        data: changes,
+        where: { id: client.id },
+      });
+
       res.status(201).json({
         message: '修改成功',
         client,
       });
     } catch (err) {
-      return res.status(err.status).json(err);
+      return res.serverError(err);
     }
-
-    const data = { ...client };
-    delete data.password;
-
-    await Record.create({
-      model: 'Client',
-      operation: 'update',
-      action: 'updateClient',
-      target: client.id,
-      client: req.session.clientId,
-      data,
-    });
   },
 
   findClient: async (req, res) => {
