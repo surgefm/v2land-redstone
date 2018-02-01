@@ -10,27 +10,23 @@ const SQLService = {
     createdAt,
     updatedAt,
   }) => {
-    const now = new Date();
-    return pgClient.query(`
+    createdAt = createdAt || (data ? data.createdAt : null) || new Date();
+    updatedAt = updatedAt || (data ? data.updatedAt : null) || new Date();
+    return await pgClient.query(`
       INSERT INTO record(model, operation, action, client, data, target, "createdAt", "updatedAt")
       VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-    `, [model, operation, action, client, data, target, createdAt || now, updatedAt || now]);
+    `, [model, operation, action, client, data, target, createdAt, updatedAt]);
   },
 
-  validate: (model, data, presentOnly) => {
-    return new Promise((resolve, reject) => {
-      model = model.toLowerCase();
-      if (!sails.models[model]) {
-        reject(new Error('未找到该模型'));
-      }
+  validate: async (model, data, presentOnly) => {
+    model = model.toLowerCase();
+    if (!sails.models[model]) {
+      reject(new Error('未找到该模型'));
+    }
 
-      sails.models[model].validate(data, presentOnly, (err) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve();
-        }
-      });
+    sails.models[model].validate(data, presentOnly, (err) => {
+      if (err) throw err;
+      return;
     });
   },
 
@@ -46,21 +42,23 @@ const SQLService = {
 
   create: async ({ model, data, action, client }) => {
     model = model.toLowerCase();
-    try {
-      await SQLService.validate(model, data);
-    } catch (err) {
-      throw err;
-    }
+    await SQLService.validate(model, data);
 
     const now = new Date();
 
     data = SQLService.cleanData(model, data);
     let dataSize = 0;
     let query = `INSERT INTO "${model}"(`;
+    const values = [];
     for (const i in data) {
-      if (!['createdAt', 'updatedAt', 'id'].includes(i) && data[i]) {
+      if (!['createdAt', 'updatedAt', 'id', 'constructor'].includes(i) && data[i]) {
         query += `"${i}", `;
         dataSize++;
+        if (i !== 'time') {
+          values.push(data[i]);
+        } else {
+          values.push(new Date(data[i]));
+        }
       }
     }
     query += `"createdAt", "updatedAt") VALUES (`;
@@ -68,10 +66,6 @@ const SQLService = {
       query += '$' + i + ', ';
     }
     query += '$' + (dataSize + 1) + ', $' + (dataSize + 1) + ') RETURNING *';
-    const values = [];
-    Object.getOwnPropertyNames(data).forEach((value, i) => {
-      values[i] = data[value];
-    });
 
     values.push(now);
     return await SQLService.query({
@@ -86,35 +80,27 @@ const SQLService = {
 
   update: async ({ model, where, data, action, client }) => {
     model = model.toLowerCase();
-    try {
-      await SQLService.validate(model, data, true);
-    } catch (err) {
-      throw err;
-    }
+    await SQLService.validate(model, data, true);
 
     const now = new Date();
 
     data = SQLService.cleanData(model, data);
-    let dataSize = 0;
     const values = [];
     let query = `UPDATE ${model} SET `;
     for (const i in data) {
       if (!['createdAt', 'updatedAt', 'id', 'constructor'].includes(i) && data[i]) {
-        query += `"${i}" = $${++dataSize}, `;
-        if (i !== 'time') {
-          values.push(data[i]);
-        } else {
-          values.push(new Date(data[i]));
-        }
+        query += `"${i}" = $${values.length + 1}, `;
+        values.push(i !== 'time' ? data[i] : new Date(data[i]));
       }
     }
 
+    query += `"updatedAt" = $${values.length + 1} WHERE `;
     values.push(now);
 
-    query += `"updatedAt" = $${dataSize + 1} WHERE `;
     for (const i in where) {
       if (where[i]) {
-        query += `"${i}" = ${where[i]}, `;
+        query += `"${i}" = $${values.length + 1}, `;
+        values.push(i !== 'time' ? where[i] : new Date(where[i]));
       }
     }
     query = query.slice(0, -2);
@@ -131,33 +117,75 @@ const SQLService = {
     });
   },
 
-  query: async ({ model, operation, query, values, action, client }) => {
+  destroy: async ({ model, action, where, client }) => {
+    const time = new Date();
+
+    model = model.toLowerCase();
+    await SQLService.validate(model, where, true);
+
+    where = SQLService.cleanData(model, where);
+    const values = [];
+
+    let query = `DELETE FROM ${model} WHERE `;
+    for (const i in where) {
+      if (where[i]) {
+        query += `"${i}" = $${values.length + 1}, `;
+        values.push(i !== 'time' ? where[i] : new Date(where[i]));
+      }
+    }
+
+    query = query.slice(0, -2);
+    query += ' RETURNING *';
+
+    return SQLService.query({
+      model,
+      action,
+      client,
+      operation: 'destroy',
+      query,
+      values,
+      time,
+    });
+  },
+
+  query: async ({ model, operation, query, values, action, client, time }) => {
     const pg = await sails.pgPool.connect();
 
     try {
       await pg.query(`BEGIN`);
 
       const response = await pg.query(query, values);
-      const object = response.rows[0];
+      let object = response.rows[0];
 
       model = model[0].toUpperCase() + model.slice(1);
+      if (model.toLowerCase === 'auth') {
+        object = {
+          id: object.id,
+          site: object.site,
+          profileId: object.profileId,
+          owner: object.owner,
+        };
+      } else if (model.toLowerCase === 'client') {
+        delete object.password;
+      }
 
-      await SQLService.createRecord(pg, {
+      const record = {
         model,
         operation,
         action,
         client,
         data: object,
         target: object.id,
-        createdAt: object.updatedAt,
-        updatedAt: object.updatedAt,
-      });
+        createdAt: time,
+        updatedAt: time,
+      };
+      await SQLService.validate('record', record);
+      await SQLService.createRecord(pg, record);
 
       await pg.query(`COMMIT`);
       return object;
     } catch (err) {
       await pg.query(`ROLLBACK`);
-      sails.log.error(err);
       throw err;
     } finally {
       pg.release();
