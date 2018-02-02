@@ -12,5 +12,6 @@ module.exports.globals = {
 
   site: process.env.SITE || 'https://langchao.co',
   api: process.env.API || 'https://a.langchao.co',
+  notification: process.env.IS_NOTIFICATION_ON,
 
 }
