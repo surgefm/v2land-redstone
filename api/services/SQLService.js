@@ -190,6 +190,56 @@ const SQLService = {
     }
   },
 
+  find: async ({ model, query }) => {
+    try {
+      const pg = await sails.pgPool.connect();
+      model = model.toLowerCase();
+      const where = generateWhereQuery(query);
+      const q = `SELECT * FROM ${model} WHERE ${where.query}`;
+      const response = await pg.query(q, where.values);
+      return response.rows;
+    } catch (err) {
+      throw err;
+    }
+  },
+
 };
+
+/**
+ * 生成 WHERE 语句
+ */
+function generateWhereQuery(query, values = [], parents = []) {
+  try {
+    let string = '';
+    const properties = Object.getOwnPropertyNames(query);
+    for (let i = 0; i < properties.length; i++) {
+      const property = properties[i];
+      if (typeof(query[property]) !== 'object' || query[property] instanceof Date) {
+        string += parents[0] + ` #>> '{`;
+        parents = parents.slice(1);
+        parents.push(property);
+        string += `${parents.join(',')}}'`;
+        values.push(query[property]);
+        string += ' = $' + values.length;
+      } else {
+        parents.push(property);
+        child = generateWhereQuery(query[property], values, parents);
+        string += child.query;
+        values = child.values;
+      }
+
+      if (i !== properties.length - 1) {
+        string += ' AND ';
+      }
+    }
+
+    return {
+      query: string,
+      values,
+    };
+  } catch (err) {
+    throw err;
+  }
+}
 
 module.exports = SQLService;
