@@ -2,7 +2,7 @@
  * isLoggedIn
  *
  * @module      :: Policy
- * @description :: Check if the session client has logged in
+ * @description :: Check if the session user has logged in
  * @docs        :: http://sailsjs.org/#!/documentation/concepts/Policies
  *
  */
@@ -10,11 +10,11 @@
 module.exports = async function(req, res, next) {
     const client = await getClient(req.session.clientId);
     if (client) {
-        req.client = client;
+        req.session.client = client;
         return next();
     } else {
         return res.status(401).json({
-            message: '请在登录后进行该操作',
+            message: '你还未登录哦',
         });
     }
 };
