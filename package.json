@@ -43,6 +43,7 @@
     "waterline-sequel": "^0.6.4"
   },
   "scripts": {
+    "precommit": "make eslint",
     "debug": "node debug app.js",
     "start": "node app.js"
   },
@@ -55,6 +56,7 @@
   "license": "",
   "devDependencies": {
     "babel-eslint": "^8.0.3",
+    "husky": "^0.14.3",
     "supertest": "^3.0.0"
   }
 }
