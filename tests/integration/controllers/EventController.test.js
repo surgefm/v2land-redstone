@@ -11,12 +11,6 @@ describe('EventController', function() {
       });
     });
 
-    after(async function() {
-      await Event.destroy({
-        name: '浪潮今天发布啦',
-      });
-    });
-
     it('should return success', function(done) {
       agent = request.agent(sails.hooks.http.app);
 
@@ -107,16 +101,6 @@ describe('EventController', function() {
       });
     });
 
-    after(async function() {
-      await Event.destroy({
-        name: '浪潮今天发布了吗？',
-      });
-
-      await HeaderImage.destroy({
-        sourceUrl: 'https://langchao.co/',
-      });
-    });
-
     it('should return success', function(done) {
       agent = request.agent(sails.hooks.http.app);
 
@@ -182,17 +166,6 @@ describe('EventController', function() {
         name: '浪潮测试3',
         status: 'admitted',
         description: '浪潮测试3',
-      });
-    });
-    after(async function() {
-      await Event.destroy({
-        name: '浪潮测试1',
-      });
-      await Event.destroy({
-        name: '浪潮测试2',
-      });
-      await Event.destroy({
-        name: '浪潮测试3',
       });
     });
     it('should have list', async function() {
