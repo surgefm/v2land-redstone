@@ -10,7 +10,7 @@
 module.exports = async function(req, res, next) {
   const client = await getClient(req.session.clientId);
   if (client) {
-    req.session.client = client;
+    req.client = client;
     return next();
   } else {
     return res.status(401).json({
