@@ -1,22 +1,23 @@
 module.exports = function PgPoolInit(sails) {
-  const Model = sails.models;
+  let Model;
   const checkInterval = 1000;
-
   return {
 
     initialize: function(cb) {
-      if (sails.config.globals.notification) {
-        setTimeout(check, checkInterval);
-      }
+      sails.on('hook:orm:loaded', () => {
+        if (sails.config.globals.notification) {
+          Model = sails.models;
+          setTimeout(check, checkInterval);
+        }
 
-      cb();
+        cb();
+      });
     },
 
   };
 
   /**
    * 检查有没有需要发出的推送
-   * @constructor
    */
   async function check() {
     let notification = await Model.notification.findOne({
@@ -44,7 +45,6 @@ module.exports = function PgPoolInit(sails) {
 
   /**
    * 发出推送
-   * @constructor
    */
   async function notify(notification) {
     const { event, subscriptions } = notification;
@@ -66,45 +66,160 @@ module.exports = function PgPoolInit(sails) {
     const promises = [];
     for (const subscription of subscriptions) {
       promises.push(new Promise(async (resolve, reject) => {
-        if (['twitter', 'twitterAt'].includes(subscription.method)) {
-          const auth = await Model.auth.findOne({
-            site: 'twitter',
-            owner: subscription.subscriber,
+        try {
+          const data = {
+            model: 'Subscription',
+            target: subscription.id,
+            action: 'notify',
+            data: { ...notification },
+          };
+
+          const same = await SQLService.find({
+            model: 'record',
+            where: data,
           });
-          if (!auth) {
-            subscription.status = 'inactive';
-            await subscription.save();
-            return reject(new Error(`未找到用户 ${subscription.subscriber} 的 Twitter 绑定`));
+
+          console.log('same ' + same);
+
+          if (same.length > 0) {
+            // Already notified.
+            return resolve();
           }
 
-          let message = template.message;
-          message += template.url + ' #浪潮';
-          if (subscription.method === 'twitterAt') {
-            message = '@' + subscription.contact.address + ' ' + message;
+          switch (subscription.method) {
+            case 'email':
+              await notifyByEmail(subscription, template);
+              break;
+            case 'twitter':
+              await notifyByTwitter(subscription, template);
+              break;
+            case 'twitterAt':
+              await notifyByTwitterAt(subscription, template);
+              break;
+            case 'weibo':
+              await notifyByWeibo(subscription, template);
+              break;
+            case 'weiboAt':
+              await notifyByWeiboAt(subscription.template);
+              break;
           }
-          /** 这边写得是一团浆糊 */
-          await TwitterService.tweet(auth, message);
-          return resolve();
-        } else if (['weibo', 'weiboAt'].includes(subscription.method)) {
-          const auth = await Model.auth.findOne({
-            site: 'weibo',
-            owner: subscription.subscriber,
+          await SQLService.create({
+            model: 'record',
+            action: 'notify',
+            data,
           });
-          if (!auth) {
-            subscription.status = 'inactive';
-            await subscription.save();
-            return reject(new Error(`未找到用户 ${subscription.subscriber} 的微博绑定`));
-          }
-          /** Do something */
-          return resolve();
-        } else if (subscription.method === 'email') {
-          await EmailService.notify(template, subscription);
-          return resolve();
+          resolve();
+        } catch (err) {
+          reject(err);
         }
       }));
     }
 
-    await Promise.all(promises);
+    return Promise.all(promises);
   }
 
+  /**
+   * 发送邮件推送
+   */
+  async function notifyByEmail(subscription, template) {
+    return EmailService.notify(subscription, template);
+  }
+
+  /**
+   * 使用用户的绑定 Twitter 账号发布推文
+   */
+  async function notifyByTwitter(subscription, template) {
+    const auth = await Model.auth.findOne({
+      site: 'twitter',
+      owner: subscription.subscriber,
+    });
+    if (!auth) {
+      subscription.status = 'failed';
+      await subscription.save();
+      return reject(new Error(`未找到用户 ${subscription.subscriber} 的 Twitter 绑定`));
+    }
+
+    let message = template.message;
+    message += template.url + ' #浪潮';
+    return TwitterService.tweet(auth, message);
+  }
+
+  /**
+   * 使用浪潮的绑定账号发布推文并 @ 用户
+   */
+  async function notifyByTwitterAt(subscription, template) {
+    if (!sails.config.globals.officialAccount.twitter) {
+      throw new Error('未配置官方 Twitter 账号');
+    }
+
+    let profileId = sails.config.globals.officialAccount.twitter;
+    profileId = typeof(profileId) === 'object'
+      ? profileId[Math.floor(Math.random() * profileId.length)]
+      : profileId;
+
+    const auth = await Model.auth.findOne({
+      site: 'twitter',
+      profileId,
+    });
+
+    if (!auth) {
+      subscription.status = 'failed';
+      await subscription.save();
+      throw new Error(`未找到浪潮 Twitter ${profileId} 的绑定`);
+    }
+
+    let message = '@' + subscription.contact.address + ' ';
+    message += template.message + ' ' + template.url + ' #浪潮';
+    return TwitterService.tweet(auth, message);
+  }
+
+  /**
+   * 使用用户的绑定新浪账号发布微博
+   */
+  async function notifyByWeibo(subscription, template) {
+    const auth = await Model.auth.findOne({
+      site: 'weibo',
+      owner: subscription.subscriber,
+    });
+    if (!auth) {
+      subscription.status = 'failed';
+      await subscription.save();
+      throw new Error(`未找到用户 ${subscription.subscriber} 的微博绑定`);
+    }
+
+    const message = template.message + ' ' + template.url;
+    return WeiboService.post(auth, message);
+  }
+
+  /**
+   * 使用浪潮的绑定账号发布微博并 @ 用户
+   */
+  async function notifyByWeiboAt(subscription, template) {
+    if (!sails.config.globals.officialAccount.weibo) {
+      throw new Error('未配置官方微博账号');
+    }
+
+    let profileId = sails.config.globals.officialAccount.weibo;
+    profileId = typeof (profileId) === 'object'
+      ? profileId[Math.floor(Math.random() * profileId.length)]
+      : profileId;
+
+    const auth = await Model.auth.findOne({
+      site: 'weibo',
+      profileId,
+    });
+
+    if (!auth) {
+      subscription.status = 'failed';
+      await subscription.save();
+      throw new Error(`未找到浪潮微博 ${profileId} 的绑定`);
+    }
+
+    let message = '@' + subscription.contact.address + ' ';
+    message += template.message;
+    message += ' ' + Math.floor(Math.random() * 10000000) + ' ';
+    message += template.url;
+
+    return WeiboService.post(auth, message);
+  }
 };

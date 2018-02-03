@@ -12,6 +12,10 @@ module.exports.globals = {
 
   site: process.env.SITE || 'https://langchao.co',
   api: process.env.API || 'https://a.langchao.co',
-  notification: process.env.IS_NOTIFICATION_ON,
+  notification: process.env.ENABLE_NOTIFICATION,
+  officialAccount: {
+    twitter: process.env.OFFICIAL_TWITTER || '768458621613072384',
+    weibo: process.env.OFFICIAL_WEIBO || '6264484740',
+  },
 
 }

@@ -12,7 +12,7 @@ module.exports = {
     request
       .post('https://api.weibo.com/2/statuses/share.json?' +
         'access_token=' + auth.accessToken +
-        '&status=' + urlencode(message)
+        '&status=' + urlencode(status)
       )
       .type('form')
       .end((err) => {
