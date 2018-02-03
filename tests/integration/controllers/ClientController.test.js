@@ -65,7 +65,11 @@ describe('ClientController', function() {
           agent
             .get('/client/me')
             .expect(401, {
+<<<<<<< HEAD
               message: '你还未登录',
+=======
+              message: '请在登录后进行该操作',
+>>>>>>> 608583a97030113e28831d627c8756863bc2e2da
             }, done);
         });
     });
@@ -76,7 +80,11 @@ describe('ClientController', function() {
       agent
         .get('/client/me')
         .expect(401, {
+<<<<<<< HEAD
           message: '你还未登录',
+=======
+          message: '请在登录后进行该操作',
+>>>>>>> 608583a97030113e28831d627c8756863bc2e2da
         }, done);
     });
   });
