@@ -17,7 +17,9 @@ module.exports = async function(req, res, next) {
     } else {
         // actions if not logged in
         // console.log('forbidden');
-        return res.forbidden('You must log in to visit this page.');
+        return res.status(401).json({
+            message: '你还未登录哦',
+        });
     }
 };
 
