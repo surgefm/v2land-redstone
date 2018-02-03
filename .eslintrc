@@ -16,6 +16,10 @@
     "object-curly-spacing": [
       "error",
       "always"
-    ]
+    ],
+    "prefer-const": ["error", {
+      "destructuring": "all",
+      "ignoreReadBeforeAssign": true
+    }]
   }
 }

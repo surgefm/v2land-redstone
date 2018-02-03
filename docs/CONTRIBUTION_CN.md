@@ -26,7 +26,7 @@ v2land-redstone 是一个用 [Sails](https://sailsjs.com/) 重构的后端，目
 - 测试的编写
 - 文档的改善
 
-开发前，我们希望您可以加入我们的 [Slack](https://join.slack.com/t/v2land/shared_invite/enQtMjkzMzM4MDgwNDUxLWRhMDUxNmQ2ZjZlMjBlN2NmNjUxMTM1NDQ0MDk1YWRlZmI5MmU5MzdmNzQyNmI3ODY2MzhiZTA3NTI0MzFlMGQ) 群和我们充分沟通。
+开发前，我们希望您可以加入我们的 [Slack](https://join.slack.com/t/v2land/shared_invite/enQtMzA4NTE1ODQzODU2LTMzNjMyZjdiYWU3OGQyZTI1YzA2ZTliNDBlMzY1MTA0N2RhYjBmZDJhNTY2N2IxMDdmMmJkNWY1NjcwZmY0NGQ) 群和我们充分沟通。
 
 ### 开发环境
 

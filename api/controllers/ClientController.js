@@ -10,9 +10,9 @@ const bcrypt = require('bcrypt');
 module.exports = {
 
   login: async (req, res) => {
-    let data = req.body;
+    const data = req.body;
 
-    let client = await Client.findOne({
+    const client = await Client.findOne({
       username: data.username,
     });
 
@@ -22,7 +22,7 @@ module.exports = {
       });
     }
 
-    let verified = await bcrypt.compare(data.password, client.password);
+    const verified = await bcrypt.compare(data.password, client.password);
 
     if (!verified) {
       return res.status(401).json({
@@ -46,7 +46,7 @@ module.exports = {
   },
 
   register: async (req, res) => {
-    let data = req.body;
+    const data = req.body;
     let salt;
     let hash;
 
@@ -74,19 +74,30 @@ module.exports = {
     }
 
     try {
-      await Client.create({
+      client = await Client.create({
         username: data.username,
         password: hash,
       });
 
       res.status(201).json({ message: '注册成功' });
     } catch (err) {
-      res.serverError(err);
+      return res.serverError(err);
     }
+
+    client = { ...client };
+    delete client.password;
+    await Record.create({
+      model: 'Client',
+      target: client.id,
+      data: client,
+      operation: 'create',
+      action: 'createClient',
+      client: req.session.clientId, // Although in most cases it's null.
+    });
   },
 
   role: async (req, res) => {
-    let clientId = req.session.clientId;
+    const clientId = req.session.clientId;
 
     if (!clientId) {
       return res.status(401).json({
@@ -94,23 +105,23 @@ module.exports = {
       });
     }
 
-    let client = await Client.findOne({ id: clientId });
+    const client = await Client.findOne({ id: clientId });
     if (!client) {
       return res.status(404).json({
         message: '未找到该用户',
       });
     }
 
-    let currentRole = client.role;
+    const currentRole = client.role;
 
     if (req.method === 'GET') {
       return res.send(200, {
         role: currentRole,
       });
-    } else if (req.method === 'POST') {
-      let data = req.body;
+    } else if (req.method === 'PUT') {
+      const data = req.body;
 
-      let roles = ['admin', 'manager', 'contributor'];
+      const roles = ['admin', 'manager', 'contributor'];
 
       if (typeof data.id !== 'number') {
         return res.status(500).json({
@@ -118,14 +129,14 @@ module.exports = {
         });
       }
 
-      let targetClient = await Client.findOne({ id: data.id });
+      const targetClient = await Client.findOne({ id: data.id });
       if (!targetClient) {
         return res.status(404).json({
           message: '未找到目标用户',
         });
       }
 
-      let targetRole = targetClient.role;
+      const targetRole = targetClient.role;
 
       if (roles.indexOf(currentRole) <= roles.indexOf(targetRole)
         && currentRole !== 'admin') {
@@ -134,26 +145,85 @@ module.exports = {
         });
       }
 
-      client.role = data.role;
-      let err = await client.save();
-      if (err) {
-        return res.send(500, {
-          message: '更新用户组失败',
+      try {
+        await SQLService.update({
+          where: { id: client.id },
+          model: 'client',
+          data: { role: targetRole },
+          client: req.session.clientId,
+          action: 'updateClientRole',
         });
-      } else {
-        return res.send(200, {
+
+        res.send(200, {
           message: '更新用户组成功',
         });
+      } catch (err) {
+        return res.serverError(err);
       }
     } else {
-      return res.status(500).json({
+      return res.status(400).json({
         message: '不合法的方法',
       });
     }
   },
 
+  updateClient: async (req, res) => {
+    if (!req.body) {
+      return res.status(400).json({
+        message: '缺少修改信息',
+      });
+    }
+
+    const name = req.param('clientName');
+    const client = await ClientService.findClient(name);
+
+    if (!client) {
+      return res.status(404).json({
+        message: '未找到该用户',
+      });
+    }
+
+    const changes = [];
+    for (const i of ['username']) {
+      if (req.body[i] && req.body[i] !== client[i]) {
+        changes.push(i);
+      }
+    }
+
+    try {
+      await SQLService.update({
+        action: 'updateClientDetail',
+        model: 'client',
+        client: req.session.clientId,
+        data: changes,
+        where: { id: client.id },
+      });
+
+      res.status(201).json({
+        message: '修改成功',
+        client,
+      });
+    } catch (err) {
+      return res.serverError(err);
+    }
+  },
+
+  findClient: async (req, res) => {
+    const name = req.param('clientName');
+    const client = await ClientService.findClient(name);
+
+    if (!client) {
+      return res.status(404).json({
+        message: '未找到该用户',
+      });
+    }
+
+    // Should determine how much information to send based on client's group.
+    return res.status(200).json({ client });
+  },
+
   getClientDetail: async (req, res) => {
-    let clientId = req.session.clientId;
+    const clientId = req.session.clientId;
 
     if (!clientId) {
       return res.status(401).json({
@@ -161,7 +231,7 @@ module.exports = {
       });
     }
 
-    let client = await Client.findOne({ id: clientId });
+    const client = await ClientService.findClient(clientId);
     if (!client) {
       delete req.session.clientId;
       return res.status(404).json({
@@ -169,9 +239,7 @@ module.exports = {
       });
     }
 
-    delete client.password;
-
-    res.status(200).json(client);
+    res.status(200).json({ client });
   },
 
 };

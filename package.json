@@ -5,6 +5,8 @@
   "description": "a Sails application",
   "keywords": [],
   "dependencies": {
+    "aws-sdk": "^2.188.0",
+    "axios": "^0.17.1",
     "bcrypt": "^1.0.3",
     "colors": "^1.1.2",
     "ejs": "^2.5.5",
@@ -23,11 +25,22 @@
     "grunt-sails-linker": "~0.10.1",
     "grunt-sync": "0.5.2",
     "include-all": "^1.0.0",
+    "md5": "^2.2.1",
     "mocha": "^4.0.1",
+    "nodemailer": "^4.4.2",
+    "nodemailer-express-handlebars": "^2.0.0",
+    "oauth": "^0.9.15",
+    "pg": "^7.4.1",
+    "query-string": "^5.0.1",
     "rc": "1.0.1",
     "sails": "~0.12.14",
     "sails-disk": "~0.10.9",
-    "sails-postgresql": "^0.11.4"
+    "sails-postgresql": "^0.11.4",
+    "skipper-s3": "^0.5.9",
+    "time": "^0.12.0",
+    "urlencode": "^1.1.0",
+    "v2land-sails-pg-session": "^1.0.2",
+    "waterline-sequel": "^0.6.4"
   },
   "scripts": {
     "debug": "node debug app.js",

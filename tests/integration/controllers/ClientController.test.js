@@ -1,12 +1,12 @@
-let request = require('supertest');
+const request = require('supertest');
 let agent;
 
 describe('ClientController', function() {
   describe('#register()', function() {
-    after(function(done) {
-      Client.destroy({
+    after(async function() {
+      await Client.destroy({
         username: 'testAccountRegister',
-      }).exec(done);
+      });
     });
 
     it('should return success', function(done) {
@@ -32,10 +32,10 @@ describe('ClientController', function() {
         }, done);
     });
 
-    after(function(done) {
-      Client.destroy({
+    after(async function() {
+      await Client.destroy({
         username: 'testAccountLogin',
-      }).exec(done);
+      });
     });
 
     it('should return success', function(done) {

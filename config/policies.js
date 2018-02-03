@@ -28,13 +28,59 @@ module.exports.policies = {
 
   NewsController: {
     'findOne': true,
-    'update': true,
+    'updateNews': true,
     'getAllPendingNews': true,
     '*': false,
   },
 
   EventController: {
+    'findEvent': true,
     'getEvent': true,
+    'createEvent': true,
+    'updateEvent': true,
+    'getEventList': true,
+    'getPendingNews': true,
+    'createNews': true,
+    'updateHeaderImage': true,
+    '*': false,
+  },
+
+  ClientController: {
+    'updateClient': true,
+    'findClient': true,
+    'register': true,
+    'getClientDetail': true,
+    'login': true,
+    'role': true,
+    'logout': true,
+    '*': false,
+  },
+
+  SubscriptionController: {
+    'unsubscribe': true,
+    'subscribe': true,
+    '*': false,
+  },
+
+  HeaderImageController: {
+    '*': false,
+  },
+
+  AuthController: {
+    'options': true,
+    'authorize': true,
+    'unauthorize': true,
+    'twitter': true,
+    'twitterRedirect': true,
+    'twitterCallback': true,
+    'weibo': true,
+    'weiboRedirect': true,
+    'weiboCallback': true,
+    '*': false,
+  },
+
+  UploadController: {
+    'upload': true,
     '*': false,
   },
 

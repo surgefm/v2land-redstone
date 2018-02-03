@@ -14,17 +14,35 @@
 
 module.exports = function serverError(data, options) {
   // Get access to `req`, `res`, & `sails`
-  let req = this.req;
-  let res = this.res;
-  let sails = req._sails;
+  const req = this.req;
+  const res = this.res;
+  const sails = req._sails;
 
   // Set status code
-  res.status(500);
+  res.status(data.status || 500);
 
   // Log error to console
   if (data !== undefined) {
     sails.log.error('Sending 500 ("Server Error") response: \n', data);
   } else sails.log.error('Sending empty 500 ("Server Error") response');
+
+  if (data.code === 'E_VALIDATION') {
+    let message = '错误或缺失的参数：';
+    const attributes = Object.getOwnPropertyNames(data.invalidAttributes);
+    for (let i = 0; i < attributes.length; i++) {
+      message += attributes[i];
+      if (i === attributes.length - 2) {
+        message += ' 与 ';
+      } else {
+        message += (i === attributes.length - 1) ? '。' : '、';
+      }
+    }
+
+    return res.json({
+      message,
+      invalidAttributes: data.invalidAttributes,
+    });
+  }
 
   // Only include errors in response if application environment
   // is not set to 'production'.  In production, we shouldn't
