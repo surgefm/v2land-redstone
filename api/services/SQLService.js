@@ -190,11 +190,11 @@ const SQLService = {
     }
   },
 
-  find: async ({ model, query }) => {
+  find: async ({ model, where }) => {
     try {
       const pg = await sails.pgPool.connect();
       model = model.toLowerCase();
-      const where = generateWhereQuery(query);
+      where = generateWhereQuery(where);
       const q = `SELECT * FROM ${model} WHERE ${where.query}`;
       const response = await pg.query(q, where.values);
       return response.rows;
@@ -215,10 +215,14 @@ function generateWhereQuery(query, values = [], parents = []) {
     for (let i = 0; i < properties.length; i++) {
       const property = properties[i];
       if (typeof(query[property]) !== 'object' || query[property] instanceof Date) {
-        string += parents[0] + ` #>> '{`;
-        parents = parents.slice(1);
-        parents.push(property);
-        string += `${parents.join(',')}}'`;
+        if (parents.length > 0) {
+          string += parents[0] + ` #>> '{`;
+          parents = parents.slice(1);
+          parents.push(property);
+          string += `${parents.join(',')}}'`;
+        } else {
+          string += property;
+        }
         values.push(query[property]);
         string += ' = $' + values.length;
       } else {
