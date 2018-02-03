@@ -14,7 +14,7 @@ module.exports = async function(req, res, next) {
         return next();
     } else {
         return res.status(401).json({
-            message: '你还未登录哦',
+            message: '请在登录后进行该操作',
         });
     }
 };

@@ -17,15 +17,6 @@
  */
 
 module.exports.policies = {
-  ClientController: {
-    'login': true,    
-    'register': true,
-    'role': 'isLoggedIn',
-    'getClientDetail': 'isLoggedIn',
-    'logout': 'isLoggedIn',    
-    '*': false,
-  },
-
   NewsController: {
     'findOne': true,
     'updateNews': true,
@@ -48,11 +39,11 @@ module.exports.policies = {
   ClientController: {
     'updateClient': true,
     'findClient': true,
-    'register': true,
-    'getClientDetail': true,
     'login': true,
-    'role': true,
-    'logout': true,
+    'register': true,
+    'role': 'isLoggedIn',
+    'getClientDetail': 'isLoggedIn',
+    'logout': 'isLoggedIn',
     '*': false,
   },
 
