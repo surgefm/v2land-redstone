@@ -28,7 +28,7 @@ module.exports = {
     status: {
       type: 'string',
       defaultsTo: 'active',
-      enum: ['active', 'unsubscribed', 'inactive'],
+      enum: ['active', 'unsubscribed', 'failed'],
     },
 
     unsubscribeId: {
