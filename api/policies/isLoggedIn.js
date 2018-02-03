@@ -8,7 +8,7 @@
  */
 
 module.exports = async function(req, res, next) {
-    let client = await getClient(req.session.clientId);
+    const client = await getClient(req.session.clientId);
     if (client) {
         req.session.client = client;
         return next();
@@ -30,7 +30,7 @@ async function getClient(clientId) {
     if (!clientId) {
         return false;
     }
-    let client = await Client.findOne({ id: clientId });
+    const client = await Client.findOne({ id: clientId });
     if (!client) {
         delete req.session.clientId;
         return false;
