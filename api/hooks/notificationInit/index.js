@@ -79,8 +79,6 @@ module.exports = function PgPoolInit(sails) {
             where: data,
           });
 
-          console.log('same ' + same);
-
           if (same.length > 0) {
             // Already notified.
             return resolve();
@@ -108,9 +106,9 @@ module.exports = function PgPoolInit(sails) {
             action: 'notify',
             data,
           });
-          resolve();
+          return resolve();
         } catch (err) {
-          reject(err);
+          return reject(err);
         }
       }));
     }
