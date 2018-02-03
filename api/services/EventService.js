@@ -9,7 +9,7 @@ module.exports = {
     })
       .populate('news', {
         where: { status: 'admitted' },
-        sort: 'createdAt DESC',
+        sort: 'time DESC',
       })
       .populate('headerImage');
 
