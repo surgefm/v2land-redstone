@@ -21,14 +21,14 @@ module.exports = {
     },
 
     contact: {
-      type: 'text',
+      type: 'json',
       required: true,
     },
 
     status: {
       type: 'string',
       defaultsTo: 'active',
-      enum: ['active', 'unsubscribed'],
+      enum: ['active', 'unsubscribed', 'failed'],
     },
 
     unsubscribeId: {
