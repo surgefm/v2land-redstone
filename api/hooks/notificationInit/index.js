@@ -65,7 +65,7 @@ module.exports = function PgPoolInit(sails) {
     const template = await mode.getTemplate(notification, event, news);
     const promises = [];
     for (const subscription of subscriptions) {
-      promises.push(async () => {
+      const notify = async () => {
         try {
           const data = {
             model: 'Subscription',
@@ -108,9 +108,11 @@ module.exports = function PgPoolInit(sails) {
           });
           return;
         } catch (err) {
-          throw(err);
+          throw err;
         }
-      });
+      };
+
+      promises.push(notify());
     }
 
     return Promise.all(promises);
