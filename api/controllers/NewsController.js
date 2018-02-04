@@ -46,6 +46,9 @@ module.exports = {
         where: { id: news.id },
         model: 'news',
       };
+
+      const changesCopy = { ...changes };
+
       if (changes.status) {
         news = await SQLService.update({
           action: 'updateNewsStatus',
@@ -61,6 +64,11 @@ module.exports = {
           data: changes,
           ...query,
         });
+      }
+
+      if (changesCopy.status || changesCopy.time) {
+        const event = await Event.findOne({ id: news.event });
+        await NotificationService.updateForNewNews(event, news);
       }
 
       res.status(201).json({
