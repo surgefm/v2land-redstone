@@ -20,24 +20,28 @@ module.exports = function PgPoolInit(sails) {
    * 检查有没有需要发出的推送
    */
   async function check() {
-    let notification = await Model.notification.findOne({
-      order: 'time asc',
-      where: { status: 'active' },
-    })
-      .populate('event')
-      .populate('subscriptions', {
+    try {
+      let notification = await Model.notification.findOne({
+        order: 'time asc',
         where: { status: 'active' },
-      });
+      })
+        .populate('event')
+        .populate('subscriptions', {
+          where: { status: 'active' },
+        });
 
-    if (notification && !notification.event.name) {
-      notification.status = 'inactive';
-      await notification.save();
-      notification = null;
-    }
+      if (notification && !notification.event.name) {
+        notification.status = 'inactive';
+        await notification.save();
+        notification = null;
+      }
 
-    if (notification && (notification.time - Date.now() < 0)) {
-      await notify(notification);
-      return check();
+      if (notification && (notification.time - Date.now() < 0)) {
+        await notify(notification);
+        return check();
+      }
+    } catch (err) {
+      sails.log.error(err);
     }
 
     setTimeout(check, checkInterval);
@@ -66,50 +70,46 @@ module.exports = function PgPoolInit(sails) {
     const promises = [];
     for (const subscription of subscriptions) {
       const notify = async () => {
-        try {
-          const data = {
-            model: 'Subscription',
-            target: subscription.id,
-            action: 'notify',
-            data: { ...notification },
-          };
+        const data = {
+          model: 'Subscription',
+          target: subscription.id,
+          action: 'notify',
+          data: { ...notification },
+        };
 
-          const same = await SQLService.find({
-            model: 'record',
-            where: data,
-          });
+        const same = await SQLService.find({
+          model: 'record',
+          where: data,
+        });
 
-          if (same.length > 0) {
-            // Already notified.
-            return;
-          }
-
-          switch (subscription.method) {
-            case 'email':
-              await notifyByEmail(subscription, template);
-              break;
-            case 'twitter':
-              await notifyByTwitter(subscription, template);
-              break;
-            case 'twitterAt':
-              await notifyByTwitterAt(subscription, template);
-              break;
-            case 'weibo':
-              await notifyByWeibo(subscription, template);
-              break;
-            case 'weiboAt':
-              await notifyByWeiboAt(subscription.template);
-              break;
-          }
-          await SQLService.create({
-            model: 'record',
-            action: 'notify',
-            data,
-          });
+        if (same.length > 0) {
+          // Already notified.
           return;
-        } catch (err) {
-          throw err;
         }
+
+        switch (subscription.method) {
+          case 'email':
+            await notifyByEmail(subscription, template);
+            break;
+          case 'twitter':
+            await notifyByTwitter(subscription, template);
+            break;
+          case 'twitterAt':
+            await notifyByTwitterAt(subscription, template);
+            break;
+          case 'weibo':
+            await notifyByWeibo(subscription, template);
+            break;
+          case 'weiboAt':
+            await notifyByWeiboAt(subscription.template);
+            break;
+        }
+        await SQLService.create({
+          model: 'record',
+          action: 'notify',
+          data,
+        });
+        return;
       };
 
       promises.push(notify());
@@ -136,7 +136,7 @@ module.exports = function PgPoolInit(sails) {
     if (!auth) {
       subscription.status = 'failed';
       await subscription.save();
-      return reject(new Error(`未找到用户 ${subscription.subscriber} 的 Twitter 绑定`));
+      throw new Error(`未找到用户 ${subscription.subscriber} 的 Twitter 绑定`);
     }
 
     let message = template.message;
