@@ -32,5 +32,12 @@ module.exports = {
       via: 'notification',
     },
 
+    status: {
+      type: 'string',
+      required: true,
+      defaultsTo: 'active',
+      enum: ['active', 'inactive'],
+    },
+
   },
 };

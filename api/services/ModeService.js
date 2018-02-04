@@ -3,6 +3,7 @@ const time = require('time');
 const modeCollection = {
 
   'new': {
+    needNews: true,
     new: async (event) => {
       return new Date('1/1/3000');
     },
@@ -29,6 +30,7 @@ const modeCollection = {
   },
 
   '7DaysSinceLatestNews': {
+    needNews: false,
     new: async (event) => {
       const newsCollection = await News.find({
         where: { status: 'admitted', event: event.id },
@@ -64,6 +66,7 @@ const modeCollection = {
   },
 
   'daily': {
+    needNews: false,
     new: async () => {
       const date = new time.Date();
 
@@ -89,6 +92,7 @@ const modeCollection = {
   },
 
   'weekly': {
+    needNews: false,
     new: async () => {
       const date = new time.Date();
 
@@ -114,6 +118,7 @@ const modeCollection = {
   },
 
   'monthly': {
+    needNews: false,
     new: async () => {
       const date = new time.Date();
 

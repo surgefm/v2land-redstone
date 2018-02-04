@@ -27,7 +27,7 @@ const EmailService = {
     });
   },
 
-  notify: async (template, subscription) => {
+  notify: async (subscription, template) => {
     template.unsubscribe = `${sails.config.globals.api}/subscription/unsubscribe?` +
       `id=${ subscription.id }` +
       `&unsubscribeId=${ subscription.unsubscribeId }`;

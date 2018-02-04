@@ -48,6 +48,7 @@ module.exports = {
         'updateClientDetail',
         'authorizeThirdPartyAccount',
         'unauthorizeThirdPartyAccount',
+        'notify',
       ],
     },
 
