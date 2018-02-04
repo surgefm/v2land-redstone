@@ -65,7 +65,7 @@ describe('ClientController', function() {
           agent
             .get('/client/me')
             .expect(401, {
-              message: '你还未登录',
+              message: '请在登录后进行该操作',
             }, done);
         });
     });
@@ -76,7 +76,7 @@ describe('ClientController', function() {
       agent
         .get('/client/me')
         .expect(401, {
-          message: '你还未登录',
+          message: '请在登录后进行该操作',
         }, done);
     });
   });
