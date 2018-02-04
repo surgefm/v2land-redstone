@@ -8,9 +8,8 @@
  */
 
 module.exports = async function(req, res, next) {
-  const client = await getClient(req.session.clientId);
-  if (client) {
-    req.client = client;
+  req.client = req.client || await getClient(req.session.clientId);
+  if (req.client) {
     return next();
   } else {
     return res.status(401).json({

@@ -11,8 +11,11 @@
 module.exports = function(req, res, next) {
     console.log('req.client = ' + req.client);    
     console.log('req.client.role = ' + req.client.role);
-    if(!req.client.role) { // in case the req.client is not working
-        
+    if(!req.client.role) { // in case the req.client is not valid
+        return res.status(401).json({
+            message: '登录状态出现异常',
+        });
     }
+    
   };
   
