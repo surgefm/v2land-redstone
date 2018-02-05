@@ -2,20 +2,26 @@
  * isManager
  *
  * @module      :: Policy
- * @description :: Check if the session client's role is manager
- *                 Assuming that the client has already logged in, 
- *                 which means he should have a req.client instance or at least a valid clientId
+ * @description :: Check if the session client's role is admin or manager
+ *                 This policy must be applie only AFTER isLoggedIn policy
+ *                 which means the client should have a valid req.currentClient instance
+ * @returns     :: '403 您没有权限进行该操作' if unauthorized
  * @docs        :: http://sailsjs.org/#!/documentation/concepts/Policies
  *
  */
 module.exports = function(req, res, next) {
-    console.log('req.client = ' + req.client);    
-    console.log('req.client.role = ' + req.client.role);
-    if(!req.client.role) { // in case the req.client is not valid
-        return res.status(401).json({
-            message: '登录状态出现异常',
-        });
-    }
-    
-  };
-  
+  if (!req.currentClient.role) { // in case the req.currentClient.role is not valid
+    delete req.currentClient;
+    return res.status(500).json({
+      message: '服务器发生未知错误，请联系开发者。',
+    });
+  }
+
+  if (req.currentClient.role == 'manager' || req.currentClient.role == 'admin') {
+    next();
+  } else {
+    return res.status(403).json({
+      message: '您没有权限进行该操作',
+    });
+  }
+};
