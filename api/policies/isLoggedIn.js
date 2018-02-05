@@ -8,8 +8,8 @@
  */
 
 module.exports = async function(req, res, next) {
-  req.clientData = req.clientData || await getClient(req.session.clientId);
-  if (req.clientData) {
+  req.currentClient = req.currentClient || await getClient(req.session.clientId);
+  if (req.currentClient) {
     return next();
   } else {
     return res.status(401).json({

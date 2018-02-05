@@ -96,77 +96,64 @@ module.exports = {
     });
   },
 
-  role: async (req, res) => {
-    const clientId = req.session.clientId;
+  updateRole: async (req, res) => {
+    // this API is a replacement of role()
+    // is only used by an admin to change a client's role
+    // only accessible by PUT method
+    // to look up for a client's role, please use getClientDetail
+    // accept parameter: { id: number, newRole: string, }
+    const data = req.body;
+    console.log('data = ');
+    console.log(data);
 
-    if (!clientId) {
-      return res.status(401).json({
-        message: '你还未登录',
-      });
+    if (typeof data.id !== 'number') {
+      data.id = parseInt(data.id);
     }
-
-    const client = await Client.findOne({ id: clientId });
-    if (!client) {
+    const targetClient = await Client.findOne({ id: data.id });
+    if (!targetClient) {
       return res.status(404).json({
-        message: '未找到该用户',
+        message: '未找到目标用户',
       });
     }
 
-    const currentRole = client.role;
+    const targetCurrentRole = targetClient.role;
+    const targetNewRole = data.newRole;
 
-    if (req.method === 'GET') {
-      return res.send(200, {
-        role: currentRole,
+    console.log('targetCurrentRole = ');
+    console.log(targetCurrentRole);
+    console.log('targetNewRole = ');
+    console.log(targetNewRole);
+
+    const roleOptions = ['contributor', 'manager'];
+    if (roleOptions.indexOf(targetCurrentRole) < 0 || roleOptions.indexOf(targetNewRole) < 0 ) {
+      return res.send(500, {
+        message: '您不可以这样修改此用户权限',
       });
-    } else if (req.method === 'PUT') {
-      const data = req.body;
+    }
 
-      const roles = ['admin', 'manager', 'contributor'];
-
-      if (typeof data.id !== 'number') {
-        return res.status(500).json({
-          message: 'id 参数错误',
-        });
-      }
-
-      const targetClient = await Client.findOne({ id: data.id });
-      if (!targetClient) {
-        return res.status(404).json({
-          message: '未找到目标用户',
-        });
-      }
-
-      const targetRole = targetClient.role;
-
-      if (roles.indexOf(currentRole) <= roles.indexOf(targetRole)
-        && currentRole !== 'admin') {
-        return res.send(500, {
-          message: '您无权更改此用户权限',
-        });
-      }
-
-      try {
-        await SQLService.update({
-          where: { id: client.id },
-          model: 'client',
-          data: { role: targetRole },
-          client: req.session.clientId,
-          action: 'updateClientRole',
-        });
-
-        res.send(200, {
-          message: '更新用户组成功',
-        });
-      } catch (err) {
-        return res.serverError(err);
-      }
-    } else {
-      return res.status(400).json({
-        message: '不合法的方法',
+    if (targetCurrentRole == targetNewRole) {
+      res.send(200, {
+        message: '该用户已位于目标用户组中',
       });
+    }
+    try {
+      await SQLService.update({
+        where: { id: targetClient.id },
+        model: 'client',
+        data: { role: targetNewRole },
+        client: req.session.clientId,
+        action: 'updateClientRole',
+      });
+
+      res.send(200, {
+        message: '更新用户组成功',
+      });
+    } catch (err) {
+      return res.serverError(err);
     }
   },
 
+  // update self info
   updateClient: async (req, res) => {
     if (!req.body) {
       return res.status(400).json({
