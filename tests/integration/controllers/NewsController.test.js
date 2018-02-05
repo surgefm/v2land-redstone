@@ -32,8 +32,6 @@ describe('NewsController', function() {
   });
 
   it('should create news', function(done) {
-    agent = request.agent(sails.hooks.http.app);
-
     agent
       .post(`/event/${urlencode('浪潮今天上线')}/news`)
       .send({
@@ -48,8 +46,6 @@ describe('NewsController', function() {
   });
 
   it('should create news', function(done) {
-    agent = request.agent(sails.hooks.http.app);
-
     agent
       .post(`/event/${urlencode('浪潮今天上线')}/news`)
       .send({
@@ -64,8 +60,6 @@ describe('NewsController', function() {
   });
 
   it('should return all pending news', function(done) {
-    agent = request.agent(sails.hooks.http.app);
-
     agent
       .get('/news/pending')
       .send()
@@ -81,8 +75,6 @@ describe('NewsController', function() {
   });
 
   it('should return success', function(done) {
-    agent = request.agent(sails.hooks.http.app);
-
     agent
       .put(`/news/${newsId}`)
       .send({
