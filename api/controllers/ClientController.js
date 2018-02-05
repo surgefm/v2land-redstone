@@ -103,8 +103,6 @@ module.exports = {
     // to look up for a client's role, please use getClientDetail
     // accept parameter: { id: number, newRole: string, }
     const data = req.body;
-    console.log('data = ');
-    console.log(data);
 
     if (typeof data.id !== 'number') {
       data.id = parseInt(data.id);
@@ -118,12 +116,6 @@ module.exports = {
 
     const targetCurrentRole = targetClient.role;
     const targetNewRole = data.newRole;
-
-    console.log('targetCurrentRole = ');
-    console.log(targetCurrentRole);
-    console.log('targetNewRole = ');
-    console.log(targetNewRole);
-
     const roleOptions = ['contributor', 'manager'];
     if (roleOptions.indexOf(targetCurrentRole) < 0 || roleOptions.indexOf(targetNewRole) < 0 ) {
       return res.send(500, {
