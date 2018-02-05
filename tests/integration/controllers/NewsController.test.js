@@ -62,7 +62,6 @@ describe('NewsController', function() {
   it('should return all pending news', function(done) {
     agent
       .get('/news/pending')
-      .send()
       .expect(200, (err, res) => {
         if (err) {
           done(err);
