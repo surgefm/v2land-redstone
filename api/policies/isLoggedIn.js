@@ -10,6 +10,8 @@
 module.exports = async function(req, res, next) {
   req.currentClient = await getClient(req, req.session.clientId);
   if (req.currentClient) {
+    req.currentClient.isManager = ['manager', 'admin'].includes(req.currentClient.role);
+    req.currentClient.isAdmin = req.currentClient.role === 'admin';
     return next();
   } else {
     return res.status(401).json({
