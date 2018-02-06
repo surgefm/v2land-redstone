@@ -29,7 +29,7 @@ module.exports.routes = {
   'POST /client/register': 'ClientController.register',
   'GET /client/me': 'ClientController.getClientDetail',
   'POST /client/login': 'ClientController.login',
-  '/client/role': 'ClientController.role',
+  'PUT /client/role': 'ClientController.updateRole',
   '/client/logout': 'ClientController.logout',
   'GET /client/:clientName': 'ClientController.findClient',
   'PUT /client/:clientName': 'ClientController.updateClient',
