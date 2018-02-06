@@ -16,8 +16,64 @@
  * http://sailsjs.org/#!/documentation/reference/sails.config/sails.config.policies.html
  */
 
-
 module.exports.policies = {
+  NewsController: {
+    'findOne': true,
+    'updateNews': ['isLoggedIn', 'isManager'],
+    'getAllPendingNews': ['isLoggedIn', 'isManager'],
+    '*': false,
+  },
+
+  EventController: {
+    'findEvent': true,
+    'getEvent': true,
+    'createEvent': true,
+    'updateEvent': ['isLoggedIn', 'isManager'],
+    'getEventList': true,
+    'getPendingNews': ['isLoggedIn', 'isManager'],
+    'createNews': true,
+    'updateHeaderImage': ['isLoggedIn', 'isManager'],
+    '*': false,
+  },
+
+  ClientController: {
+    'updateClient': true,
+    'findClient': true,
+    'login': true,
+    'register': true,
+    'updateRole': ['isLoggedIn', 'isAdmin'],
+    'getClientDetail': 'isLoggedIn',
+    'logout': 'isLoggedIn',
+    '*': false,
+  },
+
+  SubscriptionController: {
+    'unsubscribe': true,
+    'subscribe': true,
+    '*': false,
+  },
+
+  HeaderImageController: {
+    '*': false,
+  },
+
+  AuthController: {
+    'options': true,
+    'authorize': true,
+    'unauthorize': true,
+    'twitter': true,
+    'twitterRedirect': true,
+    'twitterCallback': true,
+    'weibo': true,
+    'weiboRedirect': true,
+    'weiboCallback': true,
+    '*': false,
+  },
+
+  UploadController: {
+    'upload': true,
+    '*': false,
+  },
 
   /***************************************************************************
   *                                                                          *

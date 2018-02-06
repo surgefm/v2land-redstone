@@ -75,4 +75,4 @@ module.exports.cors = {
 
   // headers: 'content-type'
 
-};
+}
