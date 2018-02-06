@@ -10,13 +10,6 @@
  *
  */
 module.exports = function(req, res, next) {
-  if (!req.currentClient.role) { // in case the req.currentClient.role is not valid
-    delete req.currentClient;
-    return res.status(500).json({
-      message: '您的账号出现异常，请联系网站维护者。',
-    });
-  }
-
   if (req.currentClient.role === 'admin') {
     next();
   } else {
