@@ -8,7 +8,7 @@
  */
 
 module.exports = async function(req, res, next) {
-  req.currentClient = req.currentClient || await getClient(req, req.session.clientId);
+  req.currentClient = await getClient(req, req.session.clientId);
   if (req.currentClient) {
     return next();
   } else {

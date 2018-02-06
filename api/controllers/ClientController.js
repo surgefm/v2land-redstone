@@ -123,7 +123,7 @@ module.exports = {
       });
     }
 
-    if (targetCurrentRole == targetNewRole) {
+    if (targetCurrentRole === targetNewRole) {
       res.send(200, {
         message: '该用户已位于目标用户组中',
       });
