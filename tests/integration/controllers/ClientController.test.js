@@ -3,6 +3,10 @@ let agent;
 
 describe('ClientController', function() {
   describe('#register()', function() {
+    before(function(done) {
+      Client.destroy({}, done);
+    });
+
     after(async function() {
       await Client.destroy({
         username: 'testAccountRegister',
