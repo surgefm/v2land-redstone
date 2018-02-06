@@ -8,7 +8,7 @@
  */
 
 module.exports = async function(req, res, next) {
-  req.currentClient = req.currentClient || await getClient(req.session.clientId);
+  req.currentClient = req.currentClient || await getClient(req, req.session.clientId);
   if (req.currentClient) {
     return next();
   } else {
@@ -25,7 +25,7 @@ module.exports = async function(req, res, next) {
  * @description :: Check if the clientId is undefined or invalid; if valid, return a client instance
  * @returns     :: a client instance(if client's found) or false (if not found)
  */
-async function getClient(clientId) {
+async function getClient(req, clientId) {
   if (!clientId) {
     return false;
   }
