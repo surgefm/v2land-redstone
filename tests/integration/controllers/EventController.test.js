@@ -6,14 +6,43 @@ let agent;
 describe('EventController', function() {
   describe('createEvent', function() {
     before(async function() {
+      agent = request.agent(sails.hooks.http.app);
+
+      await Event.destroy({
+        name: '浪潮今天发布啦',
+      });
+
+      await Client.destroy({
+        username: 'testAccountRegister',
+      });
+
+      await agent
+        .post('/client/register')
+        .send({
+          username: 'testAccountRegister',
+          password: 'testPassword',
+        });
+
+      await agent
+        .post('/client/login')
+        .send({
+          username: 'testAccountRegister',
+          password: 'testPassword',
+        });
+
+      await Client.update(
+        { username: 'testAccountRegister' },
+        { role: 'admin' }
+      );
+    });
+
+    after(async function() {
       await Event.destroy({
         name: '浪潮今天发布啦',
       });
     });
 
-    it('should return success', function(done) {
-      agent = request.agent(sails.hooks.http.app);
-
+    it('should return success after creating event', function(done) {
       agent
         .post('/event')
         .send({
@@ -24,9 +53,7 @@ describe('EventController', function() {
         .end(done);
     });
 
-    it('can not duplicate', function(done) {
-      agent = request.agent(sails.hooks.http.app);
-
+    it('event name cannot be duplicate', function(done) {
       agent
         .post('/event')
         .send({
@@ -39,9 +66,7 @@ describe('EventController', function() {
         .end(done);
     });
 
-    it('should update success', function(done) {
-      agent = request.agent(sails.hooks.http.app);
-
+    it('should update event success', function(done) {
       agent
         .put(`/event/${urlencode('浪潮今天发布啦')}`)
         .send({
@@ -52,8 +77,6 @@ describe('EventController', function() {
     });
 
     it('should get event', function(done) {
-      agent = request.agent(sails.hooks.http.app);
-
       agent
         .get('/event')
         .send({
@@ -63,23 +86,16 @@ describe('EventController', function() {
         .end(done);
     });
 
-    it('should return success', function(done) {
-      agent = request.agent(sails.hooks.http.app);
-
+    it('should return success after getting the event', function(done) {
       agent
         .get(`/event/${urlencode('浪潮今天发布啦')}`)
-        .send()
         .expect(200)
         .end(done);
     });
 
-    it('should return 404', function(done) {
-      agent = request.agent(sails.hooks.http.app);
-
+    it('should return 404 when there is no such event', function(done) {
       agent
         .get(`/event/${urlencode('浪潮今天没有发布')}`)
-        .send({
-        })
         .expect(404)
         .end(done);
     });
@@ -101,9 +117,17 @@ describe('EventController', function() {
       });
     });
 
-    it('should return success', function(done) {
-      agent = request.agent(sails.hooks.http.app);
+    after(async function() {
+      await Event.destroy({
+        name: '浪潮今天发布了吗？',
+      });
 
+      await HeaderImage.destroy({
+        sourceUrl: 'https://langchao.co/',
+      });
+    });
+
+    it('should return success after creating header image', function(done) {
       agent
         .post(`/event/${urlencode('浪潮今天发布了吗？')}/header_image`)
         .send({
@@ -114,9 +138,7 @@ describe('EventController', function() {
         .expect(201, done);
     });
 
-    it('should return success', function(done) {
-      agent = request.agent(sails.hooks.http.app);
-
+    it('should return success after updating header image', function(done) {
       agent
         .put(`/event/${urlencode('浪潮今天发布了吗？')}/header_image`)
         .send({
@@ -127,9 +149,7 @@ describe('EventController', function() {
         .expect(201, done);
     });
 
-    it('should not return success', function(done) {
-      agent = request.agent(sails.hooks.http.app);
-
+    it('should not return success when updating header image with wrong format', function(done) {
       agent
         .put(`/event/${urlencode('浪潮今天发布了吗？')}/header_image`)
         .send({
@@ -143,15 +163,7 @@ describe('EventController', function() {
 
   describe('Event List', function() {
     before(async function() {
-      await Event.destroy({
-        name: '浪潮测试1',
-      });
-      await Event.destroy({
-        name: '浪潮测试2',
-      });
-      await Event.destroy({
-        name: '浪潮测试3',
-      });
+      await Event.destroy({});
       await Event.create({
         name: '浪潮测试1',
         status: 'admitted',
@@ -168,12 +180,14 @@ describe('EventController', function() {
         description: '浪潮测试3',
       });
     });
+    after(async function() {
+      await Client.destroy({
+        username: 'testAccountRegister',
+      });
+    });
     it('should have list', async function() {
-      agent = request.agent(sails.hooks.http.app);
-
       agent
         .get(`/event`)
-        .send()
         .expect(200, (err, res) => {
           if (err) {
             done(err, res);

@@ -17,11 +17,10 @@
  */
 
 module.exports.policies = {
-
   NewsController: {
     'findOne': true,
-    'updateNews': true,
-    'getAllPendingNews': true,
+    'updateNews': ['isLoggedIn', 'isManager'],
+    'getAllPendingNews': ['isLoggedIn', 'isManager'],
     '*': false,
   },
 
@@ -29,22 +28,22 @@ module.exports.policies = {
     'findEvent': true,
     'getEvent': true,
     'createEvent': true,
-    'updateEvent': true,
+    'updateEvent': ['isLoggedIn', 'isManager'],
     'getEventList': true,
-    'getPendingNews': true,
+    'getPendingNews': ['isLoggedIn', 'isManager'],
     'createNews': true,
-    'updateHeaderImage': true,
+    'updateHeaderImage': ['isLoggedIn', 'isManager'],
     '*': false,
   },
 
   ClientController: {
     'updateClient': true,
     'findClient': true,
-    'register': true,
-    'getClientDetail': true,
     'login': true,
-    'role': true,
-    'logout': true,
+    'register': true,
+    'updateRole': ['isLoggedIn', 'isAdmin'],
+    'getClientDetail': 'isLoggedIn',
+    'logout': 'isLoggedIn',
     '*': false,
   },
 
