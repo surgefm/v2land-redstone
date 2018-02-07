@@ -6,6 +6,8 @@ let newsId;
 
 describe('NewsController', function() {
   before(async function() {
+    agent = request.agent(sails.hooks.http.app);
+
     await News.destroy();
     await Event.destroy();
 
@@ -13,11 +15,32 @@ describe('NewsController', function() {
       name: '浪潮今天上线',
       description: '浪潮今天上线',
     });
+
+    await Client.destroy({
+      username: 'testAccountRegister',
+    });
+
+    await agent
+      .post('/client/register')
+      .send({
+        username: 'testAccountRegister',
+        password: 'testPassword',
+      });
+
+    await agent
+      .post('/client/login')
+      .send({
+        username: 'testAccountRegister',
+        password: 'testPassword',
+      });
+
+    await Client.update(
+      { username: 'testAccountRegister' },
+      { role: 'admin' }
+    );
   });
 
   it('should return 404', function(done) {
-    agent = request.agent(sails.hooks.http.app);
-
     agent
       .post(`/event/${urlencode('浪潮今天不上线')}/news`)
       .send({
