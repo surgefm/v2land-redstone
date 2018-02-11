@@ -20,9 +20,7 @@ describe('ClientController', function() {
       agent
         .post('/client/register')
         .send({ username: 'testAccountRegister', password: 'testPassword' })
-        .expect(201, {
-          message: '注册成功',
-        }, done);
+        .expect(201, done);
     });
   });
 
@@ -49,9 +47,7 @@ describe('ClientController', function() {
           username: 'testAccountLogin',
           password: 'testPassword',
         })
-        .expect(200, {
-          message: '登录成功',
-        }, done);
+        .expect(200, done);
     });
 
     it('should return client\'s information', function(done) {
