@@ -10,6 +10,9 @@ module.exports = {
       .populate('subscriptions', {
         where: { status: 'active' },
         sort: 'createdAt DESC',
+      })
+      .populate('events', {
+        sort: 'updatedAt DESC',
       });
 
     const data = { ...client };

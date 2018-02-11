@@ -34,6 +34,7 @@ module.exports = {
 
     res.status(200).json({
       message: '登录成功',
+      client: await ClientService.findClient(client.id),
     });
   },
 
