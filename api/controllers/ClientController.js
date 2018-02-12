@@ -51,11 +51,18 @@ module.exports = {
     let salt;
     let hash;
 
-    let client = await Client.findOne({ username: data.username });
+    let client = await Client.findOne({
+      or: [
+        { username: data.username },
+        { email: data.email },
+      ],
+    });
+
     if (client) {
-      return res.status(406).json({
-        message: '该用户名/邮箱已被占用',
-      });
+      const message = client.username === data.username
+        ? '该用户名已被占用'
+        : '该邮箱已被占用';
+      return res.status(406).json({ message });
     }
 
     try {
@@ -75,26 +82,24 @@ module.exports = {
     }
 
     try {
-      client = await Client.create({
-        username: data.username,
-        password: hash,
+      client = await SQLService.create({
+        model: 'client',
+        operation: 'create',
+        data: {
+          username: data.username,
+          password: hash,
+          email: data.email,
+          role: 'contributor',
+        },
+        action: 'createClient',
+        client: req.session.clientId,
       });
 
+      req.session.clientId = client.id;
       res.status(201).json({ message: '注册成功' });
     } catch (err) {
       return res.serverError(err);
     }
-
-    client = { ...client };
-    delete client.password;
-    await Record.create({
-      model: 'Client',
-      target: client.id,
-      data: client,
-      operation: 'create',
-      action: 'createClient',
-      client: req.session.clientId, // Although in most cases it's null.
-    });
   },
 
   updateRole: async (req, res) => {

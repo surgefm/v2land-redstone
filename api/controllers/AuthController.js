@@ -31,7 +31,8 @@ module.exports = {
       });
     }
 
-    const { expireTime, owner } = JSON.parse(auth.profile);
+    const { expireTime, owner } = auth.profile;
+
     if (!owner || owner !== req.sessionID) {
       return res.status(403).json({
         message: '你无权进行该绑定',
@@ -42,7 +43,7 @@ module.exports = {
       });
     }
 
-    auth.owner = req.body.clientId;
+    auth.owner = req.body.clientId || req.session.clientId;
     await auth.save();
 
     res.status(201).json({
@@ -141,11 +142,19 @@ module.exports = {
     const token = req.query.oauth_token;
     const verifier = req.query.oauth_verifier;
 
+    const auth = await Auth.findOne({ token });
+    if (!auth) {
+      return res.status(404).json({
+        message: '未找到该绑定信息',
+      });
+    }
+
     res.status(200).send(
       `<!DOCTYPE html>` +
-      `<body><script>window.location="${sails.config.globals.api}` +
-      `/auth/twitter/redirect?token=${token}` +
+      `<body><script>window.location="${auth.redirect}` +
+      `&token=${token}` +
       `&verifier=${verifier}` +
+      `&site=twitter"` +
       `</script></body>`
     );
   },
@@ -160,6 +169,13 @@ module.exports = {
     const oa = sails.config.oauth.twitter;
     const { token, verifier } = req.query;
 
+    const auth = await Auth.findOne({ token });
+    if (!auth) {
+      return res.status(404).json({
+        message: '未找到该绑定信息',
+      });
+    }
+
     const getAccessToken = () => {
       return new Promise((resolve, reject) => {
         oa.getOAuthAccessToken(
@@ -167,7 +183,11 @@ module.exports = {
           auth.tokenSecret,
           verifier,
           (err, accessToken, accessTokenSecret) => {
-            if (err) return reject(err);
+            if (err) {
+              return res.status(400).json({
+                message: '在验证绑定状况时发生了错误',
+              });
+            }
             resolve({ accessToken, accessTokenSecret });
           }
         );
@@ -176,13 +196,6 @@ module.exports = {
 
     const { accessToken, accessTokenSecret } = await getAccessToken();
 
-    const auth = await Auth.findOne({ token });
-    if (!auth) {
-      return res.status(404).json({
-        message: '未找到该绑定信息',
-      });
-    }
-
     const getResponse = () => {
       return new Promise((resolve, reject) => {
         oa.get(
@@ -190,45 +203,55 @@ module.exports = {
           accessToken,
           accessTokenSecret,
           (err, response) => {
-            if (err) return reject(err);
+            if (err) {
+              return res.status(400).json({
+                message: '在验证绑定状况时发生了错误',
+              });
+            }
             resolve(response);
           }
         );
       });
     };
 
-    const response = await getResponse();
-
+    const response = JSON.parse(await getResponse());
     auth.profileId = response.id_str;
     const sameAuth = await Auth.findOne({
       site: 'twitter',
       profileId: response.id_str,
     });
 
-    const account = sameAuth || auth;
+    let account = sameAuth || auth;
     account.accessToken = accessToken;
     account.accessTokenSecret = accessTokenSecret;
 
-    if (!sameAuth && account.owner) {
-      account.profile = JSON.stringify(response);
+    if (account.owner && (!req.session.clientId ||
+      (req.session.clientId === account.owner))) {
+      account.profile = { ...response };
       await account.save();
-      res.status(201).json(account);
+      req.session.clientId = account.owner;
+      res.status(201).json(AuthService.sanitize(account));
+    } else if (!account.owner && req.session.clientId) {
+      account.owner = req.session.clientId;
+      await account.save();
+      res.status(201).json(AuthService.sanitize(account));
     } else {
-      const profile = Object.assign({}, response);
+      const profile = { ...response };
       profile.expireTime = Date.now() + 1000 * 60 * 60 * 12; // expires in 12 hours.
       profile.owner = req.sessionID;
-      account.profile = JSON.stringify(profile);
+      account.profile = profile;
       await account.save();
 
-      if (!account.owner) {
+      if (!account.owner && !req.session.clientId) {
+        account = AuthService.sanitize(account);
+
         res.status(202).json({
           name: 'authentication required',
           message: '请在登录后绑定第三方账号',
-          authId: account.id,
+          auth: account,
         });
       } else {
         const conflict = await Client.findOne({ id: account.owner });
-        console.log(conflict, account);
         res.status(202).json({
           name: 'already connected',
           message: `该 Twitter 账号已被用户 ${conflict.username} 绑定，请选择是否解绑`,

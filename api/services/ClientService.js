@@ -5,6 +5,7 @@ module.exports = {
       or: [
         { id: parseInt(clientName) > -1 ? parseInt(clientName) : -1 },
         { username: clientName },
+        { email: clientName },
       ],
     })
       .populate('subscriptions', {
