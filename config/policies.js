@@ -30,6 +30,7 @@ module.exports.policies = {
     'createEvent': true,
     'updateEvent': ['isLoggedIn', 'isManager'],
     'getEventList': true,
+    'getAllPendingEvents': ['isLoggedIn', 'isManager'],
     'getPendingNews': ['isLoggedIn', 'isManager'],
     'createNews': true,
     'updateHeaderImage': ['isLoggedIn', 'isManager'],

@@ -20,6 +20,14 @@ const EventController = {
     }
   },
 
+  getAllPendingEvents: async (req, res) => {
+    const eventCollection = await Event.find({
+      where: { status: 'pending' },
+      sort: 'createdAt ASC',
+    });
+    res.status(200).json({ eventCollection });
+  },
+
   getPendingNews: async (req, res) => {
     const name = req.param('eventName');
     const event = await EventService.findEvent(name);
