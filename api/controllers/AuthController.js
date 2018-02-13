@@ -68,13 +68,13 @@ module.exports = {
   },
 
   unauthorize: async (req, res) => {
-    if (!(req.body && req.body.authId)) {
+    if (!req.param('authId')) {
       return res.status(400).json({
         message: '缺少参数：authId',
       });
     }
 
-    const auth = await Auth.findOne({ id: req.body.authId });
+    const auth = await Auth.findOne({ id: req.param('authId') });
     if (!auth) {
       return res.status(404).json({
         message: '未找到该绑定信息',
@@ -291,11 +291,21 @@ module.exports = {
       });
     }
 
+    const { code, state } = req.query;
+    const auth = await Auth.findOne({ id: state });
+
+    if (!auth) {
+      return res.status(404).json({
+        message: '未找到该绑定信息',
+      });
+    }
+
     res.status(200).send(
       `<!DOCTYPE html>` +
-      `<body><script>window.location="${sails.config.globals.api}` +
-      `/auth/weibo/redirect?code=${code}` +
+      `<body><script>window.location="${auth.redirect}` +
+      `&code=${code}` +
       `&authId=${state}` +
+      `&site=weibo` +
       `"</script></body>`
     );
   },
@@ -307,6 +317,7 @@ module.exports = {
       });
     }
 
+    const oa = sails.config.oauth.weibo;
     const { code, authId } = req.query;
 
     const getAccessToken = () => {
@@ -318,7 +329,11 @@ module.exports = {
             'grant_type': 'authorization_code',
           },
           (err, accessToken, refreshToken) => {
-            if (err) return reject(err);
+            if (err) {
+              return res.status(400).json({
+                message: '在验证绑定状况时发生了错误',
+              });
+            }
             resolve({ accessToken, refreshToken });
           }
         );
@@ -354,30 +369,37 @@ module.exports = {
       profileId: response.data.uid,
     });
 
-    const account = sameAuth || auth;
+    let account = sameAuth || auth;
     account.accessToken = accessToken;
     account.refreshToken = refreshToken;
 
-    if (!sameAuth && account.owner) {
-      account.profile = JSON.stringify(data);
+    if (account.owner && (!req.session.clientId ||
+      (req.session.clientId === account.owner))) {
+      account.profile = { ...data };
       await account.save();
-      res.status(201).json(account);
+      req.session.clientId = account.owner;
+      res.status(201).json(AuthService.sanitize(account));
+    } else if (!account.owner && req.session.clientId) {
+      account.owner = req.session.clientId;
+      await account.save();
+      res.status(201).json(AuthService.sanitize(account));
     } else {
-      const profile = Object.assign({}, data);
+      const profile = { ...data };
       profile.expireTime = Date.now() + 1000 * 60 * 60 * 12; // expires in 12 hours.
       profile.owner = req.sessionID;
-      account.profile = JSON.stringify(profile);
+      account.profile = profile;
       await account.save();
 
-      if (!account.owner) {
+      if (!account.owner && !req.session.clientId) {
+        account = AuthService.sanitize(account);
+
         res.status(202).json({
           name: 'authentication required',
           message: '请在登录后绑定第三方账号',
-          authId: account.id,
+          auth: account,
         });
       } else {
         const conflict = await Client.findOne({ id: account.owner });
-        console.log(conflict, account);
         res.status(202).json({
           name: 'already connected',
           message: `该微博账号已被用户 ${conflict.username} 绑定，请选择是否解绑`,

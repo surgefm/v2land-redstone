@@ -51,7 +51,7 @@ module.exports.routes = {
 
   'GET /auth/options': 'AuthController.options',
   'POST /auth': 'AuthController.authorize',
-  'DELETE /auth': 'AuthController.unauthorize',
+  'DELETE /auth/:authId': 'AuthController.unauthorize',
   'GET /auth/twitter': 'AuthController.twitter',
   'GET /auth/twitter/callback': 'AuthController.twitterCallback',
   'GET /auth/twitter/redirect': 'AuthController.twitterRedirect',

@@ -12,6 +12,9 @@ module.exports = {
         where: { status: 'active' },
         sort: 'createdAt DESC',
       })
+      .populate('auths', {
+        where: { profileId: { '>=': 1 } },
+      })
       .populate('events', {
         sort: 'updatedAt DESC',
       });
