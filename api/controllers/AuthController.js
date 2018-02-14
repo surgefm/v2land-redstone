@@ -184,6 +184,7 @@ module.exports = {
           verifier,
           (err, accessToken, accessTokenSecret) => {
             if (err) {
+              sails.log.error(err);
               return res.status(400).json({
                 message: '在验证绑定状况时发生了错误',
               });
@@ -195,6 +196,7 @@ module.exports = {
     };
 
     const { accessToken, accessTokenSecret } = await getAccessToken();
+    if (!accessToken || !accessTokenSecret) return;
 
     const getResponse = () => {
       return new Promise((resolve, reject) => {
@@ -204,6 +206,7 @@ module.exports = {
           accessTokenSecret,
           (err, response) => {
             if (err) {
+              sails.log.error(err);
               return res.status(400).json({
                 message: '在验证绑定状况时发生了错误',
               });
@@ -214,7 +217,9 @@ module.exports = {
       });
     };
 
-    const response = JSON.parse(await getResponse());
+    let response = await getResponse();
+    if (!response) return;
+    response = JSON.parse(response);
     auth.profileId = response.id_str;
     const sameAuth = await Auth.findOne({
       site: 'twitter',
@@ -230,7 +235,7 @@ module.exports = {
       account.profile = { ...response };
       await account.save();
       req.session.clientId = account.owner;
-      res.status(201).json(AuthService.sanitize(account));
+      res.status(200).json(AuthService.sanitize(account));
     } else if (!account.owner && req.session.clientId) {
       account.owner = req.session.clientId;
       await account.save();
@@ -330,6 +335,7 @@ module.exports = {
           },
           (err, accessToken, refreshToken) => {
             if (err) {
+              sails.log.error(err);
               return res.status(400).json({
                 message: '在验证绑定状况时发生了错误',
               });
@@ -341,6 +347,7 @@ module.exports = {
     };
 
     const { accessToken, refreshToken } = await getAccessToken();
+    if (!accessToken || !refreshToken) return;
 
     const auth = await Auth.findOne({ id: authId });
     if (!auth) {
@@ -378,7 +385,7 @@ module.exports = {
       account.profile = { ...data };
       await account.save();
       req.session.clientId = account.owner;
-      res.status(201).json(AuthService.sanitize(account));
+      res.status(200).json(AuthService.sanitize(account));
     } else if (!account.owner && req.session.clientId) {
       account.owner = req.session.clientId;
       await account.save();
