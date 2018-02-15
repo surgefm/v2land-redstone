@@ -151,11 +151,12 @@ module.exports = {
 
     res.status(200).send(
       `<!DOCTYPE html>` +
-      `<body><script>window.location="${auth.redirect}` +
+      `<body>
+      <script>window.location="${auth.redirect}` +
       `&token=${token}` +
       `&verifier=${verifier}` +
-      `&site=twitter"` +
-      `</script></body>`
+      `&site=twitter"</script>
+      </body>`
     );
   },
 
@@ -230,16 +231,18 @@ module.exports = {
     account.accessToken = accessToken;
     account.accessTokenSecret = accessTokenSecret;
 
-    if (account.owner && (!req.session.clientId ||
+    if (account.createdAt.toString() == account.updatedAt.toString()
+      && req.session.clientId) {
+      account.owner = req.session.clientId;
+      account.profile = { ...response };
+      await account.save();
+      res.status(201).json(AuthService.sanitize(account));
+    } else if (account.owner && (!req.session.clientId ||
       (req.session.clientId === account.owner))) {
       account.profile = { ...response };
       await account.save();
       req.session.clientId = account.owner;
       res.status(200).json(AuthService.sanitize(account));
-    } else if (!account.owner && req.session.clientId) {
-      account.owner = req.session.clientId;
-      await account.save();
-      res.status(201).json(AuthService.sanitize(account));
     } else {
       const profile = { ...response };
       profile.expireTime = Date.now() + 1000 * 60 * 60 * 12; // expires in 12 hours.
@@ -257,10 +260,12 @@ module.exports = {
         });
       } else {
         const conflict = await Client.findOne({ id: account.owner });
+        account = AuthService.sanitize(account);
         res.status(202).json({
           name: 'already connected',
           message: `该 Twitter 账号已被用户 ${conflict.username} 绑定，请选择是否解绑`,
           conflict: conflict.username,
+          auth: account,
         });
       }
     }
@@ -307,11 +312,13 @@ module.exports = {
 
     res.status(200).send(
       `<!DOCTYPE html>` +
-      `<body><script>window.location="${auth.redirect}` +
+      `<body>
+      <script>window.location="${auth.redirect}` +
       `&code=${code}` +
       `&authId=${state}` +
       `&site=weibo` +
-      `"</script></body>`
+      `"</script>
+      </body>`
     );
   },
 
@@ -347,7 +354,7 @@ module.exports = {
     };
 
     const { accessToken, refreshToken } = await getAccessToken();
-    if (!accessToken || !refreshToken) return;
+    if (!accessToken) return;
 
     const auth = await Auth.findOne({ id: authId });
     if (!auth) {
@@ -380,16 +387,18 @@ module.exports = {
     account.accessToken = accessToken;
     account.refreshToken = refreshToken;
 
-    if (account.owner && (!req.session.clientId ||
+    if (account.createdAt.toString() == account.updatedAt.toString() &&
+      req.session.clientId) {
+      account.profile = { ...data };
+      account.owner = req.session.clientId;
+      await account.save();
+      res.status(201).json(AuthService.sanitize(account));
+    } else if (account.owner && (!req.session.clientId ||
       (req.session.clientId === account.owner))) {
       account.profile = { ...data };
       await account.save();
       req.session.clientId = account.owner;
       res.status(200).json(AuthService.sanitize(account));
-    } else if (!account.owner && req.session.clientId) {
-      account.owner = req.session.clientId;
-      await account.save();
-      res.status(201).json(AuthService.sanitize(account));
     } else {
       const profile = { ...data };
       profile.expireTime = Date.now() + 1000 * 60 * 60 * 12; // expires in 12 hours.
@@ -407,10 +416,12 @@ module.exports = {
         });
       } else {
         const conflict = await Client.findOne({ id: account.owner });
+        account = AuthService.sanitize(account);
         res.status(202).json({
           name: 'already connected',
           message: `该微博账号已被用户 ${conflict.username} 绑定，请选择是否解绑`,
           conflict: conflict.username,
+          auth: account,
         });
       }
     }
