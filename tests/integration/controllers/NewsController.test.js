@@ -27,17 +27,17 @@ describe('NewsController', function() {
         password: 'testPassword',
       });
 
+    await Client.update(
+      { username: 'testAccountRegister' },
+      { role: 'admin' }
+    );
+
     await agent
       .post('/client/login')
       .send({
         username: 'testAccountRegister',
         password: 'testPassword',
       });
-
-    await Client.update(
-      { username: 'testAccountRegister' },
-      { role: 'admin' }
-    );
   });
 
   it('should return 404', function(done) {
@@ -78,8 +78,10 @@ describe('NewsController', function() {
         abstract: '浪潮今天不上线啦',
         time: new Date(),
       })
-      .expect(201)
-      .end(done);
+      .expect(201, (err, res) => {
+        newsId = res.body.news.id;
+        done();
+      });
   });
 
   it('should return all pending news', function(done) {
@@ -90,8 +92,7 @@ describe('NewsController', function() {
           done(err);
           return;
         }
-        assert.equal(res.body.newsCollection.length, 2);
-        newsId = res.body.newsCollection[0].id;
+        assert.equal(res.body.newsCollection.length, 0);
         done();
       });
   });

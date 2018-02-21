@@ -45,8 +45,6 @@ const EventController = {
   },
 
   createEvent: async (req, res) => {
-    const isManager = req.currentClient ? req.currentClient.isManager : false;
-
     if (!(req.body && req.body.name && req.body.description)) {
       return res.status(400).json({
         message: '缺少参数 name 或 description',
@@ -54,6 +52,7 @@ const EventController = {
     }
 
     let event = await EventService.findEvent(req.body.name);
+    let isManager = false;
 
     if (event) {
       return res.status(409).json({
@@ -61,7 +60,15 @@ const EventController = {
       });
     }
 
-    req.body.status = isManager ? 'admitted' : 'pending';
+    req.body.status = 'pending';
+
+    if (req.session.clientId) {
+      const client = await Client.findOne({ id: req.session.clientId });
+      if (client && ['manager', 'admin'].includes(client.role)) {
+        req.body.status = 'admitted';
+        isManager = true;
+      }
+    }
 
     try {
       event = await SQLService.create({
@@ -157,7 +164,7 @@ const EventController = {
 
     if (req.session.clientId) {
       const client = await Client.findOne({ id: req.session.clientId });
-      if (['manager', 'admin'].includes(client.role)) {
+      if (client && ['manager', 'admin'].includes(client.role)) {
         if (req.body && req.body.where) {
           where = req.body.where;
         } else if (req.query && req.query.where) {
@@ -200,9 +207,9 @@ const EventController = {
   createNews: async (req, res) => {
     const name = req.param('eventName');
     const data = req.body;
-    const isManager = req.currentClient ? req.currentClient.isManager : false;
 
     let news;
+    let isManager = false;
 
     if (!data.url) {
       return res.status(400).json({
@@ -219,12 +226,13 @@ const EventController = {
     }
 
     data.event = event.id;
-    data.status = isManager ? 'admitted' : 'pending';
+    data.status = 'pending';
 
     if (req.session.clientId) {
       const client = await Client.findOne({ id: req.session.clientId });
-      if (['manager', 'admin'].includes(client.role)) {
+      if (client && ['manager', 'admin'].includes(client.role)) {
         data.status = 'admitted';
+        isManager = true;
       }
     }
 

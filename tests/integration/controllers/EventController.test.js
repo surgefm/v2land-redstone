@@ -162,18 +162,26 @@ describe('EventController', function() {
   });
 
   describe('Event List', function() {
+    const sleep = (ms) => {
+      return new Promise((resolve) => setTimeout(resolve, ms));
+    };
+
     before(async function() {
-      await Event.destroy({});
+      this.timeout(15000);
+
+      await Event.destroy();
       await Event.create({
         name: '浪潮测试1',
         status: 'admitted',
         description: '浪潮测试1',
       });
+      await sleep(1000);
       await Event.create({
         name: '浪潮测试2',
         status: 'admitted',
         description: '浪潮测试2',
       });
+      await sleep(1000);
       await Event.create({
         name: '浪潮测试3',
         status: 'admitted',
