@@ -21,11 +21,6 @@ module.exports = function serverError(data, options) {
   // Set status code
   res.status(data.status || 500);
 
-  // Log error to console
-  if (data !== undefined) {
-    sails.log.error('Sending 500 ("Server Error") response: \n', data);
-  } else sails.log.error('Sending empty 500 ("Server Error") response');
-
   if (data.code === 'E_VALIDATION') {
     let message = '错误或缺失的参数：';
     const attributes = Object.getOwnPropertyNames(data.invalidAttributes);
@@ -43,6 +38,11 @@ module.exports = function serverError(data, options) {
       invalidAttributes: data.invalidAttributes,
     });
   }
+
+  // Log error to console
+  if (data !== undefined) {
+    sails.log.error('Sending 500 ("Server Error") response: \n', data);
+  } else sails.log.error('Sending empty 500 ("Server Error") response');
 
   // Only include errors in response if application environment
   // is not set to 'production'.  In production, we shouldn't

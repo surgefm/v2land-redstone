@@ -45,6 +45,8 @@ const EventController = {
   },
 
   createEvent: async (req, res) => {
+    const isManager = req.currentClient ? req.currentClient.isManager : false;
+
     if (!(req.body && req.body.name && req.body.description)) {
       return res.status(400).json({
         message: '缺少参数 name 或 description',
@@ -59,7 +61,7 @@ const EventController = {
       });
     }
 
-    req.body.status = 'pending';
+    req.body.status = isManager ? 'admitted' : 'pending';
 
     try {
       event = await SQLService.create({
@@ -70,7 +72,9 @@ const EventController = {
       });
 
       res.status(201).json({
-        message: '提交成功，该事件在社区管理员审核通过后将很快开放',
+        message: isManager
+          ? '事件创建成功'
+          : '提交成功，该事件在社区管理员审核通过后将很快开放',
         event,
       });
     } catch (err) {
@@ -196,6 +200,8 @@ const EventController = {
   createNews: async (req, res) => {
     const name = req.param('eventName');
     const data = req.body;
+    const isManager = req.currentClient ? req.currentClient.isManager : false;
+
     let news;
 
     if (!data.url) {
@@ -213,7 +219,7 @@ const EventController = {
     }
 
     data.event = event.id;
-    data.status = 'pending';
+    data.status = isManager ? 'admitted' : 'pending';
 
     if (req.session.clientId) {
       const client = await Client.findOne({ id: req.session.clientId });
@@ -236,7 +242,12 @@ const EventController = {
         action: 'createNews',
         client: req.session.clientId,
       });
-      res.status(201).json({ news });
+      res.status(201).json({
+        message: isManager
+          ? '新闻添加成功'
+          : '提交成功，该新闻在社区管理员审核通过后将很快开放',
+        news,
+      });
     } catch (err) {
       return res.serverError(err);
     }

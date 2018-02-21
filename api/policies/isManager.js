@@ -10,7 +10,7 @@
  *
  */
 module.exports = function(req, res, next) {
-  if (['manager', 'admin'].includes(req.currentClient.role)) {
+  if (req.currentClient.isManager) {
     next();
   } else {
     return res.status(403).json({
