@@ -41,6 +41,10 @@ module.exports = {
       enum: ['pending', 'admitted', 'rejected', 'removed'],
     },
 
+    comment: {
+      type: 'text',
+    },
+
     event: {
       model: 'event',
     },
