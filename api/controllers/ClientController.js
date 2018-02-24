@@ -102,15 +102,7 @@ module.exports = {
     let salt;
     let hash;
 
-    if (typeof data.id !== 'number') {
-      data.id = parseInt(data.id);
-    }
-    const targetClient = await Client.findOne({ id: data.id });
-    if (!targetClient) {
-      return res.status(404).json({
-        message: '未找到目标用户',
-      });
-    }
+    const { clientId } = req.session;
 
     try {
       salt = await bcrypt.genSalt(10);
@@ -130,11 +122,13 @@ module.exports = {
 
     try {
       await SQLService.update({
-        where: { id: targetClient.id },
+        where: { id: clientId },
         model: 'client',
-        data: { password: hash },
-        client: req.session.clientId,
-        action: 'updatePassword',
+        data: {
+          password: hash,
+        },
+        client: clientId,
+        action: 'updateClientPassword',
       });
 
       res.send(201, {

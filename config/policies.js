@@ -41,6 +41,7 @@ module.exports.policies = {
     'findClient': true,
     'login': true,
     'register': true,
+    'changePassword': true,
     'updateRole': ['isLoggedIn', 'isAdmin'],
     'getClientDetail': 'isLoggedIn',
     'logout': 'isLoggedIn',
