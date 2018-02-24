@@ -50,7 +50,7 @@ describe('ClientController', function() {
         .expect(200);
 
       await agent
-        .put('/client/change_password')
+        .put('/client/password')
         .send({
           password,
         })
