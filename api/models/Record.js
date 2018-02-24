@@ -46,6 +46,7 @@ module.exports = {
         'createClient',
         'updateClientRole',
         'updateClientDetail',
+        'updateClientPassword',
         'authorizeThirdPartyAccount',
         'unauthorizeThirdPartyAccount',
         'notify',

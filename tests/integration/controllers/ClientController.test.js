@@ -24,6 +24,58 @@ describe('ClientController', function() {
     });
   });
 
+  describe('#changePassword()', function() {
+    const password = 'changedPassword';
+
+    before(async function() {
+      await Client.destroy({
+        username: 'testChangePassword',
+      });
+    });
+
+    it('should successfully change password', async function() {
+      await agent
+        .post('/client/register')
+        .send({ username: 'testChangePassword', password: 'testChangePassword' })
+        .expect(201, {
+          message: '注册成功',
+        });
+
+      await agent
+        .post('/client/login')
+        .send({
+          username: 'testChangePassword',
+          password: 'testChangePassword',
+        })
+        .expect(200);
+
+      await agent
+        .put('/client/change_password')
+        .send({
+          password,
+        })
+        .expect(201, {
+          message: '更新密码成功',
+        });
+    });
+
+    it('should login success', async function() {
+      await agent
+        .get('/client/logout')
+        .expect(200, {
+          message: '成功退出登录',
+        });
+
+      await agent
+        .post('/client/login')
+        .send({
+          username: 'testChangePassword',
+          password,
+        })
+        .expect(200);
+    });
+  });
+
   describe('#login/logout()', function() {
     before(function(done) {
       agent
@@ -56,17 +108,17 @@ describe('ClientController', function() {
         .expect(200, done);
     });
 
-    it('should log out successfully', function(done) {
-      agent
+    it('should log out successfully', async function() {
+      await agent
         .get('/client/logout')
         .expect(200, {
           message: '成功退出登录',
-        }, () => {
-          agent
-            .get('/client/me')
-            .expect(401, {
-              message: '请在登录后进行该操作',
-            }, done);
+        });
+
+      await agent
+        .get('/client/me')
+        .expect(401, {
+          message: '请在登录后进行该操作',
         });
     });
   });

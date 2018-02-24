@@ -62,7 +62,7 @@ module.exports = {
       salt = await bcrypt.genSalt(10);
     } catch (err) {
       return res.status(500).json({
-        message: 'Error occurs when generateing salt',
+        message: 'Error occurs when generating salt',
       });
     }
 
@@ -70,7 +70,7 @@ module.exports = {
       hash = await bcrypt.hash(data.password, salt);
     } catch (err) {
       return res.status(500).json({
-        message: 'Error occurs when generateing hash',
+        message: 'Error occurs when generating hash',
       });
     }
 
@@ -102,21 +102,13 @@ module.exports = {
     let salt;
     let hash;
 
-    if (typeof data.id !== 'number') {
-      data.id = parseInt(data.id);
-    }
-    const targetClient = await Client.findOne({ id: data.id });
-    if (!targetClient) {
-      return res.status(404).json({
-        message: '未找到目标用户',
-      });
-    }
+    const { clientId } = req.session;
 
     try {
       salt = await bcrypt.genSalt(10);
     } catch (err) {
       return res.status(500).json({
-        message: 'Error occurs when generateing salt',
+        message: 'Error occurs when generating salt',
       });
     }
 
@@ -124,20 +116,22 @@ module.exports = {
       hash = await bcrypt.hash(data.password, salt);
     } catch (err) {
       return res.status(500).json({
-        message: 'Error occurs when generateing hash',
+        message: 'Error occurs when generating hash',
       });
     }
 
     try {
       await SQLService.update({
-        where: { id: targetClient.id },
+        where: { id: clientId },
         model: 'client',
-        data: { password: hash },
-        client: req.session.clientId,
-        action: 'updatePassword',
+        data: {
+          password: hash,
+        },
+        client: clientId,
+        action: 'updateClientPassword',
       });
 
-      res.send(200, {
+      res.send(201, {
         message: '更新密码成功',
       });
     } catch (err) {
