@@ -62,7 +62,7 @@ module.exports = {
       salt = await bcrypt.genSalt(10);
     } catch (err) {
       return res.status(500).json({
-        message: 'Error occurs when generateing salt',
+        message: 'Error occurs when generating salt',
       });
     }
 
@@ -70,7 +70,7 @@ module.exports = {
       hash = await bcrypt.hash(data.password, salt);
     } catch (err) {
       return res.status(500).json({
-        message: 'Error occurs when generateing hash',
+        message: 'Error occurs when generating hash',
       });
     }
 
@@ -116,7 +116,7 @@ module.exports = {
       salt = await bcrypt.genSalt(10);
     } catch (err) {
       return res.status(500).json({
-        message: 'Error occurs when generateing salt',
+        message: 'Error occurs when generating salt',
       });
     }
 
@@ -124,7 +124,7 @@ module.exports = {
       hash = await bcrypt.hash(data.password, salt);
     } catch (err) {
       return res.status(500).json({
-        message: 'Error occurs when generateing hash',
+        message: 'Error occurs when generating hash',
       });
     }
 
@@ -137,7 +137,7 @@ module.exports = {
         action: 'updatePassword',
       });
 
-      res.send(200, {
+      res.send(201, {
         message: '更新密码成功',
       });
     } catch (err) {

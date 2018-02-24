@@ -24,6 +24,32 @@ describe('ClientController', function() {
     });
   });
 
+  describe('#changePassword()', function() {
+    before(async function() {
+      await Client.destroy({
+        username: 'testChangePassword',
+      });
+
+      await agent
+        .post('/client/register')
+        .send({ username: 'testChangePassword', password: 'testChangePassword' })
+        .expect(201, {
+          message: '注册成功',
+        });
+    });
+
+    it('should successfully change password', function(done) {
+      agent
+        .put('/client/change_password')
+        .send({
+          password: 'changedPassword',
+        })
+        .expect(201, {
+          message: '更新密码成功',
+        }, done);
+    });
+  });
+
   describe('#login/logout()', function() {
     before(function(done) {
       agent
