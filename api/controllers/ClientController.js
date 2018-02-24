@@ -138,7 +138,7 @@ module.exports = {
       });
 
       res.send(200, {
-        message: '更新用户组成功',
+        message: '更新密码成功',
       });
     } catch (err) {
       return res.serverError(err);

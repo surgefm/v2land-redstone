@@ -4,7 +4,7 @@
 
 | Property | Value |
 |:---------|:------|
-| URL | /login |
+| URL | /client/login |
 | Method | POST |
 | Post Data Form | JSON |
 | Return Data Form | JSON |
@@ -22,11 +22,30 @@
 |:---------|:------|
 | message | string |
 
+## Change Password
+
+| Property | Value |
+|:---------|:------|
+| URL | /client/change_password |
+| Method | PUT |
+
+### Post Data
+
+| Property | Type |
+|:---------|:------|
+| password | string |
+
+### Return Data
+
+| Property | Type |
+|:---------|:------|
+| message | string |
+
 ## Logout
 
 | Property | Value |
 |:---------|:------|
-| URL | /logout |
+| URL | /client/logout |
 | Method | * |
 
 ### Return Data
@@ -39,7 +58,7 @@
 
 | Property | Value |
 |:---------|:------|
-| URL | /register |
+| URL | /client/register |
 | Method | POST |
 | Post Data Form | JSON |
 | Return Data Form | JSON |
