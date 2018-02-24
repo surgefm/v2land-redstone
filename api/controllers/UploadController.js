@@ -34,7 +34,7 @@ module.exports = {
       } else {
         return res.status(201).json({
           message: '上传成功',
-          name: newFilename,
+          name: filename,
         });
       }
     });
