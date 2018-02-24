@@ -51,8 +51,8 @@ try {
     console.error('To resolve this, run:');
     console.error('npm install rc --save');
     rc = function() {
- return {};
-};
+      return {};
+    };
   }
 }
 

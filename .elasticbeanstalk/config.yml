@@ -1,13 +1,13 @@
 branch-defaults:
   enhancement/adapt-to-frontend:
-    environment: redstone
+    environment: fhhfdj
     group_suffix: null
 global:
-  application_name: redstone
+  application_name: kakaka
   branch: null
   default_ec2_keyname: null
-  default_platform: Node.js
-  default_region: us-east-1
+  default_platform: Docker 17.09.1-ce
+  default_region: us-west-2
   include_git_submodules: true
   instance_profile: null
   platform_name: null
