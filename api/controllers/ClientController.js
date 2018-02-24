@@ -97,6 +97,54 @@ module.exports = {
     });
   },
 
+  changePassword: async (req, res) => {
+    const data = req.body;
+    let salt;
+    let hash;
+
+    if (typeof data.id !== 'number') {
+      data.id = parseInt(data.id);
+    }
+    const targetClient = await Client.findOne({ id: data.id });
+    if (!targetClient) {
+      return res.status(404).json({
+        message: '未找到目标用户',
+      });
+    }
+
+    try {
+      salt = await bcrypt.genSalt(10);
+    } catch (err) {
+      return res.status(500).json({
+        message: 'Error occurs when generateing salt',
+      });
+    }
+
+    try {
+      hash = await bcrypt.hash(data.password, salt);
+    } catch (err) {
+      return res.status(500).json({
+        message: 'Error occurs when generateing hash',
+      });
+    }
+
+    try {
+      await SQLService.update({
+        where: { id: targetClient.id },
+        model: 'client',
+        data: { password: hash },
+        client: req.session.clientId,
+        action: 'updatePassword',
+      });
+
+      res.send(200, {
+        message: '更新用户组成功',
+      });
+    } catch (err) {
+      return res.serverError(err);
+    }
+  },
+
   updateRole: async (req, res) => {
     // this API is a replacement of role()
     // is only used by an admin to change a client's role
