@@ -25,6 +25,7 @@ describe('ClientController', function() {
   });
 
   describe('#changePassword()', function() {
+    // let clientId;
     const password = 'changedPassword';
 
     before(async function() {
@@ -34,10 +35,13 @@ describe('ClientController', function() {
     });
 
     it('should successfully change password', async function() {
-      await agent
+      const res = await agent
         .post('/client/register')
         .send({ username: 'testChangePassword', password: 'testChangePassword' })
         .expect(201);
+
+      const { client } = JSON.parse(res.text);
+      clientId = client.id;
 
       await agent
         .post('/client/login')
@@ -50,6 +54,7 @@ describe('ClientController', function() {
       await agent
         .put('/client/password')
         .send({
+          id: clientId,
           password,
         })
         .expect(201, {
