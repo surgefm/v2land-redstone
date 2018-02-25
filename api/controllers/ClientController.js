@@ -121,9 +121,7 @@ module.exports = {
     const { clientId } = req.session;
     const targetId = data.id;
 
-    const selfClient = await Client.findOne({
-      id: clientId,
-    });
+    const selfClient = req.currentClient;
 
     const targetClient = await Client.findOne({
       id: targetId,

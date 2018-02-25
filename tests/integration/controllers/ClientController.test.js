@@ -25,7 +25,6 @@ describe('ClientController', function() {
   });
 
   describe('#changePassword()', function() {
-    // let clientId;
     const password = 'changedPassword';
 
     before(async function() {
