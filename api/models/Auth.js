@@ -19,7 +19,7 @@ module.exports = {
     },
 
     profile: {
-      type: 'text',
+      type: 'json',
     },
 
     token: {

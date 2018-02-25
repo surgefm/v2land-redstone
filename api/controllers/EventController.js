@@ -20,6 +20,14 @@ const EventController = {
     }
   },
 
+  getAllPendingEvents: async (req, res) => {
+    const eventCollection = await Event.find({
+      where: { status: 'pending' },
+      sort: 'createdAt ASC',
+    });
+    res.status(200).json({ eventCollection });
+  },
+
   getPendingNews: async (req, res) => {
     const name = req.param('eventName');
     const event = await EventService.findEvent(name);
@@ -30,17 +38,13 @@ const EventController = {
       });
     }
 
-    const newsCollection = await News.find({
-      status: 'pending',
-      event: event.id,
-    });
+    const { news } = await Event.findOne({ id: event.id })
+      .populate('news', { status: 'pending' });
 
-    return res.status(200).json({ newsCollection });
+    return res.status(200).json({ newsCollection: news });
   },
 
   createEvent: async (req, res) => {
-    const isManager = req.currentClient ? req.currentClient.isManager : false;
-
     if (!(req.body && req.body.name && req.body.description)) {
       return res.status(400).json({
         message: '缺少参数 name 或 description',
@@ -48,6 +52,7 @@ const EventController = {
     }
 
     let event = await EventService.findEvent(req.body.name);
+    let isManager = false;
 
     if (event) {
       return res.status(409).json({
@@ -55,7 +60,15 @@ const EventController = {
       });
     }
 
-    req.body.status = isManager ? 'admitted' : 'pending';
+    req.body.status = 'pending';
+
+    if (req.session.clientId) {
+      const client = await Client.findOne({ id: req.session.clientId });
+      if (client && ['manager', 'admin'].includes(client.role)) {
+        req.body.status = 'admitted';
+        isManager = true;
+      }
+    }
 
     try {
       event = await SQLService.create({
@@ -141,6 +154,7 @@ const EventController = {
 
   getEventList: async (req, res) => {
     let page = 1;
+    let where;
 
     if (req.body && req.body.page) {
       page = req.body.page;
@@ -148,25 +162,54 @@ const EventController = {
       page = req.query.page;
     }
 
-    const events = await Event.find({
-      where: { status: 'admitted' },
-      sort: 'updatedAt DESC',
-    })
-      .paginate({
-        page,
-        limit: 10,
-      })
-      .populate('headerImage');
+    if (req.session.clientId) {
+      const client = await Client.findOne({ id: req.session.clientId });
+      if (client && ['manager', 'admin'].includes(client.role)) {
+        if (req.body && req.body.where) {
+          where = req.body.where;
+        } else if (req.query && req.query.where) {
+          where = req.query.where;
+        }
 
-    res.status(200).json({ eventList: events });
+        if (where) {
+          try {
+            where = JSON.parse(where);
+          } catch (err) {/* happy */}
+        }
+      }
+    }
+
+    try {
+      let events;
+      if (where) {
+        events = await Event.find({
+          where,
+          sort: 'updatedAt DESC',
+        })
+          .populate('headerImage');
+      } else {
+        events = await Event.find({
+          sort: 'updatedAt DESC',
+        })
+          .paginate({
+            page,
+            limit: 10,
+          })
+          .populate('headerImage');
+      }
+
+      res.status(200).json({ eventList: events });
+    } catch (err) {
+      console.log(JSON.stringify(err));
+    }
   },
 
   createNews: async (req, res) => {
     const name = req.param('eventName');
     const data = req.body;
-    const isManager = req.currentClient ? req.currentClient.isManager : false;
 
     let news;
+    let isManager = false;
 
     if (!data.url) {
       return res.status(400).json({
@@ -183,7 +226,15 @@ const EventController = {
     }
 
     data.event = event.id;
-    data.status = isManager ? 'admitted' : 'pending';
+    data.status = 'pending';
+
+    if (req.session.clientId) {
+      const client = await Client.findOne({ id: req.session.clientId });
+      if (client && ['manager', 'admin'].includes(client.role)) {
+        data.status = 'admitted';
+        isManager = true;
+      }
+    }
 
     const existingNews = await News.findOne({ url: data.url, event: event.id });
     if (existingNews) {

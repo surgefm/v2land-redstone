@@ -108,6 +108,8 @@ const SQLService = {
 
     where = SQLService.cleanData(model, where);
     const query = sequel.destroy(model, where);
+    query.query = query.query.replace('  "', ' WHERE "');
+    query.query = 'DELETE ' + query.query.slice(query.query.indexOf('FROM'));
 
     return SQLService.query({
       model,
