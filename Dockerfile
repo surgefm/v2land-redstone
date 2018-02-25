@@ -16,4 +16,4 @@ RUN yarn
 LABEL name="redstone"
 
 EXPOSE 1337
-CMD [ "node", "app.js" ]
+CMD NODE_ENV=production yarn start
