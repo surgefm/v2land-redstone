@@ -96,7 +96,7 @@ $ make test-without-lint
 
 ## 调试
 
-v2land-redstone 现在可以使用 Chrome Dev Tools 进行调试了！具体方法如下：
+v2land-redstone 现在可以使用 Chrome Dev Tools 进行调试了！具体方法如下：
 
 进入你要进行单步调试的测试代码下面，加入一行：
 
@@ -112,7 +112,7 @@ debugger;
 make debug
 ```
 
-等待提示服务启动成功之后，打开 Chrome 浏览器，在地址栏输入 [chrome://inspect/](chrome://inspect/) 然后在 **「Remote Target」** 下面查找到你要单步调试的用例，点击 **inspect** 就可以进行单步调试啦！
+等待提示服务启动成功之后，打开 Chrome 浏览器，在地址栏输入 [chrome://inspect/](chrome://inspect/) 然后在 **「Remote Target」** 下面查找到你要单步调试的用例，点击 **inspect** 就可以进行单步调试啦！
 
 你同样可以如上文所述那样在 mocha 测试用例使用 describe.only 来指定运行哪些测试代码。
 
