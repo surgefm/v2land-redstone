@@ -197,21 +197,25 @@ module.exports = {
     }
 
     const name = req.param('clientName');
-    const client = await ClientService.findClient(name);
-
+    let client = await ClientService.findClient(name);
     if (!client) {
       return res.status(404).json({
         message: '未找到该用户',
       });
     }
-
-    const changes = [];
-    for (const i of ['username']) {
-      if (req.body[i] && req.body[i] !== client[i]) {
-        changes.push(i);
-      }
+    // if the client is not Admin, he is not allowed to update other client
+    if (!req.currentClient.isAdmin && req.currentClient.username !== client.username) {
+      return res.status(403).json({
+        message: '您没有权限进行该操作',
+      });
     }
 
+    changes = {};
+    for (const i of ['username']) {
+      if (req.body[i] && req.body[i] !== client[i]) {
+        changes[i] = req.body[i];
+      }
+    }
     try {
       await SQLService.update({
         action: 'updateClientDetail',
@@ -220,6 +224,8 @@ module.exports = {
         data: changes,
         where: { id: client.id },
       });
+
+      client = req.currentClient = await ClientService.findClient(client.id);
 
       res.status(201).json({
         message: '修改成功',
