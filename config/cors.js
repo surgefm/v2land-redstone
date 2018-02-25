@@ -47,7 +47,7 @@ module.exports.cors = {
   *                                                                          *
   ***************************************************************************/
 
-  origin: 'http://localhost:3000,https://langchao.co,https://v2land.net',
+  origin: process.env.CORS || 'http://localhost:3000,https://langchao.co,https://v2land.net',
 
   /***************************************************************************
   *                                                                          *

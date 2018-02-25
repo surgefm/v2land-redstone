@@ -30,8 +30,8 @@ module.exports.routes = {
   'GET /client/me': 'ClientController.getClientDetail',
   'POST /client/login': 'ClientController.login',
   'PUT /client/role': 'ClientController.updateRole',
-  '/client/logout': 'ClientController.logout',
   'PUT /client/password': 'ClientController.changePassword',
+  '/client/logout': 'ClientController.logout',
   'GET /client/:clientName': 'ClientController.findClient',
   'PUT /client/:clientName': 'ClientController.updateClient',
 
@@ -39,7 +39,7 @@ module.exports.routes = {
   'PUT /news/:news': 'NewsController.updateNews',
 
   'GET /subscription/unsubscribe': 'SubscriptionController.unsubscribe',
-  'POST /subscription/:eventName': 'SUbscriptionController.subscribe',
+  'POST /subscription/:eventName': 'SubscriptionController.subscribe',
   
   'GET /event': 'EventController.getEventList',
   'GET /event/pending': 'EventController.getAllPendingEvents',
