@@ -80,7 +80,10 @@ module.exports = {
         password: hash,
       });
 
-      res.status(201).json({ message: '注册成功' });
+      res.status(201).json({
+        message: '注册成功',
+        client: await ClientService.findClient(client.id),
+      });
     } catch (err) {
       return res.serverError(err);
     }
@@ -101,6 +104,15 @@ module.exports = {
     const data = req.body;
     let salt;
     let hash;
+
+    if (
+      typeof data.id === 'undefined' ||
+      typeof data.password === 'undefined'
+    ) {
+      return res.status(404).json({
+        message: '参数错误',
+      });
+    }
 
     const { clientId } = req.session;
     const targetId = data.id;
