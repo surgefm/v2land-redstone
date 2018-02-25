@@ -155,7 +155,7 @@ module.exports = {
     }
 
     const name = req.param('clientName');
-    client = await ClientService.findClient(name);
+    let client = await ClientService.findClient(name);
     if (!client) {
       return res.status(404).json({
         message: '未找到该用户',
