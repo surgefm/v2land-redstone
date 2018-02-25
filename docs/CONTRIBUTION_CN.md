@@ -86,6 +86,36 @@ $ make test-completeness
 
 注：完整性测试意味着每个 API 都应该有对应的单元测试。
 
+只运行测试代码，不运行 eslint:
+
+```sh
+$ make test-without-lint
+```
+
+你可以在 mocha 的测试用例 `describe` 后面添加 `.only` 来指定只跑这个测试。
+
+## 调试
+
+v2land-redstone 现在可以使用 Chrome Dev Tools 进行调试了！具体方法如下：
+
+进入你要进行单步调试的测试代码下面，加入一行：
+
+```js
+// 上一行代码
+debugger;
+// 下一行代码
+```
+
+然后进入 shell，键入：
+
+```sh
+make debug
+```
+
+等待提示服务启动成功之后，打开 Chrome 浏览器，在地址栏输入 [chrome://inspect/](chrome://inspect/) 然后在 **「Remote Target」** 下面查找到你要单步调试的用例，点击 **inspect** 就可以进行单步调试啦！
+
+你同样可以如上文所述那样在 mocha 测试用例使用 describe.only 来指定运行哪些测试代码。
+
 ## 提交 Pull Request
 
 当您完成开发之后，您就可以给我们的 `develop` 分支提交 PR，我们感谢您的付出和支持。
