@@ -103,31 +103,54 @@ module.exports = {
     let hash;
 
     const { clientId } = req.session;
+    const targetId = data.id;
+
+    const selfClient = await Client.findOne({
+      id: clientId,
+    });
+
+    const targetClient = await Client.findOne({
+      id: targetId,
+    });
+
+    if (typeof targetClient === 'undefined') {
+      return res.status(500).json({
+        message: '找不到目标用户',
+      });
+    }
+
+    if (targetId !== clientId && selfClient.role !== 'admin') {
+      return res.status(500).json({
+        message: '您没有修改此用户密码的权限',
+      });
+    }
 
     try {
       salt = await bcrypt.genSalt(10);
     } catch (err) {
+      sails.log.error(err);
       return res.status(500).json({
-        message: 'Error occurs when generating salt',
+        message: '服务器发生未知错误，请联系开发者',
       });
     }
 
     try {
       hash = await bcrypt.hash(data.password, salt);
     } catch (err) {
+      sails.log.error(err);
       return res.status(500).json({
-        message: 'Error occurs when generating hash',
+        message: '服务器发生未知错误，请联系开发者',
       });
     }
 
     try {
       await SQLService.update({
-        where: { id: clientId },
+        where: { id: targetId },
         model: 'client',
         data: {
           password: hash,
         },
-        client: clientId,
+        client: targetId,
         action: 'updateClientPassword',
       });
 
