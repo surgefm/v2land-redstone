@@ -20,8 +20,8 @@ module.exports = {
       });
 
     const data = { ...client };
+    if (!data.id) return null;
     delete data.password;
-
     return data;
   },
 

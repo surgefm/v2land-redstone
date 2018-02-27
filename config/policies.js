@@ -38,10 +38,11 @@ module.exports.policies = {
   },
 
   ClientController: {
-    'updateClient': true,
+    'updateClient': ['isLoggedIn'],
     'findClient': true,
     'login': true,
     'register': true,
+    'changePassword': 'isLoggedIn',
     'updateRole': ['isLoggedIn', 'isAdmin'],
     'getClientDetail': 'isLoggedIn',
     'logout': 'isLoggedIn',
