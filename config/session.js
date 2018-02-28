@@ -17,7 +17,9 @@ const globals = require('./globals').globals;
 
 const url = parseDomain(globals.api);
 const cookie = {
-  domain: url ? ('.' + url.domain + '.' + url.tld) : null,
+  domain: ((process.env.NODE_ENV === 'production' || process.env.CUSTOM_DOMAIN) && url)
+    ? ('.' + url.domain + '.' + url.tld)
+    : null,
 }
 
 module.exports.session = {

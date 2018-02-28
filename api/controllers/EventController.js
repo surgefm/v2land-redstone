@@ -155,6 +155,7 @@ const EventController = {
   getEventList: async (req, res) => {
     let page = 1;
     let where;
+    let isManager = false;
 
     if (req.body && req.body.page) {
       page = req.body.page;
@@ -162,46 +163,50 @@ const EventController = {
       page = req.query.page;
     }
 
-    if (req.session.clientId) {
+    if (req.body && req.body.where) {
+      where = req.body.where;
+    } else if (req.query && req.query.where) {
+      where = req.query.where;
+    }
+
+    if (where) {
+      try {
+        where = JSON.parse(where);
+      } catch (err) {/* happy */}
+    }
+
+
+    if (where && req.session.clientId) {
       const client = await Client.findOne({ id: req.session.clientId });
       if (client && ['manager', 'admin'].includes(client.role)) {
-        if (req.body && req.body.where) {
-          where = req.body.where;
-        } else if (req.query && req.query.where) {
-          where = req.query.where;
-        }
-
-        if (where) {
-          try {
-            where = JSON.parse(where);
-          } catch (err) {/* happy */}
-        }
+        isManager = true;
       }
     }
 
-    try {
-      let events;
-      if (where) {
-        events = await Event.find({
-          where,
-          sort: 'updatedAt DESC',
-        })
-          .populate('headerImage');
-      } else {
-        events = await Event.find({
-          sort: 'updatedAt DESC',
-        })
-          .paginate({
-            page,
-            limit: 10,
-          })
-          .populate('headerImage');
-      }
-
-      res.status(200).json({ eventList: events });
-    } catch (err) {
-      console.log(JSON.stringify(err));
+    if (where && !isManager) {
+      where.status = 'admitted';
     }
+
+    let events;
+    if (where) {
+      events = await Event.find({
+        where,
+        sort: 'updatedAt DESC',
+      })
+        .populate('headerImage');
+    } else {
+      events = await Event.find({
+        where: { status: 'admitted' },
+        sort: 'updatedAt DESC',
+      })
+        .paginate({
+          page,
+          limit: 10,
+        })
+        .populate('headerImage');
+    }
+
+    res.status(200).json({ eventList: events });
   },
 
   createNews: async (req, res) => {
