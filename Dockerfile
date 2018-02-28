@@ -10,10 +10,10 @@ WORKDIR /usr/src/app
 COPY . .
 
 # Install app dependencies
-RUN npm -g install sails
-RUN npm install
+RUN npm install -g yarn
+RUN yarn
 
 LABEL name="redstone"
 
 EXPOSE 1337
-CMD [ "npm", "start" ]
+CMD NODE_ENV=production yarn start

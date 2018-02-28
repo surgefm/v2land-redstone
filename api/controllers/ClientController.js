@@ -95,6 +95,7 @@ module.exports = {
         client: req.session.clientId,
       });
 
+      req.session.clientId = client.id;
       res.status(201).json({
         message: '注册成功',
         client: await ClientService.findClient(client.id),
