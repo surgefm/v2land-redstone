@@ -14,6 +14,7 @@ module.exports = {
       })
       .populate('auths', {
         where: { profileId: { '>=': 1 } },
+        select: ['id', 'site', 'profileId', 'profile'],
       })
       .populate('events', {
         sort: 'updatedAt DESC',
