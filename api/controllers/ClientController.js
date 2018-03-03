@@ -336,7 +336,10 @@ module.exports = {
         where,
         select,
         sort: 'updatedAt DESC',
-      });
+      })
+        .populate('auths', {
+          select: ['id', 'site', 'profileId', 'profile'],
+        });
     } else {
       clients = await Client.find({
         sort: 'updatedAt DESC',
@@ -345,6 +348,9 @@ module.exports = {
         .paginate({
           page,
           limit: 10,
+        })
+        .populate('auths', {
+          select: ['id', 'site', 'profileId', 'profile'],
         });
     }
 
