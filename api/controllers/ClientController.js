@@ -203,6 +203,7 @@ module.exports = {
     }
 
     const targetCurrentRole = targetClient.role;
+    const targetNewRole = data.newRole;
 
     if (targetCurrentRole === targetNewRole) {
       res.send(200, {
