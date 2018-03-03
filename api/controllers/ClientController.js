@@ -26,7 +26,7 @@ module.exports = {
 
     if (!verified) {
       return res.status(401).json({
-        message: '错误的用户名/邮箱/密码',
+        message: '错误的用户名、邮箱或密码',
       });
     }
 
@@ -188,6 +188,13 @@ module.exports = {
     if (typeof data.id !== 'number') {
       data.id = parseInt(data.id);
     }
+
+    if (data.id === req.session.clientId) {
+      return res.status(400).json({
+        message: '您不可以修改自己的用户组',
+      });
+    }
+
     const targetClient = await Client.findOne({ id: data.id });
     if (!targetClient) {
       return res.status(404).json({
@@ -198,9 +205,9 @@ module.exports = {
     const targetCurrentRole = targetClient.role;
     const targetNewRole = data.newRole;
     const roleOptions = ['contributor', 'manager'];
-    if (roleOptions.indexOf(targetCurrentRole) < 0 || roleOptions.indexOf(targetNewRole) < 0 ) {
-      return res.send(500, {
-        message: '您不可以这样修改此用户权限',
+    if (roleOptions.indexOf(targetCurrentRole) < 0 || roleOptions.indexOf(targetNewRole) < 0) {
+      return res.send(400, {
+        message: '您不可以这样修改此用户组',
       });
     }
 
@@ -219,7 +226,7 @@ module.exports = {
       });
 
       res.send(200, {
-        message: '更新用户组成功',
+        message: '成功更新用户组',
       });
     } catch (err) {
       return res.serverError(err);
@@ -286,6 +293,64 @@ module.exports = {
 
     // Should determine how much information to send based on client's group.
     return res.status(200).json({ client });
+  },
+
+  getClientList: async (req, res) => {
+    let page = 1;
+    let where = {};
+
+    if (req.body && req.body.page) {
+      page = req.body.page;
+    } else if (req.query && req.query.page) {
+      page = req.query.page;
+    }
+
+    if (req.body && req.body.where) {
+      where = req.body.where;
+    } else if (req.query && req.query.where) {
+      where = req.query.where;
+    }
+
+    if (where) {
+      try {
+        where = JSON.parse(where);
+      } catch (err) {/* happy */}
+    }
+
+    const fetchDetail = async (clients) => {
+      const promises = [];
+      for (const client of clients) {
+        const fetch = async () => {
+          client.subscriptionCount = await Subscription.count({ subscriber: client.id });
+        };
+        promises.push(fetch());
+      }
+
+      await Promise.all(promises);
+    };
+
+    const select = ['id', 'email', 'username', 'role'];
+    let clients;
+    if (where) {
+      clients = await Client.find({
+        where,
+        select,
+        sort: 'updatedAt DESC',
+      });
+    } else {
+      clients = await Client.find({
+        sort: 'updatedAt DESC',
+        select,
+      })
+        .paginate({
+          page,
+          limit: 10,
+        });
+    }
+
+    await fetchDetail(clients);
+
+    res.status(200).json({ clientList: clients });
   },
 
   getClientDetail: async (req, res) => {
