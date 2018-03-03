@@ -339,6 +339,7 @@ module.exports = {
       })
         .populate('auths', {
           select: ['id', 'site', 'profileId', 'profile'],
+          where: { profileId: { '>=': 1 } },
         });
     } else {
       clients = await Client.find({
@@ -351,6 +352,7 @@ module.exports = {
         })
         .populate('auths', {
           select: ['id', 'site', 'profileId', 'profile'],
+          where: { profileId: { '>=': 1 } },
         });
     }
 
