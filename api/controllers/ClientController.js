@@ -203,13 +203,6 @@ module.exports = {
     }
 
     const targetCurrentRole = targetClient.role;
-    const targetNewRole = data.newRole;
-    const roleOptions = ['contributor', 'manager'];
-    if (roleOptions.indexOf(targetCurrentRole) < 0 || roleOptions.indexOf(targetNewRole) < 0) {
-      return res.send(400, {
-        message: '您不可以这样修改此用户组',
-      });
-    }
 
     if (targetCurrentRole === targetNewRole) {
       res.send(200, {
