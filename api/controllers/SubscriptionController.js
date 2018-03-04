@@ -101,6 +101,7 @@ module.exports = {
         mode,
         contact,
         method: contact.method,
+        status: 'active',
       },
     });
 
