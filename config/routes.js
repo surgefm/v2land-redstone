@@ -26,6 +26,8 @@ module.exports.routes = {
     view: 'homepage'
   },
 
+  'GET /client': 'ClientController.getClientList',
+  'POST /client': 'ClientController.getClientList',
   'POST /client/register': 'ClientController.register',
   'GET /client/me': 'ClientController.getClientDetail',
   'POST /client/login': 'ClientController.login',
@@ -42,6 +44,7 @@ module.exports.routes = {
   'POST /subscription/:eventName': 'SubscriptionController.subscribe',
   
   'GET /event': 'EventController.getEventList',
+  'POST /event/list': 'EventController.getEventList',
   'GET /event/pending': 'EventController.getAllPendingEvents',
   'POST /event': 'EventController.createEvent',
   'PUT /event/:eventName': 'EventController.updateEvent',
