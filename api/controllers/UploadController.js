@@ -25,6 +25,7 @@ module.exports = {
       secret: S3_KEY,
       bucket: S3_BUCKET,
       saveAs: filename,
+      maxBytes: 1024 * 1024 * 4,
       headers: {
         'x-amz-acl': 'public-read',
       },

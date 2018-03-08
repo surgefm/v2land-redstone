@@ -34,6 +34,7 @@ module.exports.http = {
       'cookieParser',
       'session',
       'bodyParser',
+      'parser',
       'handleBodyParserError',
       'compress',
       'methodOverride',
@@ -56,7 +57,9 @@ module.exports.http = {
     noCache: function (req, res, next) {
       res.header("Cache-Control", "no-cache, no-store");
       return next();
-    }
+    },
+
+    bodyParser: require('skipper')({ limit: '4mb' }),
 
   /***************************************************************************
   *                                                                          *
