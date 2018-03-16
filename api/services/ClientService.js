@@ -26,4 +26,13 @@ module.exports = {
     return data;
   },
 
+  sanitizeClient: (client) => {
+    const temp = {};
+    for (const attr of ['username', 'role', 'id', 'events']) {
+      temp[attr] = client[attr];
+    }
+
+    return temp;
+  },
+
 };
