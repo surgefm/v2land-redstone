@@ -100,6 +100,8 @@ module.exports = {
         message: '注册成功',
         client: await ClientService.findClient(client.id),
       });
+
+      EmailService.register(client);
     } catch (err) {
       return res.serverError(err);
     }
