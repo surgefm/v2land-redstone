@@ -11,9 +11,7 @@ describe('ClientModel', function() {
 
   describe('#create()', function() {
     before(async function() {
-      await Client.destroy({
-        username: 'test',
-      });
+      await Client.destroy();
     });
 
 
