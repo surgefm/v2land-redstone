@@ -1,27 +1,27 @@
+
+const testEmail = process.env.TEST_EMAIL?
+  process.env.TEST_EMAIL : 'vincent@langchao.co';
+
 describe('ClientModel', function() {
   describe('#find()', function() {
-    it('should check find function', function(done) {
-      Client.find()
-      .then(function(results) {
-        // some tests
-        done();
-      })
-      .catch(done);
+    it('should check find function', async function() {
+      await Client.find();
     });
   });
+
   describe('#create()', function() {
-    it('should create and destroy client', function(done) {
-      Client.create({
+    before(async function() {
+      await Client.destroy({
+        username: 'test',
+      });
+    });
+
+
+    it('should create and destroy client', async function() {
+      await Client.create({
         username: 'test',
         password: 'test6666666',
-      }).exec((err, finn) => {
-        if (err) {
-          done(err);
-        }
-
-        Client.destroy({
-          username: 'test',
-        }).exec(done);
+        email: testEmail,
       });
     });
   });

@@ -3,6 +3,9 @@ const urlencode = require('urlencode');
 const assert = require('assert');
 let agent;
 
+const testEmail = process.env.TEST_EMAIL?
+  process.env.TEST_EMAIL : 'vincent@langchao.co';
+
 describe('EventController', function() {
   describe('createEvent', function() {
     before(async function() {
@@ -12,15 +15,14 @@ describe('EventController', function() {
         name: '浪潮今天发布啦',
       });
 
-      await Client.destroy({
-        username: 'testAccountRegister',
-      });
+      await Client.destroy();
 
       await agent
         .post('/client/register')
         .send({
           username: 'testAccountRegister',
           password: 'testPassword',
+          email: testEmail,
         });
 
       await agent

@@ -1,4 +1,5 @@
 const transporter = sails.config.email.transporter;
+const qs = require('qs');
 
 const EmailService = {
 
@@ -7,7 +8,7 @@ const EmailService = {
       to: client.email,
       from: {
         name: '浪潮',
-        address: 'verify@langchao.co',
+        address: 'verify@langchao.org',
       },
       template: 'registration',
       subject: client.username + '，请完成浪潮注册过程',
@@ -35,7 +36,7 @@ const EmailService = {
     const email = {
       from: {
         name: '浪潮',
-        address: 'notify@langchao.co',
+        address: 'notify@langchao.org',
       },
       to: subscription.contact.address,
       subject: template.subject,
