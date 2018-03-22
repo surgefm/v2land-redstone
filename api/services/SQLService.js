@@ -108,6 +108,8 @@ const SQLService = {
 
     where = SQLService.cleanData(model, where);
     const query = sequel.destroy(model, where);
+    query.query = query.query.replace('  "', ' WHERE "');
+    query.query = 'DELETE ' + query.query.slice(query.query.indexOf('FROM'));
 
     return SQLService.query({
       model,
@@ -216,12 +218,13 @@ function generateWhereQuery(query, values = [], parents = []) {
     const properties = Object.getOwnPropertyNames(query);
     for (let i = 0; i < properties.length; i++) {
       const property = properties[i];
+      let temp = parents.slice();
       if (typeof(query[property]) !== 'object' || query[property] instanceof Date) {
-        if (parents.length > 0) {
-          string += parents[0] + ` #>> '{`;
-          parents = parents.slice(1);
-          parents.push(property);
-          string += `${parents.join(',')}}'`;
+        if (temp.length > 0) {
+          string += `"${temp[0]}"::json#>>'{`;
+          temp = temp.slice(1);
+          temp.push(property);
+          string += `${temp.join(',')}}'`;
         } else {
           string += property;
         }

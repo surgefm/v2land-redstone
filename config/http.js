@@ -33,13 +33,14 @@ module.exports.http = {
       'startRequestTimer',
       'cookieParser',
       'session',
-      'myRequestLogger',
       'bodyParser',
+      'parser',
       'handleBodyParserError',
       'compress',
       'methodOverride',
       'poweredBy',
       '$custom',
+      'noCache',
       'router',
       'www',
       'favicon',
@@ -53,11 +54,12 @@ module.exports.http = {
   *                                                                           *
   ****************************************************************************/
 
+    noCache: function (req, res, next) {
+      res.header("Cache-Control", "no-cache, no-store");
+      return next();
+    },
 
-    // myRequestLogger: function (req, res, next) {
-    //     console.log("Requested :: ", req.method, req.url);
-    //     return next();
-    // }
+    bodyParser: require('skipper')({ limit: '4mb' }),
 
   /***************************************************************************
   *                                                                          *

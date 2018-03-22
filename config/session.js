@@ -12,6 +12,16 @@
  * http://sailsjs.org/#!/documentation/reference/sails.config/sails.config.session.html
  */
 
+const parseDomain = require('parse-domain');
+const globals = require('./globals').globals;
+
+const url = parseDomain(globals.api);
+const cookie = {
+  domain: ((process.env.NODE_ENV === 'production' || process.env.CUSTOM_DOMAIN) && url)
+    ? ('.' + url.domain + '.' + url.tld)
+    : null,
+}
+
 module.exports.session = {
 
   /***************************************************************************
@@ -30,6 +40,8 @@ module.exports.session = {
   user: process.env.POSTGRES_USER || 'postgres',
   password: process.env.POSTGRES_PWD,
   port: 5432,
+
+  cookie,
 
   /***************************************************************************
   *                                                                          *

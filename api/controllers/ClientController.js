@@ -26,7 +26,7 @@ module.exports = {
 
     if (!verified) {
       return res.status(401).json({
-        message: '错误的用户名/邮箱/密码',
+        message: '错误的用户名、邮箱或密码',
       });
     }
 
@@ -51,18 +51,25 @@ module.exports = {
     let salt;
     let hash;
 
-    let client = await Client.findOne({ username: data.username });
+    let client = await Client.findOne({
+      or: [
+        { username: data.username },
+        { email: data.email },
+      ],
+    });
+
     if (client) {
-      return res.status(406).json({
-        message: '该用户名/邮箱已被占用',
-      });
+      const message = client.username === data.username
+        ? '该用户名已被占用'
+        : '该邮箱已被占用';
+      return res.status(406).json({ message });
     }
 
     try {
       salt = await bcrypt.genSalt(10);
     } catch (err) {
       return res.status(500).json({
-        message: 'Error occurs when generateing salt',
+        message: 'Error occurs when generating salt',
       });
     }
 
@@ -70,31 +77,104 @@ module.exports = {
       hash = await bcrypt.hash(data.password, salt);
     } catch (err) {
       return res.status(500).json({
-        message: 'Error occurs when generateing hash',
+        message: 'Error occurs when generating hash',
       });
     }
 
     try {
-      client = await Client.create({
-        username: data.username,
-        password: hash,
+      client = await SQLService.create({
+        model: 'client',
+        operation: 'create',
+        data: {
+          username: data.username,
+          password: hash,
+          email: data.email,
+          role: 'contributor',
+        },
+        action: 'createClient',
+        client: req.session.clientId,
       });
 
-      res.status(201).json({ message: '注册成功' });
+      req.session.clientId = client.id;
+      res.status(201).json({
+        message: '注册成功',
+        client: await ClientService.findClient(client.id),
+      });
     } catch (err) {
       return res.serverError(err);
     }
+  },
 
-    client = { ...client };
-    delete client.password;
-    await Record.create({
-      model: 'Client',
-      target: client.id,
-      data: client,
-      operation: 'create',
-      action: 'createClient',
-      client: req.session.clientId, // Although in most cases it's null.
+  changePassword: async (req, res) => {
+    const data = req.body;
+    let salt;
+    let hash;
+
+    if (
+      typeof data.id === 'undefined' ||
+      typeof data.password === 'undefined'
+    ) {
+      return res.status(404).json({
+        message: '参数错误',
+      });
+    }
+
+    const { clientId } = req.session;
+    const targetId = data.id;
+
+    const selfClient = req.currentClient;
+
+    const targetClient = await Client.findOne({
+      id: targetId,
     });
+
+    if (typeof targetClient === 'undefined') {
+      return res.status(500).json({
+        message: '找不到目标用户',
+      });
+    }
+
+    if (targetId !== clientId && selfClient.role !== 'admin') {
+      return res.status(500).json({
+        message: '您没有修改此用户密码的权限',
+      });
+    }
+
+    try {
+      salt = await bcrypt.genSalt(10);
+    } catch (err) {
+      sails.log.error(err);
+      return res.status(500).json({
+        message: '服务器发生未知错误，请联系开发者',
+      });
+    }
+
+    try {
+      hash = await bcrypt.hash(data.password, salt);
+    } catch (err) {
+      sails.log.error(err);
+      return res.status(500).json({
+        message: '服务器发生未知错误，请联系开发者',
+      });
+    }
+
+    try {
+      await SQLService.update({
+        where: { id: targetId },
+        model: 'client',
+        data: {
+          password: hash,
+        },
+        client: targetId,
+        action: 'updateClientPassword',
+      });
+
+      res.send(201, {
+        message: '更新密码成功',
+      });
+    } catch (err) {
+      return res.serverError(err);
+    }
   },
 
   updateRole: async (req, res) => {
@@ -108,6 +188,13 @@ module.exports = {
     if (typeof data.id !== 'number') {
       data.id = parseInt(data.id);
     }
+
+    if (data.id === req.session.clientId) {
+      return res.status(400).json({
+        message: '您不可以修改自己的用户组',
+      });
+    }
+
     const targetClient = await Client.findOne({ id: data.id });
     if (!targetClient) {
       return res.status(404).json({
@@ -118,9 +205,11 @@ module.exports = {
     const targetCurrentRole = targetClient.role;
     const targetNewRole = data.newRole;
     const roleOptions = ['contributor', 'manager'];
-    if (roleOptions.indexOf(targetCurrentRole) < 0 || roleOptions.indexOf(targetNewRole) < 0 ) {
-      return res.send(500, {
-        message: '您不可以这样修改此用户权限',
+    if (targetCurrentRole === 'admin' ||
+      roleOptions.indexOf(targetCurrentRole) < 0 ||
+      roleOptions.indexOf(targetNewRole) < 0) {
+      return res.send(400, {
+        message: '您不可以这样修改此用户组',
       });
     }
 
@@ -139,7 +228,7 @@ module.exports = {
       });
 
       res.send(200, {
-        message: '更新用户组成功',
+        message: '成功更新用户组',
       });
     } catch (err) {
       return res.serverError(err);
@@ -155,21 +244,25 @@ module.exports = {
     }
 
     const name = req.param('clientName');
-    const client = await ClientService.findClient(name);
-
+    let client = await ClientService.findClient(name);
     if (!client) {
       return res.status(404).json({
         message: '未找到该用户',
       });
     }
-
-    const changes = [];
-    for (const i of ['username']) {
-      if (req.body[i] && req.body[i] !== client[i]) {
-        changes.push(i);
-      }
+    // if the client is not Admin, he is not allowed to update other client
+    if (!req.currentClient.isAdmin && req.currentClient.username !== client.username) {
+      return res.status(403).json({
+        message: '您没有权限进行该操作',
+      });
     }
 
+    changes = {};
+    for (const i of ['username']) {
+      if (req.body[i] && req.body[i] !== client[i]) {
+        changes[i] = req.body[i];
+      }
+    }
     try {
       await SQLService.update({
         action: 'updateClientDetail',
@@ -178,6 +271,8 @@ module.exports = {
         data: changes,
         where: { id: client.id },
       });
+
+      client = req.currentClient = await ClientService.findClient(client.id);
 
       res.status(201).json({
         message: '修改成功',
@@ -198,8 +293,84 @@ module.exports = {
       });
     }
 
-    // Should determine how much information to send based on client's group.
-    return res.status(200).json({ client });
+    if (req.session.clientId === client.id) {
+      return res.status(200).json({ client });
+    } else if (req.session.clientId) {
+      const currentClient = await ClientService.findClient(req.session.clientId);
+      if (currentClient.role === 'admin') {
+        return res.status(200).json({ client });
+      }
+    }
+
+    return res.status(200).json({
+      client: ClientService.sanitizeClient(client),
+    });
+  },
+
+  getClientList: async (req, res) => {
+    let page = 1;
+    let where = {};
+
+    if (req.body && req.body.page) {
+      page = req.body.page;
+    } else if (req.query && req.query.page) {
+      page = req.query.page;
+    }
+
+    if (req.body && req.body.where) {
+      where = req.body.where;
+    } else if (req.query && req.query.where) {
+      where = req.query.where;
+    }
+
+    if (where) {
+      try {
+        where = JSON.parse(where);
+      } catch (err) {/* happy */}
+    }
+
+    const fetchDetail = async (clients) => {
+      const promises = [];
+      for (const client of clients) {
+        const fetch = async () => {
+          client.subscriptionCount = await Subscription.count({ subscriber: client.id });
+        };
+        promises.push(fetch());
+      }
+
+      await Promise.all(promises);
+    };
+
+    const select = ['id', 'email', 'username', 'role'];
+    let clients;
+    if (where) {
+      clients = await Client.find({
+        where,
+        select,
+        sort: 'updatedAt DESC',
+      })
+        .populate('auths', {
+          select: ['id', 'site', 'profileId', 'profile'],
+          where: { profileId: { '>=': 1 } },
+        });
+    } else {
+      clients = await Client.find({
+        sort: 'updatedAt DESC',
+        select,
+      })
+        .paginate({
+          page,
+          limit: 10,
+        })
+        .populate('auths', {
+          select: ['id', 'site', 'profileId', 'profile'],
+          where: { profileId: { '>=': 1 } },
+        });
+    }
+
+    await fetchDetail(clients);
+
+    res.status(200).json({ clientList: clients });
   },
 
   getClientDetail: async (req, res) => {

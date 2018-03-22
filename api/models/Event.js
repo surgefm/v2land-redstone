@@ -24,7 +24,7 @@ module.exports = {
       type: 'string',
       required: true,
       defaultsTo: 'pending',
-      enum: ['pending', 'admitted', 'rejected', 'removed'],
+      enum: ['pending', 'admitted', 'rejected', 'hidden', 'removed'],
     },
 
     subscribers: {

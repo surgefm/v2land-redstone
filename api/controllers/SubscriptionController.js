@@ -50,14 +50,13 @@ module.exports = {
   },
 
   subscribe: async (req, res) => {
-    if (!(req.body && req.body.mode &&
-      req.body.contact && req.body.method)) {
+    if (!(req.body && req.body.mode && req.body.contact)) {
       return res.status(400).json({
-        message: '缺少参数 mode、contact 或 method',
+        message: '缺少参数 mode 或 contact',
       });
     }
 
-    const { mode, contact, method } = req.body;
+    const { mode, contact } = req.body;
 
     if (!ModeService[mode]) {
       return res.status(404).json({
@@ -94,25 +93,35 @@ module.exports = {
       event: event.id,
     });
 
-    let subscription = await Subscription.findOne({
-      subscriber: req.session.clientId,
-      notification: notification.id,
-      mode,
-      contact,
-      method,
+    const subscriptions = await SQLService.find({
+      model: 'subscription',
+      where: {
+        subscriber: req.session.clientId,
+        notification: notification.id,
+        mode,
+        contact,
+        method: contact.method,
+        status: 'active',
+      },
     });
 
-    if (subscription) {
+    if (subscriptions[0]) {
       return res.status(200).json({
         message: '已有相同关注',
-        subscription,
+        subscription: subscriptions[0],
       });
     }
 
-    if (['twitter', 'twitterAt'].includes(method)) {
+    let subscription = subscriptions[0];
+
+    if (contact.method === 'email' && !contact.email) {
+      return res.status(400).json({
+        message: '请提供推送邮箱',
+      });
+    } else if (['twitter', 'twitterAt'].includes(contact.method)) {
       const auth = await Auth.findOne({
         site: 'twitter',
-        profileId: contact,
+        id: contact.twitter,
         owner: req.session.clientId,
       });
 
@@ -121,10 +130,10 @@ module.exports = {
           message: '您尚未绑定 Twitter，无法采用该推送方式',
         });
       }
-    } else if (['weibo', 'weiboAt'].includes(method)) {
+    } else if (['weibo', 'weiboAt'].includes(contact.method)) {
       const auth = await Auth.findOne({
         site: 'weibo',
-        id: contact,
+        id: contact.weibo,
         owner: req.session.clientId,
       });
 
@@ -133,6 +142,10 @@ module.exports = {
           message: '您尚未绑定微博，无法采用该推送方式',
         });
       }
+    } else if (!['twitter', 'twitterAt', 'weibo', 'weiboAt', 'email'].includes(contact.method)) {
+      return res.status(400).json({
+        message: '不支持的推送方式',
+      });
     }
 
     try {
@@ -143,7 +156,8 @@ module.exports = {
         event: event.id,
         mode,
         contact,
-        method,
+        method: contact.method,
+        status: 'active',
         unsubscribeId,
       };
 
