@@ -20,10 +20,9 @@
 | time | date |
 | status | string |
 
-**Properties are optional. The unposted properties mean that it does not need to be changed.**
+**(All properties are optional. The unposted properties mean that it does not need to be changed.)**
 
 ---
-
 ## Get All Pending News of All Events
 
 | Property | Value |
@@ -48,7 +47,7 @@ Array of News
 | Return Data Form | JSON |
 
 
-### Post Data
+### Post Data (Optional)
 
 | Property | Type |
 |:---------|:------|
@@ -57,9 +56,9 @@ Array of News
 ### URL Query Data
 
 | Property | Type | Description |
-|:---------|:------|
-| where | number |
+|:---------|:-----|:------|
+| where | object | News Filter. Only the news that have exactly the same properties as "where" will be returned |
 
 ### Return Data
 
-Array of News
+Array of News, maximum 15
