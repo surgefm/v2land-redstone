@@ -37,7 +37,7 @@ const EmailService = {
         name: '浪潮',
         address: 'notify@langchao.co',
       },
-      to: subscription.contact.address,
+      to: subscription.contact.email,
       subject: template.subject,
       template: 'notification',
       context: template,
