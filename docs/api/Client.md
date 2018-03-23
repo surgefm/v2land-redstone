@@ -22,6 +22,8 @@
 |:---------|:------|
 | message | string |
 
+----
+
 ## Change Password
 
 | Property | Value |
@@ -41,6 +43,8 @@
 |:---------|:------|
 | message | string |
 
+---
+
 ## Logout
 
 | Property | Value |
@@ -54,6 +58,8 @@
 |:---------|:-----|
 | message | string |
 
+---
+
 ## Register
 
 | Property | Value |
@@ -66,15 +72,17 @@
 ### Post Data
 
 | Property | Type |
-|:---------|:------|
+|:---------|:-----|
 | username | string |
 | password | string |
 
 ### Return Data
 
 | Property | Type |
-|:---------|:------|
+|:---------|:-----|
 | message | string |
+
+---
 
 ## Get Client Detail
 

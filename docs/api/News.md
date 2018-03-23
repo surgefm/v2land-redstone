@@ -4,7 +4,7 @@
 
 | Property | Value |
 |:---------|:------|
-| URL | /pending |
+| URL | /{ News ID } |
 | Method | PUT |
 | Post Data Form | JSON |
 | Return Data Form | JSON |
@@ -20,7 +20,9 @@
 | time | date |
 | status | string |
 
-**All properties are optional. The excluded properties means it does not need to be changed.**
+**Properties are optional. The unposted properties mean that it does not need to be changed.**
+
+---
 
 ## Get All Pending News of All Events
 
@@ -29,6 +31,34 @@
 | URL | /pending |
 | Method | GET |
 | Return Data Form | JSON |
+
+### Return Data
+
+Array of News
+
+---
+
+## Get Next Page of News
+
+| Property | Value |
+|:---------|:------|
+| URL | /news |
+| Method | PUT |
+| Post Data Form | JSON |
+| Return Data Form | JSON |
+
+
+### Post Data
+
+| Property | Type |
+|:---------|:------|
+| page | number |
+
+### URL Query Data
+
+| Property | Type | Description |
+|:---------|:------|
+| where | number |
 
 ### Return Data
 
