@@ -5,7 +5,13 @@ const path = require('path');
 
 const email = {};
 
-const { SES_HOST, SES_USER, SES_PASS, SES_RATE } = process.env;
+const {
+  SES_HOST,
+  SES_USER,
+  SES_PASS,
+  SES_RATE,
+  SES_REGION,
+} = process.env;
 
 if (SES_USER && SES_PASS) {
   const transporter = nodemailer.createTransport({
