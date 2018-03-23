@@ -23,9 +23,7 @@ const EmailService = {
       },
     };
 
-    transporter.on('idle', () => {
-      return transporter.sendMail(email);
-    });
+    await EmailService.send(email);
   },
 
   notify: async (subscription, template) => {
@@ -44,9 +42,23 @@ const EmailService = {
       context: template,
     };
 
-    transporter.on('idle', () => {
-      return transporter.sendMail(email);
-    });
+    await EmailService.send(email);
+  },
+
+  send: async (email) => {
+    if (transporter.isIdle()) {
+      return new Promise((resolve, reject) => {
+        transporter.sendMail(email, (err, message) => {
+          if (err) return reject(err);
+          resolve(message);
+        });
+      });
+    } else {
+      await new Promise((resolve) => {
+        setTimeout(resolve, 500);
+      });
+      return EmailService.send(email);
+    }
   },
 
 };
