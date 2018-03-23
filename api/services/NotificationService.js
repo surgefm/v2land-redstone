@@ -1,7 +1,7 @@
 module.exports = {
 
   getNextTime: async (mode, event) => {
-    return await ModeService[mode].new(event);
+    return ModeService[mode].new(event);
   },
 
   updateForNewNews: async (event, news) => {
@@ -23,6 +23,7 @@ module.exports = {
       const mode = ModeService[notification.mode];
       const time = await mode.update(notification, event, news);
       notification.time = time;
+      notification.status = 'active';
       await notification.save();
     }
 
