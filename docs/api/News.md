@@ -19,7 +19,7 @@
 
 | Property | Value |
 |:---------|:------|
-| URL | /{ News ID } |
+| URL | /news/{ News ID } |
 | Method | PUT |
 | Post Data Form | JSON |
 | Return Data Form | JSON |
@@ -43,7 +43,7 @@
 
 | Property | Value |
 |:---------|:------|
-| URL | /pending |
+| URL | /news/pending |
 | Method | GET |
 | Return Data Form | JSON |
 

@@ -18,7 +18,7 @@
 
 | Property | Value |
 |:---------|:------|
-| URL | /{ eventName } |
+| URL | /subscription/{ eventName } |
 | Method | POST |
 | Post Data Form | JSON |
 
@@ -29,6 +29,40 @@
 | mode | string |
 | method | string |
 | contact | json |
+
+### Return Data
+
+400 Missing `mode` or `contact` parameter
+
+| Property | Type |
+|:---------|:-----|
+| message | string |
+
+404 Subscribing mode not found
+
+| Property | Type |
+|:---------|:-----|
+| message | string |
+
+406 Not admitted
+
+| Property | Type |
+|:---------|:-----|
+| message | string |
+
+200 Same subscription has already existed
+
+| Property | Type |
+|:---------|:-----|
+| message | string |
+
+201 Unsubscribe successfully
+
+| Property | Type |
+|:---------|:-----|
+| name | string |
+| message | string |
+| subscriptionList (unavilable when empty list) | Subscription[] |
 
 ---
 
@@ -45,3 +79,25 @@
 | Property | Type |
 |:---------|:-----|
 | unsubscribeId | number |
+
+### Return Data
+
+400 Missing `id` or `unsubscribeId` parameter
+
+| Property | Type |
+|:---------|:-----|
+| message | string |
+
+404 Subsciption not found
+
+| Property | Type |
+|:---------|:-----|
+| message | string |
+
+201 Unsubscribe successfully
+
+| Property | Type |
+|:---------|:-----|
+| name | string |
+| message | string |
+| subscriptionList (unavilable when empty list) | Subscription[] |

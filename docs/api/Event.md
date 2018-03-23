@@ -19,7 +19,7 @@
 
 | Property | Value |
 |:---------|:------|
-| URL | / |
+| URL | /event |
 | Method | POST |
 | Post Data Form | JSON |
 
@@ -29,7 +29,7 @@
 |:---------|:-----|:------------|
 | name | string | 
 | description | text |
-| other optional properties |
+| (other optional properties) |
 
 ---
 
@@ -37,7 +37,7 @@
 
 | Property | Value |
 |:---------|:------|
-| URL | /{ eventName } |
+| URL | /event/{ eventName } |
 | Method | POST |
 | Post Data Form | JSON |
 
@@ -55,7 +55,7 @@
 
 | Property | Value |
 |:---------|:------|
-| URL | /{ eventName } |
+| URL | /event/{ eventName } |
 | Method | GET |
 | Return Data Form | JSON |
 
@@ -69,7 +69,7 @@ A complete Event object
 
 | Property | Value |
 |:---------|:------|
-| URL | /pending |
+| URL | /event/pending |
 | Method | GET |
 | Return Data Form | JSON |
 
@@ -83,7 +83,7 @@ An array of Event objects
 
 | Property | Value |
 |:---------|:------|
-| URL | /{ eventName }/pending |
+| URL | /event/{ eventName }/pending |
 | Method | GET |
 | Return Data Form | JSON |
 
@@ -97,7 +97,7 @@ An array of News objects
 
 | Property | Value |
 |:---------|:------|
-| URL | /list |
+| URL | /event/list |
 | Method | POST |
 | Post Data Form | JSON |
 | Return Data Form | JSON |
@@ -121,7 +121,7 @@ An array of Event objects, including header image, maximum 10
 
 | Property | Value |
 |:---------|:------|
-| URL | /{ eventName }/news |
+| URL | /event/{ eventName }/news |
 | Method | POST |
 | Post Data Form | JSON |
 | Return Data Form | JSON |
@@ -152,7 +152,7 @@ JSON result of SQLService.create()
 
 | Property | Value |
 |:---------|:------|
-| URL | /{ eventName }/header_image |
+| URL | /event/{ eventName }/header_image |
 | Method | POST or PUT |
 | Post Data Form | JSON |
 | Return Data Form | JSON |
