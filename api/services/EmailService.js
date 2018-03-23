@@ -23,7 +23,7 @@ const EmailService = {
       },
     };
 
-    await EmailService.send(email);
+    return EmailService.send(email);
   },
 
   notify: async (subscription, template) => {
@@ -42,7 +42,7 @@ const EmailService = {
       context: template,
     };
 
-    await EmailService.send(email);
+    return EmailService.send(email);
   },
 
   send: async (email) => {
