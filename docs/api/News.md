@@ -1,5 +1,20 @@
 # News
 
+## News Object Model
+
+| Property | Type | Description |
+|:---------|:-----|:------------|
+| url | url |
+| source | string |
+| title | string |
+| abstract | text |
+| time | date |
+| status (optional) | string | pending / admitted / rejected / removed |
+| comment (optional) | text |
+| event (optional) | Event | |
+
+---
+
 ## Update News
 
 | Property | Value |
@@ -12,7 +27,7 @@
 ### Post Data
 
 | Property | Type |
-|:---------|:------|
+|:---------|:-----|
 | url | url |
 | source | string |
 | title | string |
@@ -23,6 +38,7 @@
 **(All properties are optional. The unposted properties mean that it does not need to be changed.)**
 
 ---
+
 ## Get All Pending News of All Events
 
 | Property | Value |
@@ -33,7 +49,7 @@
 
 ### Return Data
 
-Array of News
+An array of News objects
 
 ---
 
@@ -42,23 +58,19 @@ Array of News
 | Property | Value |
 |:---------|:------|
 | URL | /news |
-| Method | PUT |
+| Method | POST or GET |
 | Post Data Form | JSON |
 | Return Data Form | JSON |
 
-
-### Post Data (Optional)
+### Post Data 
 
 | Property | Type |
 |:---------|:------|
-| page | number |
+| page (optional) | number |
+| where (optional) | object |
 
-### URL Query Data
-
-| Property | Type | Description |
-|:---------|:-----|:------|
-| where | object | News Filter. Only the news that have exactly the same properties as "where" will be returned |
+This is a filter for news. Only the news that have exactly the same properties as "where" will be returned.
 
 ### Return Data
 
-Array of News, maximum 15
+An array of News objects, maximum 15
