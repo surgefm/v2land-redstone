@@ -219,7 +219,13 @@ function generateWhereQuery(query, values = [], parents = []) {
     for (let i = 0; i < properties.length; i++) {
       const property = properties[i];
       let temp = parents.slice();
-      if (typeof(query[property]) !== 'object' || query[property] instanceof Date) {
+      if (!query[property] || ['_properties', 'associations', 'associationsCache',
+        'inspect', 'add', 'remove'].includes(property)) {
+        continue;
+      } else if (typeof(query[property]) !== 'object' || query[property] instanceof Date) {
+        if (string.length) {
+          string += ' AND ';
+        }
         if (temp.length > 0) {
           string += `"${temp[0]}"::json#>>'{`;
           temp = temp.slice(1);
@@ -233,12 +239,11 @@ function generateWhereQuery(query, values = [], parents = []) {
       } else {
         parents.push(property);
         child = generateWhereQuery(query[property], values, parents);
+        if (string.length) {
+          string += ' AND ';
+        }
         string += child.query;
         values = child.values;
-      }
-
-      if (i !== properties.length - 1) {
-        string += ' AND ';
       }
     }
 
