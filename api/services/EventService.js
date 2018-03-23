@@ -10,6 +10,7 @@ module.exports = {
       .populate('news', {
         where: { status: 'admitted' },
         sort: 'time DESC',
+        limit: 15,
       })
       .populate('headerImage');
 
