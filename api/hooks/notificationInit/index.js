@@ -21,8 +21,8 @@ module.exports = function PgPoolInit(sails) {
    */
   async function check() {
     try {
-      let notification = await Model.notification.findOne({
-        order: 'time asc',
+      const notification = await Model.notification.findOne({
+        sort: 'time asc',
         where: { status: 'active' },
       })
         .populate('event')
@@ -30,21 +30,22 @@ module.exports = function PgPoolInit(sails) {
           where: { status: 'active' },
         });
 
-      if (notification && !notification.event.name) {
+      if (!notification) {
+        setTimeout(check, checkInterval);
+      } else if (!notification.event || !notification.event.name) {
         notification.status = 'inactive';
         await notification.save();
-        notification = null;
-      }
-
-      if (notification && (notification.time - Date.now() < 0)) {
+        setTimeout(check, checkInterval);
+      } else if (notification.time - Date.now() < 0) {
         await notify(notification);
-        return check();
+        check();
+      } else {
+        setTimeout(check, checkInterval);
       }
     } catch (err) {
       sails.log.error(err);
+      setTimeout(check, checkInterval);
     }
-
-    setTimeout(check, checkInterval);
   }
 
   /**
@@ -58,7 +59,7 @@ module.exports = function PgPoolInit(sails) {
         status: 'admitted',
         event: event.id,
       },
-      order: 'time desc',
+      sort: 'time desc',
     });
 
     if (!news && mode.needNews) {
@@ -68,54 +69,73 @@ module.exports = function PgPoolInit(sails) {
 
     const template = await mode.getTemplate(notification, event, news);
     const promises = [];
+    const notificationData = { ...notification };
+    for (const attribute of ['subscriptions', '_properties',
+      'associations', 'associationsCache', 'inspect']) {
+      delete notificationData[attribute];
+    }
+
+    notificationData.event = notification.event.id;
+
     for (const subscription of subscriptions) {
       const notify = async () => {
-        const data = {
-          model: 'Subscription',
-          target: subscription.id,
-          action: 'notify',
-          data: { ...notification },
-        };
+        try {
+          const data = {
+            model: 'Subscription',
+            target: subscription.id,
+            action: 'notify',
+            data: { ...notificationData },
+          };
 
-        const same = await SQLService.find({
-          model: 'record',
-          where: data,
-        });
+          const same = await SQLService.find({
+            model: 'record',
+            where: data,
+          });
 
-        if (same.length > 0) {
-          // Already notified.
+          if (same.length > 0) {
+            // Already notified.
+            return;
+          }
+
+          switch (subscription.method) {
+            case 'email':
+              await notifyByEmail(subscription, template);
+              break;
+            case 'twitter':
+              await notifyByTwitter(subscription, template);
+              break;
+            case 'twitterAt':
+              await notifyByTwitterAt(subscription, template);
+              break;
+            case 'weibo':
+              await notifyByWeibo(subscription, template);
+              break;
+            case 'weiboAt':
+              await notifyByWeiboAt(subscription, template);
+              break;
+          }
+          await Record.create({
+            model: 'Subscription',
+            operation: 'create',
+            action: 'notify',
+            target: subscription.id,
+            data,
+          });
           return;
+        } catch (err) {
+          await disableSubscription(subscription);
         }
-
-        switch (subscription.method) {
-          case 'email':
-            await notifyByEmail(subscription, template);
-            break;
-          case 'twitter':
-            await notifyByTwitter(subscription, template);
-            break;
-          case 'twitterAt':
-            await notifyByTwitterAt(subscription, template);
-            break;
-          case 'weibo':
-            await notifyByWeibo(subscription, template);
-            break;
-          case 'weiboAt':
-            await notifyByWeiboAt(subscription.template);
-            break;
-        }
-        await SQLService.create({
-          model: 'record',
-          action: 'notify',
-          data,
-        });
-        return;
       };
 
       promises.push(notify());
     }
 
-    return Promise.all(promises);
+    await Promise.all(promises);
+    notification.time = await NotificationService.getNextTime(
+      notification.mode,
+      notification.event,
+    );
+    await notification.save();
   }
 
   /**
@@ -136,7 +156,7 @@ module.exports = function PgPoolInit(sails) {
     if (!auth) {
       subscription.status = 'failed';
       await subscription.save();
-      throw new Error(`未找到用户 ${subscription.subscriber} 的 Twitter 绑定`);
+      return sails.log.error(new Error(`未找到用户 ${subscription.subscriber} 的 Twitter 绑定`));
     }
 
     let message = template.message;
@@ -149,7 +169,7 @@ module.exports = function PgPoolInit(sails) {
    */
   async function notifyByTwitterAt(subscription, template) {
     if (!sails.config.globals.officialAccount.twitter) {
-      throw new Error('未配置官方 Twitter 账号');
+      return sails.log.error(new Error('未配置官方 Twitter 账号'));
     }
 
     let profileId = sails.config.globals.officialAccount.twitter;
@@ -163,12 +183,14 @@ module.exports = function PgPoolInit(sails) {
     });
 
     if (!auth) {
-      subscription.status = 'failed';
-      await subscription.save();
-      throw new Error(`未找到浪潮 Twitter ${profileId} 的绑定`);
+      return sails.log.error(new Error(`未找到浪潮 Twitter ${profileId} 的绑定`));
     }
 
-    let message = '@' + subscription.contact.address + ' ';
+    if (!subscription.contact.twitter) return disableSubscription(subscription);
+    const client = await Auth.findOne({ id: subscription.contact.twitter });
+    if (!client) return disableSubscription(subscription);
+
+    let message = '@' + client.screen_name + ' ';
     message += template.message + ' ' + template.url + ' #浪潮';
     return TwitterService.tweet(auth, message);
   }
@@ -182,9 +204,8 @@ module.exports = function PgPoolInit(sails) {
       owner: subscription.subscriber,
     });
     if (!auth) {
-      subscription.status = 'failed';
-      await subscription.save();
-      throw new Error(`未找到用户 ${subscription.subscriber} 的微博绑定`);
+      await disableSubscription(subscription);
+      return sails.log.error(new Error(`未找到用户 ${subscription.subscriber} 的微博绑定`));
     }
 
     const message = template.message + ' ' + template.url;
@@ -196,7 +217,7 @@ module.exports = function PgPoolInit(sails) {
    */
   async function notifyByWeiboAt(subscription, template) {
     if (!sails.config.globals.officialAccount.weibo) {
-      throw new Error('未配置官方微博账号');
+      return sails.log.error(new Error('未配置官方微博账号'));
     }
 
     let profileId = sails.config.globals.officialAccount.weibo;
@@ -210,16 +231,23 @@ module.exports = function PgPoolInit(sails) {
     });
 
     if (!auth) {
-      subscription.status = 'failed';
-      await subscription.save();
-      throw new Error(`未找到浪潮微博 ${profileId} 的绑定`);
+      return sails.log.error(new Error(`未找到浪潮微博 ${profileId} 的绑定`));
     }
 
-    let message = '@' + subscription.contact.address + ' ';
+    if (!subscription.contact.weibo) return disableSubscription(subscription);
+    const client = await Auth.findOne({ id: subscription.contact.weibo });
+    if (!client) return disableSubscription(subscription);
+
+    let message = '@' + client.profile.screen_name + ' ';
     message += template.message;
     message += ' ' + Math.floor(Math.random() * 10000000) + ' ';
     message += template.url;
 
     return WeiboService.post(auth, message);
+  }
+
+  async function disableSubscription(subscription) {
+    subscription.status = 'failed';
+    await subscription.save();
   }
 };
