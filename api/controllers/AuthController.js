@@ -6,7 +6,6 @@
  */
 
 const axios = require('axios');
-const queryString = require('query-string');
 
 module.exports = {
 
@@ -310,16 +309,29 @@ module.exports = {
       });
     }
 
-    res.status(200).send(
-      `<!DOCTYPE html>` +
-      `<body>
-      <script>window.location="${auth.redirect}` +
-      `&code=${code}` +
-      `&authId=${state}` +
-      `&site=weibo` +
-      `"</script>
-      </body>`
-    );
+    if (auth.redirect) {
+      res.status(200).send(
+        `<!DOCTYPE html>` +
+        `<body>
+        <script>window.location="${auth.redirect}` +
+        `&code=${code}` +
+        `&authId=${state}` +
+        `&site=weibo` +
+        `"</script>
+        </body>`
+      );
+    } else {
+      res.status(200).send(
+        `<!DOCTYPE html>` +
+        `<body>
+        <script>window.location="${sails.config.globals.api}/auth/weibo/redirect` +
+        `?code=${code}` +
+        `&authId=${state}` +
+        `&site=weibo` +
+        `"</script>
+        </body>`
+      );
+    }
   },
 
   weiboRedirect: async (req, res) => {
@@ -354,8 +366,6 @@ module.exports = {
     };
 
     const { accessToken, refreshToken } = await getAccessToken();
-    if (!accessToken) return;
-
     const auth = await Auth.findOne({ id: authId });
     if (!auth) {
       return res.status(404).json({
@@ -363,21 +373,26 @@ module.exports = {
       });
     }
 
-    const response = await axios.post(
-      'https://api.weibo.com/oauth2/get_token_info?access_token=' + accessToken,
-      { access_token: accessToken }
-    );
+    let response;
+    try {
+      response = await axios.post(
+        'https://api.weibo.com/oauth2/get_token_info?access_token=' + accessToken,
+        { access_token: accessToken }
+      );
+    } catch (err) {
+      return res.serverError(err);
+    }
     auth.profileId = response.data.uid;
 
-    const query = queryString.stringify({
-      access_token: accessToken,
-      uid: response.data.uid,
-    });
-
-    const { data } = await axios.get(
-      'https://api.weibo.com/2/users/show.json?' + query
-    );
-
+    let data;
+    try {
+      data = (await axios.get(
+        'https://api.weibo.com/2/users/show.json?' +
+          `uid=${response.data.uid}&access_token=${accessToken}`
+      )).data;
+    } catch (err) {
+      return res.serverError(err);
+    }
     const sameAuth = await Auth.findOne({
       site: 'weibo',
       profileId: response.data.uid,
