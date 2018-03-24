@@ -131,7 +131,7 @@ module.exports = function PgPoolInit(sails) {
     }
 
     await Promise.all(promises);
-    notification.time = await NotificationService.getNextTime(
+    notification.time = await NotificationService.notified(
       notification.mode,
       notification.event,
     );
