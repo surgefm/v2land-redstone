@@ -259,6 +259,12 @@ module.exports = {
         });
       } else {
         const conflict = await Client.findOne({ id: account.owner });
+        if (!conflict) {
+          account.owner = req.session.clientId;
+          account.profile = { ...response };
+          await account.save();
+          return res.status(201).json(AuthService.sanitize(account));
+        }
         account = AuthService.sanitize(account);
         res.status(202).json({
           name: 'already connected',
@@ -424,13 +430,19 @@ module.exports = {
       if (!account.owner && !req.session.clientId) {
         account = AuthService.sanitize(account);
 
-        res.status(202).json({
+        return res.status(202).json({
           name: 'authentication required',
           message: '请在登录后绑定第三方账号',
           auth: account,
         });
       } else {
         const conflict = await Client.findOne({ id: account.owner });
+        if (!conflict) {
+          account.profile = { ...data };
+          account.owner = req.session.clientId;
+          await account.save();
+          return res.status(201).json(AuthService.sanitize(account));
+        }
         account = AuthService.sanitize(account);
         res.status(202).json({
           name: 'already connected',
