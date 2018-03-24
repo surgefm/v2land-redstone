@@ -107,7 +107,7 @@ module.exports = {
       const updateNotification =
         (+latestNews.id === +news.id) ||
         (changesCopy.status && changesCopy.status !== news.status) ||
-        (changesCopy.time && changesCopy.time !== news.time);
+        (changesCopy.time && new Date(changesCopy.time).getTime() !== new Date(news.time).getTime());
 
       const forceUpdate = +latestNews.id === +news.id;
 
@@ -128,9 +128,13 @@ module.exports = {
         });
       }
 
-      if (updateNotification) {
-        const event = await Event.findOne({ id: news.event });
-        await NotificationService.updateForNewNews(event, news, forceUpdate);
+      try {
+        if (updateNotification) {
+          const event = await Event.findOne({ id: news.event });
+          await NotificationService.updateForNewNews(event, news, forceUpdate);
+        }
+      } catch (err) {
+        res.serverError(err);
       }
 
       res.status(201).json({

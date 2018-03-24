@@ -24,20 +24,20 @@ describe('NewsController', function() {
     await agent
       .post('/client/register')
       .send({
-        username: 'testAccountRegister',
+        username: 'testRegister',
         password: 'testPassword',
         email: testEmail,
       });
 
     await Client.update(
-      { username: 'testAccountRegister' },
+      { username: 'testRegister' },
       { role: 'admin' }
     );
 
     await agent
       .post('/client/login')
       .send({
-        username: 'testAccountRegister',
+        username: 'testRegister',
         password: 'testPassword',
       });
   });

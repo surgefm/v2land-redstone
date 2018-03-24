@@ -44,7 +44,7 @@ const SQLService = {
     const temp = {};
     for (const i in data) {
       if (sails.models[model].schema[i]) {
-        if (i !== 'time') temp[i] === data[i];
+        if (i !== 'time') temp[i] = data[i];
         else {
           const time = new Date(data[i]);
           temp[i] = time.toISOString();

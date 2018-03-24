@@ -20,7 +20,7 @@ describe('EventController', function() {
       await agent
         .post('/client/register')
         .send({
-          username: 'testAccountRegister',
+          username: 'testRegister',
           password: 'testPassword',
           email: testEmail,
         });
@@ -28,12 +28,12 @@ describe('EventController', function() {
       await agent
         .post('/client/login')
         .send({
-          username: 'testAccountRegister',
+          username: 'testRegister',
           password: 'testPassword',
         });
 
       await Client.update(
-        { username: 'testAccountRegister' },
+        { username: 'testRegister' },
         { role: 'admin' }
       );
     });
@@ -192,7 +192,7 @@ describe('EventController', function() {
     });
     after(async function() {
       await Client.destroy({
-        username: 'testAccountRegister',
+        username: 'testRegister',
       });
     });
     it('should have list', async function() {

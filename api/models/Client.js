@@ -58,8 +58,9 @@ module.exports = {
 
   types: {
     username: (value) => {
+      console.log(_, value);
       if (!_.isString(value) || value.length < 2 || value.length > 16) return false;
-      if (/\r?\n|\r| /.test(value)) return false;
+      if (/\r?\n|\r| |'@'/.test(value)) return false;
 
       let allDigit = true;
       for (const char of value) {

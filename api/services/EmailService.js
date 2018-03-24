@@ -46,6 +46,7 @@ const EmailService = {
   },
 
   send: async (email) => {
+    if (!transporter) return;
     if (transporter.isIdle()) {
       return new Promise((resolve, reject) => {
         transporter.sendMail(email, (err, message) => {
