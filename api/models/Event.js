@@ -54,4 +54,24 @@ module.exports = {
 
   },
 
+  types: {
+
+    name: (value) => {
+      if (!_.isString(value) || value.length === 0) return false;
+      if (/\r?\n|\r| /.test(value)) return false;
+
+      let allDigit = true;
+      for (const char of value) {
+        if (!/\d/.test(char)) {
+          allDigit = false;
+          break;
+        }
+      }
+      if (allDigit) return false;
+
+      return true;
+    },
+
+  },
+
 };
