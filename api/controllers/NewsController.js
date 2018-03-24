@@ -99,6 +99,17 @@ module.exports = {
       };
 
       const changesCopy = { ...changes };
+      const latestNews = await News.findOne({
+        where: { event: news.event, status: 'admitted' },
+        sort: 'time DESC',
+      });
+
+      const updateNotification =
+        (+latestNews.id === +news.id) ||
+        (changesCopy.status && changesCopy.status !== news.status) ||
+        (changesCopy.time && changesCopy.time !== news.time);
+
+      const forceUpdate = +latestNews.id === +news.id;
 
       if (changes.status) {
         news = await SQLService.update({
@@ -117,9 +128,9 @@ module.exports = {
         });
       }
 
-      if (changesCopy.status || changesCopy.time) {
+      if (updateNotification) {
         const event = await Event.findOne({ id: news.event });
-        await NotificationService.updateForNewNews(event, news);
+        await NotificationService.updateForNewNews(event, news, forceUpdate);
       }
 
       res.status(201).json({
