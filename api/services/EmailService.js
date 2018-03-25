@@ -1,6 +1,30 @@
 const transporter = sails.config.email.transporter;
 const qs = require('qs');
 
+/**
+ * wrapper for transporter.sendMail
+ * @param {string} email
+ */
+async function sendEmail(email) {
+  return new Promise((resolve, reject) => {
+    transporter.sendMail(email, (err, message) => {
+      if (err) return reject(err);
+      resolve(message);
+    });
+  });
+}
+
+
+/**
+ * wrapper for setTimeout
+ * @param {number} time
+ */
+async function sleep(time) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, time);
+  });
+}
+
 const EmailService = {
 
   register: async (client) => {
@@ -47,16 +71,9 @@ const EmailService = {
 
   send: async (email) => {
     if (transporter.isIdle()) {
-      return new Promise((resolve, reject) => {
-        transporter.sendMail(email, (err, message) => {
-          if (err) return reject(err);
-          resolve(message);
-        });
-      });
+      return sendEmail(email);
     } else {
-      await new Promise((resolve) => {
-        setTimeout(resolve, 500);
-      });
+      await sleep(500);
       return EmailService.send(email);
     }
   },
