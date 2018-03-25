@@ -10,8 +10,8 @@
  */
 module.exports.globals = {
 
-  site: process.env.SITE || 'https://langchao.co',
-  api: process.env.API || 'https://a.langchao.co',
+  site: process.env.SITE || 'https://langchao.org',
+  api: process.env.API || 'https://api.langchao.org',
   notification: process.env.ENABLE_NOTIFICATION,
   officialAccount: {
     twitter: process.env.OFFICIAL_TWITTER || '768458621613072384',
