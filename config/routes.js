@@ -38,6 +38,7 @@ module.exports.routes = {
   'PUT /client/:clientName': 'ClientController.updateClient',
 
   'GET /news/pending': 'NewsController.getAllPendingNews',
+  'GET /news/:news': 'NewsController.getNews',
   'GET /news': 'NewsController.getNewsList',
   'POST /news': 'NewsController.getNewsList',
   'PUT /news/:news': 'NewsController.updateNews',

@@ -18,7 +18,7 @@
 
 module.exports.policies = {
   NewsController: {
-    'findOne': true,
+    'getNews': true,
     'getNewsList': true,
     'updateNews': ['isLoggedIn', 'isManager'],
     'getAllPendingNews': ['isLoggedIn', 'isManager'],

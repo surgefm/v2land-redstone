@@ -14,6 +14,32 @@ module.exports = {
     return res.status(200).json({ newsCollection });
   },
 
+  getNews: async (req, res) => {
+    let id;
+    if (req.body && req.body.news) {
+      id = req.body.news;
+    } else if (req.query && req.query.news) {
+      id = req.query.news;
+    } else if (req.param('news')) {
+      id = req.param('news');
+    }
+
+    if (!id) {
+      return res.status(400).json({
+        message: '缺少参数：news。',
+      });
+    }
+
+    const news = await News.findOne({ id });
+    if (!news) {
+      return res.status(404).json({
+        message: '未找到该新闻',
+      });
+    }
+    news.contribution = await NewsService.getContribution(news);
+    res.status(200).json({ news });
+  },
+
   getNewsList: async (req, res) => {
     let page = 1;
     let where;
@@ -59,7 +85,11 @@ module.exports = {
         });
 
         await NewsService.getContributionByList(newsList);
+
         res.status(200).json({ newsList });
+      } catch (err) {
+        res.serverError(err);
+      }
     } else {
       res.status(400).json({
         message: '缺少参数：where',
