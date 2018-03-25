@@ -17,5 +17,6 @@ module.exports.globals = {
     twitter: process.env.OFFICIAL_TWITTER || '768458621613072384',
     weibo: process.env.OFFICIAL_WEIBO || '6264484740',
   },
+  inviteCode: process.env.INVITE_CODE || '渴望重回土地',
 
 }

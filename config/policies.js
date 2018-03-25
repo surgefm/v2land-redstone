@@ -39,6 +39,7 @@ module.exports.policies = {
   },
 
   ClientController: {
+    'inviteCode': true,
     'updateClient': ['isLoggedIn'],
     'findClient': true,
     'login': true,
