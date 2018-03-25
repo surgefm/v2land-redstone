@@ -14,6 +14,10 @@ module.exports = {
       })
       .populate('headerImage');
 
+    if (event) {
+      await NewsService.getContributionByList(event.news);
+    }
+
     return event;
   },
 

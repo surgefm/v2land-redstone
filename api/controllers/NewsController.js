@@ -49,15 +49,17 @@ module.exports = {
     }
 
     if (where) {
-      const newsList = await News.find({
-        where,
-        sort: 'updatedAt DESC',
-      }).paginate({
-        page,
-        limit: 15,
-      });
+      try {
+        const newsList = await News.find({
+          where,
+          sort: 'updatedAt DESC',
+        }).paginate({
+          page,
+          limit: 15,
+        });
 
-      res.status(200).json({ newsList });
+        await NewsService.getContributionByList(newsList);
+        res.status(200).json({ newsList });
     } else {
       res.status(400).json({
         message: '缺少参数：where',
