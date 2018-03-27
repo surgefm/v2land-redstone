@@ -17,6 +17,7 @@ module.exports = {
 
     email: {
       type: 'email',
+      required: true,
       unique: true,
     },
 
@@ -31,6 +32,11 @@ module.exports = {
       required: true,
       enum: ['admin', 'manager', 'contributor'],
       defaultsTo: 'contributor',
+    },
+
+    emailVerified: {
+      type: 'boolean',
+      defaultsTo: false,
     },
 
     events: {

@@ -1,30 +1,52 @@
 const transporter = sails.config.email.transporter;
+const qs = require('qs');
+
+/**
+ * wrapper for transporter.sendMail
+ * @param {string} email
+ */
+async function sendEmail(email) {
+  return new Promise((resolve, reject) => {
+    transporter.sendMail(email, (err, message) => {
+      if (err) return reject(err);
+      resolve(message);
+    });
+  });
+}
+
+
+/**
+ * wrapper for setTimeout
+ * @param {number} time
+ */
+async function sleep(time) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, time);
+  });
+}
 
 const EmailService = {
 
-  register: async (client) => {
+  register: async (client, token) => {
     const email = {
       to: client.email,
       from: {
         name: '浪潮',
-        address: 'verify@langchao.co',
+        address: 'verify@langchao.org',
       },
       template: 'registration',
       subject: client.username + '，请完成浪潮注册过程',
       context: {
         username: client.username,
-        url: sails.config.globals.api + '/client/confirm?' +
+        url: sails.config.globals.site + '/verify?' +
           qs.stringify({
-            uid: '' + client.id,
-            redirect: sails.config.globals.api + '/client/verified',
-            token: client.verificationToken,
+            id: '' + client.id,
+            token,
           }),
       },
     };
 
-    transporter.on('idle', () => {
-      return transporter.sendMail(email);
-    });
+    await EmailService.send(email);
   },
 
   notify: async (subscription, template) => {
@@ -35,7 +57,7 @@ const EmailService = {
     const email = {
       from: {
         name: '浪潮',
-        address: 'notify@langchao.co',
+        address: 'notify@langchao.org',
       },
       to: subscription.contact.address,
       subject: template.subject,
@@ -43,9 +65,16 @@ const EmailService = {
       context: template,
     };
 
-    transporter.on('idle', () => {
-      return transporter.sendMail(email);
-    });
+    await EmailService.send(email);
+  },
+
+  send: async (email) => {
+    if (transporter.isIdle()) {
+      return sendEmail(email);
+    } else {
+      await sleep(500);
+      return EmailService.send(email);
+    }
   },
 
 };

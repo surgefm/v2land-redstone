@@ -97,10 +97,26 @@ module.exports = {
 
       req.session.clientId = client.id;
       res.status(201).json({
-        message: '注册成功',
+        message: '注册成功，请在三天内至邮箱查收验证邮件',
         client: await ClientService.findClient(client.id),
       });
+
+      const verificationToken = ClientService.tokenGenerator();
+      await Record.create({
+        model: 'Miscellaneous',
+        operation: 'create',
+        data: {
+          clientId: client.id,
+          verificationToken,
+          expire: new Date(Date.now() + 1000 * 60 * 60 * 24 * 3),
+        },
+        target: client.id,
+        action: 'createClientVerificationToken',
+        client: req.session.clientId,
+      });
+      EmailService.register(client, verificationToken);
     } catch (err) {
+      console.log(err);
       return res.serverError(err);
     }
   },
@@ -281,6 +297,64 @@ module.exports = {
     } catch (err) {
       return res.serverError(err);
     }
+  },
+
+  verifyToken: async (req, res) => {
+    let token;
+    let id;
+    if (req.body && req.body.token && req.body.id) {
+      token = req.body.token;
+      id = req.body.id;
+    } else if (req.query && req.query.token && req.query.id) {
+      token = req.query.token;
+      id = req.query.id;
+    }
+
+    if (!(token && id)) {
+      return res.status(400).json({
+        message: '缺少参数：token 或 id',
+      });
+    }
+
+    let record = await SQLService.find({
+      model: 'Record',
+      where: {
+        action: 'createClientVerificationToken',
+        data: {
+          verificationToken: token,
+          clientId: id,
+        },
+      },
+    });
+
+    if (!record) {
+      return res.status(404).json({
+        message: '未找到该 token',
+      });
+    }
+
+    record = record[0];
+
+    if (new Date(record.data.expire).getTime() < Date.now()) {
+      return res.status(404).json({
+        message: '该 token 已失效',
+      });
+    }
+
+    const client = await Client.findOne({ id: record.data.clientId });
+
+    if (!client) {
+      return res.status(404).json({
+        message: '该 token 无效',
+      });
+    }
+
+    client.emailVerified = true;
+    await client.save();
+
+    res.status(201).json({
+      message: '账户验证成功',
+    });
   },
 
   findClient: async (req, res) => {

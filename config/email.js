@@ -5,12 +5,19 @@ const path = require('path');
 
 const email = {};
 
-const { SES_HOST, SES_USER, SES_PASS, SES_RATE } = process.env;
+const {
+  SES_HOST,
+  SES_USER,
+  SES_PASS,
+  SES_RATE,
+  SES_REGION,
+} = process.env;
 
 if (SES_USER && SES_PASS) {
   const transporter = nodemailer.createTransport({
     SES: new aws.SES({
       apiVersion: '2010-12-01',
+      region: SES_REGION || 'us-east-1',
     }),
     sendingRate: SES_RATE || 14,
     host: SES_HOST || 'email-smtp.us-east-1.amazonaws.com',
