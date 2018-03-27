@@ -13,6 +13,7 @@ module.exports = {
       type: 'string',
       required: true,
       unique: true,
+      isName: true,
     },
 
     description: {
@@ -56,7 +57,7 @@ module.exports = {
 
   types: {
 
-    name: (value) => {
+    isName: (value) => {
       if (!_.isString(value) || value.length === 0) return false;
       if (/\r?\n|\r| /.test(value)) return false;
 
@@ -68,6 +69,11 @@ module.exports = {
         }
       }
       if (allDigit) return false;
+
+      const reserved = ['register', 'new', 'setting', 'admin',
+        'about', 'subscription', 'index', 'login', 'verify', 'list',
+        'pending', 'post'];
+      if (reserved.includes(value)) return false;
 
       return true;
     },

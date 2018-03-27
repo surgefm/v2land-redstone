@@ -13,6 +13,7 @@ module.exports = {
       type: 'text',
       required: true,
       unique: true,
+      isUsername: true,
     },
 
     email: {
@@ -24,7 +25,7 @@ module.exports = {
     password: {
       type: 'text',
       required: true,
-      password: true,
+      isPassword: true,
     },
 
     role: {
@@ -57,7 +58,7 @@ module.exports = {
   },
 
   types: {
-    username: (value) => {
+    isUsername: (value) => {
       if (!_.isString(value) || value.length < 2 || value.length > 16) return false;
       if (/\r?\n|\r| |@/.test(value)) return false;
 
@@ -72,7 +73,7 @@ module.exports = {
 
       return true;
     },
-    password: (value) => {
+    isPassword: (value) => {
       return _.isString(value) && value.length >= 6 && value.match(/[A-z]/i) && value.match(/[0-9]/);
     },
   },
