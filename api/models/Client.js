@@ -34,6 +34,11 @@ module.exports = {
       defaultsTo: 'contributor',
     },
 
+    emailVerified: {
+      type: 'boolean',
+      defaultsTo: false,
+    },
+
     events: {
       collection: 'event',
       via: 'subscribers',
