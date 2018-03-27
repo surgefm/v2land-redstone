@@ -36,6 +36,7 @@ module.exports.routes = {
   '/client/logout': 'ClientController.logout',
   'GET /client/:clientName': 'ClientController.findClient',
   'PUT /client/:clientName': 'ClientController.updateClient',
+  'POST /client/verifyToken': 'ClientController.verifyToken',
 
   'GET /news/pending': 'NewsController.getAllPendingNews',
   'PUT /news/:news': 'NewsController.updateNews',

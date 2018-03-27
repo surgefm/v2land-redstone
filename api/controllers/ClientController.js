@@ -299,6 +299,31 @@ module.exports = {
     }
   },
 
+  verifyToken: async (req, res) => {
+    const data = req.body;
+    if (!data || !data.token) {
+      return res.status(400).json({
+        message: '缺少 token',
+      });
+    }
+
+    const client = await Client.findOne({
+      verificationToken: data.token,
+    });
+
+    if (!client) {
+      return res.status(404).json({
+        message: '该 token 无效',
+      });
+    }
+
+    client.verificationToken = null;
+
+    res.status(201).json({
+      message: '账户验证成功',
+    });
+  },
+
   findClient: async (req, res) => {
     const name = req.param('clientName');
     const client = await ClientService.findClient(name);
