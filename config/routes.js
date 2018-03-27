@@ -34,6 +34,8 @@ module.exports.routes = {
   'PUT /client/role': 'ClientController.updateRole',
   'PUT /client/password': 'ClientController.changePassword',
   '/client/logout': 'ClientController.logout',
+  'GET /client/verify': 'ClientController.verifyToken',
+  'POST /client/verify': 'ClientController.verifyToken',
   'GET /client/:clientName': 'ClientController.findClient',
   'PUT /client/:clientName': 'ClientController.updateClient',
 
