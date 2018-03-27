@@ -32,12 +32,21 @@ module.exports = {
   /**
    * token generator
    */
-  tokenGenerator: function() {
+  tokenGenerator: () => {
     const token = uuidv4();
     return crypto
       .createHash('sha256')
       .update(token, 'utf8')
       .digest('hex');
+  },
+
+  sanitizeClient: (client) => {
+    const temp = {};
+    for (const attr of ['username', 'role', 'id', 'events']) {
+      temp[attr] = client[attr];
+    }
+
+    return temp;
   },
 
 };

@@ -367,8 +367,18 @@ module.exports = {
       });
     }
 
-    // Should determine how much information to send based on client's group.
-    return res.status(200).json({ client });
+    if (req.session.clientId === client.id) {
+      return res.status(200).json({ client });
+    } else if (req.session.clientId) {
+      const currentClient = await ClientService.findClient(req.session.clientId);
+      if (currentClient.role === 'admin') {
+        return res.status(200).json({ client });
+      }
+    }
+
+    return res.status(200).json({
+      client: ClientService.sanitizeClient(client),
+    });
   },
 
   getClientList: async (req, res) => {
