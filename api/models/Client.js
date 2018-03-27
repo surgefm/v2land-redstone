@@ -34,9 +34,9 @@ module.exports = {
       defaultsTo: 'contributor',
     },
 
-    verificationToken: {
-      type: 'text',
-      required: false,
+    emailVerified: {
+      type: 'boolean',
+      defaultsTo: false,
     },
 
     events: {

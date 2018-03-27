@@ -6,19 +6,6 @@
  */
 
 const bcrypt = require('bcrypt');
-const uuidv4 = require('uuid/v4');
-const crypto = require('crypto');
-
-/**
- * token generator
- */
-function tokenGenerator() {
-  const token = uuidv4();
-  return crypto
-    .createHash('sha256')
-    .update(token, 'utf8')
-    .digest('hex');
-}
 
 module.exports = {
 
@@ -106,17 +93,30 @@ module.exports = {
         },
         action: 'createClient',
         client: req.session.clientId,
-        verificationToken: tokenGenerator(),
       });
 
       req.session.clientId = client.id;
       res.status(201).json({
-        message: '注册成功',
+        message: '注册成功，请在三天内至邮箱查收验证邮件',
         client: await ClientService.findClient(client.id),
       });
 
-      EmailService.register(client);
+      const verificationToken = ClientService.tokenGenerator();
+      await Record.create({
+        model: 'Miscellaneous',
+        operation: 'create',
+        data: {
+          clientId: client.id,
+          verificationToken,
+          expire: new Date(Date.now() + 1000 * 60 * 60 * 24 * 3),
+        },
+        target: client.id,
+        action: 'createClientVerificationToken',
+        client: req.session.clientId,
+      });
+      EmailService.register(client, verificationToken);
     } catch (err) {
+      console.log(err);
       return res.serverError(err);
     }
   },
@@ -300,16 +300,48 @@ module.exports = {
   },
 
   verifyToken: async (req, res) => {
-    const data = req.body;
-    if (!data || !data.token) {
+    let token;
+    let id;
+    if (req.body && req.body.token && req.body.id) {
+      token = req.body.token;
+      id = req.body.id;
+    } else if (req.query && req.query.token && req.query.id) {
+      token = req.query.token;
+      id = req.query.id;
+    }
+
+    if (!(token && id)) {
       return res.status(400).json({
-        message: '缺少 token',
+        message: '缺少参数：token 或 id',
       });
     }
 
-    const client = await Client.findOne({
-      verificationToken: data.token,
+    let record = await SQLService.find({
+      model: 'Record',
+      where: {
+        action: 'createClientVerificationToken',
+        data: {
+          verificationToken: token,
+          clientId: id,
+        },
+      },
     });
+
+    if (!record) {
+      return res.status(404).json({
+        message: '未找到该 token',
+      });
+    }
+
+    record = record[0];
+
+    if (new Date(record.data.expire).getTime() < Date.now()) {
+      return res.status(404).json({
+        message: '该 token 已失效',
+      });
+    }
+
+    const client = await Client.findOne({ id: record.data.clientId });
 
     if (!client) {
       return res.status(404).json({
@@ -317,7 +349,8 @@ module.exports = {
       });
     }
 
-    client.verificationToken = null;
+    client.emailVerified = true;
+    await client.save();
 
     res.status(201).json({
       message: '账户验证成功',
