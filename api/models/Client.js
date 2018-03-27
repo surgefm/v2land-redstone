@@ -34,6 +34,11 @@ module.exports = {
       defaultsTo: 'contributor',
     },
 
+    verificationToken: {
+      type: 'text',
+      required: false,
+    },
+
     events: {
       collection: 'event',
       via: 'subscribers',
