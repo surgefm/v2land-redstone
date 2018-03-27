@@ -46,7 +46,7 @@ const EmailService = {
       },
     };
 
-    await EmailService.send(email);
+    return EmailService.send(email);
   },
 
   notify: async (subscription, template) => {
@@ -59,13 +59,13 @@ const EmailService = {
         name: '浪潮',
         address: 'notify@langchao.org',
       },
-      to: subscription.contact.address,
+      to: subscription.contact.email,
       subject: template.subject,
       template: 'notification',
       context: template,
     };
 
-    await EmailService.send(email);
+    return EmailService.send(email);
   },
 
   send: async (email) => {
