@@ -16,19 +16,12 @@ module.exports = {
 
   getNews: async (req, res) => {
     let id;
-    let withContributionData;
     if (req.body && req.body.news) {
       id = req.body.news;
     } else if (req.query && req.query.news) {
       id = req.query.news;
     } else if (req.param('news')) {
       id = req.param('news');
-    }
-
-    if (req.body && req.body.withContributionData) {
-      withContributionData = req.body.withContributionData;
-    } else if (req.query && req.query.withContributionData) {
-      withContributionData = req.query.withContributionData;
     }
 
     if (!id) {
@@ -43,7 +36,7 @@ module.exports = {
         message: '未找到该新闻',
       });
     }
-    news.contribution = await NewsService.getContribution(news, withContributionData);
+    news.contribution = await NewsService.getContribution(news, true);
     res.status(200).json({ news });
   },
 
