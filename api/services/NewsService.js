@@ -2,7 +2,7 @@ const NewsService = {
 
   async getContribution(news) {
     const records = await Record.find({
-      action: ['updateNewsDetail', 'createNews'],
+      action: ['updateNewsStatus', 'updateNewsDetail', 'createNews'],
       target: news.id,
     }).populate('client');
 
