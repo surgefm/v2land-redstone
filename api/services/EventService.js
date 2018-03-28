@@ -15,6 +15,7 @@ module.exports = {
       .populate('headerImage');
 
     if (event) {
+      await NewsService.getContributionByList(event.news);
       event.newsCount = await News.count({
         where: {
           event: event.id,
