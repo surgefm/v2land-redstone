@@ -10,8 +10,19 @@ module.exports = {
       .populate('news', {
         where: { status: 'admitted' },
         sort: 'time DESC',
+        limit: 15,
       })
       .populate('headerImage');
+
+    if (event) {
+      await NewsService.getContributionByList(event.news);
+      event.newsCount = await News.count({
+        where: {
+          event: event.id,
+          status: 'admitted',
+        },
+      });
+    }
 
     return event;
   },

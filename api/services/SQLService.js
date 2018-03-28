@@ -44,9 +44,11 @@ const SQLService = {
     const temp = {};
     for (const i in data) {
       if (sails.models[model].schema[i]) {
-        temp[i] = i === 'time'
-          ? new Date(data[i])
-          : data[i];
+        if (i !== 'time') temp[i] = data[i];
+        else {
+          const time = new Date(data[i]);
+          temp[i] = time.toISOString();
+        }
       }
     }
     return temp;
@@ -108,6 +110,8 @@ const SQLService = {
 
     where = SQLService.cleanData(model, where);
     const query = sequel.destroy(model, where);
+    query.query = query.query.replace('  "', ' WHERE "');
+    query.query = 'DELETE ' + query.query.slice(query.query.indexOf('FROM'));
 
     return SQLService.query({
       model,
@@ -216,12 +220,19 @@ function generateWhereQuery(query, values = [], parents = []) {
     const properties = Object.getOwnPropertyNames(query);
     for (let i = 0; i < properties.length; i++) {
       const property = properties[i];
-      if (typeof(query[property]) !== 'object' || query[property] instanceof Date) {
-        if (parents.length > 0) {
-          string += parents[0] + ` #>> '{`;
-          parents = parents.slice(1);
-          parents.push(property);
-          string += `${parents.join(',')}}'`;
+      let temp = parents.slice();
+      if (!query[property] || ['_properties', 'associations', 'associationsCache',
+        'inspect', 'add', 'remove'].includes(property)) {
+        continue;
+      } else if (typeof(query[property]) !== 'object' || query[property] instanceof Date) {
+        if (string.length) {
+          string += ' AND ';
+        }
+        if (temp.length > 0) {
+          string += `"${temp[0]}"::json#>>'{`;
+          temp = temp.slice(1);
+          temp.push(property);
+          string += `${temp.join(',')}}'`;
         } else {
           string += property;
         }
@@ -230,12 +241,11 @@ function generateWhereQuery(query, values = [], parents = []) {
       } else {
         parents.push(property);
         child = generateWhereQuery(query[property], values, parents);
+        if (string.length) {
+          string += ' AND ';
+        }
         string += child.query;
         values = child.values;
-      }
-
-      if (i !== properties.length - 1) {
-        string += ' AND ';
       }
     }
 

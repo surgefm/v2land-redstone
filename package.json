@@ -11,7 +11,7 @@
     "colors": "^1.1.2",
     "ejs": "^2.5.5",
     "eslint": "^4.17.0",
-    "eslint-config-google": "^0.9.1",
+    "eslint-config-v2land": "^1.0.0",
     "grunt": "1.0.1",
     "grunt-contrib-clean": "1.0.0",
     "grunt-contrib-coffee": "1.0.0",
@@ -30,6 +30,7 @@
     "nodemailer": "^4.4.2",
     "nodemailer-express-handlebars": "^2.0.0",
     "oauth": "^0.9.15",
+    "parse-domain": "^2.0.0",
     "pg": "^7.4.1",
     "query-string": "^5.0.1",
     "rc": "1.0.1",
@@ -39,11 +40,14 @@
     "skipper-s3": "^0.5.9",
     "superagent": "^3.8.2",
     "time": "^0.12.0",
+    "unique-string": "^1.0.0",
     "urlencode": "^1.1.0",
+    "uuid": "^3.2.1",
     "v2land-sails-pg-session": "^1.0.2",
     "waterline-sequel": "^0.6.4"
   },
   "scripts": {
+    "precommit": "make eslint",
     "debug": "node debug app.js",
     "start": "node app.js"
   },
@@ -56,6 +60,7 @@
   "license": "",
   "devDependencies": {
     "babel-eslint": "^8.0.3",
+    "husky": "^0.14.3",
     "supertest": "^3.0.0"
   }
 }

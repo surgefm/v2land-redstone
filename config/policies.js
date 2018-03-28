@@ -18,7 +18,8 @@
 
 module.exports.policies = {
   NewsController: {
-    'findOne': true,
+    'getNews': true,
+    'getNewsList': true,
     'updateNews': ['isLoggedIn', 'isManager'],
     'getAllPendingNews': ['isLoggedIn', 'isManager'],
     '*': false,
@@ -30,6 +31,7 @@ module.exports.policies = {
     'createEvent': true,
     'updateEvent': ['isLoggedIn', 'isManager'],
     'getEventList': true,
+    'getAllPendingEvents': ['isLoggedIn', 'isManager'],
     'getPendingNews': ['isLoggedIn', 'isManager'],
     'createNews': true,
     'updateHeaderImage': ['isLoggedIn', 'isManager'],
@@ -37,11 +39,15 @@ module.exports.policies = {
   },
 
   ClientController: {
-    'updateClient': true,
+    'inviteCode': true,
+    'updateClient': ['isLoggedIn'],
     'findClient': true,
     'login': true,
     'register': true,
+    'verifyToken': true,
+    'changePassword': 'isLoggedIn',
     'updateRole': ['isLoggedIn', 'isAdmin'],
+    'getClientList': ['isLoggedIn', 'isAdmin'],
     'getClientDetail': 'isLoggedIn',
     'logout': 'isLoggedIn',
     '*': false,
@@ -71,37 +77,8 @@ module.exports.policies = {
   },
 
   UploadController: {
-    'upload': true,
+    'upload': ['isLoggedIn', 'isManager'],
     '*': false,
   },
 
-  /***************************************************************************
-  *                                                                          *
-  * Default policy for all controllers and actions (`true` allows public     *
-  * access)                                                                  *
-  *                                                                          *
-  ***************************************************************************/
-
-  // '*': true,
-
-  /***************************************************************************
-  *                                                                          *
-  * Here's an example of mapping some policies to run before a controller    *
-  * and its actions                                                          *
-  *                                                                          *
-  ***************************************************************************/
-	// RabbitController: {
-
-		// Apply the `false` policy as the default for all of RabbitController's actions
-		// (`false` prevents all access, which ensures that nothing bad happens to our rabbits)
-		// '*': false,
-
-		// For the action `nurture`, apply the 'isRabbitMother' policy
-		// (this overrides `false` above)
-		// nurture	: 'isRabbitMother',
-
-		// Apply the `isNiceToAnimals` AND `hasRabbitFood` policies
-		// before letting any users feed our rabbits
-		// feed : ['isNiceToAnimals', 'hasRabbitFood']
-	// }
 };

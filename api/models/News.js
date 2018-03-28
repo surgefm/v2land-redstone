@@ -31,7 +31,7 @@ module.exports = {
     },
 
     time: {
-      type: 'date',
+      type: 'datetime',
       required: true,
     },
 
@@ -39,6 +39,10 @@ module.exports = {
       type: 'string',
       defaultsTo: 'pending',
       enum: ['pending', 'admitted', 'rejected', 'removed'],
+    },
+
+    comment: {
+      type: 'text',
     },
 
     event: {

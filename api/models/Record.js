@@ -12,6 +12,7 @@ module.exports = {
         'HeaderImage',
         'Subscription',
         'Auth',
+        'Miscellaneous',
       ],
     },
 
@@ -46,6 +47,8 @@ module.exports = {
         'createClient',
         'updateClientRole',
         'updateClientDetail',
+        'updateClientPassword',
+        'createClientVerificationToken',
         'authorizeThirdPartyAccount',
         'unauthorizeThirdPartyAccount',
         'notify',

@@ -13,6 +13,7 @@ module.exports = {
       type: 'string',
       required: true,
       unique: true,
+      isName: true,
     },
 
     description: {
@@ -24,7 +25,7 @@ module.exports = {
       type: 'string',
       required: true,
       defaultsTo: 'pending',
-      enum: ['pending', 'admitted', 'rejected', 'removed'],
+      enum: ['pending', 'admitted', 'rejected', 'hidden', 'removed'],
     },
 
     subscribers: {
@@ -50,6 +51,31 @@ module.exports = {
     subscriptions: {
       collection: 'subscription',
       via: 'event',
+    },
+
+  },
+
+  types: {
+
+    isName: (value) => {
+      if (!_.isString(value) || value.length === 0) return false;
+      if (/\r?\n|\r| /.test(value)) return false;
+
+      let allDigit = true;
+      for (const char of value) {
+        if (!/\d/.test(char)) {
+          allDigit = false;
+          break;
+        }
+      }
+      if (allDigit) return false;
+
+      const reserved = ['register', 'new', 'setting', 'admin',
+        'about', 'subscription', 'index', 'login', 'verify', 'list',
+        'pending', 'post'];
+      if (reserved.includes(value)) return false;
+
+      return true;
     },
 
   },

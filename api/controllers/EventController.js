@@ -20,6 +20,14 @@ const EventController = {
     }
   },
 
+  getAllPendingEvents: async (req, res) => {
+    const eventCollection = await Event.find({
+      where: { status: 'pending' },
+      sort: 'createdAt ASC',
+    });
+    res.status(200).json({ eventCollection });
+  },
+
   getPendingNews: async (req, res) => {
     const name = req.param('eventName');
     const event = await EventService.findEvent(name);
@@ -30,12 +38,10 @@ const EventController = {
       });
     }
 
-    const newsCollection = await News.find({
-      status: 'pending',
-      event: event.id,
-    });
+    const { news } = await Event.findOne({ id: event.id })
+      .populate('news', { status: 'pending' });
 
-    return res.status(200).json({ newsCollection });
+    return res.status(200).json({ newsCollection: news });
   },
 
   createEvent: async (req, res) => {
@@ -46,6 +52,7 @@ const EventController = {
     }
 
     let event = await EventService.findEvent(req.body.name);
+    let isManager = false;
 
     if (event) {
       return res.status(409).json({
@@ -54,6 +61,14 @@ const EventController = {
     }
 
     req.body.status = 'pending';
+
+    if (req.session.clientId) {
+      const client = await Client.findOne({ id: req.session.clientId });
+      if (client && ['manager', 'admin'].includes(client.role)) {
+        req.body.status = 'admitted';
+        isManager = true;
+      }
+    }
 
     try {
       event = await SQLService.create({
@@ -64,7 +79,9 @@ const EventController = {
       });
 
       res.status(201).json({
-        message: '提交成功，该事件在社区管理员审核通过后将很快开放',
+        message: isManager
+          ? '事件创建成功'
+          : '提交成功，该事件在社区管理员审核通过后将很快开放',
         event,
       });
     } catch (err) {
@@ -137,6 +154,8 @@ const EventController = {
 
   getEventList: async (req, res) => {
     let page = 1;
+    let where;
+    let isManager = false;
 
     if (req.body && req.body.page) {
       page = req.body.page;
@@ -144,8 +163,31 @@ const EventController = {
       page = req.query.page;
     }
 
+    if (req.body && req.body.where) {
+      where = req.body.where;
+    } else if (req.query && req.query.where) {
+      where = req.query.where;
+    }
+
+    if (where) {
+      try {
+        where = JSON.parse(where);
+      } catch (err) {/* happy */}
+    }
+
+    if (where && req.session.clientId) {
+      const client = await Client.findOne({ id: req.session.clientId });
+      if (client && ['manager', 'admin'].includes(client.role)) {
+        isManager = true;
+      }
+    }
+
+    if (where && !isManager) {
+      where.status = 'admitted';
+    }
+
     const events = await Event.find({
-      where: { status: 'admitted' },
+      where: where || { status: 'admitted' },
       sort: 'updatedAt DESC',
     })
       .paginate({
@@ -160,7 +202,10 @@ const EventController = {
   createNews: async (req, res) => {
     const name = req.param('eventName');
     const data = req.body;
+
     let news;
+    let client;
+    let isManager = false;
 
     if (!data.url) {
       return res.status(400).json({
@@ -179,6 +224,14 @@ const EventController = {
     data.event = event.id;
     data.status = 'pending';
 
+    if (req.session.clientId) {
+      client = await Client.findOne({ id: req.session.clientId });
+      if (client && ['manager', 'admin'].includes(client.role)) {
+        data.status = 'admitted';
+        isManager = true;
+      }
+    }
+
     const existingNews = await News.findOne({ url: data.url, event: event.id });
     if (existingNews) {
       return res.status(409).json({
@@ -193,9 +246,18 @@ const EventController = {
         action: 'createNews',
         client: req.session.clientId,
       });
-      res.status(201).json({ news });
+      res.status(201).json({
+        message: isManager
+          ? '新闻添加成功'
+          : '提交成功，该新闻在社区管理员审核通过后将很快开放',
+        news,
+      });
     } catch (err) {
       return res.serverError(err);
+    }
+
+    if (client && ['manager', 'admin'].includes(client.role)) {
+      await NotificationService.updateForNewNews(event, news);
     }
   },
 
