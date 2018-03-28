@@ -186,24 +186,15 @@ const EventController = {
       where.status = 'admitted';
     }
 
-    let events;
-    if (where) {
-      events = await Event.find({
-        where,
-        sort: 'updatedAt DESC',
+    const events = await Event.find({
+      where: where || { status: 'admitted' },
+      sort: 'updatedAt DESC',
+    })
+      .paginate({
+        page,
+        limit: 10,
       })
-        .populate('headerImage');
-    } else {
-      events = await Event.find({
-        where: { status: 'admitted' },
-        sort: 'updatedAt DESC',
-      })
-        .paginate({
-          page,
-          limit: 10,
-        })
-        .populate('headerImage');
-    }
+      .populate('headerImage');
 
     res.status(200).json({ eventList: events });
   },
