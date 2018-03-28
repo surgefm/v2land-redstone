@@ -4,6 +4,9 @@ const assert = require('assert');
 let agent;
 let newsId;
 
+const testEmail = process.env.TEST_EMAIL?
+  process.env.TEST_EMAIL : 'vincent@langchao.co';
+
 describe('NewsController', function() {
   before(async function() {
     agent = request.agent(sails.hooks.http.app);
@@ -16,26 +19,25 @@ describe('NewsController', function() {
       description: '浪潮今天上线',
     });
 
-    await Client.destroy({
-      username: 'testAccountRegister',
-    });
+    await Client.destroy();
 
     await agent
       .post('/client/register')
       .send({
-        username: 'testAccountRegister',
+        username: 'testRegister',
         password: 'testPassword',
+        email: testEmail,
       });
 
     await Client.update(
-      { username: 'testAccountRegister' },
+      { username: 'testRegister' },
       { role: 'admin' }
     );
 
     await agent
       .post('/client/login')
       .send({
-        username: 'testAccountRegister',
+        username: 'testRegister',
         password: 'testPassword',
       });
   });

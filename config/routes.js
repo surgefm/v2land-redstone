@@ -26,6 +26,8 @@ module.exports.routes = {
     view: 'homepage'
   },
 
+  'GET /code': 'ClientController.inviteCode',
+
   'GET /client': 'ClientController.getClientList',
   'POST /client': 'ClientController.getClientList',
   'POST /client/register': 'ClientController.register',
@@ -34,6 +36,8 @@ module.exports.routes = {
   'PUT /client/role': 'ClientController.updateRole',
   'PUT /client/password': 'ClientController.changePassword',
   '/client/logout': 'ClientController.logout',
+  'GET /client/verify': 'ClientController.verifyToken',
+  'POST /client/verify': 'ClientController.verifyToken',
   'GET /client/:clientName': 'ClientController.findClient',
   'PUT /client/:clientName': 'ClientController.updateClient',
 

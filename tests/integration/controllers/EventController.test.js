@@ -3,6 +3,9 @@ const urlencode = require('urlencode');
 const assert = require('assert');
 let agent;
 
+const testEmail = process.env.TEST_EMAIL?
+  process.env.TEST_EMAIL : 'vincent@langchao.co';
+
 describe('EventController', function() {
   describe('createEvent', function() {
     before(async function() {
@@ -12,26 +15,25 @@ describe('EventController', function() {
         name: '浪潮今天发布啦',
       });
 
-      await Client.destroy({
-        username: 'testAccountRegister',
-      });
+      await Client.destroy();
 
       await agent
         .post('/client/register')
         .send({
-          username: 'testAccountRegister',
+          username: 'testRegister',
           password: 'testPassword',
+          email: testEmail,
         });
 
       await agent
         .post('/client/login')
         .send({
-          username: 'testAccountRegister',
+          username: 'testRegister',
           password: 'testPassword',
         });
 
       await Client.update(
-        { username: 'testAccountRegister' },
+        { username: 'testRegister' },
         { role: 'admin' }
       );
     });
@@ -190,7 +192,7 @@ describe('EventController', function() {
     });
     after(async function() {
       await Client.destroy({
-        username: 'testAccountRegister',
+        username: 'testRegister',
       });
     });
     it('should have list', async function() {

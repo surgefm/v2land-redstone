@@ -1,16 +1,20 @@
 module.exports = {
 
   getNextTime: async (mode, event) => {
-    return await ModeService[mode].new(event);
+    return ModeService[mode].new(event);
   },
 
-  updateForNewNews: async (event, news) => {
+  notified: async (mode, event) => {
+    return ModeService[mode].notified(event);
+  },
+
+  updateForNewNews: async (event, news, force = false) => {
     const latestNews = await News.findOne({
       where: { event: event.id, status: 'admitted' },
-      order: 'time DESC',
+      sort: 'time DESC',
     });
 
-    if (!latestNews || (latestNews.id.toString() !== news.id.toString())) {
+    if (!force && (!latestNews || (+latestNews.id !== +news.id))) {
       return;
     }
 
@@ -21,8 +25,9 @@ module.exports = {
 
     for (const notification of notificationCollection) {
       const mode = ModeService[notification.mode];
-      const time = await mode.update(notification, event, news);
+      const time = await mode.update(notification, event, latestNews);
       notification.time = time;
+      notification.status = 'active';
       await notification.save();
     }
 

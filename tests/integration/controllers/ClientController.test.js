@@ -1,6 +1,8 @@
 const request = require('supertest');
 let agent;
 
+const testEmail = process.env.TEST_EMAIL || 'vincent@langchao.org';
+
 describe('ClientController', function() {
   describe('#register()', function() {
     before(function(done) {
@@ -9,7 +11,7 @@ describe('ClientController', function() {
 
     after(async function() {
       await Client.destroy({
-        username: 'testAccountRegister',
+        username: 'testRegister',
       });
     });
 
@@ -19,7 +21,11 @@ describe('ClientController', function() {
 
       agent
         .post('/client/register')
-        .send({ username: 'testAccountRegister', password: 'testPassword' })
+        .send({
+          username: 'testRegister',
+          password: 'testPassword',
+          email: testEmail,
+        })
         .expect(201, done);
     });
   });
@@ -29,14 +35,18 @@ describe('ClientController', function() {
 
     before(async function() {
       await Client.destroy({
-        username: 'testChangePassword',
+        username: 'testChangePwd',
       });
     });
 
     it('should successfully change password', async function() {
       const res = await agent
         .post('/client/register')
-        .send({ username: 'testChangePassword', password: 'testChangePassword' })
+        .send({
+          username: 'testChangePwd',
+          password: 'testChangePassword',
+          email: testEmail,
+        })
         .expect(201);
 
       const { client } = JSON.parse(res.text);
@@ -45,7 +55,7 @@ describe('ClientController', function() {
       await agent
         .post('/client/login')
         .send({
-          username: 'testChangePassword',
+          username: 'testChangePwd',
           password: 'testChangePassword',
         })
         .expect(200);
@@ -71,7 +81,7 @@ describe('ClientController', function() {
       await agent
         .post('/client/login')
         .send({
-          username: 'testChangePassword',
+          username: 'testChangePwd',
           password,
         })
         .expect(200);
@@ -80,19 +90,19 @@ describe('ClientController', function() {
 
   describe('#login/logout()', function() {
     before(async function() {
+      // await Client.destroy({
+      //   username: 'testAccountLogin',
+      // });
+      await Client.destroy();
+
       await agent
         .post('/client/register')
         .send({
           username: 'testAccountLogin',
           password: 'testPassword',
+          email: testEmail,
         })
         .expect(201);
-    });
-
-    after(async function() {
-      await Client.destroy({
-        username: 'testAccountLogin',
-      });
     });
 
     it('should return success', async function() {
@@ -124,9 +134,7 @@ describe('ClientController', function() {
           message: '请在登录后进行该操作',
         });
     });
-  });
 
-  describe('#logoutAfterGettingUnexistingClient', function() {
     it('should logout after the client ID stored in session does not exist', async function() {
       await agent
         .get('/client/me')
@@ -135,4 +143,14 @@ describe('ClientController', function() {
         });
     });
   });
+
+  // describe('#logoutAfterGettingUnexistingClient', function() {
+  //   it('should logout after the client ID stored in session does not exist', async function() {
+  //     await agent
+  //       .get('/client/me')
+  //       .expect(401, {
+  //         message: '请在登录后进行该操作',
+  //       });
+  //   });
+  // });
 });
