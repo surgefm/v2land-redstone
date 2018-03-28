@@ -149,8 +149,9 @@ module.exports = function PgPoolInit(sails) {
    * 使用用户的绑定 Twitter 账号发布推文
    */
   async function notifyByTwitter(subscription, template) {
-    const auth = await Model.auth.findOne({
+    const auth = await Auth.findOne({
       site: 'twitter',
+      profileId: { '>=': 1 },
       owner: subscription.subscriber,
     });
     if (!auth) {
@@ -206,6 +207,7 @@ module.exports = function PgPoolInit(sails) {
   async function notifyByWeibo(subscription, template) {
     const auth = await Model.auth.findOne({
       site: 'weibo',
+      profileId: { '>=': 1 },
       owner: subscription.subscriber,
     });
     if (!auth) {
