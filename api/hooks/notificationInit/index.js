@@ -159,7 +159,9 @@ module.exports = function PgPoolInit(sails) {
       return sails.log.error(new Error(`未找到用户 ${subscription.subscriber} 的 Twitter 绑定`));
     }
 
-    let message = template.message;
+    let message = template.message.length > 100
+      ? (template.message.slice(0, 100) + '... ')
+      : (template.message + ' ');
     message += template.url + ' #浪潮';
     return TwitterService.tweet(auth, message);
   }
@@ -191,7 +193,10 @@ module.exports = function PgPoolInit(sails) {
     if (!client) return disableSubscription(subscription);
 
     let message = '@' + client.screen_name + ' ';
-    message += template.message + ' ' + template.url + ' #浪潮';
+    message += (template.message.length > 100
+      ? (template.message.slice(0, 100) + '... ')
+      : (template.message + ' '))
+      + template.url + ' #浪潮';
     return TwitterService.tweet(auth, message);
   }
 
@@ -208,7 +213,10 @@ module.exports = function PgPoolInit(sails) {
       return sails.log.error(new Error(`未找到用户 ${subscription.subscriber} 的微博绑定`));
     }
 
-    const message = template.message + ' ' + template.url;
+    const message = (template.message.length > 100
+      ? (template.message.slice(0, 100) + '...')
+      : (template))
+      + ' ' + template.url;
     return WeiboService.post(auth, message);
   }
 
@@ -239,7 +247,9 @@ module.exports = function PgPoolInit(sails) {
     if (!client) return disableSubscription(subscription);
 
     let message = '@' + client.profile.screen_name + ' ';
-    message += template.message;
+    message += template.message.length > 100
+      ? (template.message.slice(0, 100) + '...')
+      : (template);
     message += ' ' + Math.floor(Math.random() * 10000000) + ' ';
     message += template.url;
 
