@@ -149,7 +149,7 @@ module.exports = function PgPoolInit(sails) {
    * 使用用户的绑定 Twitter 账号发布推文
    */
   async function notifyByTwitter(subscription, template) {
-    const auth = await Auth.findOne({
+    const auth = await Model.auth.findOne({
       site: 'twitter',
       profileId: { '>=': 1 },
       owner: subscription.subscriber,
@@ -193,7 +193,7 @@ module.exports = function PgPoolInit(sails) {
     const client = await Model.auth.findOne({ id: subscription.contact.twitter });
     if (!client) return disableSubscription(subscription);
 
-    let message = '@' + client.screen_name + ' ';
+    let message = '@' + client.profile.screen_name + ' ';
     message += (template.message.length > 100
       ? (template.message.slice(0, 100) + '... ')
       : (template.message + ' '))
@@ -259,7 +259,7 @@ module.exports = function PgPoolInit(sails) {
   }
 
   async function disableSubscription(subscription) {
-    subscription.status = 'failed';
-    await subscription.save();
+    // diasble function disabled.
+    return;
   }
 };
