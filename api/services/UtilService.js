@@ -1,4 +1,4 @@
-const md5 = require('md5');
+const uniqueString = require('unique-string');
 
 module.exports = {
 
@@ -6,7 +6,7 @@ module.exports = {
     const { filename } = file;
     const parts = filename.split('.');
     const extension = parts[parts.length - 1].toLowerCase();
-    const newFilename = md5(Date.now() + Math.random() * 9999 + filename) + '.' + extension;
+    const newFilename = uniqueString() + Date.now() + '.' + extension;
     return newFilename;
   },
 

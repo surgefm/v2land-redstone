@@ -1,8 +1,7 @@
 const request = require('supertest');
 let agent;
 
-const testEmail = process.env.TEST_EMAIL?
-  process.env.TEST_EMAIL : 'vincent@langchao.co';
+const testEmail = process.env.TEST_EMAIL || 'vincent@langchao.org';
 
 describe('ClientController', function() {
   describe('#register()', function() {
@@ -12,7 +11,7 @@ describe('ClientController', function() {
 
     after(async function() {
       await Client.destroy({
-        username: 'testAccountRegister',
+        username: 'testRegister',
       });
     });
 
@@ -23,7 +22,7 @@ describe('ClientController', function() {
       agent
         .post('/client/register')
         .send({
-          username: 'testAccountRegister',
+          username: 'testRegister',
           password: 'testPassword',
           email: testEmail,
         })
@@ -36,7 +35,7 @@ describe('ClientController', function() {
 
     before(async function() {
       await Client.destroy({
-        username: 'testChangePassword',
+        username: 'testChangePwd',
       });
     });
 
@@ -44,7 +43,7 @@ describe('ClientController', function() {
       const res = await agent
         .post('/client/register')
         .send({
-          username: 'testChangePassword',
+          username: 'testChangePwd',
           password: 'testChangePassword',
           email: testEmail,
         })
@@ -56,7 +55,7 @@ describe('ClientController', function() {
       await agent
         .post('/client/login')
         .send({
-          username: 'testChangePassword',
+          username: 'testChangePwd',
           password: 'testChangePassword',
         })
         .expect(200);
@@ -82,7 +81,7 @@ describe('ClientController', function() {
       await agent
         .post('/client/login')
         .send({
-          username: 'testChangePassword',
+          username: 'testChangePwd',
           password,
         })
         .expect(200);

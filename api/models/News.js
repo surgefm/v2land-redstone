@@ -31,7 +31,7 @@ module.exports = {
     },
 
     time: {
-      type: 'date',
+      type: 'datetime',
       required: true,
     },
 

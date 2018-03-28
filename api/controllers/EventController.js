@@ -213,6 +213,7 @@ const EventController = {
     const data = req.body;
 
     let news;
+    let client;
     let isManager = false;
 
     if (!data.url) {
@@ -233,7 +234,7 @@ const EventController = {
     data.status = 'pending';
 
     if (req.session.clientId) {
-      const client = await Client.findOne({ id: req.session.clientId });
+      client = await Client.findOne({ id: req.session.clientId });
       if (client && ['manager', 'admin'].includes(client.role)) {
         data.status = 'admitted';
         isManager = true;
@@ -262,6 +263,10 @@ const EventController = {
       });
     } catch (err) {
       return res.serverError(err);
+    }
+
+    if (client && ['manager', 'admin'].includes(client.role)) {
+      await NotificationService.updateForNewNews(event, news);
     }
   },
 
