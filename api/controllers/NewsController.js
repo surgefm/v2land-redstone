@@ -43,6 +43,7 @@ module.exports = {
   getNewsList: async (req, res) => {
     let page = 1;
     let where;
+    let withContributionData;
     let isManager = false;
 
     if (req.body && req.body.page) {
@@ -55,6 +56,12 @@ module.exports = {
       where = req.body.where;
     } else if (req.query && req.query.where) {
       where = req.query.where;
+    }
+
+    if (req.body && req.body.withContributionData) {
+      withContributionData = req.body.withContributionData;
+    } else if (req.query && req.query.withContributionData) {
+      withContributionData = req.query.withContributionData;
     }
 
     if (where) {
@@ -84,7 +91,7 @@ module.exports = {
           limit: 15,
         });
 
-        await NewsService.getContributionByList(newsList);
+        await NewsService.getContributionByList(newsList, withContributionData);
 
         res.status(200).json({ newsList });
       } catch (err) {

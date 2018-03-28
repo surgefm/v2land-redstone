@@ -1,6 +1,6 @@
 module.exports = {
 
-  findEvent: async (eventName) => {
+  findEvent: async (eventName, withContributionData) => {
     const event = await Event.findOne({
       or: [
         { id: parseInt(eventName) > -1 ? parseInt(eventName) : -1 },
@@ -15,7 +15,7 @@ module.exports = {
       .populate('headerImage');
 
     if (event) {
-      await NewsService.getContributionByList(event.news);
+      await NewsService.getContributionByList(event.news, withContributionData);
       event.newsCount = await News.count({
         where: {
           event: event.id,
