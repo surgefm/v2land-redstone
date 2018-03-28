@@ -14,6 +14,15 @@ module.exports = {
       })
       .populate('headerImage');
 
+    if (event) {
+      event.newsCount = await News.count({
+        where: {
+          event: event.id,
+          status: 'admitted',
+        },
+      });
+    }
+
     return event;
   },
 
