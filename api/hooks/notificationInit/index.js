@@ -190,7 +190,7 @@ module.exports = function PgPoolInit(sails) {
     }
 
     if (!subscription.contact.twitter) return disableSubscription(subscription);
-    const client = await Auth.findOne({ id: subscription.contact.twitter });
+    const client = await Model.auth.findOne({ id: subscription.contact.twitter });
     if (!client) return disableSubscription(subscription);
 
     let message = '@' + client.screen_name + ' ';
@@ -245,7 +245,7 @@ module.exports = function PgPoolInit(sails) {
     }
 
     if (!subscription.contact.weibo) return disableSubscription(subscription);
-    const client = await Auth.findOne({ id: subscription.contact.weibo });
+    const client = await Model.auth.findOne({ id: subscription.contact.weibo });
     if (!client) return disableSubscription(subscription);
 
     let message = '@' + client.profile.screen_name + ' ';
