@@ -336,7 +336,7 @@ module.exports = {
       },
     });
 
-    if (!record) {
+    if (!record || !record[0]) {
       return res.status(404).json({
         message: '未找到该 token',
       });
