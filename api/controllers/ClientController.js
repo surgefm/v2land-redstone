@@ -9,6 +9,14 @@ const bcrypt = require('bcrypt');
 
 module.exports = {
 
+  inviteCode: async (req, res) => {
+    if (req.query && req.query.code === sails.config.globals.inviteCode) {
+      res.status(200).json({ message: 'Correct.' });
+    } else {
+      res.status(400).json({ message: 'Wrong' });
+    }
+  },
+
   login: async (req, res) => {
     const data = req.body;
 

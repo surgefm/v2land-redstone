@@ -26,6 +26,8 @@ module.exports.routes = {
     view: 'homepage'
   },
 
+  'GET /code': 'ClientController.inviteCode',
+
   'GET /client': 'ClientController.getClientList',
   'POST /client': 'ClientController.getClientList',
   'POST /client/register': 'ClientController.register',
