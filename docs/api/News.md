@@ -11,11 +11,11 @@
 | time | date |
 | status (optional) | string | pending / admitted / rejected / removed |
 | comment (optional) | text |
-| event (optional) | Event | |
+| event (optional) | Event |
 
 ---
 
-## Update News
+## Update News 更新新闻
 
 | Property | Value |
 |:---------|:------|
@@ -23,6 +23,8 @@
 | Method | PUT |
 | Post Data Form | JSON |
 | Return Data Form | JSON |
+| Require Logging in | true |
+| Require Manager Authority | true |
 
 ### Post Data
 
@@ -35,25 +37,49 @@
 | time | date |
 | status | string |
 
-**(All properties are optional. The unposted properties mean that it does not need to be changed.)**
+(All the properties above are optional. The unposted properties mean that it does not need to be changed.)
+
+### Return Data
+
+200 Nothing happens
+
+| Property | Type |
+|:---------|:-----|
+| message | string | 
+| news | news |
+
+201 Successful
+
+| Property | Type |
+|:---------|:-----|
+| message | string | 
+| news | result of SQLService.update() |
+
+404 News not found
 
 ---
 
-## Get All Pending News of All Events
+## Get All Pending News of All Events 获取待审核新闻列表
 
 | Property | Value |
 |:---------|:------|
 | URL | /news/pending |
 | Method | GET |
 | Return Data Form | JSON |
+| Require Logging in | true |
+| Require Manager Authority | true |
 
 ### Return Data
 
-An array of News objects
+200 Successful
+
+| Property | Type | Description |
+|:---------|:-----|:------------|
+| newsCollection | news[] | An array of news objects |
 
 ---
 
-## Get Next Page of News
+## Get Next Page of News 获取新闻列表（分页）
 
 | Property | Value |
 |:---------|:------|
@@ -61,16 +87,23 @@ An array of News objects
 | Method | POST or GET |
 | Post Data Form | JSON |
 | Return Data Form | JSON |
+| Require Logging in | false |
 
 ### Post Data 
 
 | Property | Type |
 |:---------|:------|
 | page (optional) | number |
-| where (optional) | object |
+| where | object |
 
 This is a filter for news. Only the news that have exactly the same properties as "where" will be returned.
 
 ### Return Data
 
-An array of News objects, maximum 15
+200 Successful 
+
+| Property | Type | Description |
+|:---------|:-----|:------------|
+| newsList | news[] | An array of News objects, maximum 15 |
+
+400 Missing parameter `where`

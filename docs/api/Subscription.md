@@ -14,13 +14,15 @@
 
 ---
 
-## Subscribe
+## Subscribe 添加订阅
 
 | Property | Value |
 |:---------|:------|
 | URL | /subscription/{ eventName } |
 | Method | POST |
 | Post Data Form | JSON |
+| Return Data Form | JSON |
+| Require Logging in | false |
 
 ### Post Data
 
@@ -28,33 +30,9 @@
 |:---------|:-----|
 | mode | string |
 | method | string |
-| contact | json |
+| contact | JSON |
 
 ### Return Data
-
-400 Missing `mode` or `contact` parameter
-
-| Property | Type |
-|:---------|:-----|
-| message | string |
-
-404 Subscribing mode not found
-
-| Property | Type |
-|:---------|:-----|
-| message | string |
-
-406 Not admitted
-
-| Property | Type |
-|:---------|:-----|
-| message | string |
-
-200 Same subscription has already existed
-
-| Property | Type |
-|:---------|:-----|
-| message | string |
 
 201 Unsubscribe successfully
 
@@ -62,17 +40,27 @@
 |:---------|:-----|
 | name | string |
 | message | string |
-| subscriptionList (unavilable when empty list) | Subscription[] |
+| subscriptionList (unexistent when empty list) | subscription[] |
+
+200 Same subscription already exists
+
+400 Missing parameter `mode` or `contact`
+
+404 Subscription mode not found
+
+406 This event cannot be subscribed currently 
 
 ---
 
-## Unsubscribe
+## Unsubscribe 取消订阅
 
 | Property | Value |
 |:---------|:------|
 | URL | /unsubscribe |
 | Method | GET |
 | Post Data Form | JSON |
+| Return Data Form | JSON |
+| Require Logging in | false |
 
 ### Post Data
 
@@ -82,22 +70,14 @@
 
 ### Return Data
 
-400 Missing `id` or `unsubscribeId` parameter
-
-| Property | Type |
-|:---------|:-----|
-| message | string |
-
-404 Subsciption not found
-
-| Property | Type |
-|:---------|:-----|
-| message | string |
-
-201 Unsubscribe successfully
+201 Success
 
 | Property | Type |
 |:---------|:-----|
 | name | string |
 | message | string |
 | subscriptionList (unavilable when empty list) | Subscription[] |
+
+400 Missing `id` or `unsubscribeId` parameter
+
+404 Subsciption not found
