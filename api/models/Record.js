@@ -55,6 +55,10 @@ module.exports = {
       ],
     },
 
+    before: {
+      type: 'json',
+    },
+
     data: {
       type: 'json',
       required: true,

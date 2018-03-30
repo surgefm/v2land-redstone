@@ -133,15 +133,22 @@ const EventController = {
         await SQLService.update({
           action: 'updateEventStatus',
           data: { status: changes.status },
+          before: { status: event.status },
           ...query,
         });
       }
 
       delete changes.status;
+      const before = {};
+      for (const i of Object.keys(changes)) {
+        before[i] = event[i];
+      }
+
       if (Object.getOwnPropertyNames(changes).length > 0) {
         await SQLService.update({
           action: 'updateEventDetail',
           data: changes,
+          before,
           ...query,
         });
       }
@@ -259,7 +266,7 @@ const EventController = {
       return res.serverError(err);
     }
 
-    if (client && ['manager', 'admin'].includes(client.role)) {
+    if (data.status === 'admitted' && isManager) {
       await NotificationService.updateForNewNews(event, news);
     }
   },
@@ -304,6 +311,7 @@ const EventController = {
       if (req.method === 'PUT') {
         headerImage = await SQLService.update({
           action: 'updateEventHeaderImage',
+          before: event.headerImage,
           ...data,
         });
       } else {
