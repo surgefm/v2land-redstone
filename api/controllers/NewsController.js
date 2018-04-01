@@ -154,15 +154,22 @@ module.exports = {
         news = await SQLService.update({
           action: 'updateNewsStatus',
           data: { status: changes.status },
+          before: { status: news.status },
           ...query,
         });
       }
 
       delete changes.status;
+      const before = {};
+      for (const i of Object.keys(changes)) {
+        before[i] = news[i];
+      }
+
       if (Object.getOwnPropertyNames(changes).length > 0) {
         news = await SQLService.update({
           action: 'updateNewsDetail',
           data: changes,
+          before,
           ...query,
         });
       }

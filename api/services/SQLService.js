@@ -11,6 +11,7 @@ const SQLService = {
     operation,
     action,
     client,
+    before,
     data,
     target,
     createdAt,
@@ -19,9 +20,9 @@ const SQLService = {
     createdAt = createdAt || (data ? data.createdAt : null) || new Date();
     updatedAt = updatedAt || (data ? data.updatedAt : null) || new Date();
     return await pgClient.query(`
-      INSERT INTO record(model, operation, action, client, data, target, "createdAt", "updatedAt")
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-    `, [model, operation, action, client, data, target, createdAt, updatedAt]);
+      INSERT INTO record(model, operation, action, client, data, before, target, "createdAt", "updatedAt")
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+    `, [model, operation, action, client, data, before, target, createdAt, updatedAt]);
   },
 
   validate: (model, data, presentOnly) => {
@@ -76,7 +77,7 @@ const SQLService = {
     });
   },
 
-  update: async ({ model, where, data, action, client }) => {
+  update: async ({ model, where, data, action, client, before }) => {
     model = model.toLowerCase();
     await SQLService.validate(model, data, true);
     const sequel = new Sequel(sails.models, {
@@ -95,6 +96,7 @@ const SQLService = {
       model,
       action,
       client,
+      before,
       operation: 'update',
       ...query,
     });
@@ -123,7 +125,7 @@ const SQLService = {
     });
   },
 
-  query: async ({ model, operation, query, values, action, client, time }) => {
+  query: async ({ before, model, operation, query, values, action, client, time }) => {
     const pg = await sails.pgPool.connect();
     model = model.toLowerCase();
     const Model = sails.models[model];
@@ -178,6 +180,7 @@ const SQLService = {
         operation,
         action,
         client,
+        before,
         data: object,
         target: object.id,
         createdAt: time,

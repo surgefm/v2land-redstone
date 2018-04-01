@@ -9,6 +9,7 @@ const NewsService = {
     for (const record of records) {
       if (!withData) {
         delete record.data;
+        delete record.before;
       }
       if (record.client) {
         record.client = ClientService.sanitizeClient(record.client);

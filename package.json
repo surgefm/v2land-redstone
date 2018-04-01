@@ -48,7 +48,7 @@
     "waterline-sequel": "^0.6.4"
   },
   "scripts": {
-    "precommit": "make eslint",
+    "precommit": "make eslint-fix",
     "debug": "node debug app.js",
     "start": "node app.js"
   },
