@@ -26,7 +26,7 @@ let connection = {};
 
 if (process.env.REDIS_HOST) {
   connection = {
-    adapter: 'connect-redis',
+    adapter: 'redis',
 
     database: process.env.REDIS_DB || 0,
     host: process.env.REDIS_HOST || '127.0.0.1',
