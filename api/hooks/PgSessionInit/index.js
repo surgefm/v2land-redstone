@@ -24,6 +24,8 @@ module.exports = function PgSessionInit(sails) {
 
           cb();
         });
+      } else {
+        cb();
       }
 
     },
