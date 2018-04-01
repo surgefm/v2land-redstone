@@ -1,6 +1,6 @@
 module.exports = {
 
-  findEvent: async (eventName, withContributionData) => {
+  findEvent: async (eventName) => {
     const event = await Event.findOne({
       or: [
         { id: parseInt(eventName) > -1 ? parseInt(eventName) : -1 },
