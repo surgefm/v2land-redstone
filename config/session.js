@@ -26,7 +26,7 @@ let connection = {};
 
 if (process.env.REDIS_HOST) {
   connection = {
-    adapter: 'connect-redis'
+    adapter: 'connect-redis',
 
     database: process.env.REDIS_DB || 0,
     host: process.env.REDIS_HOST || '127.0.0.1',
@@ -57,7 +57,7 @@ module.exports.session = {
   ***************************************************************************/
   secret: process.env.SESSION_SECRET || '970a14748cf639a4aa3d7b0d60cc9cac',
 
-  { ...connection },
+  ...connection,
 
   cookie,
 
