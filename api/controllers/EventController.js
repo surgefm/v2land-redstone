@@ -9,10 +9,7 @@ const EventController = {
 
   getEvent: async (req, res) => {
     const name = req.param('eventName');
-    const withContributionData = req.query
-      ? req.query.withContributionData
-      : (!req.body || req.body.withContributionData);
-    const event = await EventService.findEvent(name, withContributionData);
+    const event = await EventService.findEvent(name);
 
     if (event) {
       res.status(200).json(event);
