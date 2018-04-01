@@ -30,7 +30,6 @@ if (process.env.REDIS_HOST) {
 
     database: process.env.REDIS_DB || 0,
     host: process.env.REDIS_HOST || '127.0.0.1',
-    password: process.env.REDIS_PWD,
     port: process.env.REDIS_PORT || 6379,
     prefix: 'sess:',
   };
