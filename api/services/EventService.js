@@ -2,7 +2,7 @@ const pinyin = require('pinyin');
 
 module.exports = {
 
-  findEvent: async (eventName, withContributionData) => {
+  findEvent: async (eventName) => {
     const event = await Event.findOne({
       or: [
         { id: parseInt(eventName) > -1 ? parseInt(eventName) : -1 },
@@ -17,7 +17,6 @@ module.exports = {
       .populate('headerImage');
 
     if (event) {
-      await NewsService.getContributionByList(event.news, withContributionData);
       event.newsCount = await News.count({
         where: {
           event: event.id,
