@@ -16,6 +16,10 @@ module.exports = {
       isName: true,
     },
 
+    pinyin: {
+      type: 'string',
+    },
+
     description: {
       type: 'text',
       required: false,

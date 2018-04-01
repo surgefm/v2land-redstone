@@ -73,6 +73,8 @@ const EventController = {
       }
     }
 
+    req.body.pinyin = EventService.generatePinyin(req.body.name);
+
     try {
       event = await SQLService.create({
         model: 'event',
@@ -120,6 +122,10 @@ const EventController = {
         message: '什么变化也没有发生',
         event,
       });
+    }
+
+    if (changes.name) {
+      changes.pinyin = EventService.generatePinyin(changes.name);
     }
 
     try {
