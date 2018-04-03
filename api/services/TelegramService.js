@@ -41,7 +41,13 @@ module.exports = {
   },
 
   sendText(text) {
-    return this.sendMessage('@langchao', text);
+    let chatId;
+    if (sails.config.environment === 'production') {
+      chatId = '@langchao';
+    } else {
+      chatId = '@langchao_notification_test';
+    }
+    return this.sendMessage(chatId, `Unit test: ${ new Date() }`);
   },
 
 };
