@@ -7,6 +7,7 @@ const testEmail = process.env.TEST_EMAIL?
   process.env.TEST_EMAIL : 'vincent@langchao.co';
 
 describe('EventController', function() {
+  this.timeout(10000);
   describe('createEvent', function() {
     before(async function() {
       agent = request.agent(sails.hooks.http.app);
