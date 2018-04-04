@@ -54,7 +54,9 @@ const EventController = {
       });
     }
 
-    let event = await EventService.findEvent(req.body.name);
+    const data = req.body;
+
+    let event = await EventService.findEvent(data.name);
     let isManager = false;
 
     if (event) {
@@ -63,22 +65,22 @@ const EventController = {
       });
     }
 
-    req.body.status = 'pending';
+    data.status = 'pending';
 
     if (req.session.clientId) {
       const client = await Client.findOne({ id: req.session.clientId });
       if (client && ['manager', 'admin'].includes(client.role)) {
-        req.body.status = 'admitted';
+        data.status = 'admitted';
         isManager = true;
       }
     }
 
-    req.body.pinyin = EventService.generatePinyin(req.body.name);
+    data.pinyin = EventService.generatePinyin(data.name);
 
     try {
       event = await SQLService.create({
         model: 'event',
-        data: req.body,
+        data,
         action: 'createEvent',
         client: req.session.clientId,
       });
@@ -142,6 +144,14 @@ const EventController = {
           before: { status: event.status },
           ...query,
         });
+      }
+
+      if (
+        (event.status === 'pending' || event.status === 'rejected') &&
+        changes.status === 'admitted'
+      ) {
+        // 再说一遍，不要 await，再说一遍，不要 await
+        TelegramService.sendEvent(event);
       }
 
       delete changes.status;

@@ -41,14 +41,29 @@ module.exports = {
     );
   },
 
-  sendText(text) {
+  sendText(text, parseMode) {
     let chatId;
     if (sails.config.environment === 'production') {
       chatId = '@langchao';
     } else {
       chatId = '@langchao_notification_test';
     }
-    return this.sendMessage(chatId, `Unit test: ${ new Date() }`);
+    return this.sendMessage(
+      chatId,
+      text,
+      parseMode
+    );
+  },
+
+  async sendEvent(event) {
+    try {
+      await this.sendText(
+        `有新的事件通过了审核，进来看看吧：[${ event.name }](https://langchao.org/${ event.name })`,
+        'Markdown'
+      );
+    } catch (err) {
+      sails.log.error(new Error(`Telegram sendEvent: ${ err }`));
+    }
   },
 
 };
