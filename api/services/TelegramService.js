@@ -1,4 +1,4 @@
-const fetch = require('node-fetch');
+const axios = require('axios');
 
 const { TELE_TOKEN } = process.env;
 
@@ -33,11 +33,12 @@ module.exports = {
       reply_markup: replyMarkup,
     };
 
-    return fetch(`https://api.telegram.org/bot${ TELE_TOKEN }/sendMessage`, {
-      method: 'POST',
-      body: JSON.stringify(data),
-      headers: { 'Content-Type': 'application/json' },
-    });
+    return axios.post(
+      `https://api.telegram.org/bot${ TELE_TOKEN }/sendMessage`,
+      JSON.stringify(data), {
+        headers: { 'Content-Type': 'application/json' },
+      }
+    );
   },
 
   sendText(text) {

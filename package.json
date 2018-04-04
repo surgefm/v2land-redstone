@@ -27,7 +27,6 @@
     "include-all": "^1.0.0",
     "md5": "^2.2.1",
     "mocha": "^4.0.1",
-    "node-fetch": "^2.1.2",
     "nodemailer": "^4.4.2",
     "nodemailer-express-handlebars": "^2.0.0",
     "oauth": "^0.9.15",
