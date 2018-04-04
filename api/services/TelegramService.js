@@ -55,12 +55,39 @@ module.exports = {
     );
   },
 
-  async sendEvent(event) {
+  async sendEventAdmitted(event, handler) {
     try {
-      await this.sendText(
-        `有新的事件通过了审核，进来看看吧：[${ event.name }](https://langchao.org/${ event.name })`,
-        'Markdown'
-      );
+      const submitRecord = await Record.findOne({
+        model: 'Event',
+        action: 'createEvent',
+        target: event.id,
+      });
+
+      if (!submitRecord) {
+        throw new Error('Record is not exist');
+      }
+
+      const username = submitRecord.client.username || '游客';
+
+      const content =
+        `*${ username }*提交的事件` +
+        `「[${ event.name }](https://langchao.org/${ event.name }) 」` +
+        `被管理员*${ handler.username }*审核通过了，进来看看吧！`;
+      await this.sendText(content, 'Markdown');
+    } catch (err) {
+      sails.log.error(new Error(`Telegram sendEvent: ${ err }`));
+    }
+  },
+
+  async sendAdminEvent(event, handler) {
+    try {
+      const username = handler.username || '游客';
+
+      const content =
+        `管理员*${ username }*提交了事件` +
+        `「[${ event.name }](https://langchao.org/${ event.name }) 」` +
+        `，进来看看吧！`;
+      await this.sendText(content, 'Markdown');
     } catch (err) {
       sails.log.error(new Error(`Telegram sendEvent: ${ err }`));
     }

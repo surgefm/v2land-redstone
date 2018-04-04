@@ -21,7 +21,7 @@ describe('EventController', function() {
       await agent
         .post('/client/register')
         .send({
-          username: 'testRegister',
+          username: '浪潮测试机器人',
           password: 'testPassword',
           email: testEmail,
         });
@@ -29,12 +29,12 @@ describe('EventController', function() {
       await agent
         .post('/client/login')
         .send({
-          username: 'testRegister',
+          username: '浪潮测试机器人',
           password: 'testPassword',
         });
 
       await Client.update(
-        { username: 'testRegister' },
+        { username: '浪潮测试机器人' },
         { role: 'admin' }
       );
     });
@@ -69,11 +69,21 @@ describe('EventController', function() {
         .end(done);
     });
 
-    it('should update event success', function(done) {
+    it('should update event pending success', function(done) {
       agent
         .put(`/event/${urlencode('浪潮今天发布啦')}`)
         .send({
-          description: '浪潮今天发布啦啦啦啦啦啦',
+          status: 'pending',
+        })
+        .expect(201)
+        .end(done);
+    });
+
+    it('should update event admitted success', function(done) {
+      agent
+        .put(`/event/${urlencode('浪潮今天发布啦')}`)
+        .send({
+          status: 'admitted',
         })
         .expect(201)
         .end(done);
@@ -193,7 +203,7 @@ describe('EventController', function() {
     });
     after(async function() {
       await Client.destroy({
-        username: 'testRegister',
+        username: '浪潮测试机器人',
       });
     });
     it('should have list', async function() {

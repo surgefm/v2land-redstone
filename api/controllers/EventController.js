@@ -48,6 +48,7 @@ const EventController = {
   },
 
   createEvent: async (req, res) => {
+    let client;
     if (!(req.body && req.body.name && req.body.description)) {
       return res.status(400).json({
         message: '缺少参数 name 或 description',
@@ -68,7 +69,7 @@ const EventController = {
     data.status = 'pending';
 
     if (req.session.clientId) {
-      const client = await Client.findOne({ id: req.session.clientId });
+      client = await Client.findOne({ id: req.session.clientId });
       if (client && ['manager', 'admin'].includes(client.role)) {
         data.status = 'admitted';
         isManager = true;
@@ -91,6 +92,10 @@ const EventController = {
           : '提交成功，该事件在社区管理员审核通过后将很快开放',
         event,
       });
+
+      if (client && ['manager', 'admin'].includes(client.role)) {
+        TelegramService.sendAdminEvent(event, client);
+      }
     } catch (err) {
       return res.serverError(err);
     }
@@ -150,8 +155,8 @@ const EventController = {
         (event.status === 'pending' || event.status === 'rejected') &&
         changes.status === 'admitted'
       ) {
-        // 再说一遍，不要 await，再说一遍，不要 await
-        TelegramService.sendEvent(event);
+        const selfClient = req.currentClient;
+        TelegramService.sendEventAdmitted(event, selfClient);
       }
 
       delete changes.status;
