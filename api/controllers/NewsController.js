@@ -160,7 +160,7 @@ module.exports = {
           ...query,
         });
 
-        if (beforeStatus !== 'admitted' && changes === 'admitted') {
+        if (beforeStatus !== 'admitted' && changes.status === 'admitted') {
           const selfClient = req.currentClient;
           TelegramService.sendNewsAdmitted(news, selfClient);
         }

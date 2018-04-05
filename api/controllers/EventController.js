@@ -283,6 +283,7 @@ const EventController = {
           : '提交成功，该新闻在社区管理员审核通过后将很快开放',
         news,
       });
+      TelegramService.sendNewsCreated(event, news, client);
     } catch (err) {
       return res.serverError(err);
     }

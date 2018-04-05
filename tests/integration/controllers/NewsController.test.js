@@ -8,7 +8,7 @@ const testEmail = process.env.TEST_EMAIL?
   process.env.TEST_EMAIL : 'vincent@langchao.co';
 const testUsername = '陈博士的AI';
 
-describe.only('NewsController', function() {
+describe('NewsController', function() {
   before(async function() {
     agent = request.agent(sails.hooks.http.app);
 
@@ -98,5 +98,23 @@ describe.only('NewsController', function() {
       })
       .expect(201);
     assert.equal('浪潮今天上线啦', res.body.news.title);
+  });
+
+  it('should change to pending success', async function() {
+    await agent
+      .put(`/news/${newsId}`)
+      .send({
+        status: 'pending',
+      })
+      .expect(201);
+  });
+
+  it('should change to admitted success', async function() {
+    await agent
+      .put(`/news/${newsId}`)
+      .send({
+        status: 'admitted',
+      })
+      .expect(201);
   });
 });

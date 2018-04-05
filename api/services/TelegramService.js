@@ -71,11 +71,25 @@ module.exports = {
 
       const content =
         `*${ username }*提交的新闻` +
-        `「[${ event.name }](https://langchao.org/${ event.id }/${ event.name }) 」` +
+        `「[${ news.title }](https://langchao.org/${ news.event.id }/${ news.id }) 」` +
         `被管理员*${ handler.username }*审核通过了，进来看看吧！`;
       await this.sendText(content, 'Markdown');
     } catch (err) {
-      sails.log.error(new Error(`Telegram sendNews: ${ err }`));
+      sails.log.error(new Error(`Telegram sendNewsAdmitted: ${ err }`));
+    }
+  },
+
+  async sendNewsCreated(event, news, handler) {
+    try {
+      const username = (handler && handler.username) || '游客';
+
+      const content =
+        `*${ username }*为事件*${ event.name }*提交了新闻` +
+        `「[${ news.title }](https://langchao.org/${ event.id }/admin) 」` +
+        `，请管理员尽快审核`;
+      await this.sendText(content, 'Markdown');
+    } catch (err) {
+      sails.log.error(new Error(`Telegram sendEvent: ${ err }`));
     }
   },
 

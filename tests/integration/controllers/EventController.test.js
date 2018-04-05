@@ -5,6 +5,7 @@ let agent;
 
 const testEmail = process.env.TEST_EMAIL?
   process.env.TEST_EMAIL : 'vincent@langchao.co';
+const testUsername = '计量经济学家的AI';
 
 describe('EventController', function() {
   this.timeout(10000);
@@ -21,7 +22,7 @@ describe('EventController', function() {
       await agent
         .post('/client/register')
         .send({
-          username: '浪潮测试机器人',
+          username: testUsername,
           password: 'testPassword',
           email: testEmail,
         });
@@ -29,12 +30,12 @@ describe('EventController', function() {
       await agent
         .post('/client/login')
         .send({
-          username: '浪潮测试机器人',
+          username: testUsername,
           password: 'testPassword',
         });
 
       await Client.update(
-        { username: '浪潮测试机器人' },
+        { username: testUsername },
         { role: 'admin' }
       );
     });
