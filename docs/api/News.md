@@ -50,10 +50,10 @@
 
 201 Successful
 
-| Property | Type |
-|:---------|:-----|
+| Property | Type | Description |
+|:---------|:-----|:------------|
 | message | string | 
-| news | result of SQLService.update() |
+| news | news | the updated news |
 
 404 News not found
 

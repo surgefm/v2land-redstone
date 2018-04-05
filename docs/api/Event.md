@@ -40,10 +40,10 @@ Otherwise, the event will be pending and needs to be checked by a manager.
 
 201 Successfully created
 
-| Property | Type |
-|:---------|:-----|
+| Property | Type | Description |
+|:---------|:-----|:------------|
 | message | string | 
-| event | result of SQLService.create() |
+| event | event | the created event |
 
 400 Missing parameter `name` or `description`
 
@@ -211,7 +211,7 @@ Otherwise, the event will be pending and needs to be checked by a manager.
 | Property | Type | Description |
 |:---------|:-----|:------------|
 | message | string |
-| news | object | result of SQLService.create() |
+| news | object | the created news |
 
 400 Missing parameter `url`
 
@@ -259,7 +259,7 @@ Otherwise, the event will be pending and needs to be checked by a manager.
 | Property | Type | Description |
 |:---------|:-----|:------------|
 | message | string |
-| headerImage | object | result of SQLService.create() |
+| headerImage | object |  |
 
 404 Event not found
 
@@ -293,7 +293,7 @@ Otherwise, the event will be pending and needs to be checked by a manager.
 | Property | Type | Description |
 |:---------|:-----|:------------|
 | message | string |
-| headerImage | object | result of SQLService.update() |
+| headerImage | object | the updated header image |
 
 404 Event not found
 
