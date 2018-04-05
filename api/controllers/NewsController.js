@@ -14,9 +14,36 @@ module.exports = {
     return res.status(200).json({ newsCollection });
   },
 
+  getNews: async (req, res) => {
+    let id;
+    if (req.body && req.body.news) {
+      id = req.body.news;
+    } else if (req.query && req.query.news) {
+      id = req.query.news;
+    } else if (req.param('news')) {
+      id = req.param('news');
+    }
+
+    if (!id) {
+      return res.status(400).json({
+        message: '缺少参数：news。',
+      });
+    }
+
+    const news = await News.findOne({ id });
+    if (!news) {
+      return res.status(404).json({
+        message: '未找到该新闻',
+      });
+    }
+    news.contribution = await NewsService.getContribution(news, true);
+    res.status(200).json({ news });
+  },
+
   getNewsList: async (req, res) => {
     let page = 1;
     let where;
+    let withContributionData;
     let isManager = false;
 
     if (req.body && req.body.page) {
@@ -29,6 +56,12 @@ module.exports = {
       where = req.body.where;
     } else if (req.query && req.query.where) {
       where = req.query.where;
+    }
+
+    if (req.body && req.body.withContributionData) {
+      withContributionData = req.body.withContributionData;
+    } else if (req.query && req.query.withContributionData) {
+      withContributionData = req.query.withContributionData;
     }
 
     if (where) {
@@ -49,15 +82,21 @@ module.exports = {
     }
 
     if (where) {
-      const newsList = await News.find({
-        where,
-        sort: 'updatedAt DESC',
-      }).paginate({
-        page,
-        limit: 15,
-      });
+      try {
+        const newsList = await News.find({
+          where,
+          sort: 'updatedAt DESC',
+        }).paginate({
+          page,
+          limit: 15,
+        });
 
-      res.status(200).json({ newsList });
+        await NewsService.getContributionByList(newsList, withContributionData);
+
+        res.status(200).json({ newsList });
+      } catch (err) {
+        res.serverError(err);
+      }
     } else {
       res.status(400).json({
         message: '缺少参数：where',
@@ -99,27 +138,49 @@ module.exports = {
       };
 
       const changesCopy = { ...changes };
+      const latestNews = await News.findOne({
+        where: { event: news.event, status: 'admitted' },
+        sort: 'time DESC',
+      });
+
+      const updateNotification =
+        (+latestNews.id === +news.id) ||
+        (changesCopy.status && changesCopy.status !== news.status) ||
+        (changesCopy.time && new Date(changesCopy.time).getTime() !== new Date(news.time).getTime());
+
+      const forceUpdate = +latestNews.id === +news.id;
 
       if (changes.status) {
         news = await SQLService.update({
           action: 'updateNewsStatus',
           data: { status: changes.status },
+          before: { status: news.status },
           ...query,
         });
       }
 
       delete changes.status;
+      const before = {};
+      for (const i of Object.keys(changes)) {
+        before[i] = news[i];
+      }
+
       if (Object.getOwnPropertyNames(changes).length > 0) {
         news = await SQLService.update({
           action: 'updateNewsDetail',
           data: changes,
+          before,
           ...query,
         });
       }
 
-      if (changesCopy.status || changesCopy.time) {
-        const event = await Event.findOne({ id: news.event });
-        await NotificationService.updateForNewNews(event, news);
+      try {
+        if (updateNotification) {
+          const event = await Event.findOne({ id: news.event });
+          await NotificationService.updateForNewNews(event, news, forceUpdate);
+        }
+      } catch (err) {
+        res.serverError(err);
       }
 
       res.status(201).json({

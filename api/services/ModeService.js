@@ -8,13 +8,7 @@ const modeCollection = {
       return new Date('1/1/3000');
     },
     update: async (notification, event, news) => {
-      if (!news.newNotification) {
-        news.newNotification = true;
-        await news.save();
-        return new Date('1/1/2000');
-      } else {
-        return new Date('1/1/3000');
-      }
+      return new Date('1/1/2000');
     },
     notified: async () => {
       return new Date('1/1/3000');
@@ -24,23 +18,23 @@ const modeCollection = {
         subject: `${event.name} 有了新的消息`,
         message: `${news.source} 发布了关于 ${event.name} 的新消息：「${news.abstract}」`,
         button: '点击按钮查看新闻',
-        url: `${sails.config.globals.site}${event.id}?news=${news.id}`,
+        url: `${sails.config.globals.site}/${event.id}?news=${news.id}`,
       };
     },
   },
 
   '7DaysSinceLatestNews': {
     needNews: false,
-    new: async (event) => {
-      const newsCollection = await News.find({
+    new: async (event, news) => {
+      const latestNews = news || await News.findOne({
         where: { status: 'admitted', event: event.id },
-        order: 'time DESC',
+        sort: 'time DESC',
       });
 
-      if (newsCollection.length === 0) {
+      if (!latestNews) {
         return new Date('1/1/3000');
       } else {
-        const date = new time.Date(newsCollection[0].time, 'Asia/Shanghai');
+        const date = new time.Date(latestNews.time, 'Asia/Shanghai');
         date.setHours(8);
         date.setMinutes(0);
         date.setSeconds(0);
@@ -50,7 +44,7 @@ const modeCollection = {
       }
     },
     update: async (notification, event, news) => {
-      return await modeCollection['7DaysSinceLatestNews'].new(event);
+      return modeCollection['7DaysSinceLatestNews'].new(event, news);
     },
     notified: async () => {
       return new Date('1/1/3000');
@@ -79,7 +73,7 @@ const modeCollection = {
       return date;
     },
     notified: async () => {
-      return await modeCollection.daily.new();
+      return modeCollection.daily.new();
     },
     getTemplate: async (notification, event, news) => {
       return {
@@ -105,7 +99,7 @@ const modeCollection = {
       return date;
     },
     notified: async () => {
-      return await modeCollection.weekly.new();
+      return modeCollection.weekly.new();
     },
     getTemplate: async (notification, event, news) => {
       return {
@@ -131,7 +125,7 @@ const modeCollection = {
       return date;
     },
     notified: async () => {
-      return await modeCollection.monthly.new();
+      return modeCollection.monthly.new();
     },
     getTemplate: async (notification, event, news) => {
       return {

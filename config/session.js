@@ -31,7 +31,7 @@ module.exports.session = {
   * of your users, forcing them to log in again.                             *
   *                                                                          *
   ***************************************************************************/
-  secret: '970a14748cf639a4aa3d7b0d60cc9cac',
+  secret: process.env.SESSION_SECRET || '970a14748cf639a4aa3d7b0d60cc9cac',
 
   adapter: 'v2land-sails-pg-session',
 

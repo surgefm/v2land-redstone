@@ -70,6 +70,8 @@ const EventController = {
       }
     }
 
+    req.body.pinyin = EventService.generatePinyin(req.body.name);
+
     try {
       event = await SQLService.create({
         model: 'event',
@@ -119,6 +121,10 @@ const EventController = {
       });
     }
 
+    if (changes.name) {
+      changes.pinyin = EventService.generatePinyin(changes.name);
+    }
+
     try {
       const query = {
         model: 'event',
@@ -130,15 +136,22 @@ const EventController = {
         await SQLService.update({
           action: 'updateEventStatus',
           data: { status: changes.status },
+          before: { status: event.status },
           ...query,
         });
       }
 
       delete changes.status;
+      const before = {};
+      for (const i of Object.keys(changes)) {
+        before[i] = event[i];
+      }
+
       if (Object.getOwnPropertyNames(changes).length > 0) {
         await SQLService.update({
           action: 'updateEventDetail',
           data: changes,
+          before,
           ...query,
         });
       }
@@ -186,24 +199,15 @@ const EventController = {
       where.status = 'admitted';
     }
 
-    let events;
-    if (where) {
-      events = await Event.find({
-        where,
-        sort: 'updatedAt DESC',
+    const events = await Event.find({
+      where: where || { status: 'admitted' },
+      sort: 'updatedAt DESC',
+    })
+      .paginate({
+        page,
+        limit: 10,
       })
-        .populate('headerImage');
-    } else {
-      events = await Event.find({
-        where: { status: 'admitted' },
-        sort: 'updatedAt DESC',
-      })
-        .paginate({
-          page,
-          limit: 10,
-        })
-        .populate('headerImage');
-    }
+      .populate('headerImage');
 
     res.status(200).json({ eventList: events });
   },
@@ -213,6 +217,7 @@ const EventController = {
     const data = req.body;
 
     let news;
+    let client;
     let isManager = false;
 
     if (!data.url) {
@@ -233,7 +238,7 @@ const EventController = {
     data.status = 'pending';
 
     if (req.session.clientId) {
-      const client = await Client.findOne({ id: req.session.clientId });
+      client = await Client.findOne({ id: req.session.clientId });
       if (client && ['manager', 'admin'].includes(client.role)) {
         data.status = 'admitted';
         isManager = true;
@@ -262,6 +267,10 @@ const EventController = {
       });
     } catch (err) {
       return res.serverError(err);
+    }
+
+    if (data.status === 'admitted' && isManager) {
+      await NotificationService.updateForNewNews(event, news);
     }
   },
 
@@ -305,6 +314,7 @@ const EventController = {
       if (req.method === 'PUT') {
         headerImage = await SQLService.update({
           action: 'updateEventHeaderImage',
+          before: event.headerImage,
           ...data,
         });
       } else {

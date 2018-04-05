@@ -26,6 +26,8 @@ module.exports.routes = {
     view: 'homepage'
   },
 
+  'GET /code': 'ClientController.inviteCode',
+
   'GET /client': 'ClientController.getClientList',
   'POST /client': 'ClientController.getClientList',
   'POST /client/register': 'ClientController.register',
@@ -34,10 +36,13 @@ module.exports.routes = {
   'PUT /client/role': 'ClientController.updateRole',
   'PUT /client/password': 'ClientController.changePassword',
   '/client/logout': 'ClientController.logout',
+  'GET /client/verify': 'ClientController.verifyToken',
+  'POST /client/verify': 'ClientController.verifyToken',
   'GET /client/:clientName': 'ClientController.findClient',
   'PUT /client/:clientName': 'ClientController.updateClient',
 
   'GET /news/pending': 'NewsController.getAllPendingNews',
+  'GET /news/:news': 'NewsController.getNews',
   'GET /news': 'NewsController.getNewsList',
   'POST /news': 'NewsController.getNewsList',
   'PUT /news/:news': 'NewsController.updateNews',

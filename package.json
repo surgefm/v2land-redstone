@@ -32,6 +32,7 @@
     "oauth": "^0.9.15",
     "parse-domain": "^2.0.0",
     "pg": "^7.4.1",
+    "pinyin": "^2.8.3",
     "query-string": "^5.0.1",
     "rc": "1.0.1",
     "sails": "~0.12.14",
@@ -40,12 +41,14 @@
     "skipper-s3": "^0.5.9",
     "superagent": "^3.8.2",
     "time": "^0.12.0",
+    "unique-string": "^1.0.0",
     "urlencode": "^1.1.0",
+    "uuid": "^3.2.1",
     "v2land-sails-pg-session": "^1.0.2",
     "waterline-sequel": "^0.6.4"
   },
   "scripts": {
-    "precommit": "make eslint",
+    "precommit": "make eslint-fix",
     "debug": "node debug app.js",
     "start": "node app.js"
   },

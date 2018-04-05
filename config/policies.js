@@ -18,7 +18,7 @@
 
 module.exports.policies = {
   NewsController: {
-    'findOne': true,
+    'getNews': true,
     'getNewsList': true,
     'updateNews': ['isLoggedIn', 'isManager'],
     'getAllPendingNews': ['isLoggedIn', 'isManager'],
@@ -39,10 +39,12 @@ module.exports.policies = {
   },
 
   ClientController: {
+    'inviteCode': true,
     'updateClient': ['isLoggedIn'],
     'findClient': true,
     'login': true,
     'register': true,
+    'verifyToken': true,
     'changePassword': 'isLoggedIn',
     'updateRole': ['isLoggedIn', 'isAdmin'],
     'getClientList': ['isLoggedIn', 'isAdmin'],

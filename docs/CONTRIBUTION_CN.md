@@ -13,7 +13,7 @@
 
 浪潮是一个开放的社区，欢迎各位有心人士前来贡献代码，也欢迎加入我们的 Slack 群进行交流：
 
-- [Slack](https://join.slack.com/t/v2land/shared_invite/enQtMjkzMzM4MDgwNDUxLWRhMDUxNmQ2ZjZlMjBlN2NmNjUxMTM1NDQ0MDk1YWRlZmI5MmU5MzdmNzQyNmI3ODY2MzhiZTA3NTI0MzFlMGQ)
+- [Slack](https://join.slack.com/t/v2land/shared_invite/enQtMzA4NTE1ODQzODU2LTMzNjMyZjdiYWU3OGQyZTI1YzA2ZTliNDBlMzY1MTA0N2RhYjBmZDJhNTY2N2IxMDdmMmJkNWY1NjcwZmY0NGQ)
 
 ## 开发
 
