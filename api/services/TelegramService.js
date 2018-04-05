@@ -55,6 +55,30 @@ module.exports = {
     );
   },
 
+  async sendNewsAdmitted(news, handler) {
+    try {
+      const submitRecord = await Record.findOne({
+        model: 'News',
+        action: 'createNews',
+        target: news.id,
+      });
+
+      if (!submitRecord) {
+        throw new Error('Record is not exist');
+      }
+
+      const username = submitRecord.client.username || '游客';
+
+      const content =
+        `*${ username }*提交的新闻` +
+        `「[${ event.name }](https://langchao.org/${ event.id }/${ event.name }) 」` +
+        `被管理员*${ handler.username }*审核通过了，进来看看吧！`;
+      await this.sendText(content, 'Markdown');
+    } catch (err) {
+      sails.log.error(new Error(`Telegram sendNews: ${ err }`));
+    }
+  },
+
   async sendEventAdmitted(event, handler) {
     try {
       const submitRecord = await Record.findOne({
@@ -71,7 +95,7 @@ module.exports = {
 
       const content =
         `*${ username }*提交的事件` +
-        `「[${ event.name }](https://langchao.org/${ event.name }) 」` +
+        `「[${ event.name }](https://langchao.org/${ event.id }/${ event.name }) 」` +
         `被管理员*${ handler.username }*审核通过了，进来看看吧！`;
       await this.sendText(content, 'Markdown');
     } catch (err) {
@@ -85,7 +109,7 @@ module.exports = {
 
       const content =
         `管理员*${ username }*提交了事件` +
-        `「[${ event.name }](https://langchao.org/${ event.name }) 」` +
+        `「[${ event.name }](https://langchao.org/${ event.id }/${ event.name }) 」` +
         `，进来看看吧！`;
       await this.sendText(content, 'Markdown');
     } catch (err) {
