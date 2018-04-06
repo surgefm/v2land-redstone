@@ -12,6 +12,8 @@ module.exports.globals = {
 
   site: process.env.SITE || 'https://langchao.org',
   api: process.env.API || 'https://api.langchao.org',
+  telegramReviewChatId: '@langchao_review',
+  telegramTestChatId: '@langchao_notification_test',
   notification: process.env.ENABLE_NOTIFICATION,
   officialAccount: {
     twitter: process.env.OFFICIAL_TWITTER || '768458621613072384',

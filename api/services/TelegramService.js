@@ -44,9 +44,9 @@ module.exports = {
   sendText(text, parseMode) {
     let chatId;
     if (sails.config.environment === 'production') {
-      chatId = '@langchao';
+      chatId = sails.config.globals.telegramReviewChatId;
     } else {
-      chatId = '@langchao_notification_test';
+      chatId = sails.config.globals.telegramTestChatId;
     }
     return this.sendMessage(
       chatId,
