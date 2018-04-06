@@ -22,6 +22,33 @@ const cookie = {
     : null,
 }
 
+let connection = {};
+
+if (process.env.REDIS_HOST) {
+  connection = {
+    adapter: 'redis',
+
+    database: process.env.REDIS_DB || 0,
+    host: process.env.REDIS_HOST || '127.0.0.1',
+    port: process.env.REDIS_PORT || 6379,
+    prefix: 'sess:',
+  };
+
+  console.info('Using Redis as session storage.');
+} else {
+  connection = {
+    adapter: 'v2land-sails-pg-session',
+
+    database: process.env.POSTGRES_DB || 'v2land',
+    host: process.env.POSTGRES_HOST || '127.0.0.1',
+    user: process.env.POSTGRES_USER || 'postgres',
+    password: process.env.POSTGRES_PWD,
+    port: process.env.POSTGRES_HOST || 5432,
+  };
+
+  console.info('Using PostgreSQL as session storage. One service instance at most.');
+}
+
 module.exports.session = {
 
   /***************************************************************************
@@ -33,13 +60,7 @@ module.exports.session = {
   ***************************************************************************/
   secret: process.env.SESSION_SECRET || '970a14748cf639a4aa3d7b0d60cc9cac',
 
-  adapter: 'v2land-sails-pg-session',
-
-  database: process.env.POSTGRES_DB || 'v2land',
-  host: process.env.POSTGRES_HOST || '127.0.0.1',
-  user: process.env.POSTGRES_USER || 'postgres',
-  password: process.env.POSTGRES_PWD,
-  port: 5432,
+  ...connection,
 
   cookie,
 
