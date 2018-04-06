@@ -45,13 +45,16 @@ const EventController = {
   },
 
   createEvent: async (req, res) => {
+    let client;
     if (!(req.body && req.body.name && req.body.description)) {
       return res.status(400).json({
         message: '缺少参数 name 或 description',
       });
     }
 
-    let event = await EventService.findEvent(req.body.name);
+    const data = req.body;
+
+    let event = await EventService.findEvent(data.name);
     let isManager = false;
 
     if (event) {
@@ -60,22 +63,22 @@ const EventController = {
       });
     }
 
-    req.body.status = 'pending';
+    data.status = 'pending';
 
     if (req.session.clientId) {
-      const client = await Client.findOne({ id: req.session.clientId });
+      client = await Client.findOne({ id: req.session.clientId });
       if (client && ['manager', 'admin'].includes(client.role)) {
-        req.body.status = 'admitted';
+        data.status = 'admitted';
         isManager = true;
       }
     }
 
-    req.body.pinyin = EventService.generatePinyin(req.body.name);
+    data.pinyin = EventService.generatePinyin(data.name);
 
     try {
       event = await SQLService.create({
         model: 'event',
-        data: req.body,
+        data,
         action: 'createEvent',
         client: req.session.clientId,
       });
@@ -86,6 +89,10 @@ const EventController = {
           : '提交成功，该事件在社区管理员审核通过后将很快开放',
         event,
       });
+
+      if (client && ['manager', 'admin'].includes(client.role)) {
+        TelegramService.sendAdminEvent(event, client);
+      }
     } catch (err) {
       return res.serverError(err);
     }
@@ -139,6 +146,14 @@ const EventController = {
           before: { status: event.status },
           ...query,
         });
+      }
+
+      if (
+        (event.status === 'pending' || event.status === 'rejected') &&
+        changes.status === 'admitted'
+      ) {
+        const selfClient = req.currentClient;
+        TelegramService.sendEventAdmitted(event, selfClient);
       }
 
       delete changes.status;
@@ -265,6 +280,7 @@ const EventController = {
           : '提交成功，该新闻在社区管理员审核通过后将很快开放',
         news,
       });
+      TelegramService.sendNewsCreated(event, news, client);
     } catch (err) {
       return res.serverError(err);
     }
