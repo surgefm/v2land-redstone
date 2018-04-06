@@ -34,7 +34,7 @@ if (process.env.REDIS_HOST) {
     prefix: 'sess:',
   };
 
-  sails.log.info('Now using Redis as session storage.');
+  console.info('Using Redis as session storage.');
 } else {
   connection = {
     adapter: 'v2land-sails-pg-session',
@@ -46,7 +46,7 @@ if (process.env.REDIS_HOST) {
     port: process.env.POSTGRES_HOST || 5432,
   };
 
-  sails.log.info('Now using PostgreSQL as session storage. One service instance at most.');
+  console.info('Using PostgreSQL as session storage. One service instance at most.');
 }
 
 module.exports.session = {
