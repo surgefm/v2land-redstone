@@ -71,7 +71,7 @@ module.exports = {
 
       const content =
         `*${ username }*提交的新闻` +
-        `「[${ news.title }](https://langchao.org/${ news.event.id }/${ news.id }) 」` +
+        `「[${ news.title }](${ sails.config.globals.site }/${ news.event.id }/${ news.id }) 」` +
         `被管理员*${ handler.username }*审核通过了，进来看看吧！`;
       await this.sendText(content, 'Markdown');
     } catch (err) {
@@ -85,7 +85,7 @@ module.exports = {
 
       const content =
         `*${ username }*为事件*${ event.name }*提交了新闻` +
-        `「[${ news.title }](https://langchao.org/${ event.id }/admin) 」` +
+        `「[${ news.title }](${ sails.config.globals.site }/${ event.id }/admin) 」` +
         `，请管理员尽快审核`;
       await this.sendText(content, 'Markdown');
     } catch (err) {
@@ -109,7 +109,7 @@ module.exports = {
 
       const content =
         `*${ username }*提交的事件` +
-        `「[${ event.name }](https://langchao.org/${ event.id }/${ event.name }) 」` +
+        `「[${ event.name }](${ sails.config.globals.site }/${ event.id }/${ event.name }) 」` +
         `被管理员*${ handler.username }*审核通过了，进来看看吧！`;
       await this.sendText(content, 'Markdown');
     } catch (err) {
@@ -123,7 +123,7 @@ module.exports = {
 
       const content =
         `管理员*${ username }*提交了事件` +
-        `「[${ event.name }](https://langchao.org/${ event.id }/${ event.name }) 」` +
+        `「[${ event.name }](${ sails.config.globals.site }/${ event.id }/${ event.name }) 」` +
         `，进来看看吧！`;
       await this.sendText(content, 'Markdown');
     } catch (err) {
