@@ -176,7 +176,7 @@ module.exports = {
       sails.log.error(new Error(`Telegram sendEventCreated: ${err}`));
     }
   },
-  
+
   async sendAdminEvent(event, handler) {
     try {
       const username = handler.username || '游客';
