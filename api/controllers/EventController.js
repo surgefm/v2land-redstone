@@ -92,6 +92,8 @@ const EventController = {
 
       if (client && ['manager', 'admin'].includes(client.role)) {
         TelegramService.sendAdminEvent(event, client);
+      } else {
+        TelegramService.sendEventCreated(event, client);
       }
     } catch (err) {
       return res.serverError(err);
@@ -148,12 +150,17 @@ const EventController = {
         });
       }
 
+      const selfClient = req.currentClient;
       if (
         (event.status === 'pending' || event.status === 'rejected') &&
         changes.status === 'admitted'
       ) {
-        const selfClient = req.currentClient;
         TelegramService.sendEventAdmitted(event, selfClient);
+      } else if (
+        event.status === 'pending' &&
+        changes.status === 'rejected'
+      ) {
+        TelegramService.sendEventRejected(event, selfClient);
       }
 
       delete changes.status;

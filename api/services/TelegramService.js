@@ -79,17 +79,41 @@ module.exports = {
     }
   },
 
+  async sendNewsRejected(news, handler) {
+    try {
+      const submitRecord = await Record.findOne({
+        model: 'News',
+        action: 'createNews',
+        target: news.id,
+      });
+
+      if (!submitRecord) {
+        throw new Error('Record is not exist');
+      }
+
+      const username = submitRecord.client.username || '游客';
+
+      const content =
+        `*${username}*提交的新闻「${news.title}」` +
+        `被管理员*${handler.username}*拒绝了，如有疑惑请联系任一社区管理员`;
+
+      await this.sendText(content, 'Markdown');
+    } catch (err) {
+      sails.log.error(new Error(`Telegram sendNewsRejected: ${err}`));
+    }
+  },
+
   async sendNewsCreated(event, news, handler) {
     try {
       const username = (handler && handler.username) || '游客';
 
       const content =
         `*${ username }*为事件*${ event.name }*提交了新闻` +
-        `「[${ news.title }](${ sails.config.globals.site }/${ event.id }/admin) 」` +
+        `「[${ news.title }](${ sails.config.globals.site }/${ event.id }/admit) 」` +
         `，请管理员尽快审核`;
       await this.sendText(content, 'Markdown');
     } catch (err) {
-      sails.log.error(new Error(`Telegram sendEvent: ${ err }`));
+      sails.log.error(new Error(`Telegram sendNewsCreated: ${ err }`));
     }
   },
 
@@ -113,7 +137,43 @@ module.exports = {
         `被管理员*${ handler.username }*审核通过了，进来看看吧！`;
       await this.sendText(content, 'Markdown');
     } catch (err) {
-      sails.log.error(new Error(`Telegram sendEvent: ${ err }`));
+      sails.log.error(new Error(`Telegram sendEventAdmitted: ${ err }`));
+    }
+  },
+
+  async sendEventRejected(event, handler) {
+    try {
+      const submitRecord = await Record.findOne({
+        model: 'Event',
+        action: 'createEvent',
+        target: event.id,
+      });
+
+      if (!submitRecord) {
+        throw new Error('Record is not exist');
+      }
+
+      const username = submitRecord.client.username || '游客';
+
+      const content =
+        `*${username}*提交的事件「${event.name}」` +
+        `被管理员*${handler.username}*拒绝了，如有疑惑请联系任一社区管理员`;
+      await this.sendText(content, 'Markdown');
+    } catch (err) {
+      sails.log.error(new Error(`Telegram sendEventRejected: ${err}`));
+    }
+  },
+
+  async sendEventCreated(event, handler) {
+    try {
+      const username = (handler && handler.username) || '游客';
+
+      const content =
+        `*${username}*提交了事件*「${event.name}*」` +
+        `，请管理员尽快[审核](${sails.config.globals.site }/admin/admit)`;
+      await this.sendText(content, 'Markdown');
+    } catch (err) {
+      sails.log.error(new Error(`Telegram sendEventCreated: ${err}`));
     }
   },
 
