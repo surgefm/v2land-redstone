@@ -67,7 +67,9 @@ module.exports = {
         throw new Error('Record is not exist');
       }
 
-      const username = submitRecord.client.username || '游客';
+      const username = (submitRecord.client && submitRecord.client.username)
+        ? submitRecord.client.username
+        : '游客';
 
       const content =
         `*${ username }*提交的新闻` +
@@ -91,7 +93,9 @@ module.exports = {
         throw new Error('Record is not exist');
       }
 
-      const username = submitRecord.client.username || '游客';
+      const username = (submitRecord.client && submitRecord.client.username)
+        ? submitRecord.client.username
+        : '游客';
 
       const content =
         `*${username}*提交的新闻` +
@@ -130,7 +134,9 @@ module.exports = {
         throw new Error('Record is not exist');
       }
 
-      const username = submitRecord.client.username || '游客';
+      const username = (submitRecord.client && submitRecord.client.username)
+        ? submitRecord.client.username
+        : '游客';
 
       const content =
         `*${ username }*提交的事件` +
@@ -154,7 +160,9 @@ module.exports = {
         throw new Error('Record is not exist');
       }
 
-      const username = submitRecord.client.username || '游客';
+      const username = (submitRecord.client && submitRecord.client.username)
+        ? submitRecord.client.username
+        : '游客';
 
       const content =
         `*${username}*提交的事件「${event.name}」` +
