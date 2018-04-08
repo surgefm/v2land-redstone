@@ -61,7 +61,7 @@ module.exports = {
         model: 'News',
         action: 'createNews',
         target: news.id,
-      });
+      }).populate('client');
 
       if (!submitRecord) {
         throw new Error('Record is not exist');
@@ -85,7 +85,7 @@ module.exports = {
         model: 'News',
         action: 'createNews',
         target: news.id,
-      });
+      }).populate('client');
 
       if (!submitRecord) {
         throw new Error('Record is not exist');
@@ -94,8 +94,9 @@ module.exports = {
       const username = submitRecord.client.username || '游客';
 
       const content =
-        `*${username}*提交的新闻「${news.title}」` +
-        `被管理员*${handler.username}*拒绝了，如有疑惑请联系任一社区管理员`;
+        `*${username}*提交的新闻` +
+        `「${news.title}」被管理员*${handler.username}*拒绝了，` +
+        `如有疑虑请咨询任一社区管理员。`;
 
       await this.sendText(content, 'Markdown');
     } catch (err) {
@@ -123,7 +124,7 @@ module.exports = {
         model: 'Event',
         action: 'createEvent',
         target: event.id,
-      });
+      }).populate('client');
 
       if (!submitRecord) {
         throw new Error('Record is not exist');
@@ -147,7 +148,7 @@ module.exports = {
         model: 'Event',
         action: 'createEvent',
         target: event.id,
-      });
+      }).populate('client');
 
       if (!submitRecord) {
         throw new Error('Record is not exist');
