@@ -109,6 +109,15 @@ describe('NewsController', function() {
       .expect(201);
   });
 
+  it('should change to rejected success', async function() {
+    await agent
+      .put(`/news/${newsId}`)
+      .send({
+        status: 'rejected',
+      })
+      .expect(201);
+  });
+
   it('should change to admitted success', async function() {
     await agent
       .put(`/news/${newsId}`)

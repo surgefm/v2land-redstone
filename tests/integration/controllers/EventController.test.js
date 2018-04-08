@@ -80,6 +80,16 @@ describe('EventController', function() {
         .end(done);
     });
 
+    it('should update event rejected', function(done) {
+      agent
+        .put(`/event/${urlencode('浪潮今天发布啦')}`)
+        .send({
+          status: 'rejected',
+        })
+        .expect(201)
+        .end(done);
+    });
+
     it('should update event admitted success', function(done) {
       agent
         .put(`/event/${urlencode('浪潮今天发布啦')}`)
