@@ -30,7 +30,7 @@ module.exports = {
 
   generatePinyin: (name) => {
     const array = pinyin(name, {
-      segment: true,
+      segment: false,
       style: 0,
     });
 

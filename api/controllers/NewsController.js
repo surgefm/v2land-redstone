@@ -151,12 +151,21 @@ module.exports = {
       const forceUpdate = +latestNews.id === +news.id;
 
       if (changes.status) {
+        const beforeStatus = news.status;
+
         news = await SQLService.update({
           action: 'updateNewsStatus',
           data: { status: changes.status },
           before: { status: news.status },
           ...query,
         });
+
+        const selfClient = req.currentClient;
+        if (beforeStatus !== 'admitted' && changes.status === 'admitted') {
+          TelegramService.sendNewsAdmitted(news, selfClient);
+        } else if (beforeStatus !== 'rejected' && changes.status === 'rejected') {
+          TelegramService.sendNewsRejected(news, selfClient);
+        }
       }
 
       delete changes.status;

@@ -1,7 +1,7 @@
 const request = require('supertest');
 let agent;
 
-const testEmail = process.env.TEST_EMAIL || 'vincent@langchao.org';
+const testEmail = process.env.TEST_EMAIL || 'test@langchao.org';
 
 describe('ClientController', function() {
   describe('#register()', function() {

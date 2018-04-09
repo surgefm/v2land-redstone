@@ -9,6 +9,7 @@
     "axios": "^0.17.1",
     "bcrypt": "^1.0.3",
     "colors": "^1.1.2",
+    "connect-redis": "^3.3.3",
     "ejs": "^2.5.5",
     "eslint": "^4.17.0",
     "eslint-config-v2land": "^1.0.0",
@@ -35,7 +36,7 @@
     "pinyin": "^2.8.3",
     "query-string": "^5.0.1",
     "rc": "1.0.1",
-    "sails": "~0.12.14",
+    "sails": "0.12",
     "sails-disk": "~0.10.9",
     "sails-postgresql": "^0.11.4",
     "skipper-s3": "^0.5.9",
@@ -45,12 +46,14 @@
     "urlencode": "^1.1.0",
     "uuid": "^3.2.1",
     "v2land-sails-pg-session": "^1.0.2",
-    "waterline-sequel": "^0.6.4"
+    "waterline-sequel": "^0.6.4",
+    "yarn": "^1.5.1"
   },
   "scripts": {
     "precommit": "make eslint-fix",
     "debug": "node debug app.js",
-    "start": "node app.js"
+    "start": "node app.js",
+    "eb": "npm install -g yarn && yarn && npm start"
   },
   "main": "app.js",
   "repository": {

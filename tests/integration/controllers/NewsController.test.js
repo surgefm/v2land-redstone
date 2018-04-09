@@ -6,6 +6,7 @@ let newsId;
 
 const testEmail = process.env.TEST_EMAIL?
   process.env.TEST_EMAIL : 'vincent@langchao.co';
+const testUsername = '陈博士的AI';
 
 describe('NewsController', function() {
   before(async function() {
@@ -24,26 +25,26 @@ describe('NewsController', function() {
     await agent
       .post('/client/register')
       .send({
-        username: 'testRegister',
+        username: testUsername,
         password: 'testPassword',
         email: testEmail,
       });
 
     await Client.update(
-      { username: 'testRegister' },
-      { role: 'admin' }
+      { username: testUsername },
+      { role: 'manager' }
     );
 
     await agent
       .post('/client/login')
       .send({
-        username: 'testRegister',
+        username: testUsername,
         password: 'testPassword',
       });
   });
 
-  it('should return 404', function(done) {
-    agent
+  it('should return 404', async function() {
+    await agent
       .post(`/event/${urlencode('浪潮今天不上线')}/news`)
       .send({
         url: 'https://langchao.co',
@@ -52,12 +53,11 @@ describe('NewsController', function() {
         abstract: '浪潮今天不上线',
         time: new Date(),
       })
-      .expect(404)
-      .end(done);
+      .expect(404);
   });
 
-  it('should create news', function(done) {
-    agent
+  it('should create news', async function() {
+    await agent
       .post(`/event/${urlencode('浪潮今天上线')}/news`)
       .send({
         url: 'https://langchao.co',
@@ -66,12 +66,11 @@ describe('NewsController', function() {
         abstract: '浪潮今天不上线',
         time: new Date(),
       })
-      .expect(201)
-      .end(done);
+      .expect(201);
   });
 
-  it('should create news', function(done) {
-    agent
+  it('should create news', async function() {
+    const res = await agent
       .post(`/event/${urlencode('浪潮今天上线')}/news`)
       .send({
         url: 'https://langchao.co/',
@@ -80,37 +79,51 @@ describe('NewsController', function() {
         abstract: '浪潮今天不上线啦',
         time: new Date(),
       })
-      .expect(201, (err, res) => {
-        newsId = res.body.news.id;
-        done();
-      });
+      .expect(201);
+    newsId = res.body.news.id;
   });
 
-  it('should return all pending news', function(done) {
-    agent
+  it('should return all pending news', async function() {
+    const res = await agent
       .get('/news/pending')
-      .expect(200, (err, res) => {
-        if (err) {
-          done(err);
-          return;
-        }
-        assert.equal(res.body.newsCollection.length, 0);
-        done();
-      });
+      .expect(200);
+    assert.equal(res.body.newsCollection.length, 0);
   });
 
-  it('should return success', function(done) {
-    agent
+  it('should return success', async function() {
+    const res = await agent
       .put(`/news/${newsId}`)
       .send({
         title: '浪潮今天上线啦',
       })
-      .expect(201, (err, res) => {
-        if (err) {
-          return done(err);
-        }
-        assert.equal('浪潮今天上线啦', res.body.news.title);
-        done();
-      });
+      .expect(201);
+    assert.equal('浪潮今天上线啦', res.body.news.title);
+  });
+
+  it('should change to pending success', async function() {
+    await agent
+      .put(`/news/${newsId}`)
+      .send({
+        status: 'pending',
+      })
+      .expect(201);
+  });
+
+  it('should change to rejected success', async function() {
+    await agent
+      .put(`/news/${newsId}`)
+      .send({
+        status: 'rejected',
+      })
+      .expect(201);
+  });
+
+  it('should change to admitted success', async function() {
+    await agent
+      .put(`/news/${newsId}`)
+      .send({
+        status: 'admitted',
+      })
+      .expect(201);
   });
 });
