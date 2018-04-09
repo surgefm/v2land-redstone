@@ -22,6 +22,12 @@
 |:---------|:------|
 | message | string |
 
+200 Success
+
+401 Wrong combination of username, Email, or password
+
+404 Client not found
+
 ----
 
 ## Change Password
@@ -43,6 +49,12 @@
 |:---------|:------|
 | message | string |
 
+201 Success
+
+404 Parameter error
+
+500 Server Error, or client not found, or permission denied
+
 ---
 
 ## Logout
@@ -57,6 +69,8 @@
 | Property | Type |
 |:---------|:-----|
 | message | string |
+
+200 Success
 
 ---
 
@@ -75,12 +89,19 @@
 |:---------|:-----|
 | username | string |
 | password | string |
+| eamil | email |
 
 ### Return Data
 
 | Property | Type |
 |:---------|:-----|
 | message | string |
+
+201 Success
+
+406 This username or Email has already been used by another client
+
+500 Error occurs when generating salt or hash
 
 ---
 
@@ -93,9 +114,15 @@
 
 ### Return Data
 
+200 Success
+
 | Property | Type |
 |:---------|:------|
 | username | string |
 | id | number |
 | createdAt | Date |
 | updatedAt | Date |
+
+401 Not logged in
+
+404 Client not found

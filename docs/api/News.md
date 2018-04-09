@@ -96,7 +96,7 @@
 | page (optional) | number |
 | where | object |
 
-This is a filter for news. Only the news that have exactly the same properties as "where" will be returned.
+"Where" is a query criteria object. See [Waterline query language](https://sailsjs.com/documentation/concepts/models-and-orm/query-language) for detail.
 
 ### Return Data
 

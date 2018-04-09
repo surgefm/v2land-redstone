@@ -1,6 +1,7 @@
 # Subscription
 
 ## Subscription Object Model
+
 | Property | Type | description |
 |:---------|:-----|:------------|
 | mode | string |
@@ -62,7 +63,7 @@
 | Return Data Form | JSON |
 | Require Logging in | false |
 
-### Post Data
+### Query Data
 
 | Property | Type |
 |:---------|:-----|

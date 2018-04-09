@@ -55,7 +55,7 @@ Otherwise, the event will be pending and needs to be checked by a manager.
 
 | Property | Value |
 |:---------|:------|
-| URL | /event/{ eventName } |
+| URL | /event/{ eventName | id } |
 | Method | POST |
 | Post Data Form | JSON |
 | Return Data Form | JSON |
@@ -98,7 +98,7 @@ Otherwise, the event will be pending and needs to be checked by a manager.
 
 | Property | Value |
 |:---------|:------|
-| URL | /event/{ eventName } |
+| URL | /event/{ eventName | id } |
 | Method | GET |
 | Return Data Form | JSON |
 | Require Logging in | false |
@@ -141,7 +141,7 @@ Otherwise, the event will be pending and needs to be checked by a manager.
 
 | Property | Value |
 |:---------|:------|
-| URL | /event/{ eventName }/pending |
+| URL | /event/{ eventName | id }/pending |
 | Method | GET |
 | Return Data Form | JSON |
 | Require Logging in | true |
@@ -174,9 +174,9 @@ Otherwise, the event will be pending and needs to be checked by a manager.
 | Property | Type |
 |:---------|:------|
 | page (optional) | number |
-| where (optional) | object |
+| where | object |
 
-"Where" is a filter for events. Only the events that have exactly the same properties as "where" will be returned.
+"Where" is a query criteria object. See [Waterline query language](https://sailsjs.com/documentation/concepts/models-and-orm/query-language) for detail.
 
 ### Return Data
 
@@ -192,17 +192,23 @@ Otherwise, the event will be pending and needs to be checked by a manager.
 
 | Property | Value |
 |:---------|:------|
-| URL | /event/{ eventName }/news |
+| URL | /event/{ eventName | id }/news |
 | Method | POST |
 | Post Data Form | JSON |
 | Return Data Form | JSON |
 | Require Logging in | false |
+
+管理员提交的新闻在未特别指明的情况下直接过审，普通用户及游客需要管理员审核。
+News created by contributors and visitors requires revewing by a manager before being published. News created by managers does not require reviewing by default.
 
 ### Post Data
 
 | Property | Type |
 |:---------|:-----|
 | url | url |
+| time | time |
+| title (optional) | string |
+| abstract (optional) | string |
 
 ### Return Data
 
@@ -229,7 +235,7 @@ Otherwise, the event will be pending and needs to be checked by a manager.
 |:---------|:-----|
 | imageUrl | url |
 | source | string |
-| sourceUrl | url |
+| sourceUrl (optional) | url |
 | event | Event associated |
 
 ---
@@ -238,7 +244,7 @@ Otherwise, the event will be pending and needs to be checked by a manager.
 
 | Property | Value |
 |:---------|:------|
-| URL | /event/{ eventName }/header_image |
+| URL | /event/{ eventName | id }/header_image |
 | Method | POST |
 | Post Data Form | JSON |
 | Return Data Form | JSON |
@@ -250,7 +256,7 @@ Otherwise, the event will be pending and needs to be checked by a manager.
 |:---------|:-----|
 | imageUrl | url |
 | source | string |
-| sourceUrl | url |
+| sourceUrl (optional) | url |
 
 ### Return Data
 
@@ -271,7 +277,7 @@ Otherwise, the event will be pending and needs to be checked by a manager.
 
 | Property | Value |
 |:---------|:------|
-| URL | /event/{ eventName }/header_image |
+| URL | /event/{ eventName | id }/header_image |
 | Method | PUT |
 | Post Data Form | JSON |
 | Return Data Form | JSON |
