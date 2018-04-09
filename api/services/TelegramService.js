@@ -41,7 +41,7 @@ module.exports = {
     );
   },
 
-  sendText(text, parseMode) {
+  sendText(text, parseMode, disableWebPagePreview) {
     let chatId;
     if (sails.config.environment === 'production') {
       chatId = sails.config.globals.telegramReviewChatId;
@@ -51,7 +51,8 @@ module.exports = {
     return this.sendMessage(
       chatId,
       text,
-      parseMode
+      parseMode,
+      disableWebPagePreview
     );
   },
 
@@ -116,7 +117,7 @@ module.exports = {
         `*${ username }*为事件*${ event.name }*提交了新闻` +
         `「[${ news.title }](${ sails.config.globals.site }/${ event.id }/admit) 」` +
         `，请管理员尽快审核`;
-      await this.sendText(content, 'Markdown');
+      await this.sendText(content, 'Markdown', true);
     } catch (err) {
       sails.log.error(new Error(`Telegram sendNewsCreated: ${ err }`));
     }
@@ -180,7 +181,7 @@ module.exports = {
       const content =
         `*${username}*提交了事件*「${event.name}*」` +
         `，请管理员尽快[审核](${sails.config.globals.site }/admin/admit)`;
-      await this.sendText(content, 'Markdown');
+      await this.sendText(content, 'Markdown', true);
     } catch (err) {
       sails.log.error(new Error(`Telegram sendEventCreated: ${err}`));
     }
