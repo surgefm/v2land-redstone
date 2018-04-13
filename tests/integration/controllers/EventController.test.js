@@ -13,9 +13,7 @@ describe('EventController', function() {
     before(async function() {
       agent = request.agent(sails.hooks.http.app);
 
-      await Event.destroy({
-        name: '浪潮今天发布啦',
-      });
+      await Event.destroy();
 
       await Client.destroy();
 
@@ -38,12 +36,6 @@ describe('EventController', function() {
         { username: testUsername },
         { role: 'admin' }
       );
-    });
-
-    after(async function() {
-      await Event.destroy({
-        name: '浪潮今天发布啦',
-      });
     });
 
     it('should return success after creating event', function(done) {
