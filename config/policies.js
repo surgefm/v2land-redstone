@@ -38,6 +38,13 @@ module.exports.policies = {
     '*': false,
   },
 
+  StackController: {
+    'getStack': true,
+    'updateStack': ['isLoggedIn', 'isManager'],
+    'createStack': true,
+    '*': false,
+  },
+
   ClientController: {
     'inviteCode': true,
     'updateClient': ['isLoggedIn'],

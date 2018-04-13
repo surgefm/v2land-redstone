@@ -41,15 +41,6 @@ module.exports.routes = {
   'GET /client/:clientName': 'ClientController.findClient',
   'PUT /client/:clientName': 'ClientController.updateClient',
 
-  'GET /news/pending': 'NewsController.getAllPendingNews',
-  'GET /news/:news': 'NewsController.getNews',
-  'GET /news': 'NewsController.getNewsList',
-  'POST /news': 'NewsController.getNewsList',
-  'PUT /news/:news': 'NewsController.updateNews',
-
-  'GET /subscription/unsubscribe': 'SubscriptionController.unsubscribe',
-  'POST /subscription/:eventName': 'SubscriptionController.subscribe',
-  
   'GET /event': 'EventController.getEventList',
   'POST /event/list': 'EventController.getEventList',
   'GET /event/pending': 'EventController.getAllPendingEvents',
@@ -60,6 +51,17 @@ module.exports.routes = {
   'POST /event/:eventName/header_image': 'EventController.updateHeaderImage',
   'PUT /event/:eventName/header_image': 'EventController.updateHeaderImage',
   'GET /event/:eventName': 'EventController.getEvent',
+
+  'GET /stack/:stackId': 'StackController.getStack',
+
+  'GET /news/pending': 'NewsController.getAllPendingNews',
+  'GET /news/:news': 'NewsController.getNews',
+  'GET /news': 'NewsController.getNewsList',
+  'POST /news': 'NewsController.getNewsList',
+  'PUT /news/:news': 'NewsController.updateNews',
+
+  'GET /subscription/unsubscribe': 'SubscriptionController.unsubscribe',
+  'POST /subscription/:eventName': 'SubscriptionController.subscribe',
 
   'GET /auth/options': 'AuthController.options',
   'POST /auth': 'AuthController.authorize',

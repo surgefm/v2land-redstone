@@ -8,7 +8,9 @@ const StackService = {
         limit: 15,
       });
 
-    stack.contribution = await StackService.getContribution(id, withData);
+    if (stack) {
+      stack.contribution = await StackService.getContribution(id, withData);
+    }
 
     return stack;
   },
