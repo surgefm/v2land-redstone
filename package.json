@@ -50,7 +50,7 @@
     "yarn": "^1.5.1"
   },
   "scripts": {
-    "precommit": "make eslint-fix",
+    "precommit": "make eslint",
     "debug": "node debug app.js",
     "start": "node app.js",
     "eb": "npm install -g yarn && yarn && npm start"
@@ -60,7 +60,7 @@
     "type": "git",
     "url": "git://github.com/Simon/v2land-redstone.git"
   },
-  "author": "Simon",
+  "author": "v2land",
   "license": "",
   "devDependencies": {
     "babel-eslint": "^8.0.3",

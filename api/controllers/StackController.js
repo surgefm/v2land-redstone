@@ -7,7 +7,7 @@
 
 const StackController = {
 
-  getStack: async(req, res) => {
+  getStack: async (req, res) => {
     const id = req.param('stackId');
     const stack = await StackService.findStack(id);
     if (stack) {
