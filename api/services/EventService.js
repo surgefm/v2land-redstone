@@ -14,6 +14,11 @@ module.exports = {
         sort: 'time DESC',
         limit: 15,
       })
+      .populate('stack', {
+        where: { status: 'admitted' },
+        sort: 'order DESC',
+        limit: 15,
+      })
       .populate('headerImage');
 
     if (event) {
