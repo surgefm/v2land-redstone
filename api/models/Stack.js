@@ -26,6 +26,11 @@ module.exports = {
       enum: ['pending', 'admitted', 'invalid', 'rejected', 'hidden', 'removed'],
     },
 
+    order: {
+      type: 'number',
+      defaultsTo: Number.MAX_SAFE_INTEGER,
+    },
+
     event: {
       model: 'event',
     },
@@ -33,11 +38,6 @@ module.exports = {
     news: {
       collection: 'news',
       via: 'stack',
-    },
-
-    order: {
-      type: 'number',
-      defaultsTo: Number.MAX_SAFE_INTEGER,
     },
 
   },

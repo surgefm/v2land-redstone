@@ -42,9 +42,11 @@ module.exports = {
         'createStack',
         'updateStackStatus',
         'updateStackDetail',
+        'notifyNewStack',
         'createNews',
         'updateNewsStatus',
         'updateNewsDetail',
+        'notifyNewNews',
         'createSubscription',
         'updateSubscription',
         'cancelSubscription',
@@ -65,7 +67,6 @@ module.exports = {
 
     data: {
       type: 'json',
-      required: true,
     },
 
     client: {
