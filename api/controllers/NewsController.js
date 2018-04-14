@@ -32,10 +32,20 @@ module.exports = {
 
     const news = await News.findOne({ id });
     if (!news) {
-      return res.status(404).json({
-        message: '未找到该新闻',
-      });
+      return res.status(404).json({ message: '未找到该新闻' });
     }
+
+    if (news.status !== 'admitted') {
+      if (req.session.clientId) {
+        const client = await Client.findOne({ id: req.session.clientId });
+        if (!client || !['manager', 'admin'].includes(client.role)) {
+          return res.status(404).json({ message: '该新闻尚未通过审核' });
+        }
+      } else {
+        return res.status(404).json({ message: '该新闻尚未通过审核' });
+      }
+    }
+
     news.contribution = await NewsService.getContribution(news, true);
     res.status(200).json({ news });
   },
