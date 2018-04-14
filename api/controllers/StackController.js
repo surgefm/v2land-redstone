@@ -11,12 +11,21 @@ const StackController = {
     const id = req.param('stackId');
     const stack = await StackService.findStack(id);
     if (stack) {
-      res.status(200).json({ stack });
-    } else {
-      res.status(404).json({
-        message: '未找到该进展',
-      });
+      if (stack.status !== 'admitted') {
+        if (req.session.clientId) {
+          client = await Client.findOne({ id: req.session.clientId });
+          if (client && ['manager', 'admin'].includes(client.role)) {
+            return res.status(200).json({ stack });
+          }
+        }
+      } else {
+        return res.status(200).json({ stack });
+      }
     }
+
+    res.status(404).json({
+      message: '该进展不存在，或尚未通过审核',
+    });
   },
 
 };

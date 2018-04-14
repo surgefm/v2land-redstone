@@ -234,6 +234,53 @@ const EventController = {
     res.status(200).json({ eventList: events });
   },
 
+  createStack: async (req, res) => {
+    const name = req.param('eventName');
+    const data = req.body;
+    const { title, description, order } = data;
+
+    if (!title) {
+      return res.status(400).json({
+        message: '缺少参数：title',
+      });
+    }
+
+    const event = await EventService.findEvent(name);
+
+    if (!event) {
+      return res.status(404).json({
+        message: '未找到该事件',
+      });
+    }
+
+    const id = event.id;
+
+    try {
+      const stack = await SQLService.create({
+        model: 'stack',
+        data: {
+          status: 'pending',
+          title,
+          description,
+          order: order || 65536,
+          event: id,
+        },
+        action: 'createStack',
+        client: req.session.clientId,
+      });
+      res.status(201).json({
+        message: '提交成功，该进展在社区管理员审核通过后将很快开放',
+        stack,
+      });
+    } catch (err) {
+      return res.serverError(err);
+    }
+
+    if (data.status === 'admitted' && isManager) {
+      await NotificationService.updateForNewNews(event, news);
+    }
+  },
+
   createNews: async (req, res) => {
     const name = req.param('eventName');
     const data = req.body;

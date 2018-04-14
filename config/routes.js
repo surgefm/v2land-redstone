@@ -47,6 +47,7 @@ module.exports.routes = {
   'POST /event': 'EventController.createEvent',
   'PUT /event/:eventName': 'EventController.updateEvent',
   'GET /event/:eventName/pending': 'EventController.getPendingNews',
+  'POST /event/:eventName/stack': 'EventController.createStack',
   'POST /event/:eventName/news': 'EventController.createNews',
   'POST /event/:eventName/header_image': 'EventController.updateHeaderImage',
   'PUT /event/:eventName/header_image': 'EventController.updateHeaderImage',

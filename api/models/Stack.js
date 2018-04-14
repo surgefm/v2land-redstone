@@ -9,11 +9,9 @@ module.exports = {
 
   attributes: {
 
-    name: {
+    title: {
       type: 'string',
       required: true,
-      unique: true,
-      isName: true,
     },
 
     description: {
