@@ -30,7 +30,7 @@ module.exports = {
       });
     }
 
-    const news = await News.findOne({ id });
+    const news = await News.findOne({ id }).populate('stack');
     if (!news) {
       return res.status(404).json({ message: '未找到该新闻' });
     }
