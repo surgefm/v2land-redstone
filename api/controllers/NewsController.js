@@ -173,6 +173,21 @@ module.exports = {
           TelegramService.sendNewsAdmitted(news, selfClient);
         } else if (beforeStatus !== 'rejected' && changes.status === 'rejected') {
           TelegramService.sendNewsRejected(news, selfClient);
+        } else if (beforeStatus === 'admitted' && changes.status !== 'admitted' && news.stack) {
+          const newsCount = await News.count({ stack: news.stack, status: 'admitted' });
+          if (!newsCount) {
+            const stack = await Stack.count({ id: news.stack, status: 'admitted' });
+            if (stack) {
+              await SQLService.update({
+                action: 'invalidateStack',
+                data: { status: 'invalid' },
+                before: { status: 'admitted' },
+                model: 'stack',
+                where: { id: news.stack },
+                client: req.session.clientId,
+              });
+            }
+          }
         }
       }
 

@@ -42,6 +42,7 @@ module.exports = {
         'createStack',
         'updateStackStatus',
         'updateStackDetail',
+        'invalidateStack',
         'notifyNewStack',
         'createNews',
         'updateNewsStatus',
