@@ -8,6 +8,8 @@ const testEmail = process.env.TEST_EMAIL?
   process.env.TEST_EMAIL : 'vincent@langchao.co';
 const testUsername = '陈博士的AI';
 
+const testEventName = '陈博女装';
+
 describe('NewsController', function() {
   before(async function() {
     agent = request.agent(sails.hooks.http.app);
@@ -16,8 +18,9 @@ describe('NewsController', function() {
     await Event.destroy();
 
     await Event.create({
-      name: '浪潮今天上线',
+      name: testEventName,
       description: '浪潮今天上线',
+      status: 'admitted',
     });
 
     await Client.destroy();
@@ -45,7 +48,7 @@ describe('NewsController', function() {
 
   it('should return 404', async function() {
     await agent
-      .post(`/event/${urlencode('浪潮今天不上线')}/news`)
+      .post(`/event/${urlencode(testEventName + '吗？')}/news`)
       .send({
         url: 'https://langchao.co',
         source: 'source',
@@ -58,7 +61,7 @@ describe('NewsController', function() {
 
   it('should create news', async function() {
     await agent
-      .post(`/event/${urlencode('浪潮今天上线')}/news`)
+      .post(`/event/${urlencode(testEventName)}/news`)
       .send({
         url: 'https://langchao.co',
         source: 'source',
@@ -71,7 +74,7 @@ describe('NewsController', function() {
 
   it('should create news', async function() {
     const res = await agent
-      .post(`/event/${urlencode('浪潮今天上线')}/news`)
+      .post(`/event/${urlencode(testEventName)}/news`)
       .send({
         url: 'https://langchao.co/',
         source: 'source',
@@ -87,27 +90,28 @@ describe('NewsController', function() {
     const res = await agent
       .get('/news/pending')
       .expect(200);
-    assert.equal(res.body.newsCollection.length, 0);
+    assert.equal(res.body.newsCollection.length, 2);
   });
 
-  it('should return success', async function() {
+  // it('should change to pending success', async function() {
+  //   await agent
+  //     .put(`/news/${newsId}`)
+  //     .send({
+  //       status: 'admitted',
+  //     })
+  //     .expect(201);
+  // });
+
+  it('should change title success', async function() {
     const res = await agent
       .put(`/news/${newsId}`)
       .send({
-        title: '浪潮今天上线啦',
+        title: '浪潮今天不上线啦',
       })
       .expect(201);
-    assert.equal('浪潮今天上线啦', res.body.news.title);
+    assert.equal('浪潮今天不上线啦', res.body.news.title);
   });
 
-  it('should change to pending success', async function() {
-    await agent
-      .put(`/news/${newsId}`)
-      .send({
-        status: 'pending',
-      })
-      .expect(201);
-  });
 
   it('should change to rejected success', async function() {
     await agent
