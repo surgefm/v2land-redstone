@@ -158,8 +158,6 @@ module.exports = {
         (changesCopy.status && changesCopy.status !== news.status) ||
         (changesCopy.time && new Date(changesCopy.time).getTime() !== new Date(news.time).getTime());
 
-      const forceUpdate = +latestNews.id === +news.id;
-
       if (changes.status) {
         const beforeStatus = news.status;
 
@@ -196,7 +194,7 @@ module.exports = {
       try {
         if (updateNotification) {
           const event = await Event.findOne({ id: news.event });
-          await NotificationService.updateForNewNews(event, news, forceUpdate);
+          NotificationService.updateForNewNews(event, news, data.forceUpdate);
         }
       } catch (err) {
         res.serverError(err);
