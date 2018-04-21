@@ -93,23 +93,14 @@ describe('NewsController', function() {
     assert.equal(res.body.newsCollection.length, 2);
   });
 
-  // it('should change to pending success', async function() {
-  //   await agent
-  //     .put(`/news/${newsId}`)
-  //     .send({
-  //       status: 'admitted',
-  //     })
-  //     .expect(201);
-  // });
-
   it('should change title success', async function() {
     const res = await agent
       .put(`/news/${newsId}`)
       .send({
-        title: '浪潮今天不上线啦',
+        title: '浪潮今天不上线啦啦啦',
       })
       .expect(201);
-    assert.equal('浪潮今天不上线啦', res.body.news.title);
+    assert.equal('浪潮今天不上线啦啦啦', res.body.news.title);
   });
 
 

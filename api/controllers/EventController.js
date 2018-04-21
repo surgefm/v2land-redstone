@@ -55,7 +55,6 @@ const EventController = {
     const data = req.body;
 
     let event = await EventService.findEvent(data.name);
-    // let isManager = false;
 
     if (event) {
       return res.status(409).json({
@@ -64,15 +63,6 @@ const EventController = {
     }
 
     data.status = 'pending';
-
-    // Alan 需求，管理员提交的事件同样需要审核
-    // if (req.session.clientId) {
-    //   client = await Client.findOne({ id: req.session.clientId });
-    //   if (client && ['manager', 'admin'].includes(client.role)) {
-    //     data.status = 'admitted';
-    //     isManager = true;
-    //   }
-    // }
 
     data.pinyin = EventService.generatePinyin(data.name);
 
@@ -85,19 +75,11 @@ const EventController = {
       });
 
       res.status(201).json({
-        // message: isManager
-        //   ? '事件创建成功'
-        //   : '提交成功，该事件在社区管理员审核通过后将很快开放',
         message: '提交成功，该事件在社区管理员审核通过后将很快开放',
         event,
       });
 
       TelegramService.sendEventCreated(event, client);
-      // if (client && ['manager', 'admin'].includes(client.role)) {
-      //   TelegramService.sendAdminEvent(event, client);
-      // } else {
-      //   TelegramService.sendEventCreated(event, client);
-      // }
     } catch (err) {
       return res.serverError(err);
     }
@@ -243,7 +225,6 @@ const EventController = {
 
     let news;
     let client;
-    // let isManager = false;
 
     if (!data.url) {
       return res.status(400).json({
@@ -262,14 +243,6 @@ const EventController = {
     data.event = event.id;
     data.status = 'pending';
 
-    // if (req.session.clientId) {
-    //   client = await Client.findOne({ id: req.session.clientId });
-    //   if (client && ['manager', 'admin'].includes(client.role)) {
-    //     data.status = 'admitted';
-    //     isManager = true;
-    //   }
-    // }
-
     const existingNews = await News.findOne({ url: data.url, event: event.id });
     if (existingNews) {
       return res.status(409).json({
@@ -285,9 +258,6 @@ const EventController = {
         client: req.session.clientId,
       });
       res.status(201).json({
-        // message: isManager
-        //   ? '新闻添加成功'
-        // : '提交成功，该新闻在社区管理员审核通过后将很快开放',
         message: '提交成功，该新闻在社区管理员审核通过后将很快开放',
         news,
       });

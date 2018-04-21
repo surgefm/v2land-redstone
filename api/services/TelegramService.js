@@ -16,6 +16,10 @@ module.exports = {
     replyToMessageId,
     replyMarkup
   ) {
+    if (!TELE_TOKEN) {
+      throw new Error('Environment Variable for TelegramService \'TELE_TOKEN\' undefined');
+    }
+
     if (
       typeof chatId === 'undefined' ||
       typeof text === 'undefined'

@@ -144,11 +144,11 @@ module.exports = {
       });
 
       const updateNotification =
-        (+latestNews.id === +news.id) ||
+        (latestNews && +latestNews.id === +news.id) ||
         (changesCopy.status && changesCopy.status !== news.status) ||
         (changesCopy.time && new Date(changesCopy.time).getTime() !== new Date(news.time).getTime());
 
-      const forceUpdate = +latestNews.id === +news.id;
+      const forceUpdate = latestNews && +latestNews.id === +news.id;
 
       if (changes.status) {
         const beforeStatus = news.status;
