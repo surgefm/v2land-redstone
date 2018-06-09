@@ -9,15 +9,9 @@ module.exports = {
         { name: eventName },
       ],
     })
-      .populate('news', {
-        where: { status: 'admitted' },
-        sort: 'time DESC',
-        limit: 15,
-      })
       .populate('stack', {
         where: { status: 'admitted' },
         sort: 'order DESC',
-        limit: 15,
       })
       .populate('headerImage');
 
@@ -28,6 +22,30 @@ module.exports = {
           status: 'admitted',
         },
       });
+
+      const queue = [];
+      const getStackedNews = async (i) => {
+        const stack = event.stack[i];
+        stack.news = await News.find({
+          where: {
+            stack: stack.id,
+            status: 'admitted',
+          },
+          sort: 'time DESC',
+          limit: 3,
+        });
+        stack.newsCount = await News.count({
+          where: {
+            stack: stack.id,
+            status: 'admitted',
+          },
+        });
+        event.stack[i] = stack;
+      };
+      for (let i = 0; i < event.stack.length; i++) {
+        queue.push(getStackedNews(i));
+      }
+      await Promise.all(queue);
     }
 
     return event;
