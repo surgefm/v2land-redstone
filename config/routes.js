@@ -54,6 +54,7 @@ module.exports.routes = {
   'GET /event/:eventName': 'EventController.getEvent',
 
   'GET /stack/:stackId': 'StackController.getStack',
+  'POST /stack/list': 'StackController.getStackList',
 
   'GET /news/pending': 'NewsController.getAllPendingNews',
   'GET /news/:news': 'NewsController.getNews',

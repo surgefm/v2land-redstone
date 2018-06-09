@@ -41,6 +41,7 @@ module.exports.policies = {
 
   StackController: {
     'getStack': true,
+    'getStackList': true,
     'updateStack': ['isLoggedIn', 'isManager'],
     '*': false,
   },

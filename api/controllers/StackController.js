@@ -28,6 +28,47 @@ const StackController = {
     });
   },
 
+  getStackList: async (req, res) => {
+    let where;
+    let isManager = false;
+
+    if (req.body && req.body.where) {
+      where = req.body.where;
+    } else if (req.query && req.query.where) {
+      where = req.query.where;
+    }
+
+    if (where) {
+      try {
+        where = JSON.parse(where);
+      } catch (err) {/* happy */}
+    }
+
+    if (where && req.session.clientId) {
+      const client = await Client.findOne({
+        id: req.session.clientId,
+      });
+      if (client && ['manager', 'admin'].includes(client.role)) {
+        isManager = true;
+      }
+    }
+
+    if (where && !isManager) {
+      where.status = 'admitted';
+    }
+
+    const stacks = await Stack.find({
+      where: where || {
+        status: 'admitted',
+      },
+      sort: 'updatedAt DESC',
+    });
+
+    res.status(200).json({
+      stackList: stacks,
+    });
+  },
+
   updateStack: async (req, res) => {
     const id = req.param('stackId');
     const data = req.body;
