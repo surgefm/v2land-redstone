@@ -13,8 +13,6 @@
     "ejs": "^2.5.5",
     "eslint": "^4.17.0",
     "eslint-config-v2land": "^1.0.0",
-    "grpc": "^1.11.0-pre2",
-    "grpc-promise": "^1.1.0",
     "grunt": "1.0.1",
     "grunt-contrib-clean": "1.0.0",
     "grunt-contrib-coffee": "1.0.0",
