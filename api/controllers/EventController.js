@@ -262,7 +262,7 @@ const EventController = {
           status: 'pending',
           title,
           description,
-          order: order || 65536,
+          order: order || -1,
           event: id,
         },
         action: 'createStack',

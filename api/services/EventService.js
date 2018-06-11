@@ -10,7 +10,10 @@ module.exports = {
       ],
     })
       .populate('stack', {
-        where: { status: 'admitted' },
+        where: {
+          status: 'admitted',
+          order: { '>': -1 },
+        },
         sort: 'order DESC',
       })
       .populate('headerImage');
@@ -31,9 +34,12 @@ module.exports = {
             stack: stack.id,
             status: 'admitted',
           },
-          sort: 'time DESC',
+          sort: 'time ASC',
           limit: 3,
         });
+        if (stack.news.length) {
+          stack.time = stack.news[0].time;
+        }
         stack.newsCount = await News.count({
           where: {
             stack: stack.id,

@@ -28,7 +28,7 @@ module.exports = {
 
     order: {
       type: 'number',
-      defaultsTo: Number.MAX_SAFE_INTEGER,
+      defaultsTo: -1,
     },
 
     event: {
