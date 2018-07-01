@@ -56,6 +56,7 @@ module.exports.routes = {
   'GET /stack/:stackId': 'StackController.getStack',
   'POST /stack/list': 'StackController.getStackList',
   'PUT /stack/:stackId': 'StackController.updateStack',
+  'PUT /stack/list': 'StackController.updateMultipleStacks',
 
   'GET /news/pending': 'NewsController.getAllPendingNews',
   'GET /news/:news': 'NewsController.getNews',

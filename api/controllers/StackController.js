@@ -5,6 +5,8 @@
  * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
  */
 
+const _ = require('lodash');
+
 const StackController = {
 
   getStack: async (req, res) => {
@@ -73,97 +75,33 @@ const StackController = {
     const id = req.param('stackId');
     const data = req.body;
 
-    let stack = await Stack.findOne({ id });
+    const cb = await StackService.updateStack(id, data);
+    if (cb.error) {
+      return res.serverError(cb.error);
+    } else {
+      return res.status(cb.status).json(cb.message);
+    }
+  },
 
-    if (!news) {
-      return res.status(404).json({
-        message: '未找到该新闻',
+  updateMultipleStacks: async (req, res) => {
+    const { data } = req;
+    const { stackList } = data;
+
+    if (!_.isArray(stackList)) {
+      return res.status(400).json({
+        message: '错误的输入参数：stackList',
       });
     }
 
-    const changes = {};
-    for (const i of ['title', 'description', 'status']) {
-      if (data[i] && data[i] !== news[i]) {
-        changes[i] = data[i];
-      }
-    }
-
-    if (Object.getOwnPropertyNames(changes).length === 0) {
-      return res.status(200).json({
-        message: '什么变化也没有发生',
-        stack,
-      });
+    const queue = [];
+    for (const stack of stackList) {
+      queue.push(StackService.updateStack(stack.id, stack));
     }
 
     try {
-      const query = {
-        client: req.session.clientId,
-        where: { id: stack.id },
-        model: 'stack',
-      };
-
-      const changesCopy = { ...changes };
-      let news;
-
-      if (changes.status) {
-        if (changes.status === 'admitted') {
-          news = await News.findOne({
-            stack: stack.id,
-            status: 'admitted',
-            sort: 'time DESC',
-          });
-
-          if (!hasNews) {
-            return res.status(400).json({
-              message: '一个进展必须在含有一个已过审新闻的情况下方可开放',
-            });
-          }
-        }
-        // const beforeStatus = stack.status;
-
-        stack = await SQLService.update({
-          action: 'updateStackStatus',
-          data: { status: changes.status },
-          before: { status: stack.status },
-          ...query,
-        });
-
-        // const selfClient = req.currentClient;
-        // if (beforeStatus !== 'admitted' && changes.status === 'admitted') {
-        //   TelegramService.sendNewsAdmitted(news, selfClient);
-        // } else if (beforeStatus !== 'rejected' && changes.status === 'rejected') {
-        //   TelegramService.sendNewsRejected(news, selfClient);
-        // }
-      }
-
-      delete changes.status;
-      const before = {};
-      for (const i of Object.keys(changes)) {
-        before[i] = news[i];
-      }
-
-      if (Object.getOwnPropertyNames(changes).length > 0) {
-        news = await SQLService.update({
-          action: 'updateNewsDetail',
-          data: changes,
-          before,
-          ...query,
-        });
-      }
-
-      try {
-        if (data.enableNotification && changesCopy.status === 'admitted') {
-          const event = await Event.findOne({ id: stack.event });
-          NotificationService.updateForNewStack(event, stack, data.forceUpdate);
-          NotificationService.updateForNewNews(event, news, data.forceUpdate);
-        }
-      } catch (err) {
-        res.serverError(err);
-      }
-
-      res.status(201).json({
+      await Promise.all(queue);
+      return res.status(201).json({
         message: '修改成功',
-        news,
       });
     } catch (err) {
       return res.serverError(err);

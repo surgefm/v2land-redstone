@@ -43,6 +43,7 @@ module.exports.policies = {
     'getStack': true,
     'getStackList': true,
     'updateStack': ['isLoggedIn', 'isManager'],
+    'updateMultipleStacks': ['isLoggedIn', 'isManager'],
     '*': false,
   },
 
