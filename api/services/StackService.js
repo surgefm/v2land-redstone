@@ -37,7 +37,7 @@ const StackService = {
     return records;
   },
 
-  async updateStack(id = -1, data = {}) {
+  async updateStack(id = -1, data = {}, clientId) {
     let stack = await Stack.findOne({ id });
 
     if (!stack) {
@@ -67,7 +67,7 @@ const StackService = {
     }
 
     const query = {
-      client: req.session.clientId,
+      client: clientId,
       where: {
         id: stack.id,
       },

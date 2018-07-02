@@ -75,7 +75,7 @@ const StackController = {
     const id = req.param('stackId');
     const data = req.body;
 
-    const cb = await StackService.updateStack(id, data);
+    const cb = await StackService.updateStack(id, data, req.session.clientId);
     if (cb.error) {
       return res.serverError(cb.error);
     } else {
@@ -95,7 +95,7 @@ const StackController = {
 
     const queue = [];
     for (const stack of stackList) {
-      queue.push(StackService.updateStack(stack.id, stack));
+      queue.push(StackService.updateStack(stack.id, stack, req.session.clientId));
     }
 
     try {
