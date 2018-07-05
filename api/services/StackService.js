@@ -51,7 +51,7 @@ const StackService = {
 
     const changes = {};
     for (const i of ['title', 'description', 'status', 'order']) {
-      if (data[i] && data[i] !== stack[i]) {
+      if (typeof data[i] !== 'undefined' && data[i] !== stack[i]) {
         changes[i] = data[i];
       }
     }
@@ -108,6 +108,13 @@ const StackService = {
     }
 
     delete changes.status;
+
+    stack = await SQLService.update({
+      action: 'updateStackDetail',
+      data: changes,
+      before: stack,
+      ...query,
+    });
 
     if (news) {
       const before = {};

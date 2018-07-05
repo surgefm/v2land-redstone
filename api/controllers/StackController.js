@@ -84,8 +84,7 @@ const StackController = {
   },
 
   updateMultipleStacks: async (req, res) => {
-    const { data } = req;
-    const { stackList } = data;
+    const { stackList } = req.body;
 
     if (!_.isArray(stackList)) {
       return res.status(400).json({
