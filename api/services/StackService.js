@@ -66,14 +66,6 @@ const StackService = {
       };
     }
 
-    const query = {
-      client: clientId,
-      where: {
-        id: stack.id,
-      },
-      model: 'stack',
-    };
-
     const changesCopy = { ...changes };
     let news;
 
@@ -97,13 +89,11 @@ const StackService = {
 
       stack = await SQLService.update({
         action: 'updateStackStatus',
-        data: {
-          status: changes.status,
-        },
-        before: {
-          status: stack.status,
-        },
-        ...query,
+        data: { status: changes.status },
+        before: { status: stack.status },
+        client: clientId,
+        where: { id },
+        model: 'stack',
       });
     }
 
@@ -113,7 +103,9 @@ const StackService = {
       action: 'updateStackDetail',
       data: changes,
       before: stack,
-      ...query,
+      client: clientId,
+      where: { id },
+      model: 'stack',
     });
 
     if (news) {
@@ -127,7 +119,9 @@ const StackService = {
           action: 'updateNewsDetail',
           data: changes,
           before,
-          ...query,
+          client: clientId,
+          where: { id: news.id },
+          model: 'news',
         });
       }
     }
