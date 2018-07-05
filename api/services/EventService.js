@@ -3,7 +3,7 @@ const pinyin = require('pinyin');
 module.exports = {
 
   findEvent: async (eventName) => {
-    const event = await Event.findOne({
+    let event = await Event.findOne({
       or: [
         { id: parseInt(eventName) > -1 ? parseInt(eventName) : -1 },
         { name: eventName },
@@ -19,6 +19,7 @@ module.exports = {
       .populate('headerImage');
 
     if (event) {
+      event = { ...event };
       event.newsCount = await News.count({
         where: {
           event: event.id,
@@ -28,7 +29,7 @@ module.exports = {
 
       const queue = [];
       const getStackedNews = async (i) => {
-        const stack = event.stack[i];
+        const stack = { ...event.stack[i] };
         stack.news = await News.find({
           where: {
             stack: stack.id,
