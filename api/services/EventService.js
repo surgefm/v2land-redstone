@@ -27,6 +27,13 @@ module.exports = {
         },
       });
 
+      event.stackCount = await Stack.count({
+        where: {
+          event: event.id,
+          status: 'admitted',
+        },
+      });
+
       const queue = [];
       const getStackedNews = async (i) => {
         const stack = { ...event.stack[i] };
