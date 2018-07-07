@@ -92,18 +92,30 @@ const StackController = {
       });
     }
 
+    const pg = await sails.pgPool.connect();
+
     const queue = [];
+    const updateStack = async (stack) => {
+      if (pg.hasRolledBack) return;
+      await StackService.updateStack(stack.id, stack, req.session.clientId, pg);
+    };
     for (const stack of stackList) {
-      queue.push(StackService.updateStack(stack.id, stack, req.session.clientId));
+      queue.push(updateStack(stack));
     }
 
     try {
+      await pg.query(`BEGIN`);
       await Promise.all(queue);
+      if (!pg.hasRolledBack) {
+        await pg.query(`COMMIT`);
+      }
       return res.status(201).json({
         message: '修改成功',
       });
     } catch (err) {
       return res.serverError(err);
+    } finally {
+      pg.release();
     }
   },
 

@@ -37,16 +37,17 @@ const StackService = {
     return records;
   },
 
-  async updateStack(id = -1, data = {}, clientId) {
+  async updateStack(id = -1, data = {}, clientId, pg) {
     let stack = await Stack.findOne({ id });
 
     if (!stack) {
-      return {
+      await SQLService.rollback(pg);
+      throw new Error({
         status: 404,
         message: {
           message: '未找到该进展',
         },
-      };
+      });
     }
 
     const changes = {};
@@ -78,12 +79,13 @@ const StackService = {
         });
 
         if (!news) {
-          return {
+          await SQLService.rollback(pg);
+          throw new Error({
             status: 400,
             message: {
               message: '一个进展必须在含有一个已过审新闻的情况下方可开放',
             },
-          };
+          });
         }
       }
 
@@ -94,6 +96,7 @@ const StackService = {
         client: clientId,
         where: { id },
         model: 'stack',
+        pg,
       });
     }
 
@@ -106,6 +109,7 @@ const StackService = {
       client: clientId,
       where: { id },
       model: 'stack',
+      pg,
     });
 
     if (news) {
@@ -122,6 +126,7 @@ const StackService = {
           client: clientId,
           where: { id: news.id },
           model: 'news',
+          pg,
         });
       }
     }
