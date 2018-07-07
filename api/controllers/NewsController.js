@@ -154,7 +154,7 @@ module.exports = {
       });
 
       const updateNotification =
-        (+latestNews.id === +news.id) ||
+        (latestNews && +latestNews.id === +news.id) ||
         (changesCopy.status && changesCopy.status !== news.status) ||
         (changesCopy.time && new Date(changesCopy.time).getTime() !== new Date(news.time).getTime());
 

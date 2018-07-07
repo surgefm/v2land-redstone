@@ -62,16 +62,6 @@ describe('EventController', function() {
         .end(done);
     });
 
-    it('should update event pending success', function(done) {
-      agent
-        .put(`/event/${urlencode('浪潮今天发布啦')}`)
-        .send({
-          status: 'pending',
-        })
-        .expect(201)
-        .end(done);
-    });
-
     it('should update event rejected', function(done) {
       agent
         .put(`/event/${urlencode('浪潮今天发布啦')}`)
