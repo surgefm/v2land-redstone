@@ -1,0 +1,3 @@
+[submodule "v2land-grpc"]
+	path = v2land-grpc
+	url = https://github.com/v2land/v2land-grpc.git
