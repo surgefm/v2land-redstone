@@ -67,7 +67,7 @@ module.exports = function PgPoolInit(sails) {
       return notification.save();
     }
 
-    const template = await mode.getTemplate(notification, event, news);
+    const template = await mode.getTemplate({ notification, event, news });
     const promises = [];
     const notificationData = { ...notification };
     for (const attribute of ['subscriptions', '_properties',

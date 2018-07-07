@@ -40,7 +40,16 @@ module.exports = {
     news: {
       collection: 'news',
       via: 'event',
-      dominant: true,
+    },
+
+    stack: {
+      collection: 'stack',
+      via: 'event',
+    },
+
+    critique: {
+      collection: 'critique',
+      via: 'event',
     },
 
     headerImage: {
