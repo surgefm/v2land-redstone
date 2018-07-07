@@ -36,14 +36,6 @@ const StackController = {
 
     if (req.body && req.body.where) {
       where = req.body.where;
-    } else if (req.query && req.query.where) {
-      where = req.query.where;
-    }
-
-    if (where) {
-      try {
-        where = JSON.parse(where);
-      } catch (err) {/* happy */}
     }
 
     if (where && req.session.clientId) {
