@@ -5,22 +5,22 @@ let agent;
 
 const testEmail = process.env.TEST_EMAIL?
   process.env.TEST_EMAIL : 'vincent@langchao.co';
+const testUsername = '计量经济学家的AI';
 
 describe('EventController', function() {
+  this.timeout(10000);
   describe('createEvent', function() {
     before(async function() {
       agent = request.agent(sails.hooks.http.app);
 
-      await Event.destroy({
-        name: '浪潮今天发布啦',
-      });
+      await Event.destroy();
 
       await Client.destroy();
 
       await agent
         .post('/client/register')
         .send({
-          username: 'testRegister',
+          username: testUsername,
           password: 'testPassword',
           email: testEmail,
         });
@@ -28,20 +28,14 @@ describe('EventController', function() {
       await agent
         .post('/client/login')
         .send({
-          username: 'testRegister',
+          username: testUsername,
           password: 'testPassword',
         });
 
       await Client.update(
-        { username: 'testRegister' },
+        { username: testUsername },
         { role: 'admin' }
       );
-    });
-
-    after(async function() {
-      await Event.destroy({
-        name: '浪潮今天发布啦',
-      });
     });
 
     it('should return success after creating event', function(done) {
@@ -68,11 +62,21 @@ describe('EventController', function() {
         .end(done);
     });
 
-    it('should update event success', function(done) {
+    it('should update event rejected', function(done) {
       agent
         .put(`/event/${urlencode('浪潮今天发布啦')}`)
         .send({
-          description: '浪潮今天发布啦啦啦啦啦啦',
+          status: 'rejected',
+        })
+        .expect(201)
+        .end(done);
+    });
+
+    it('should update event admitted success', function(done) {
+      agent
+        .put(`/event/${urlencode('浪潮今天发布啦')}`)
+        .send({
+          status: 'admitted',
         })
         .expect(201)
         .end(done);
@@ -192,7 +196,7 @@ describe('EventController', function() {
     });
     after(async function() {
       await Client.destroy({
-        username: 'testRegister',
+        username: '浪潮测试机器人',
       });
     });
     it('should have list', async function() {

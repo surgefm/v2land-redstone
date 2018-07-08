@@ -41,6 +41,23 @@ module.exports.routes = {
   'GET /client/:clientName': 'ClientController.findClient',
   'PUT /client/:clientName': 'ClientController.updateClient',
 
+  'GET /event': 'EventController.getEventList',
+  'POST /event/list': 'EventController.getEventList',
+  'GET /event/pending': 'EventController.getAllPendingEvents',
+  'POST /event': 'EventController.createEvent',
+  'PUT /event/:eventName': 'EventController.updateEvent',
+  'GET /event/:eventName/pending': 'EventController.getPendingNews',
+  'POST /event/:eventName/stack': 'EventController.createStack',
+  'POST /event/:eventName/news': 'EventController.createNews',
+  'POST /event/:eventName/header_image': 'EventController.updateHeaderImage',
+  'PUT /event/:eventName/header_image': 'EventController.updateHeaderImage',
+  'GET /event/:eventName': 'EventController.getEvent',
+
+  'GET /stack/:stackId': 'StackController.getStack',
+  'POST /stack/list': 'StackController.getStackList',
+  'PUT /stack/list': 'StackController.updateMultipleStacks',
+  'PUT /stack/:stackId': 'StackController.updateStack',
+
   'GET /news/pending': 'NewsController.getAllPendingNews',
   'GET /news/:news': 'NewsController.getNews',
   'GET /news': 'NewsController.getNewsList',
@@ -49,17 +66,6 @@ module.exports.routes = {
 
   'GET /subscription/unsubscribe': 'SubscriptionController.unsubscribe',
   'POST /subscription/:eventName': 'SubscriptionController.subscribe',
-  
-  'GET /event': 'EventController.getEventList',
-  'POST /event/list': 'EventController.getEventList',
-  'GET /event/pending': 'EventController.getAllPendingEvents',
-  'POST /event': 'EventController.createEvent',
-  'PUT /event/:eventName': 'EventController.updateEvent',
-  'GET /event/:eventName/pending': 'EventController.getPendingNews',
-  'POST /event/:eventName/news': 'EventController.createNews',
-  'POST /event/:eventName/header_image': 'EventController.updateHeaderImage',
-  'PUT /event/:eventName/header_image': 'EventController.updateHeaderImage',
-  'GET /event/:eventName': 'EventController.getEvent',
 
   'GET /auth/options': 'AuthController.options',
   'POST /auth': 'AuthController.authorize',

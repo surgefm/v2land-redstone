@@ -1,13 +1,16 @@
 const NewsService = {
 
-  async getContribution(news) {
+  async getContribution(news, withData) {
     const records = await Record.find({
-      action: ['updateNewsDetail', 'createNews'],
+      action: ['updateNewsStatus', 'updateNewsDetail', 'createNews'],
       target: news.id,
     }).populate('client');
 
     for (const record of records) {
-      delete record.data;
+      if (!withData) {
+        delete record.data;
+        delete record.before;
+      }
       if (record.client) {
         record.client = ClientService.sanitizeClient(record.client);
       }

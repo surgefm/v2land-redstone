@@ -33,8 +33,17 @@ module.exports.policies = {
     'getEventList': true,
     'getAllPendingEvents': ['isLoggedIn', 'isManager'],
     'getPendingNews': ['isLoggedIn', 'isManager'],
+    'createStack': true,
     'createNews': true,
     'updateHeaderImage': ['isLoggedIn', 'isManager'],
+    '*': false,
+  },
+
+  StackController: {
+    'getStack': true,
+    'getStackList': true,
+    'updateStack': ['isLoggedIn', 'isManager'],
+    'updateMultipleStacks': ['isLoggedIn', 'isManager'],
     '*': false,
   },
 

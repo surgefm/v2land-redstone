@@ -2,13 +2,13 @@
   "name": "v2land-redstone",
   "private": true,
   "version": "0.0.0",
-  "description": "a Sails application",
-  "keywords": [],
+  "description": "langchao.org backend service",
   "dependencies": {
     "aws-sdk": "^2.188.0",
     "axios": "^0.17.1",
-    "bcrypt": "^1.0.3",
+    "bcrypt": "^2.0.1",
     "colors": "^1.1.2",
+    "connect-redis": "^3.3.3",
     "ejs": "^2.5.5",
     "eslint": "^4.17.0",
     "eslint-config-v2land": "^1.0.0",
@@ -32,9 +32,10 @@
     "oauth": "^0.9.15",
     "parse-domain": "^2.0.0",
     "pg": "^7.4.1",
+    "pinyin": "^2.8.3",
     "query-string": "^5.0.1",
     "rc": "1.0.1",
-    "sails": "~0.12.14",
+    "sails": "0.12",
     "sails-disk": "~0.10.9",
     "sails-postgresql": "^0.11.4",
     "skipper-s3": "^0.5.9",
@@ -44,20 +45,21 @@
     "urlencode": "^1.1.0",
     "uuid": "^3.2.1",
     "v2land-sails-pg-session": "^1.0.2",
-    "waterline-sequel": "^0.6.4"
+    "waterline-sequel": "^0.6.4",
+    "yarn": "^1.5.1"
   },
   "scripts": {
     "precommit": "make eslint",
     "debug": "node debug app.js",
-    "start": "node app.js"
+    "start": "node app.js",
+    "eb": "npm install -g yarn && yarn && npm start"
   },
   "main": "app.js",
   "repository": {
     "type": "git",
-    "url": "git://github.com/Simon/v2land-redstone.git"
+    "url": "https://github.com/v2land/v2land-redstone.git"
   },
-  "author": "Simon",
-  "license": "",
+  "license": "UNLICENSED",
   "devDependencies": {
     "babel-eslint": "^8.0.3",
     "husky": "^0.14.3",

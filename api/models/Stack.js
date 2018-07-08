@@ -1,5 +1,5 @@
 /**
- * News.js
+ * Stack.js
  *
  * @description :: TODO: You might write a short summary of how this model works and what it represents here.
  * @docs        :: http://sailsjs.org/documentation/concepts/models-and-orm/models
@@ -9,49 +9,37 @@ module.exports = {
 
   attributes: {
 
-    url: {
-      type: 'url',
-      required: true,
-    },
-
-    source: {
-      type: 'string',
-      required: true,
-    },
-
     title: {
       type: 'string',
       required: true,
     },
 
-    abstract: {
+    description: {
       type: 'text',
-      required: true,
-      size: 150,
-    },
-
-    time: {
-      type: 'datetime',
-      required: true,
+      required: false,
     },
 
     status: {
       type: 'string',
+      required: true,
       defaultsTo: 'pending',
-      enum: ['pending', 'admitted', 'rejected', 'removed'],
+      enum: ['pending', 'admitted', 'invalid', 'rejected', 'hidden', 'removed'],
     },
 
-    comment: {
-      type: 'text',
+    order: {
+      type: 'number',
+      defaultsTo: -1,
     },
 
     event: {
       model: 'event',
     },
 
-    stack: {
-      model: 'stack',
+    news: {
+      collection: 'news',
+      via: 'stack',
     },
 
   },
+
 };

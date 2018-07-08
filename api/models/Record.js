@@ -7,6 +7,7 @@ module.exports = {
       required: true,
       enum: [
         'Event',
+        'Stack',
         'News',
         'Client',
         'HeaderImage',
@@ -38,9 +39,15 @@ module.exports = {
         'updateEventDetail',
         'createEventHeaderImage',
         'updateEventHeaderImage',
+        'createStack',
+        'updateStackStatus',
+        'updateStackDetail',
+        'invalidateStack',
+        'notifyNewStack',
         'createNews',
         'updateNewsStatus',
         'updateNewsDetail',
+        'notifyNewNews',
         'createSubscription',
         'updateSubscription',
         'cancelSubscription',
@@ -55,9 +62,12 @@ module.exports = {
       ],
     },
 
+    before: {
+      type: 'json',
+    },
+
     data: {
       type: 'json',
-      required: true,
     },
 
     client: {

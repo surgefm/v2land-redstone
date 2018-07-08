@@ -1,6 +1,7 @@
 language: node_js
 services:
   - postgresql
+  - redis-server
 node_js:
   - "8"
 env:

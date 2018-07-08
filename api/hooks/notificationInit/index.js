@@ -67,7 +67,7 @@ module.exports = function PgPoolInit(sails) {
       return notification.save();
     }
 
-    const template = await mode.getTemplate(notification, event, news);
+    const template = await mode.getTemplate({ notification, event, news });
     const promises = [];
     const notificationData = { ...notification };
     for (const attribute of ['subscriptions', '_properties',
@@ -151,6 +151,7 @@ module.exports = function PgPoolInit(sails) {
   async function notifyByTwitter(subscription, template) {
     const auth = await Model.auth.findOne({
       site: 'twitter',
+      profileId: { '>=': 1 },
       owner: subscription.subscriber,
     });
     if (!auth) {
@@ -159,7 +160,9 @@ module.exports = function PgPoolInit(sails) {
       return sails.log.error(new Error(`未找到用户 ${subscription.subscriber} 的 Twitter 绑定`));
     }
 
-    let message = template.message;
+    let message = template.message.length > 100
+      ? (template.message.slice(0, 100) + '... ')
+      : (template.message + ' ');
     message += template.url + ' #浪潮';
     return TwitterService.tweet(auth, message);
   }
@@ -187,11 +190,14 @@ module.exports = function PgPoolInit(sails) {
     }
 
     if (!subscription.contact.twitter) return disableSubscription(subscription);
-    const client = await Auth.findOne({ id: subscription.contact.twitter });
+    const client = await Model.auth.findOne({ id: subscription.contact.twitter });
     if (!client) return disableSubscription(subscription);
 
-    let message = '@' + client.screen_name + ' ';
-    message += template.message + ' ' + template.url + ' #浪潮';
+    let message = '@' + client.profile.screen_name + ' ';
+    message += (template.message.length > 100
+      ? (template.message.slice(0, 100) + '... ')
+      : (template.message + ' '))
+      + template.url + ' #浪潮';
     return TwitterService.tweet(auth, message);
   }
 
@@ -201,6 +207,7 @@ module.exports = function PgPoolInit(sails) {
   async function notifyByWeibo(subscription, template) {
     const auth = await Model.auth.findOne({
       site: 'weibo',
+      profileId: { '>=': 1 },
       owner: subscription.subscriber,
     });
     if (!auth) {
@@ -208,7 +215,10 @@ module.exports = function PgPoolInit(sails) {
       return sails.log.error(new Error(`未找到用户 ${subscription.subscriber} 的微博绑定`));
     }
 
-    const message = template.message + ' ' + template.url;
+    const message = (template.message.length > 100
+      ? (template.message.slice(0, 100) + '...')
+      : (template))
+      + ' ' + template.url;
     return WeiboService.post(auth, message);
   }
 
@@ -235,11 +245,13 @@ module.exports = function PgPoolInit(sails) {
     }
 
     if (!subscription.contact.weibo) return disableSubscription(subscription);
-    const client = await Auth.findOne({ id: subscription.contact.weibo });
+    const client = await Model.auth.findOne({ id: subscription.contact.weibo });
     if (!client) return disableSubscription(subscription);
 
     let message = '@' + client.profile.screen_name + ' ';
-    message += template.message;
+    message += template.message.length > 100
+      ? (template.message.slice(0, 100) + '...')
+      : (template);
     message += ' ' + Math.floor(Math.random() * 10000000) + ' ';
     message += template.url;
 
@@ -247,7 +259,7 @@ module.exports = function PgPoolInit(sails) {
   }
 
   async function disableSubscription(subscription) {
-    subscription.status = 'failed';
-    await subscription.save();
+    // diasble function disabled.
+    return;
   }
 };

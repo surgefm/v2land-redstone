@@ -10,8 +10,7 @@ WORKDIR /usr/src/app
 COPY . .
 
 # Install app dependencies
-RUN npm install -g yarn
-RUN yarn
+RUN yarn install
 
 LABEL name="redstone"
 

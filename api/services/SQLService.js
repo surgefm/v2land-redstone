@@ -11,6 +11,7 @@ const SQLService = {
     operation,
     action,
     client,
+    before,
     data,
     target,
     createdAt,
@@ -19,9 +20,9 @@ const SQLService = {
     createdAt = createdAt || (data ? data.createdAt : null) || new Date();
     updatedAt = updatedAt || (data ? data.updatedAt : null) || new Date();
     return await pgClient.query(`
-      INSERT INTO record(model, operation, action, client, data, target, "createdAt", "updatedAt")
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-    `, [model, operation, action, client, data, target, createdAt, updatedAt]);
+      INSERT INTO record(model, operation, action, client, data, before, target, "createdAt", "updatedAt")
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+    `, [model, operation, action, client, data, before, target, createdAt, updatedAt]);
   },
 
   validate: (model, data, presentOnly) => {
@@ -54,7 +55,7 @@ const SQLService = {
     return temp;
   },
 
-  create: async ({ model, data, action, client }) => {
+  create: async ({ model, data, action, client, pg }) => {
     model = model.toLowerCase();
     await SQLService.validate(model, data);
     const sequel = new Sequel(sails.models, sequelOptions);
@@ -72,11 +73,12 @@ const SQLService = {
       client,
       operation: 'create',
       time: now,
+      pg,
       ...query,
     });
   },
 
-  update: async ({ model, where, data, action, client }) => {
+  update: async ({ model, where, data, action, client, before, pg }) => {
     model = model.toLowerCase();
     await SQLService.validate(model, data, true);
     const sequel = new Sequel(sails.models, {
@@ -95,12 +97,14 @@ const SQLService = {
       model,
       action,
       client,
+      before,
+      pg,
       operation: 'update',
       ...query,
     });
   },
 
-  destroy: async ({ model, action, where, client }) => {
+  destroy: async ({ model, action, where, client, pg }) => {
     const time = new Date();
     model = model.toLowerCase();
     const sequel = new Sequel(sails.models, {
@@ -119,17 +123,21 @@ const SQLService = {
       client,
       operation: 'destroy',
       time,
+      pg,
       ...query,
     });
   },
 
-  query: async ({ model, operation, query, values, action, client, time }) => {
-    const pg = await sails.pgPool.connect();
+  query: async ({ before, model, operation, query, values, action, client, time, pg }) => {
+    const releasePg = !pg;
+    pg = pg || await sails.pgPool.connect();
     model = model.toLowerCase();
     const Model = sails.models[model];
 
     try {
-      await pg.query(`BEGIN`);
+      if (releasePg) {
+        await pg.query(`BEGIN`);
+      }
 
       const response = await pg.query(query, values);
       let object = response.rows[0];
@@ -178,6 +186,7 @@ const SQLService = {
         operation,
         action,
         client,
+        before,
         data: object,
         target: object.id,
         createdAt: time,
@@ -186,13 +195,17 @@ const SQLService = {
       await SQLService.validate('record', record);
       await SQLService.createRecord(pg, record);
 
-      await pg.query(`COMMIT`);
+      if (releasePg) {
+        await pg.query(`COMMIT`);
+      }
       return object;
     } catch (err) {
-      await pg.query(`ROLLBACK`);
+      await SQLService.rollback(pg);
       throw err;
     } finally {
-      pg.release();
+      if (releasePg) {
+        pg.release();
+      }
     }
   },
 
@@ -207,6 +220,12 @@ const SQLService = {
     } catch (err) {
       throw err;
     }
+  },
+
+  rollback: async (pg) => {
+    if (!pg) return;
+    await pg.query(`ROLLBACK`);
+    pg.hasRolledBack = true;
   },
 
 };

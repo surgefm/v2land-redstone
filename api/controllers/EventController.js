@@ -45,14 +45,16 @@ const EventController = {
   },
 
   createEvent: async (req, res) => {
+    let client;
     if (!(req.body && req.body.name && req.body.description)) {
       return res.status(400).json({
         message: '缺少参数 name 或 description',
       });
     }
 
-    let event = await EventService.findEvent(req.body.name);
-    let isManager = false;
+    const data = req.body;
+
+    let event = await EventService.findEvent(data.name);
 
     if (event) {
       return res.status(409).json({
@@ -60,30 +62,24 @@ const EventController = {
       });
     }
 
-    req.body.status = 'pending';
+    data.status = 'pending';
 
-    if (req.session.clientId) {
-      const client = await Client.findOne({ id: req.session.clientId });
-      if (client && ['manager', 'admin'].includes(client.role)) {
-        req.body.status = 'admitted';
-        isManager = true;
-      }
-    }
+    data.pinyin = EventService.generatePinyin(data.name);
 
     try {
       event = await SQLService.create({
         model: 'event',
-        data: req.body,
+        data,
         action: 'createEvent',
         client: req.session.clientId,
       });
 
       res.status(201).json({
-        message: isManager
-          ? '事件创建成功'
-          : '提交成功，该事件在社区管理员审核通过后将很快开放',
+        message: '提交成功，该事件在社区管理员审核通过后将很快开放',
         event,
       });
+
+      TelegramService.sendEventCreated(event, client);
     } catch (err) {
       return res.serverError(err);
     }
@@ -119,6 +115,10 @@ const EventController = {
       });
     }
 
+    if (changes.name) {
+      changes.pinyin = EventService.generatePinyin(changes.name);
+    }
+
     try {
       const query = {
         model: 'event',
@@ -130,15 +130,35 @@ const EventController = {
         await SQLService.update({
           action: 'updateEventStatus',
           data: { status: changes.status },
+          before: { status: event.status },
           ...query,
         });
       }
 
+      const selfClient = req.currentClient;
+      if (
+        (event.status === 'pending' || event.status === 'rejected') &&
+        changes.status === 'admitted'
+      ) {
+        TelegramService.sendEventAdmitted(event, selfClient);
+      } else if (
+        event.status === 'pending' &&
+        changes.status === 'rejected'
+      ) {
+        TelegramService.sendEventRejected(event, selfClient);
+      }
+
       delete changes.status;
+      const before = {};
+      for (const i of Object.keys(changes)) {
+        before[i] = event[i];
+      }
+
       if (Object.getOwnPropertyNames(changes).length > 0) {
         await SQLService.update({
           action: 'updateEventDetail',
           data: changes,
+          before,
           ...query,
         });
       }
@@ -199,13 +219,59 @@ const EventController = {
     res.status(200).json({ eventList: events });
   },
 
+  createStack: async (req, res) => {
+    const name = req.param('eventName');
+    const data = req.body;
+    const { title, description, order } = data;
+
+    if (!title) {
+      return res.status(400).json({
+        message: '缺少参数：title',
+      });
+    }
+
+    const event = await EventService.findEvent(name);
+
+    if (!event) {
+      return res.status(404).json({
+        message: '未找到该事件',
+      });
+    }
+
+    const id = event.id;
+
+    try {
+      const stack = await SQLService.create({
+        model: 'stack',
+        data: {
+          status: 'pending',
+          title,
+          description,
+          order: order || -1,
+          event: id,
+        },
+        action: 'createStack',
+        client: req.session.clientId,
+      });
+      res.status(201).json({
+        message: '提交成功，该进展在社区管理员审核通过后将很快开放',
+        stack,
+      });
+    } catch (err) {
+      return res.serverError(err);
+    }
+
+    if (data.status === 'admitted' && isManager) {
+      await NotificationService.updateForNewNews(event, news);
+    }
+  },
+
   createNews: async (req, res) => {
     const name = req.param('eventName');
     const data = req.body;
 
     let news;
     let client;
-    let isManager = false;
 
     if (!data.url) {
       return res.status(400).json({
@@ -224,14 +290,6 @@ const EventController = {
     data.event = event.id;
     data.status = 'pending';
 
-    if (req.session.clientId) {
-      client = await Client.findOne({ id: req.session.clientId });
-      if (client && ['manager', 'admin'].includes(client.role)) {
-        data.status = 'admitted';
-        isManager = true;
-      }
-    }
-
     const existingNews = await News.findOne({ url: data.url, event: event.id });
     if (existingNews) {
       return res.status(409).json({
@@ -247,16 +305,15 @@ const EventController = {
         client: req.session.clientId,
       });
       res.status(201).json({
-        message: isManager
-          ? '新闻添加成功'
-          : '提交成功，该新闻在社区管理员审核通过后将很快开放',
+        message: '提交成功，该新闻在社区管理员审核通过后将很快开放',
         news,
       });
+      TelegramService.sendNewsCreated(event, news, client);
     } catch (err) {
       return res.serverError(err);
     }
 
-    if (client && ['manager', 'admin'].includes(client.role)) {
+    if (data.status === 'admitted' && isManager) {
       await NotificationService.updateForNewNews(event, news);
     }
   },
@@ -301,6 +358,7 @@ const EventController = {
       if (req.method === 'PUT') {
         headerImage = await SQLService.update({
           action: 'updateEventHeaderImage',
+          before: event.headerImage,
           ...data,
         });
       } else {
