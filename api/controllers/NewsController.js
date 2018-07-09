@@ -168,6 +168,7 @@ module.exports = {
           ...query,
         });
 
+        news = await News.findOne({ id: news.id });
         const selfClient = req.currentClient;
         if (beforeStatus !== 'admitted' && changes.status === 'admitted') {
           TelegramService.sendNewsAdmitted(news, selfClient);
