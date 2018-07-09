@@ -78,7 +78,7 @@ module.exports = {
 
       const content =
         `*${ username }*提交的新闻` +
-        `「[${ news.title }](${ sails.config.globals.site }/${ news.event }/${ news.id }) 」` +
+        `「[${ news.title }](${ sails.config.globals.site }/${ news.event }/${ news.stack }/${ news.id }) 」` +
         `被管理员*${ handler.username }*审核通过了，进来看看吧！`;
       await this.sendText(content, 'Markdown');
     } catch (err) {
@@ -145,7 +145,7 @@ module.exports = {
 
       const content =
         `*${ username }*提交的事件` +
-        `「[${ event.name }](${ sails.config.globals.site }/${ event.id }/${ event.name }) 」` +
+        `「[${ event.name }](${ sails.config.globals.site }/${ event.id }) 」` +
         `被管理员*${ handler.username }*审核通过了，进来看看吧！`;
       await this.sendText(content, 'Markdown');
     } catch (err) {
@@ -184,7 +184,7 @@ module.exports = {
 
       const content =
         `*${username}*提交了事件*「${event.name}*」` +
-        `，请管理员尽快[审核](${sails.config.globals.site }/admin/admit)`;
+        `，请管理员尽快[审核](${sails.config.globals.site }/admin/event)`;
       await this.sendText(content, 'Markdown', true);
     } catch (err) {
       sails.log.error(new Error(`Telegram sendEventCreated: ${err}`));
@@ -197,7 +197,7 @@ module.exports = {
 
       const content =
         `管理员*${ username }*提交了事件` +
-        `「[${ event.name }](${ sails.config.globals.site }/${ event.id }/${ event.name }) 」` +
+        `「[${ event.name }](${ sails.config.globals.site }/${ event.id }) 」` +
         `，进来看看吧！`;
       await this.sendText(content, 'Markdown');
     } catch (err) {
