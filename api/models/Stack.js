@@ -27,7 +27,7 @@ module.exports = {
     },
 
     order: {
-      type: 'number',
+      type: 'integer',
       defaultsTo: -1,
     },
 
