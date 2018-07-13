@@ -224,7 +224,7 @@ const EventController = {
   createStack: async (req, res) => {
     const name = req.param('eventName');
     const data = req.body;
-    const { title, description, order } = data;
+    const { title, description, order, time } = data;
 
     if (!title) {
       return res.status(400).json({
@@ -251,6 +251,7 @@ const EventController = {
           description,
           order: order || -1,
           event: id,
+          time,
         },
         action: 'createStack',
         client: req.session.clientId,
