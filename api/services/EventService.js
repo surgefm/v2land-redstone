@@ -56,7 +56,7 @@ module.exports = {
           sort: 'time ASC',
           ...(newsExist ? {} : { limit: 3 }),
         });
-        if (stack.news.length) {
+        if (!stack.time && stack.news.length) {
           stack.time = stack.news[0].time;
         }
         stack.newsCount = await News.count({

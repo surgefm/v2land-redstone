@@ -67,11 +67,11 @@ const StackController = {
     const id = req.param('stackId');
     const data = req.body;
 
-    const cb = await StackService.updateStack(id, data, req.session.clientId);
-    if (cb.error) {
-      return res.serverError(cb.error);
-    } else {
+    try {
+      const cb = await StackService.updateStack(id, data, req.session.clientId);
       return res.status(cb.status).json(cb.message);
+    } catch (err) {
+      return res.serverError(err);
     }
   },
 
