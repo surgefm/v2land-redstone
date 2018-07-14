@@ -40,6 +40,10 @@ module.exports = {
       via: 'stack',
     },
 
+    time: {
+      type: 'datetime',
+    },
+
   },
 
 };

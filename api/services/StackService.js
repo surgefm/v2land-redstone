@@ -1,6 +1,6 @@
 const StackService = {
 
-  async findStack(id, withData = true) {
+  async findStack(id, withContributionData = true) {
     const stack = await Stack.findOne({ id })
       .populate('news', {
         where: { status: 'admitted' },
@@ -9,7 +9,10 @@ const StackService = {
       });
 
     if (stack) {
-      stack.contribution = await StackService.getContribution(id, withData);
+      if (!stack.time && stack.news.length) {
+        stack.time = stack.news[0].time;
+      }
+      stack.contribution = await StackService.getContribution(id, withContributionData);
     }
 
     return stack;
@@ -51,7 +54,7 @@ const StackService = {
     }
 
     const changes = {};
-    for (const i of ['title', 'description', 'status', 'order']) {
+    for (const i of ['title', 'description', 'status', 'order', 'time']) {
       if (typeof data[i] !== 'undefined' && data[i] !== stack[i]) {
         changes[i] = data[i];
       }
