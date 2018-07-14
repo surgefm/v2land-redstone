@@ -127,7 +127,7 @@ module.exports = {
     }
 
     const changes = {};
-    for (const i of ['url', 'source', 'title', 'abstract', 'time', 'status', 'comment']) {
+    for (const i of ['url', 'source', 'title', 'abstract', 'time', 'status', 'comment', 'stack']) {
       if (data[i] && data[i] !== news[i]) {
         changes[i] = data[i];
       }
