@@ -4,9 +4,14 @@ const StackService = {
     const stack = await Stack.findOne({ id })
       .populate('news', {
         where: { status: 'admitted' },
-        sort: 'time DESC',
+        sort: 'time ASC',
         limit: 15,
       });
+
+    stack.newsCount = await News.count({
+      status: 'admitted',
+      stack: stack.id,
+    });
 
     if (stack) {
       if (!stack.time && stack.news.length) {

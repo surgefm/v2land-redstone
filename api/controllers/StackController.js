@@ -58,6 +58,28 @@ const StackController = {
       sort: 'updatedAt DESC',
     });
 
+    const getDetail = async (stack) => {
+      if (stack.status === 'admitted') {
+        const news = await News.findOne({
+          where: {
+            status: 'admitted',
+            stack: stack.id,
+          },
+          sort: 'time ASC',
+        });
+        if (news) {
+          stack.time = news.time;
+        }
+      }
+      stack.newsCount = await News.count({
+        status: 'admitted',
+        stack: stack.id,
+      });
+    };
+
+    const queue = stacks.map((stack) => getDetail(stack));
+    await Promise.all(queue);
+
     res.status(200).json({
       stackList: stacks,
     });
