@@ -98,7 +98,7 @@ module.exports = {
     return records;
   },
 
-  getContrubitonByList: async (eventList) => {
+  getContributionByList: async (eventList) => {
     const queue = [];
 
     const getContribution = async (event) => {

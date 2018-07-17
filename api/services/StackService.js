@@ -45,6 +45,21 @@ const StackService = {
     return records;
   },
 
+  async getContrubitonByList(stackList) {
+    const queue = [];
+
+    const getCont = async (stack) => {
+      stack.contribution = await getContribution(stack);
+    };
+
+    for (const stack of stackList) {
+      queue.push(getCont(stack));
+    }
+
+    await Promise.all(queue);
+    return stackList;
+  },
+
   async updateStack(id = -1, data = {}, clientId, pg) {
     let stack = await Stack.findOne({ id });
 

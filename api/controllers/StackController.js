@@ -13,6 +13,7 @@ const StackController = {
     const id = req.param('stackId');
     const stack = await StackService.findStack(id);
     if (stack) {
+      stack.contribution = await StackService.getContribution(id, true);
       if (stack.status !== 'admitted') {
         if (req.session.clientId) {
           client = await Client.findOne({ id: req.session.clientId });
@@ -79,6 +80,8 @@ const StackController = {
 
     const queue = stacks.map((stack) => getDetail(stack));
     await Promise.all(queue);
+
+    await StackService.getContrubitonByList(stacks);
 
     res.status(200).json({
       stackList: stacks,

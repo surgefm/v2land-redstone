@@ -220,6 +220,8 @@ const EventController = {
       })
       .populate('headerImage');
 
+    await EventService.getContributionByList(events);
+
     res.status(200).json({ eventList: events });
   },
 
