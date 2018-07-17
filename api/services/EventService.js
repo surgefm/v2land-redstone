@@ -76,7 +76,7 @@ module.exports = {
     return event;
   },
 
-  getContribution: async (id, withData = true) => {
+  getContribution: async (event, withData = true) => {
     const select = ['model', 'target', 'operation', 'client'];
     if (withData) {
       select.push('before');
@@ -85,7 +85,7 @@ module.exports = {
 
     const records = await Record.find({
       action: ['createEvent', 'updateEventStatus', 'updateEventDetail', 'createEventHeaderImage', 'updateEventHeaderImage'],
-      target: id,
+      target: event.id,
       select,
     }).populate('client');
 
@@ -101,12 +101,12 @@ module.exports = {
   getContributionByList: async (eventList) => {
     const queue = [];
 
-    const getContribution = async (event) => {
-      event.contribution = await getContribution(event);
+    const getCon = async (event) => {
+      event.contribution = await EventService.getContribution(event);
     };
 
     for (const event of eventList) {
-      queue.push(getContribution(event));
+      queue.push(getCon(event));
     }
 
     await Promise.all(queue);
