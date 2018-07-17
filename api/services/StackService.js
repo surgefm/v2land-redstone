@@ -31,7 +31,7 @@ const StackService = {
     }
 
     const records = await Record.find({
-      action: ['updateStackStatus', 'updateStackDetail', 'createStack'],
+      action: ['createStack', 'invalidateStack', 'updateStackStatus', 'updateStackDetail'],
       target: id,
       select,
     }).populate('client');

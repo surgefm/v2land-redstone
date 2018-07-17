@@ -76,6 +76,43 @@ module.exports = {
     return event;
   },
 
+  getContribution: async (id, withData = true) => {
+    const select = ['model', 'target', 'operation', 'client'];
+    if (withData) {
+      select.push('before');
+      select.push('data');
+    }
+
+    const records = await Record.find({
+      action: ['createEvent', 'updateEventStatus', 'updateEventDetail', 'createEventHeaderImage', 'updateEventHeaderImage'],
+      target: id,
+      select,
+    }).populate('client');
+
+    for (const record of records) {
+      if (record.client) {
+        record.client = ClientService.sanitizeClient(record.client);
+      }
+    }
+
+    return records;
+  },
+
+  getContrubitonByList: async (eventList) => {
+    const queue = [];
+
+    const getContribution = async (event) => {
+      event.contribution = await getContribution(event);
+    };
+
+    for (const event of eventList) {
+      queue.push(getContribution(event));
+    }
+
+    await Promise.all(queue);
+    return eventList;
+  },
+
   generatePinyin: (name) => {
     const array = pinyin(name, {
       segment: false,

@@ -13,6 +13,8 @@ const EventController = {
       includes: req.query,
     });
 
+    event.contribution = await EventService.getContribution(event, true);
+
     if (event) {
       res.status(200).json(event);
     } else {
