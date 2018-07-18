@@ -81,7 +81,7 @@ const StackController = {
     const queue = stacks.map((stack) => getDetail(stack));
     await Promise.all(queue);
 
-    await StackService.getContrubitonByList(stacks);
+    await StackService.getContributionByList(stacks);
 
     res.status(200).json({
       stackList: stacks,
