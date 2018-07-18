@@ -189,12 +189,9 @@ const EventController = {
       where = req.body.where;
     } else if (req.query && req.query.where) {
       where = req.query.where;
-    }
-
-    if (where) {
-      try {
+      if (typeof where === 'string') {
         where = JSON.parse(where);
-      } catch (err) {/* happy */}
+      }
     }
 
     if (where && req.session.clientId) {
