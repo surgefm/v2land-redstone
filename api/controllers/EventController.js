@@ -194,7 +194,7 @@ const EventController = {
       }
     }
 
-    if (where && req.session.clientId) {
+    if (where && req.session && req.session.clientId) {
       const client = await Client.findOne({ id: req.session.clientId });
       if (client && ['manager', 'admin'].includes(client.role)) {
         isManager = true;
