@@ -85,7 +85,7 @@ module.exports = {
 
     const records = await Record.find({
       action: ['createEvent', 'updateEventStatus', 'updateEventDetail', 'createEventHeaderImage', 'updateEventHeaderImage'],
-      target: parseInt(event.name) > -1 ? parseInt(event.name) : -1,
+      target: event.id,
       select,
     }).populate('client');
 
