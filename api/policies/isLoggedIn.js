@@ -8,6 +8,11 @@
  */
 
 module.exports = async function(req, res, next) {
+  if (typeof req.session === 'undefined') {
+    return res.status(401).json({
+      message: '请在登录后进行该操作',
+    });
+  }
   req.currentClient = await getClient(req, req.session.clientId);
   if (req.currentClient) {
     req.currentClient.isManager = ['manager', 'admin'].includes(req.currentClient.role);
