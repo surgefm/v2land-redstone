@@ -14,6 +14,7 @@ const EventController = {
     });
 
     if (event) {
+      event.contribution = await EventService.getContribution(event, true);
       res.status(200).json(event);
     } else {
       res.status(404).json({
@@ -214,6 +215,8 @@ const EventController = {
         limit: 10,
       })
       .populate('headerImage');
+
+    await EventService.getContributionByList(events);
 
     res.status(200).json({ eventList: events });
   },

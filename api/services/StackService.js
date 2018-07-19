@@ -23,7 +23,7 @@ const StackService = {
     return stack;
   },
 
-  async getContribution(id, withData = true) {
+  async getContribution(stack, withData = true) {
     const select = ['model', 'target', 'operation', 'client'];
     if (withData) {
       select.push('before');
@@ -31,8 +31,8 @@ const StackService = {
     }
 
     const records = await Record.find({
-      action: ['updateStackStatus', 'updateStackDetail', 'createStack'],
-      target: id,
+      action: ['createStack', 'invalidateStack', 'updateStackStatus', 'updateStackDetail'],
+      target: stack.id,
       select,
     }).populate('client');
 
@@ -43,6 +43,21 @@ const StackService = {
     }
 
     return records;
+  },
+
+  async getContributionByList(stackList) {
+    const queue = [];
+
+    const getContribution = async (stack) => {
+      stack.contribution = await StackService.getContribution(stack);
+    };
+
+    for (const stack of stackList) {
+      queue.push(getContribution(stack));
+    }
+
+    await Promise.all(queue);
+    return stackList;
   },
 
   async updateStack(id = -1, data = {}, clientId, pg) {

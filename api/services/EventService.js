@@ -76,6 +76,53 @@ module.exports = {
     return event;
   },
 
+  getContribution: async (event, withData = true) => {
+    const select = ['model', 'target', 'operation', 'client'];
+    if (withData) {
+      select.push('before');
+      select.push('data');
+    }
+
+    let target = event.id;
+
+    if (event.headerImage) {
+      if (typeof event.headerImage === 'number') {
+        target = [event.id, event.headerImage];
+      } else {
+        target = [event.id, event.headerImage.id];
+      }
+    }
+
+    const records = await Record.find({
+      action: ['createEvent', 'updateEventStatus', 'updateEventDetail', 'createEventHeaderImage', 'updateEventHeaderImage'],
+      target,
+      select,
+    }).populate('client');
+
+    for (const record of records) {
+      if (record.client) {
+        record.client = ClientService.sanitizeClient(record.client);
+      }
+    }
+
+    return records;
+  },
+
+  getContributionByList: async (eventList) => {
+    const queue = [];
+
+    const getCon = async (event) => {
+      event.contribution = await EventService.getContribution(event);
+    };
+
+    for (const event of eventList) {
+      queue.push(getCon(event));
+    }
+
+    await Promise.all(queue);
+    return eventList;
+  },
+
   generatePinyin: (name) => {
     const array = pinyin(name, {
       segment: false,
