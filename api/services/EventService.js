@@ -83,9 +83,19 @@ module.exports = {
       select.push('data');
     }
 
+    let target = event.id;
+
+    if (event.headerImage) {
+      if (typeof event.headerImage === 'number') {
+        target = [event.id, event.headerImage];
+      } else {
+        target = [event.id, event.headerImage.id];
+      }
+    }
+
     const records = await Record.find({
       action: ['createEvent', 'updateEventStatus', 'updateEventDetail', 'createEventHeaderImage', 'updateEventHeaderImage'],
-      target: event.headerImage ? [event.id, event.headerImage.id] : [event.id],
+      target,
       select,
     }).populate('client');
 
