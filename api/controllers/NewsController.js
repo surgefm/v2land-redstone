@@ -101,7 +101,7 @@ module.exports = {
           limit: 15,
         });
 
-        await NewsService.getContributionByList(newsList, withContributionData);
+        await NewsService.acquireContributionsByNewsList(newsList, withContributionData);
 
         res.status(200).json({ newsList });
       } catch (err) {
