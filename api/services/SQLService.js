@@ -223,6 +223,8 @@ const SQLService = {
       return response.rows;
     } catch (err) {
       throw err;
+    } finally {
+      pg.release();
     }
   },
 
