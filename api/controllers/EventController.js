@@ -180,19 +180,23 @@ const EventController = {
     let where;
     let isManager = false;
 
-    if (req.body && req.body.page) {
-      page = req.body.page;
-    } else if (req.query && req.query.page) {
+    switch (req.method) {
+    case 'GET':
       page = req.query.page;
-    }
-
-    if (req.body && req.body.where) {
-      where = req.body.where;
-    } else if (req.query && req.query.where) {
       where = req.query.where;
-      if (typeof where === 'string') {
+      if (req.query.where && typeof req.query.where === 'string') {
         where = JSON.parse(where);
+      } else if (req.query.status) {
+        where = {
+          status: req.query.status,
+        };
       }
+      break;
+    case 'POST':
+      // 兼容古老代码 POST 方法
+      page = req.body.page;
+      where = req.body.where;
+      break;
     }
 
     if (where && req.session && req.session.clientId) {
@@ -216,7 +220,7 @@ const EventController = {
       })
       .populate('headerImage');
 
-    await EventService.getContributionByList(events);
+    await EventService.acquireContributionsByNewsList(events);
 
     res.status(200).json({ eventList: events });
   },

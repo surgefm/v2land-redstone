@@ -19,7 +19,7 @@ const NewsService = {
     return records;
   },
 
-  async getContributionByList(newsList) {
+  async acquireContributionsByNewsList(newsList) {
     const queue = [];
 
     const getContribution = async (news) => {
