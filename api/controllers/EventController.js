@@ -236,7 +236,7 @@ const EventController = {
     //   })
     //   .populate('headerImage');
 
-    await EventService.acquireContributionsByNewsList(events);
+    await EventService.getContributionByList(events);
 
     res.status(200).json({ eventList: events });
   },
