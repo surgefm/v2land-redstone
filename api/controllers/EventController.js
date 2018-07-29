@@ -184,7 +184,7 @@ const EventController = {
     switch (req.method) {
     case 'GET':
       page = req.query.page || 1;
-      mode = req.query.mode || 0;
+      mode = req.query.mode || 0; // 0: oldest event first (by first stack) ; 1: newest event first (by latest news)
       if (req.query.where && typeof req.query.where === 'string') {
         where = JSON.parse(where);
       } else if (req.query.status) {
