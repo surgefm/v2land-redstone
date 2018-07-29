@@ -173,7 +173,7 @@ module.exports = {
     return records;
   },
 
-  acquireContributionsByNewsList: async (eventList) => {
+  acquireContributionsByEventList: async (eventList) => {
     const queue = [];
 
     const getCon = async (event) => {
