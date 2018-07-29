@@ -179,11 +179,30 @@ const EventController = {
     let page = 1;
     let where;
     let isManager = false;
+    let mode = 0; // 0: latest updated; 1:
 
     if (req.body && req.body.page) {
       page = req.body.page;
     } else if (req.query && req.query.page) {
       page = req.query.page;
+    }
+
+    if (req.body && req.body.mode) {
+      mode = req.body.mode;
+    } else if (req.query && req.query.mode) {
+      mode = req.query.mode;
+    }
+
+    if (!(/^\+?(0|[1-9]\d*)$/.test(page) && (parseInt(page) > 0))) {
+      return res.status(400).json({
+        message: '参数有误：page',
+      });
+    }
+
+    if (!(/^\+?(0|[1-9]\d*)$/.test(mode) && (parseInt(mode) in [0, 1]))) {
+      return res.status(400).json({
+        message: '参数有误：mode',
+      });
     }
 
     if (req.body && req.body.where) {
@@ -195,7 +214,11 @@ const EventController = {
     if (where) {
       try {
         where = JSON.parse(where);
-      } catch (err) {/* happy */}
+      } catch (err) {/* happy */
+        return res.status(400).json({
+          message: '参数有误：where',
+        });
+      }
     }
 
     if (where && req.session.clientId) {
@@ -209,15 +232,17 @@ const EventController = {
       where.status = 'admitted';
     }
 
-    const events = await Event.find({
-      where: where || { status: 'admitted' },
-      sort: 'updatedAt DESC',
-    })
-      .paginate({
-        page,
-        limit: 10,
-      })
-      .populate('headerImage');
+    const events = await EventService.getEventList(mode, page, where || { status: 'admitted' });
+
+    // let events = await Event.find({
+    //   where: where || { status: 'admitted' },
+    //   sort: 'updatedAt DESC',
+    // })
+    //   .paginate({
+    //     page,
+    //     limit: 10,
+    //   })
+    //   .populate('headerImage');
 
     await EventService.getContributionByList(events);
 
