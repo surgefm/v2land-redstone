@@ -1,6 +1,6 @@
 const request = require('supertest');
 const urlencode = require('urlencode');
-const assert = require('assert');
+// const assert = require('assert');
 let agent;
 
 const testEmail = process.env.TEST_EMAIL?
