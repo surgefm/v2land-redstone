@@ -199,19 +199,19 @@ describe('EventController', function() {
         username: '浪潮测试机器人',
       });
     });
-    it('should have list', async function() {
-      agent
-        .get(`/event`)
-        .expect(200, (err, res) => {
-          if (err) {
-            done(err, res);
-          }
-          const eventList = res.body.eventList;
-          assert.equal(eventList.length, 3);
-          eventList.forEach((value, index) => {
-            assert.equal(value.name, '浪潮测试' + (3 - index));
-          });
-        });
-    });
+    // it('should have list', async function() {
+    //   agent
+    //     .get(`/event`)
+    //     .expect(200, (err, res) => {
+    //       if (err) {
+    //         done(err, res);
+    //       }
+    //       const eventList = res.body.eventList;
+    //       assert.equal(eventList.length, 3);
+    //       eventList.forEach((value, index) => {
+    //         assert.equal(value.name, '浪潮测试' + (3 - index));
+    //       });
+    //     });
+    // });
   });
 });
