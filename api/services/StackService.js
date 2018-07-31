@@ -45,7 +45,7 @@ const StackService = {
     return records;
   },
 
-  async acquireContributionsByNewsList(stackList) {
+  async acquireContributionsByStackList(stackList) {
     const queue = [];
 
     const getContribution = async (stack) => {

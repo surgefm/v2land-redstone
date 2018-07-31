@@ -179,11 +179,12 @@ const EventController = {
     let page = 1;
     let where;
     let isManager = false;
+    let mode = 0; // 0: latest updated; 1:
 
     switch (req.method) {
     case 'GET':
-      page = req.query.page;
-      where = req.query.where;
+      page = req.query.page || 1;
+      mode = req.query.mode || 0; // 0: oldest event first (by first stack) ; 1: newest event first (by latest news)
       if (req.query.where && typeof req.query.where === 'string') {
         where = JSON.parse(where);
       } else if (req.query.status) {
@@ -196,7 +197,20 @@ const EventController = {
       // 兼容古老代码 POST 方法
       page = req.body.page;
       where = req.body.where;
+      mode = req.body.mode;
       break;
+    }
+
+    if (!(/^\+?(0|[1-9]\d*)$/.test(page) && (parseInt(page) > 0))) {
+      return res.status(400).json({
+        message: '参数有误：page',
+      });
+    }
+
+    if (!(/^\+?(0|[1-9]\d*)$/.test(mode) && (parseInt(mode) in [0, 1]))) {
+      return res.status(400).json({
+        message: '参数有误：mode',
+      });
     }
 
     if (where && req.session && req.session.clientId) {
@@ -210,17 +224,19 @@ const EventController = {
       where.status = 'admitted';
     }
 
-    const events = await Event.find({
-      where: where || { status: 'admitted' },
-      sort: 'updatedAt DESC',
-    })
-      .paginate({
-        page,
-        limit: 10,
-      })
-      .populate('headerImage');
+    const events = await EventService.getEventList(mode, page, where || { status: 'admitted' });
 
-    await EventService.acquireContributionsByNewsList(events);
+    // let events = await Event.find({
+    //   where: where || { status: 'admitted' },
+    //   sort: 'updatedAt DESC',
+    // })
+    //   .paginate({
+    //     page,
+    //     limit: 10,
+    //   })
+    //   .populate('headerImage');
+
+    await EventService.acquireContributionsByEventList(events);
 
     res.status(200).json({ eventList: events });
   },

@@ -2,6 +2,71 @@ const pinyin = require('pinyin');
 
 module.exports = {
 
+  getEventList: async (mode, page, where) => {
+    where = UtilService.generateWhereQuery(where, model='event');
+    mode = Number(mode);
+    page = Number(page);
+
+    let sqlQuery;
+    const sqlQueryOldestStack = `WITH MATCH AS ( SELECT event.id id FROM "public"."event" LEFT JOIN "public"."stack" ON event.id = stack.event WHERE ${where.query} AND stack.status = 'admitted' GROUP BY event.id ORDER BY min(stack."updatedAt") ASC)
+    SELECT "event"."name", "event"."pinyin", "event"."description", "event"."status", "event"."id", "event"."createdAt", "event"."updatedAt", "__headerImage"."imageUrl" AS "headerImage___imageUrl", "__headerImage"."source" AS "headerImage___source", "__headerImage"."sourceUrl" AS "headerImage___sourceUrl", "__headerImage"."id" AS "headerImage___id", "__headerImage"."createdAt" AS "headerImage___createdAt", "__headerImage"."updatedAt" AS "headerImage___updatedAt", "__headerImage"."event" AS "headerImage___event"
+    FROM "public"."event" RIGHT JOIN MATCH ON "event".id = MATCH.id LEFT OUTER JOIN "public"."headerimage" AS "__headerImage" ON "event"."headerImage" = "__headerImage"."id"
+    WHERE "event"."id" IN (SELECT id FROM MATCH)
+    OFFSET ${(page-1)*10}
+    LIMIT 10;`;
+    const sqlQueryNewestNews = `WITH MATCH AS ( SELECT event.id id FROM "public"."event" LEFT JOIN "public"."news" ON event.id = news.event WHERE ${where.query} AND news.status = 'admitted' GROUP BY event.id ORDER BY max(news."updatedAt") DESC)
+    SELECT "event"."name", "event"."pinyin", "event"."description", "event"."status", "event"."id", "event"."createdAt", "event"."updatedAt", "__headerImage"."imageUrl" AS "headerImage___imageUrl", "__headerImage"."source" AS "headerImage___source", "__headerImage"."sourceUrl" AS "headerImage___sourceUrl", "__headerImage"."id" AS "headerImage___id", "__headerImage"."createdAt" AS "headerImage___createdAt", "__headerImage"."updatedAt" AS "headerImage___updatedAt", "__headerImage"."event" AS "headerImage___event"
+    FROM "public"."event" RIGHT JOIN MATCH ON "event".id = MATCH.id LEFT OUTER JOIN "public"."headerimage" AS "__headerImage" ON "event"."headerImage" = "__headerImage"."id"
+    WHERE "event"."id" IN (SELECT id FROM MATCH)
+    OFFSET ${(page-1)*10}
+    LIMIT 10;`;
+
+    switch (mode) {
+    case 0:
+      sqlQuery = sqlQueryOldestStack;
+      break;
+    case 1:
+      sqlQuery = sqlQueryNewestNews;
+      break;
+    default:
+      return;
+    }
+
+    let events;
+    try {
+      const Promise = require('bluebird');
+
+      const eventQueryAsync = Promise.promisify(Event.query);
+      const response = await eventQueryAsync(sqlQuery, where.values);
+      events = response.rows;
+
+      // FIXME: any better way to populate?
+      for (const event of events) {
+        event.headerImage = {
+          imageUrl: event.headerImage___imageUrl,
+          source: event.headerImage___source,
+          sourceUrl: event.headerImage___sourceUrl,
+          id: event.headerImage___id,
+          createdAt: event.headerImage___createdAt,
+          updatedAt: event.headerImage___updatedAt,
+          event: event.headerImage___event,
+        };
+
+        delete event.headerImage___imageUrl;
+        delete event.headerImage___source;
+        delete event.headerImage___sourceUrl;
+        delete event.headerImage___id;
+        delete event.headerImage___createdAt;
+        delete event.headerImage___updatedAt;
+        delete event.headerImage___event;
+      }
+    } catch (err) {
+      throw err;
+    }
+
+    return events;
+  },
+
   findEvent: async (eventName, { includes = {} } = {}) => {
     const checkNewsIncluded = includes.stack && includes.news;
 
@@ -108,15 +173,17 @@ module.exports = {
     return records;
   },
 
-  acquireContributionsByNewsList: async (eventList) => {
+  acquireContributionsByEventList: async (eventList) => {
     const queue = [];
 
     const getCon = async (event) => {
       event.contribution = await EventService.getContribution(event);
     };
 
-    for (const event of eventList) {
-      queue.push(getCon(event));
+    if (eventList) {
+      for (const event of eventList) {
+        queue.push(getCon(event));
+      }
     }
 
     await Promise.all(queue);
