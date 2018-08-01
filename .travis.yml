@@ -2,6 +2,7 @@ language: node_js
 services:
   - postgresql
   - redis-server
+  - docker
 node_js:
   - "8"
 env:
@@ -9,5 +10,11 @@ env:
 before_script:
   - psql -c 'create database v2land;' -U postgres
 script: make test
+deploy:
+  provider: script
+  script: bash deploy.sh
+  skip_cleanup: true
+  on:
+    branch: master
 notifications:
   slack: v2land:xoeT2IXt8yCaUfMxoBbXrSZD

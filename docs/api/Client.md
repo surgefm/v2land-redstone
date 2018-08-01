@@ -89,7 +89,7 @@
 |:---------|:-----|
 | username | string |
 | password | string |
-| eamil | email |
+| email | email |
 
 ### Return Data
 

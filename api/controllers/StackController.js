@@ -13,6 +13,7 @@ const StackController = {
     const id = req.param('stackId');
     const stack = await StackService.findStack(id);
     if (stack) {
+      stack.contribution = await StackService.getContribution(id, true);
       if (stack.status !== 'admitted') {
         if (req.session.clientId) {
           client = await Client.findOne({ id: req.session.clientId });
@@ -58,6 +59,30 @@ const StackController = {
       sort: 'updatedAt DESC',
     });
 
+    const getDetail = async (stack) => {
+      if (stack.status === 'admitted') {
+        const news = await News.findOne({
+          where: {
+            status: 'admitted',
+            stack: stack.id,
+          },
+          sort: 'time ASC',
+        });
+        if (news) {
+          stack.time = news.time;
+        }
+      }
+      stack.newsCount = await News.count({
+        status: 'admitted',
+        stack: stack.id,
+      });
+    };
+
+    const queue = stacks.map((stack) => getDetail(stack));
+    await Promise.all(queue);
+
+    await StackService.acquireContributionsByStackList(stacks);
+
     res.status(200).json({
       stackList: stacks,
     });
@@ -67,11 +92,11 @@ const StackController = {
     const id = req.param('stackId');
     const data = req.body;
 
-    const cb = await StackService.updateStack(id, data, req.session.clientId);
-    if (cb.error) {
-      return res.serverError(cb.error);
-    } else {
+    try {
+      const cb = await StackService.updateStack(id, data, req.session.clientId);
       return res.status(cb.status).json(cb.message);
+    } catch (err) {
+      return res.serverError(err);
     }
   },
 

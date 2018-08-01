@@ -9,9 +9,12 @@ const EventController = {
 
   getEvent: async (req, res) => {
     const name = req.param('eventName');
-    const event = await EventService.findEvent(name);
+    const event = await EventService.findEvent(name, {
+      includes: req.query,
+    });
 
     if (event) {
+      event.contribution = await EventService.getContribution(event, true);
       res.status(200).json(event);
     } else {
       res.status(404).json({
@@ -176,26 +179,41 @@ const EventController = {
     let page = 1;
     let where;
     let isManager = false;
+    let mode = 0; // 0: latest updated; 1:
 
-    if (req.body && req.body.page) {
-      page = req.body.page;
-    } else if (req.query && req.query.page) {
-      page = req.query.page;
-    }
-
-    if (req.body && req.body.where) {
-      where = req.body.where;
-    } else if (req.query && req.query.where) {
-      where = req.query.where;
-    }
-
-    if (where) {
-      try {
+    switch (req.method) {
+    case 'GET':
+      page = req.query.page || 1;
+      mode = req.query.mode || 0; // 0: oldest event first (by first stack) ; 1: newest event first (by latest news)
+      if (req.query.where && typeof req.query.where === 'string') {
         where = JSON.parse(where);
-      } catch (err) {/* happy */}
+      } else if (req.query.status) {
+        where = {
+          status: req.query.status,
+        };
+      }
+      break;
+    case 'POST':
+      // 兼容古老代码 POST 方法
+      page = req.body.page;
+      where = req.body.where;
+      mode = req.body.mode;
+      break;
     }
 
-    if (where && req.session.clientId) {
+    if (!(/^\+?(0|[1-9]\d*)$/.test(page) && (parseInt(page) > 0))) {
+      return res.status(400).json({
+        message: '参数有误：page',
+      });
+    }
+
+    if (!(/^\+?(0|[1-9]\d*)$/.test(mode) && (parseInt(mode) in [0, 1]))) {
+      return res.status(400).json({
+        message: '参数有误：mode',
+      });
+    }
+
+    if (where && req.session && req.session.clientId) {
       const client = await Client.findOne({ id: req.session.clientId });
       if (client && ['manager', 'admin'].includes(client.role)) {
         isManager = true;
@@ -206,15 +224,19 @@ const EventController = {
       where.status = 'admitted';
     }
 
-    const events = await Event.find({
-      where: where || { status: 'admitted' },
-      sort: 'updatedAt DESC',
-    })
-      .paginate({
-        page,
-        limit: 10,
-      })
-      .populate('headerImage');
+    const events = await EventService.getEventList(mode, page, where || { status: 'admitted' });
+
+    // let events = await Event.find({
+    //   where: where || { status: 'admitted' },
+    //   sort: 'updatedAt DESC',
+    // })
+    //   .paginate({
+    //     page,
+    //     limit: 10,
+    //   })
+    //   .populate('headerImage');
+
+    await EventService.acquireContributionsByEventList(events);
 
     res.status(200).json({ eventList: events });
   },
@@ -222,7 +244,7 @@ const EventController = {
   createStack: async (req, res) => {
     const name = req.param('eventName');
     const data = req.body;
-    const { title, description, order } = data;
+    const { title, description, order, time } = data;
 
     if (!title) {
       return res.status(400).json({
@@ -249,6 +271,7 @@ const EventController = {
           description,
           order: order || -1,
           event: id,
+          time,
         },
         action: 'createStack',
         client: req.session.clientId,

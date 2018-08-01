@@ -1,21 +1,29 @@
 const StackService = {
 
-  async findStack(id, withData = true) {
+  async findStack(id, withContributionData = true) {
     const stack = await Stack.findOne({ id })
       .populate('news', {
         where: { status: 'admitted' },
-        sort: 'time DESC',
+        sort: 'time ASC',
         limit: 15,
       });
 
+    stack.newsCount = await News.count({
+      status: 'admitted',
+      stack: stack.id,
+    });
+
     if (stack) {
-      stack.contribution = await StackService.getContribution(id, withData);
+      if (!stack.time && stack.news.length) {
+        stack.time = stack.news[0].time;
+      }
+      stack.contribution = await StackService.getContribution(id, withContributionData);
     }
 
     return stack;
   },
 
-  async getContribution(id, withData = true) {
+  async getContribution(stack, withData = true) {
     const select = ['model', 'target', 'operation', 'client'];
     if (withData) {
       select.push('before');
@@ -23,8 +31,8 @@ const StackService = {
     }
 
     const records = await Record.find({
-      action: ['updateStackStatus', 'updateStackDetail', 'createStack'],
-      target: id,
+      action: ['createStack', 'invalidateStack', 'updateStackStatus', 'updateStackDetail'],
+      target: stack.id,
       select,
     }).populate('client');
 
@@ -35,6 +43,21 @@ const StackService = {
     }
 
     return records;
+  },
+
+  async acquireContributionsByStackList(stackList) {
+    const queue = [];
+
+    const getContribution = async (stack) => {
+      stack.contribution = await StackService.getContribution(stack);
+    };
+
+    for (const stack of stackList) {
+      queue.push(getContribution(stack));
+    }
+
+    await Promise.all(queue);
+    return stackList;
   },
 
   async updateStack(id = -1, data = {}, clientId, pg) {
@@ -51,7 +74,7 @@ const StackService = {
     }
 
     const changes = {};
-    for (const i of ['title', 'description', 'status', 'order']) {
+    for (const i of ['title', 'description', 'status', 'order', 'time']) {
       if (typeof data[i] !== 'undefined' && data[i] !== stack[i]) {
         changes[i] = data[i];
       }
