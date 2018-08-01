@@ -5,6 +5,8 @@
  * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
  */
 
+const SeqModels = require('../seqModels');
+
 let bcrypt;
 try {
   bcrypt = require('bcrypt');
@@ -25,8 +27,10 @@ module.exports = {
   login: async (req, res) => {
     const data = req.body;
 
-    const client = await Client.findOne({
-      username: data.username,
+    const client = await SeqModels.Client.findOne({
+      where: {
+        username: data.username,
+      },
     });
 
     if (!client) {
