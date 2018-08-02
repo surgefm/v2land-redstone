@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize');
 const _ = require('lodash');
 
-const Event = sails.sequelize.define('event', {
+const Event = global.sequelize.define('event', {
   name: {
     type: Sequelize.TEXT,
     allowNull: false,

@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');
 
-const HeaderImage = sails.sequelize.define('headerimage', {
+const HeaderImage = global.sequelize.define('headerimage', {
   imageUrl: {
     type: Sequelize.TEXT,
     allowNull: false,

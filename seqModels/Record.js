@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');
 
-const Record = sails.sequelize.define('record', {
+const Record = global.sequelize.define('record', {
   model: {
     type: Sequelize.ENUM(
       'Event',

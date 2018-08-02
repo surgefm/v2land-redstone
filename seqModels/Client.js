@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize');
 const _ = require('lodash');
 
-const Client = sails.sequelize.define('client', {
+const Client = global.sequelize.define('client', {
   username: {
     type: Sequelize.TEXT,
     allowNull: false,

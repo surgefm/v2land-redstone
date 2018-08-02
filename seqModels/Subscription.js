@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');
 
-const Subscription = sails.sequelize.define('subscription', {
+const Subscription = global.sequelize.define('subscription', {
   mode: {
     type: Sequelize.TEXT,
     allowNull: false,

@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');
 
-const Notification = sails.sequelize.define('notification', {
+const Notification = global.sequelize.define('notification', {
   time: {
     type: Sequelize.DATE,
     allowNull: false,

@@ -8,6 +8,33 @@
  * For more information on configuration, check out:
  * http://sailsjs.org/#!/documentation/reference/sails.config/sails.config.globals.html
  */
+const Sequelize = require('sequelize');
+const { connections } = require('./connections');
+
+const {
+  host,
+  user,
+  password,
+  database,
+} = connections.postgresql;
+
+const sequelize = new Sequelize(database, user, password, {
+  host,
+  dialect: 'postgres',
+
+  pool: {
+    max: 5,
+    min: 0,
+    acquire: 30000,
+    idle: 10000
+  },
+
+  // http://docs.sequelizejs.com/manual/tutorial/querying.html#operators
+  operatorsAliases: false
+});
+
+global.sequelize = sequelize;
+
 module.exports.globals = {
 
   site: process.env.SITE || 'https://langchao.org',

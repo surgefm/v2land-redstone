@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');
 
-const Auth = sails.sequelize.define('auth', {
+const Auth = global.sequelize.define('auth', {
   site: {
     type: Sequelize.TEXT,
     allowNull: false,

@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');
 
-const Critique = sails.sequelize.define('critique', {
+const News = global.sequelize.define('news', {
   url: {
     type: Sequelize.TEXT,
     allowNull: false,
@@ -28,6 +28,7 @@ const Critique = sails.sequelize.define('critique', {
     type: Sequelize.ENUM('pending', 'admitted', 'rejected', 'removed'),
     defaultValue: 'pending',
   },
+  comment: Sequelize.TEXT,
 });
 
-module.exports = Critique;
+module.exports = News;

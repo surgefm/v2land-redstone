@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');
 
-const Stack = sails.sequelize.define('stack', {
+const Stack = global.sequelize.define('stack', {
   title: {
     type: Sequelize.TEXT,
     allowNull: false,

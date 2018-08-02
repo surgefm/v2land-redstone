@@ -1,13 +1,13 @@
-const Auth = require('./Auth.js`');
-const Client = require('./Client.js');
-const Critique = require('./Critique.js');
-const Event = require('./Event.js');
-const HeaderImage = require('./HeaderImage.js');
-const News = require('./News.js');
-const Notification = require('./Notification.js');
-const Record = require('./Record.js');
-const Stack = require('./Stack.js');
-const Subscription = require('./Subscription.js');
+const Auth = require('./Auth');
+const Client = require('./Client');
+const Critique = require('./Critique');
+const Event = require('./Event');
+const HeaderImage = require('./HeaderImage');
+const News = require('./News');
+const Notification = require('./Notification');
+const Record = require('./Record');
+const Stack = require('./Stack');
+const Subscription = require('./Subscription');
 
 Event.hasOne(HeaderImage, {
   as: 'headerImage',

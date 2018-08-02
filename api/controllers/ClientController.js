@@ -5,7 +5,7 @@
  * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
  */
 
-const SeqModels = require('../seqModels');
+const SeqModels = require('../../seqModels');
 
 let bcrypt;
 try {
