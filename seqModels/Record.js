@@ -52,6 +52,8 @@ const Record = global.sequelize.define('record', {
   ),
   before: Sequelize.JSON,
   data: Sequelize.JSON,
+}, {
+  freezeTableName: true,
 });
 
 module.exports = Record;

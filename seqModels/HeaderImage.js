@@ -13,6 +13,8 @@ const HeaderImage = global.sequelize.define('headerimage', {
     type: Sequelize.TEXT,
     allowNull: true,
   },
+}, {
+  freezeTableName: true,
 });
 
 module.exports = HeaderImage;

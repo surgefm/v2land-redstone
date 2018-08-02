@@ -38,6 +38,8 @@ const Event = global.sequelize.define('event', {
     allowNull: false,
     defaultValue: 'pending',
   },
+}, {
+  freezeTableName: true,
 });
 
 module.exports = Event;

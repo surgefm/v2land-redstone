@@ -28,6 +28,8 @@ const Critique = global.sequelize.define('critique', {
     type: Sequelize.ENUM('pending', 'admitted', 'rejected', 'removed'),
     defaultValue: 'pending',
   },
+}, {
+  freezeTableName: true,
 });
 
 module.exports = Critique;

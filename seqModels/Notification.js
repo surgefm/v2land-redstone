@@ -17,6 +17,8 @@ const Notification = global.sequelize.define('notification', {
     allowNull: false,
     defaultValue: 'active',
   },
+}, {
+  freezeTableName: true,
 });
 
 module.exports = Notification;

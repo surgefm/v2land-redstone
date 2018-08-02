@@ -13,6 +13,8 @@ const Auth = global.sequelize.define('auth', {
   accessTokenSecret: Sequelize.TEXT,
   refreshToken: Sequelize.TEXT,
   redirect: Sequelize.TEXT,
+}, {
+  freezeTableName: true,
 });
 
 module.exports = Auth;

@@ -24,10 +24,10 @@ Stack.hasMany(News, {
   sourceKey: 'id',
 });
 
-Critique.belongsTo(Event, {
-  foreignKey: 'event',
-  targetKey: 'id',
-});
+// Critique.belongsTo(Event, {
+//   foreignKey: 'event',
+//   targetKey: 'id',
+// });
 
 Client.hasMany(Auth, {
   foreignKey: 'owner',

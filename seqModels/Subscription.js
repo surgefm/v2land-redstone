@@ -21,6 +21,8 @@ const Subscription = global.sequelize.define('subscription', {
     type: Sequelize.TEXT,
     allowNull: false,
   },
+}, {
+  freezeTableName: true,
 });
 
 module.exports = Subscription;

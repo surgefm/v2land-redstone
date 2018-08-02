@@ -46,6 +46,8 @@ const Client = global.sequelize.define('client', {
     allowNull: false,
     defaultValue: false,
   },
+}, {
+  freezeTableName: true,
 });
 
 module.exports = Client;

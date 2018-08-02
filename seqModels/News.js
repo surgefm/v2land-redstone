@@ -29,6 +29,8 @@ const News = global.sequelize.define('news', {
     defaultValue: 'pending',
   },
   comment: Sequelize.TEXT,
+}, {
+  freezeTableName: true,
 });
 
 module.exports = News;
