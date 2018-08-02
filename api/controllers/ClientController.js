@@ -70,72 +70,71 @@ module.exports = {
     let salt;
     let hash;
 
-    let client = await SeqModels.Client.findOne({
-      where: {
-        [Op.or]: [
-          { username: data.username },
-          { email: data.email },
-        ],
-      },
-    });
-
-    if (client) {
-      const message = client.username === data.username
-        ? '该用户名已被占用'
-        : '该邮箱已被占用';
-      return res.status(406).json({ message });
-    }
-
     try {
-      salt = await bcrypt.genSalt(10);
-    } catch (err) {
-      return res.status(500).json({
-        message: 'Error occurs when generating salt',
-      });
-    }
+      await sequelize.transaction(async transaction => {
+        let client = await SeqModels.Client.findOne({
+          where: {
+            [Op.or]: [
+              { username: data.username },
+              { email: data.email },
+            ],
+          },
+          transaction,
+        });
 
-    try {
-      hash = await bcrypt.hash(data.password, salt);
-    } catch (err) {
-      return res.status(500).json({
-        message: 'Error occurs when generating hash',
-      });
-    }
+        if (client) {
+          const message = client.username === data.username
+            ? '该用户名已被占用'
+            : '该邮箱已被占用';
+          return res.status(406).json({ message });
+        }
 
-    try {
-      client = await SQLService.create({
-        model: 'client',
-        operation: 'create',
-        data: {
+        try {
+          salt = await bcrypt.genSalt(10);
+        } catch (err) {
+          return res.status(500).json({
+            message: 'Error occurs when generating salt',
+          });
+        }
+
+        try {
+          hash = await bcrypt.hash(data.password, salt);
+        } catch (err) {
+          return res.status(500).json({
+            message: 'Error occurs when generating hash',
+          });
+        }
+
+        client = await SeqModels.Client.create({
           username: data.username,
           password: hash,
           email: data.email,
           role: 'contributor',
-        },
-        action: 'createClient',
-        client: req.session.clientId,
-      });
+        }, { transaction });
 
-      req.session.clientId = client.id;
-      res.status(201).json({
-        message: '注册成功，请在三天内至邮箱查收验证邮件',
-        client: await ClientService.findClient(client.id),
-      });
+        req.session.clientId = client.id;
+        res.status(201).json({
+          message: '注册成功，请在三天内至邮箱查收验证邮件',
+          client,
+        });
 
-      const verificationToken = ClientService.tokenGenerator();
-      await Record.create({
-        model: 'Miscellaneous',
-        operation: 'create',
-        data: {
-          clientId: client.id,
-          verificationToken,
-          expire: new Date(Date.now() + 1000 * 60 * 60 * 24 * 3),
-        },
-        target: client.id,
-        action: 'createClientVerificationToken',
-        client: req.session.clientId,
+        const verificationToken = ClientService.tokenGenerator();
+
+        await SeqModels.Record.create({
+          model: 'Miscellaneous',
+          operation: 'create',
+          data: {
+            clientId: client.id,
+            verificationToken,
+            expire: new Date(Date.now() + 1000 * 60 * 60 * 24 * 3),
+          },
+          target: client.id,
+          action: 'createClientVerificationToken',
+          client: req.session.clientId,
+        }, { transaction });
+
+        EmailService.register(client, verificationToken);
       });
-      EmailService.register(client, verificationToken);
     } catch (err) {
       console.log(err);
       return res.serverError(err);
