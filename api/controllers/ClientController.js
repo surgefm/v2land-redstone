@@ -110,7 +110,10 @@ module.exports = {
           password: hash,
           email: data.email,
           role: 'contributor',
-        }, { transaction });
+        }, {
+          raw: true,
+          transaction,
+        });
 
         req.session.clientId = client.id;
         res.status(201).json({
@@ -119,6 +122,15 @@ module.exports = {
         });
 
         const verificationToken = ClientService.tokenGenerator();
+
+        await SeqModels.Record.create({
+          model: 'client',
+          operation: 'create',
+          data: client,
+          target: client.id,
+          action: 'createClient',
+          client: req.session.clientId,
+        }, { transaction });
 
         await SeqModels.Record.create({
           model: 'Miscellaneous',
@@ -248,33 +260,47 @@ module.exports = {
       });
     }
 
-    const targetCurrentRole = targetClient.role;
-    const targetNewRole = data.newRole;
-    const roleOptions = ['contributor', 'manager'];
-    if (targetCurrentRole === 'admin' ||
-      roleOptions.indexOf(targetCurrentRole) < 0 ||
-      roleOptions.indexOf(targetNewRole) < 0) {
-      return res.send(400, {
-        message: '您不可以这样修改此用户组',
-      });
-    }
-
-    if (targetCurrentRole === targetNewRole) {
-      res.send(200, {
-        message: '该用户已位于目标用户组中',
-      });
-    }
     try {
-      await SQLService.update({
-        where: { id: targetClient.id },
-        model: 'client',
-        data: { role: targetNewRole },
-        client: req.session.clientId,
-        action: 'updateClientRole',
-      });
+      await sequelize.transaction(async transaction => {
+        const targetClient = await Client.findOne({
+          where: {
+            id: data.id,
+          },
+          transaction,
+        });
+        const targetCurrentRole = targetClient.role;
+        const targetNewRole = data.newRole;
+        const roleOptions = ['contributor', 'manager'];
+        if (targetCurrentRole === 'admin' ||
+          roleOptions.indexOf(targetCurrentRole) < 0 ||
+          roleOptions.indexOf(targetNewRole) < 0) {
+          return res.send(400, {
+            message: '您不可以这样修改此用户组',
+          });
+        }
 
-      res.send(200, {
-        message: '成功更新用户组',
+        if (targetCurrentRole === targetNewRole) {
+          res.send(200, {
+            message: '该用户已位于目标用户组中',
+          });
+        }
+
+        targetClient.role = targetNewRole;
+
+        await targetClient.save({ transaction });
+
+        await SeqModels.Record.create({
+          operation: 'update',
+          model: 'client',
+          data: { role: targetNewRole },
+          client: req.session.clientId,
+          target: req.session.clientId,
+          action: 'updateClientRole',
+        }, { transaction });
+
+        res.send(200, {
+          message: '成功更新用户组',
+        });
       });
     } catch (err) {
       return res.serverError(err);
