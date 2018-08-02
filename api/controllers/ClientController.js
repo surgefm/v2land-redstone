@@ -4,8 +4,10 @@
  * @description :: Server-side logic for managing clients
  * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
  */
-
+const Sequelize = require('sequelize');
 const SeqModels = require('../../seqModels');
+
+const Op = Sequelize.Op;
 
 let bcrypt;
 try {
@@ -68,11 +70,13 @@ module.exports = {
     let salt;
     let hash;
 
-    let client = await Client.findOne({
-      or: [
-        { username: data.username },
-        { email: data.email },
-      ],
+    let client = await SeqModels.Client.findOne({
+      where: {
+        [Op.or]: [
+          { username: data.username },
+          { email: data.email },
+        ],
+      },
     });
 
     if (client) {

@@ -19,15 +19,14 @@ Event.hasMany(Stack, {
   sourceKey: 'id',
 });
 
+Event.hasMany(Critique, {
+  foreignKey: 'event',
+})
+
 Stack.hasMany(News, {
   foreignKey: 'stack',
   sourceKey: 'id',
 });
-
-// Critique.belongsTo(Event, {
-//   foreignKey: 'event',
-//   targetKey: 'id',
-// });
 
 Client.hasMany(Auth, {
   foreignKey: 'owner',
