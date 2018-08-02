@@ -4,6 +4,7 @@
  * @description :: Server-side logic for managing events
  * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
  */
+const SeqModels = require('../../seqModels');
 
 const EventController = {
 
@@ -313,26 +314,44 @@ const EventController = {
     data.event = event.id;
     data.status = 'pending';
 
-    const existingNews = await News.findOne({ url: data.url, event: event.id });
-    if (existingNews) {
-      return res.status(409).json({
-        message: '审核队列或新闻合辑内已有相同链接的新闻',
-      });
-    }
-
     try {
-      news = await SQLService.create({
-        model: 'news',
-        data,
-        action: 'createNews',
-        client: req.session.clientId,
+      await sequelize.transaction(async transaction => {
+        const existingNews =
+          await SeqModels.News.findOne({
+            where: {
+              url: data.url,
+              event: event.id,
+            },
+            transaction,
+          });
+        if (existingNews) {
+          return res.status(409).json({
+            message: '审核队列或新闻合辑内已有相同链接的新闻',
+          });
+        }
+
+        const news = await SeqModels.News.create(data, {
+          raw: true,
+          transaction,
+        });
+
+        await SeqModels.Record.create({
+          model: 'news',
+          operation: 'create',
+          data,
+          target: news.id,
+          action: 'createNews',
+          client: req.session.clientId,
+        }, { transaction });
+
+        res.status(201).json({
+          message: '提交成功，该新闻在社区管理员审核通过后将很快开放',
+          news,
+        });
+        TelegramService.sendNewsCreated(event, news, client);
       });
-      res.status(201).json({
-        message: '提交成功，该新闻在社区管理员审核通过后将很快开放',
-        news,
-      });
-      TelegramService.sendNewsCreated(event, news, client);
     } catch (err) {
+      console.error(err);
       return res.serverError(err);
     }
 
