@@ -115,12 +115,6 @@ module.exports = {
           transaction,
         });
 
-        req.session.clientId = client.id;
-        res.status(201).json({
-          message: '注册成功，请在三天内至邮箱查收验证邮件',
-          client,
-        });
-
         const verificationToken = ClientService.tokenGenerator();
 
         await SeqModels.Record.create({
@@ -144,6 +138,12 @@ module.exports = {
           action: 'createClientVerificationToken',
           client: req.session.clientId,
         }, { transaction });
+
+        req.session.clientId = client.id;
+        res.status(201).json({
+          message: '注册成功，请在三天内至邮箱查收验证邮件',
+          client,
+        });
 
         EmailService.register(client, verificationToken);
       });

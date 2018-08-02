@@ -1,6 +1,8 @@
 const request = require('supertest');
 const urlencode = require('urlencode');
 const assert = require('assert');
+const SeqModels = require('../../../seqModels');
+
 let agent;
 let newsId;
 
@@ -14,16 +16,15 @@ describe('NewsController', function() {
   before(async function() {
     agent = request.agent(sails.hooks.http.app);
 
-    await News.destroy();
-    await Event.destroy();
+    global.sequelize.query(`DELETE FROM news`);
+    global.sequelize.query(`DELETE FROM event`);
+    global.sequelize.query(`DELETE FROM client`);
 
-    await Event.create({
+    await SeqModels.Event.create({
       name: testEventName,
       description: '浪潮今天上线',
       status: 'admitted',
     });
-
-    await Client.destroy();
 
     await agent
       .post('/client/register')
@@ -33,10 +34,14 @@ describe('NewsController', function() {
         email: testEmail,
       });
 
-    await Client.update(
-      { username: testUsername },
-      { role: 'manager' }
-    );
+    const client = await SeqModels.Client.findOne({
+      where: {
+        username: testUsername,
+      },
+    });
+
+    client.role = 'manager';
+    await client.save();
 
     await agent
       .post('/client/login')
