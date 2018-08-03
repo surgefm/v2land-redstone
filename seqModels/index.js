@@ -29,7 +29,7 @@ Stack.hasMany(News, {
 });
 
 Client.hasMany(Auth, {
-  as: 'Auths',
+  as: 'auths',
   foreignKey: 'owner',
   targetKey: 'id',
 });
@@ -39,7 +39,7 @@ Auth.belongsTo(Client, {
 });
 
 Client.hasMany(Subscription, {
-  as: 'Subscriptions',
+  as: 'subscriptions',
   foreignKey: 'subscriber',
   targetKey: 'id',
 });

@@ -1,8 +1,8 @@
 const uuidv4 = require('uuid/v4');
 const crypto = require('crypto');
 
-const Sequelize = require('sequelize');
 const SeqModels = require('../../seqModels');
+const Sequelize = require('sequelize');
 
 const Op = Sequelize.Op;
 
@@ -26,6 +26,23 @@ module.exports = {
 
     const client = await SeqModels.Client.findOne({
       where,
+      include: [
+        {
+          as: 'auths',
+          model: SeqModels.Auth,
+          where: {
+            profileId: { [Op.not]: null },
+          },
+          required: false,
+        },
+        {
+          as: 'subscriptions',
+          model: SeqModels.Subscription,
+          where: { status: 'active' },
+          order: [['createdAt', 'DESC']],
+          required: false,
+        },
+      ],
       transaction,
     });
 
@@ -34,19 +51,6 @@ module.exports = {
     const data = client.toJSON();
 
     // can use join
-
-    data.auths = (await client.getAuths({
-      where: {
-        profileId: { [Op.not]: null },
-      },
-      transaction,
-    })).map(item => item.toJSON());
-
-    data.subscriptions = (await client.getSubscriptions({
-      where: { status: 'active' },
-      order: [['createdAt', 'DESC']],
-      transaction,
-    })).map(item => item.toJSON());
 
     // const client = await Client.findOne({
     //   or: [
