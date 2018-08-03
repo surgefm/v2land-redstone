@@ -2,6 +2,7 @@ const request = require('supertest');
 const urlencode = require('urlencode');
 // const assert = require('assert');
 const SeqModels = require('../../../seqModels');
+const bcrypt = require('bcrypt');
 
 let agent;
 // let newsId;
@@ -12,7 +13,7 @@ const testUsername = '陈博士的AI';
 
 const testEventName = '陈博女装';
 
-describe.skip('NewsController', function() {
+describe('NewsController', function() {
   before(async function() {
     agent = request.agent(sails.hooks.http.app);
 
@@ -26,22 +27,17 @@ describe.skip('NewsController', function() {
       status: 'admitted',
     });
 
-    await agent
-      .post('/client/register')
-      .send({
-        username: testUsername,
-        password: 'testPassword',
-        email: testEmail,
-      });
+    const salt = await bcrypt.genSalt(10);
+    const hash = await bcrypt.hash('testPassword', salt);
 
-    const client = await SeqModels.Client.findOne({
-      where: {
-        username: testUsername,
-      },
+    await SeqModels.Client.create({
+      username: testUsername,
+      password: hash,
+      email: testEmail,
+      role: 'manager',
+    }, {
+      raw: true,
     });
-
-    client.role = 'manager';
-    await client.save();
 
     await agent
       .post('/client/login')

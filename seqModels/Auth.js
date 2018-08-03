@@ -5,7 +5,7 @@ const Auth = global.sequelize.define('auth', {
     type: Sequelize.TEXT,
     allowNull: false,
   },
-  profileId: Sequelize.TEXT,
+  profileId: Sequelize.TEXT, // 微博/Twitter 的用户 uid
   profile: Sequelize.JSON,
   token: Sequelize.TEXT,
   tokenSecret: Sequelize.TEXT,

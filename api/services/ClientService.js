@@ -1,29 +1,71 @@
 const uuidv4 = require('uuid/v4');
 const crypto = require('crypto');
 
+const Sequelize = require('sequelize');
+const SeqModels = require('../../seqModels');
+
+const Op = Sequelize.Op;
+
 module.exports = {
 
-  findClient: async (clientName) => {
-    const client = await Client.findOne({
-      or: [
-        { id: parseInt(clientName) > -1 ? parseInt(clientName) : -1 },
-        { username: clientName },
-        { email: clientName },
-      ],
-    })
-      .populate('subscriptions', {
-        where: { status: 'active' },
-        sort: 'createdAt DESC',
-      })
-      .populate('auths', {
-        where: { profileId: { '>=': 1 } },
-      })
-      .populate('events', {
-        sort: 'updatedAt DESC',
-      });
+  findClient: async (clientName, { transaction } = {}) => {
+    let where;
 
-    const data = { ...client };
-    if (!data.id) return null;
+    if (typeof clientName === 'number') {
+      where = {
+        id: clientName > -1 ? clientName : -1,
+      };
+    } else if (typeof clientName === 'string') {
+      where = {
+        [Op.or]: [
+          { username: clientName },
+          { email: clientName },
+        ],
+      };
+    }
+
+    const client = await SeqModels.Client.findOne({
+      where,
+      transaction,
+    });
+
+    if (client === null) return null;
+
+    const data = client.toJSON();
+
+    // can use join
+
+    data.auths = (await client.getAuths({
+      where: {
+        profileId: { [Op.not]: null },
+      },
+      transaction,
+    })).map(item => item.toJSON());
+
+    data.subscriptions = (await client.getSubscriptions({
+      where: { status: 'active' },
+      order: [['createdAt', 'DESC']],
+      transaction,
+    })).map(item => item.toJSON());
+
+    // const client = await Client.findOne({
+    //   or: [
+    //     { id: parseInt(clientName) > -1 ? parseInt(clientName) : -1 },
+    //     { username: clientName },
+    //     { email: clientName },
+    //   ],
+    // })
+    //   .populate('subscriptions', {
+    //     where: { status: 'active' },
+    //     sort: 'createdAt DESC',
+    //   })
+    //   .populate('auths', {
+    //     where: { profileId: { '>=': 1 } },
+    //   })
+    //   .populate('events', {
+    //     sort: 'updatedAt DESC',
+    //   });
+
     delete data.password;
     delete data.records;
     for (let i = 0; i < data.auths.length; i++) {

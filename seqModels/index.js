@@ -29,8 +29,28 @@ Stack.hasMany(News, {
 });
 
 Client.hasMany(Auth, {
+  as: 'Auths',
   foreignKey: 'owner',
   targetKey: 'id',
+});
+
+Auth.belongsTo(Client, {
+  foreignKey: 'owner',
+});
+
+Client.hasMany(Subscription, {
+  as: 'Subscriptions',
+  foreignKey: 'subscriber',
+  targetKey: 'id',
+});
+
+Subscription.belongsTo(Client, {
+  foreignKey: 'subscriber',
+});
+
+Client.hasMany(Record, {
+  as: 'Records',
+  foreignKey: 'client',
 });
 
 module.exports = {
