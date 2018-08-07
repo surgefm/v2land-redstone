@@ -26,6 +26,7 @@
     "grunt-sails-linker": "~0.10.1",
     "grunt-sync": "0.5.2",
     "include-all": "^1.0.0",
+    "lodash": "^4.17.10",
     "md5": "^2.2.1",
     "mocha": "^4.0.1",
     "nodemailer": "^4.4.2",
