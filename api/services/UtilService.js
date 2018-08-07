@@ -50,7 +50,7 @@ module.exports = {
           string += ' = $' + values.length;
         } else {
           parents.push(property);
-          child = generateWhereQuery(query[property], model, values, parents);
+          child = UtilService.generateWhereQuery(query[property], model, values, parents);
           if (string.length) {
             string += ' AND ';
           }
