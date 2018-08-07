@@ -49,7 +49,7 @@ Subscription.belongsTo(Client, {
 });
 
 Client.hasMany(Record, {
-  as: 'Records',
+  as: 'records',
   foreignKey: 'client',
 });
 
