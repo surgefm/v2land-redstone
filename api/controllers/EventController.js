@@ -223,13 +223,13 @@ const EventController = {
     page = validateNumber(page, 1);
     mode = validateNumber(mode, 0);
 
-    if (!page) {
+    if (_.isUndefined(page)) {
       return res.status(400).json({
         message: '参数有误：page',
       });
     }
 
-    if (!mode) {
+    if (_.isUndefined(mode)) {
       return res.status(400).json({
         message: '参数有误：mode',
       });
