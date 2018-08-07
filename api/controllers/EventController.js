@@ -11,7 +11,7 @@ const _ = require('lodash');
   * 验证 number 参数
   * 若 number 是一个 string 且不 match 正则，则返回 undefind
   */
-const ValidateNumber = (number, defaultValue) => {
+const validateNumber = (number, defaultValue) => {
   if (_.isNumber(number)) {
     return number;
   } else if (_.isString(number)) {
@@ -220,8 +220,8 @@ const EventController = {
       break;
     }
 
-    page = ValidateNumber(page, 1);
-    mode = ValidateNumber(mode, 0);
+    page = validateNumber(page, 1);
+    mode = validateNumber(mode, 0);
 
     if (_.isUndefined(page)) {
       return res.status(400).json({
