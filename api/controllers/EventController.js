@@ -5,23 +5,6 @@
  * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
  */
 
-const _ = require('lodash');
-
-/**
-  * 验证 number 参数
-  * 若 number 是一个 string 且不 match 正则，则返回 undefined
-  */
-const validateNumber = (number, defaultValue) => {
-  if (_.isNumber(number)) {
-    return number;
-  } else if (_.isString(number)) {
-    if (!/^\+?(0|[1-9]\d*)$/.test(number)) return undefined;
-    return parseInt(number);
-  }
-
-  return defaultValue;
-};
-
 const EventController = {
 
   getEvent: async (req, res) => {
@@ -193,17 +176,15 @@ const EventController = {
   },
 
   getEventList: async (req, res) => {
-    let page;
+    let page = 1;
     let where;
     let isManager = false;
     let mode = 0; // 0: latest updated; 1:
 
     switch (req.method) {
     case 'GET':
-      page = req.query.page;
-      // 0: oldest event first (by first stack) ; 1: newest event first (by latest news)
-      mode = req.query.mode;
-
+      page = req.query.page || 1;
+      mode = req.query.mode || 0; // 0: oldest event first (by first stack) ; 1: newest event first (by latest news)
       if (req.query.where && typeof req.query.where === 'string') {
         where = JSON.parse(where);
       } else if (req.query.status) {
@@ -220,16 +201,13 @@ const EventController = {
       break;
     }
 
-    page = validateNumber(page, 1);
-    mode = validateNumber(mode, 0);
-
-    if (_.isUndefined(page)) {
+    if (!(/^\+?(0|[1-9]\d*)$/.test(page) && (parseInt(page) > 0))) {
       return res.status(400).json({
         message: '参数有误：page',
       });
     }
 
-    if (_.isUndefined(mode)) {
+    if (!(/^\+?(0|[1-9]\d*)$/.test(mode) && (parseInt(mode) in [0, 1]))) {
       return res.status(400).json({
         message: '参数有误：mode',
       });
