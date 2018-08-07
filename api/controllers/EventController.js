@@ -9,7 +9,7 @@ const _ = require('lodash');
 
 /**
   * 验证 number 参数
-  * 若 number 是一个 string 且不 match 正则，则返回 undefind
+  * 若 number 是一个 string 且不 match 正则，则返回 undefined
   */
 const validateNumber = (number, defaultValue) => {
   if (_.isNumber(number)) {
@@ -223,13 +223,13 @@ const EventController = {
     page = validateNumber(page, 1);
     mode = validateNumber(mode, 0);
 
-    if (_.isUndefined(page)) {
+    if (!page) {
       return res.status(400).json({
         message: '参数有误：page',
       });
     }
 
-    if (_.isUndefined(mode)) {
+    if (!mode) {
       return res.status(400).json({
         message: '参数有误：mode',
       });
