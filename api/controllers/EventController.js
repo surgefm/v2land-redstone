@@ -180,8 +180,8 @@ const EventController = {
   getEventList: async (req, res) => {
     let page;
     let where;
+    let mode; // 0: latest updated; 1:
     let isManager = false;
-    let mode = 0; // 0: latest updated; 1:
 
     switch (req.method) {
     case 'GET':
@@ -219,32 +219,49 @@ const EventController = {
       });
     }
 
-    if (where && req.session && req.session.clientId) {
-      const client = await Client.findOne({ id: req.session.clientId });
-      if (client && ['manager', 'admin'].includes(client.role)) {
-        isManager = true;
-      }
+    try {
+      await sequelize.transaction(async transaction => {
+        if (where && req.session && req.session.clientId) {
+          // const client = await Client.findOne({ id: req.session.clientId });
+          const client = await SeqModels.Client.findOne({
+            where: {
+              id: req.session.clientId,
+            },
+            transaction,
+          });
+
+          if (client && ['manager', 'admin'].includes(client.role)) {
+            isManager = true;
+          }
+        }
+
+        if (where && !isManager) {
+          where.status = 'admitted';
+        }
+
+        let events = await SeqModels.Event.findAll({
+          where,
+          include: [
+            {
+              as: 'headerImage',
+              model: SeqModels.HeaderImage,
+              required: false,
+            },
+          ],
+          order: [['updatedAt', 'DESC']],
+          transaction,
+        });
+
+        events = events.map(e => e.toJSON());
+
+        await EventService.acquireContributionsByEventList(events);
+
+        res.status(200).json({ eventList: events });
+      });
+    } catch (err) {
+      console.log(err);
+      return res.serverError(err);
     }
-
-    if (where && !isManager) {
-      where.status = 'admitted';
-    }
-
-    const events = await EventService.getEventList(mode, page, where || { status: 'admitted' });
-
-    // let events = await Event.find({
-    //   where: where || { status: 'admitted' },
-    //   sort: 'updatedAt DESC',
-    // })
-    //   .paginate({
-    //     page,
-    //     limit: 10,
-    //   })
-    //   .populate('headerImage');
-
-    await EventService.acquireContributionsByEventList(events);
-
-    res.status(200).json({ eventList: events });
   },
 
   createStack: async (req, res) => {

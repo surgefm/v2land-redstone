@@ -11,10 +11,11 @@ const Subscription = require('./Subscription');
 
 Event.hasOne(HeaderImage, {
   as: 'headerImage',
-  foreignKey: 'headerImage',
+  foreignKey: 'event',
 });
 
 Event.hasMany(Stack, {
+  as: 'stacks',
   foreignKey: 'event',
   sourceKey: 'id',
 });
@@ -24,6 +25,7 @@ Event.hasMany(Critique, {
 })
 
 Stack.hasMany(News, {
+  as: 'news',
   foreignKey: 'stack',
   sourceKey: 'id',
 });
