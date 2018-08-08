@@ -5,6 +5,7 @@
  * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
  */
 const SeqModels = require('../../seqModels');
+const _ = require('lodash');
 
 const EventController = {
 
@@ -177,15 +178,16 @@ const EventController = {
   },
 
   getEventList: async (req, res) => {
-    let page = 1;
+    let page;
     let where;
     let isManager = false;
     let mode = 0; // 0: latest updated; 1:
 
     switch (req.method) {
     case 'GET':
-      page = req.query.page || 1;
-      mode = req.query.mode || 0; // 0: oldest event first (by first stack) ; 1: newest event first (by latest news)
+      page = req.query.page;
+      // 0: oldest event first (by first stack) ; 1: newest event first (by latest news)
+      mode = req.query.mode;
       if (req.query.where && typeof req.query.where === 'string') {
         where = JSON.parse(where);
       } else if (req.query.status) {
@@ -202,13 +204,16 @@ const EventController = {
       break;
     }
 
-    if (!(/^\+?(0|[1-9]\d*)$/.test(page) && (parseInt(page) > 0))) {
+    page = UtilService.validateNumber(page, 1);
+    mode = UtilService.validateNumber(mode, 0);
+
+    if (_.isUndefined(page)) {
       return res.status(400).json({
         message: '参数有误：page',
       });
     }
 
-    if (!(/^\+?(0|[1-9]\d*)$/.test(mode) && (parseInt(mode) in [0, 1]))) {
+    if (_.isUndefined(mode)) {
       return res.status(400).json({
         message: '参数有误：mode',
       });
