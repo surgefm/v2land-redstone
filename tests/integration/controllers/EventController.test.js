@@ -1,5 +1,6 @@
 const request = require('supertest');
 const urlencode = require('urlencode');
+const SeqModels = require('../../../seqModels');
 // const assert = require('assert');
 let agent;
 
@@ -13,29 +14,23 @@ describe('EventController', function() {
     before(async function() {
       agent = request.agent(sails.hooks.http.app);
 
-      await Event.destroy();
+      await global.sequelize.query(`DELETE FROM event`);
 
-      await Client.destroy();
+      await global.sequelize.query(`DELETE FROM client`);
 
-      await agent
-        .post('/client/register')
-        .send({
-          username: testUsername,
-          password: 'testPassword',
-          email: testEmail,
-        });
+      await SeqModels.Client.create({
+        username: testUsername,
+        password: '$2b$10$8njIkPFgDouZsKXYrkYF4.xqShsOPMK9WHEU7aou4FAeuvzb4WRmi',
+        email: testEmail,
+        role: 'admin',
+      });
 
       await agent
         .post('/client/login')
         .send({
           username: testUsername,
-          password: 'testPassword',
+          password: '666',
         });
-
-      await Client.update(
-        { username: testUsername },
-        { role: 'admin' }
-      );
     });
 
     it('should return success after creating event', function(done) {
