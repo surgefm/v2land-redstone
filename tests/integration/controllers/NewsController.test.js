@@ -2,7 +2,7 @@ const request = require('supertest');
 const urlencode = require('urlencode');
 // const assert = require('assert');
 const SeqModels = require('../../../seqModels');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 
 let agent;
 // let newsId;

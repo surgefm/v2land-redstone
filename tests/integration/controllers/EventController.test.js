@@ -1,7 +1,7 @@
 const request = require('supertest');
 const urlencode = require('urlencode');
 const SeqModels = require('../../../seqModels');
-// const assert = require('assert');
+const assert = require('assert');
 let agent;
 
 const testEmail = process.env.TEST_EMAIL?
@@ -163,50 +163,34 @@ describe('EventController', function() {
   });
 
   describe('Event List', function() {
-    const sleep = (ms) => {
-      return new Promise((resolve) => setTimeout(resolve, ms));
-    };
-
     before(async function() {
-      this.timeout(15000);
-
-      await Event.destroy();
-      await Event.create({
+      await global.sequelize.query(`DELETE FROM event`);
+      await SeqModels.Event.create({
         name: '浪潮测试1',
         status: 'admitted',
         description: '浪潮测试1',
       });
-      await sleep(1000);
-      await Event.create({
+      await SeqModels.Event.create({
         name: '浪潮测试2',
         status: 'admitted',
         description: '浪潮测试2',
       });
-      await sleep(1000);
-      await Event.create({
+      await SeqModels.Event.create({
         name: '浪潮测试3',
         status: 'admitted',
         description: '浪潮测试3',
       });
     });
-    after(async function() {
-      await Client.destroy({
-        username: '浪潮测试机器人',
+
+    it('should have list', async function() {
+      const res = await agent
+        .get(`/event?page=1&status=admitted`)
+        .expect(200);
+      const eventList = res.body.eventList;
+      assert.equal(eventList.length, 3);
+      eventList.forEach((value, index) => {
+        assert.equal(value.name, '浪潮测试' + (3 - index));
       });
     });
-    // it('should have list', async function() {
-    //   agent
-    //     .get(`/event`)
-    //     .expect(200, (err, res) => {
-    //       if (err) {
-    //         done(err, res);
-    //       }
-    //       const eventList = res.body.eventList;
-    //       assert.equal(eventList.length, 3);
-    //       eventList.forEach((value, index) => {
-    //         assert.equal(value.name, '浪潮测试' + (3 - index));
-    //       });
-    //     });
-    // });
   });
 });

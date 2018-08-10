@@ -4,17 +4,11 @@
  * @description :: Server-side logic for managing clients
  * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
  */
+const bcrypt = require('bcryptjs');
 const Sequelize = require('sequelize');
 const SeqModels = require('../../seqModels');
 
 const Op = Sequelize.Op;
-
-let bcrypt;
-try {
-  bcrypt = require('bcrypt');
-} catch (err) {
-  bcrypt = require('bcryptjs');
-}
 
 module.exports = {
 
