@@ -93,9 +93,14 @@ const StackController = {
     const data = req.body;
 
     try {
-      const cb = await StackService.updateStack(id, data, req.session.clientId);
+      const cb = await StackService.updateStack({
+        id,
+        data,
+        clientId: req.session.clientId,
+      });
       return res.status(cb.status).json(cb.message);
     } catch (err) {
+      console.error(err);
       return res.serverError(err);
     }
   },

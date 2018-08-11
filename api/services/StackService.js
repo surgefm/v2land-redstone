@@ -1,3 +1,5 @@
+const SeqModels = require('../../seqModels');
+
 const StackService = {
 
   async findStack(id, withContributionData = true) {
@@ -60,11 +62,13 @@ const StackService = {
     return stackList;
   },
 
-  async updateStack(id = -1, data = {}, clientId, pg) {
-    let stack = await Stack.findOne({ id });
+  async updateStack({ id = -1, data = {}, clientId, transaction }) {
+    let stack = await SeqModels.Stack.findOne({
+      where: { id },
+      transaction,
+    });
 
     if (!stack) {
-      await SQLService.rollback(pg);
       throw new Error({
         status: 404,
         message: {
@@ -96,13 +100,14 @@ const StackService = {
     if (changes.status) {
       if (changes.status === 'admitted') {
         news = await News.findOne({
-          stack: stack.id,
-          status: 'admitted',
-          sort: 'time DESC',
+          where: {
+            stack: stack.id,
+            status: 'admitted',
+          },
+          transaction,
         });
 
         if (!news) {
-          await SQLService.rollback(pg);
           throw new Error({
             status: 400,
             message: {
@@ -112,28 +117,35 @@ const StackService = {
         }
       }
 
-      stack = await SQLService.update({
+      jsonData = stack.toJSON();
+
+      await stack.update({
+        status: changes.status,
+      }, { transaction });
+
+      await SeqModels.Record.create({
         action: 'updateStackStatus',
         data: { status: changes.status },
         before: { status: stack.status },
+        target: id,
         client: clientId,
-        where: { id },
-        model: 'stack',
-        pg,
-      });
+        model: 'Stack',
+      }, { transaction });
     }
 
     delete changes.status;
 
-    stack = await SQLService.update({
+    jsonData = stack.toJSON();
+    stack = await stack.update(changes, { transaction });
+
+    await SeqModels.Record.create({
       action: 'updateStackDetail',
-      data: changes,
-      before: stack,
+      target: id,
       client: clientId,
-      where: { id },
-      model: 'stack',
-      pg,
-    });
+      data: changes,
+      before: stack.toJSON(),
+      model: 'Stack',
+    }, { transaction });
 
     if (news) {
       const before = {};
@@ -142,6 +154,7 @@ const StackService = {
       }
 
       if (Object.getOwnPropertyNames(changes).length > 0) {
+        // FIXME: why???
         news = await SQLService.update({
           action: 'updateNewsDetail',
           data: changes,

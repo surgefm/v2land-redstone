@@ -15,7 +15,6 @@ describe('EventController', function() {
       agent = request.agent(sails.hooks.http.app);
 
       await global.sequelize.query(`DELETE FROM event`);
-
       await global.sequelize.query(`DELETE FROM client`);
 
       await SeqModels.Client.create({
