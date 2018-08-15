@@ -65,19 +65,20 @@ describe('StackController', function() {
       stacks.push(resp2.body.stack);
     });
 
-    it('should update stack successfully', async function() {
+    it.skip('should update stack successfully', async function() {
       for (const stack of stacks) {
         const { body } = await agent
           .put(`/stack/${stack.id}`)
           .send({
             status: 'admitted',
-          });
+          })
+          .expect(200);
 
         console.log(body);
       }
     });
 
-    it('should get stacks successfully', async function() {
+    it.skip('should get stacks successfully', async function() {
       const { body } = await agent
             .get(`/event/${urlencode('小熊维尼')}`)
             .expect(200);

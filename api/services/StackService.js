@@ -99,7 +99,7 @@ const StackService = {
 
     if (changes.status) {
       if (changes.status === 'admitted') {
-        news = await News.findOne({
+        news = await SeqModels.News.findOne({
           where: {
             stack: stack.id,
             status: 'admitted',
@@ -108,12 +108,7 @@ const StackService = {
         });
 
         if (!news) {
-          throw new Error({
-            status: 400,
-            message: {
-              message: '一个进展必须在含有一个已过审新闻的情况下方可开放',
-            },
-          });
+          throw new Error('一个进展必须在含有一个已过审新闻的情况下方可开放');
         }
       }
 
@@ -147,25 +142,25 @@ const StackService = {
       model: 'Stack',
     }, { transaction });
 
-    if (news) {
-      const before = {};
-      for (const i of Object.keys(changes)) {
-        before[i] = news[i];
-      }
+    // if (news) {
+    //   const before = {};
+    //   for (const i of Object.keys(changes)) {
+    //     before[i] = news[i];
+    //   }
 
-      if (Object.getOwnPropertyNames(changes).length > 0) {
-        // FIXME: why???
-        news = await SQLService.update({
-          action: 'updateNewsDetail',
-          data: changes,
-          before,
-          client: clientId,
-          where: { id: news.id },
-          model: 'news',
-          pg,
-        });
-      }
-    }
+    //   if (Object.getOwnPropertyNames(changes).length > 0) {
+    //     // FIXME: why???
+    //     news = await SQLService.update({
+    //       action: 'updateNewsDetail',
+    //       data: changes,
+    //       before,
+    //       client: clientId,
+    //       where: { id: news.id },
+    //       model: 'news',
+    //       pg,
+    //     });
+    //   }
+    // }
 
     if (data.enableNotification && changesCopy.status === 'admitted') {
       const event = await Event.findOne({

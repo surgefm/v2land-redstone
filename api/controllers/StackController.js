@@ -93,12 +93,15 @@ const StackController = {
     const data = req.body;
 
     try {
-      const cb = await StackService.updateStack({
-        id,
-        data,
-        clientId: req.session.clientId,
+      await sequelize.transaction(async transaction => {
+        const cb = await StackService.updateStack({
+          id,
+          data,
+          clientId: req.session.clientId,
+          transaction,
+        });
+        return res.status(cb.status).json(cb.message);
       });
-      return res.status(cb.status).json(cb.message);
     } catch (err) {
       console.error(err);
       return res.serverError(err);
