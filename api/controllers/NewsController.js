@@ -4,11 +4,14 @@
  * @description :: Server-side logic for managing news
  * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
  */
+const SeqModels = require('../../seqModels');
 
 module.exports = {
   getAllPendingNews: async (req, res) => {
-    const newsCollection = await News.find({
-      status: 'pending',
+    const newsCollection = await SeqModels.News.findAll({
+      where: {
+        status: 'pending',
+      },
     });
 
     return res.status(200).json({ newsCollection });

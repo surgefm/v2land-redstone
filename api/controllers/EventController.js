@@ -4,6 +4,8 @@
  * @description :: Server-side logic for managing events
  * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
  */
+const SeqModels = require('../../seqModels');
+const _ = require('lodash');
 
 const EventController = {
 
@@ -176,14 +178,16 @@ const EventController = {
   },
 
   getEventList: async (req, res) => {
-    let page = 1;
+    let page;
     let where;
+    let mode; // 0: latest updated; 1:
     let isManager = false;
 
     switch (req.method) {
     case 'GET':
       page = req.query.page;
-      where = req.query.where;
+      // 0: oldest event first (by first stack) ; 1: newest event first (by latest news)
+      mode = req.query.mode;
       if (req.query.where && typeof req.query.where === 'string') {
         where = JSON.parse(where);
       } else if (req.query.status) {
@@ -196,33 +200,68 @@ const EventController = {
       // 兼容古老代码 POST 方法
       page = req.body.page;
       where = req.body.where;
+      mode = req.body.mode;
       break;
     }
 
-    if (where && req.session && req.session.clientId) {
-      const client = await Client.findOne({ id: req.session.clientId });
-      if (client && ['manager', 'admin'].includes(client.role)) {
-        isManager = true;
-      }
+    page = UtilService.validateNumber(page, 1);
+    mode = UtilService.validateNumber(mode, 0);
+
+    if (_.isUndefined(page)) {
+      return res.status(400).json({
+        message: '参数有误：page',
+      });
     }
 
-    if (where && !isManager) {
-      where.status = 'admitted';
+    if (_.isUndefined(mode)) {
+      return res.status(400).json({
+        message: '参数有误：mode',
+      });
     }
 
-    const events = await Event.find({
-      where: where || { status: 'admitted' },
-      sort: 'updatedAt DESC',
-    })
-      .paginate({
-        page,
-        limit: 10,
-      })
-      .populate('headerImage');
+    try {
+      await sequelize.transaction(async transaction => {
+        if (where && req.session && req.session.clientId) {
+          // const client = await Client.findOne({ id: req.session.clientId });
+          const client = await SeqModels.Client.findOne({
+            where: {
+              id: req.session.clientId,
+            },
+            transaction,
+          });
 
-    await EventService.acquireContributionsByNewsList(events);
+          if (client && ['manager', 'admin'].includes(client.role)) {
+            isManager = true;
+          }
+        }
 
-    res.status(200).json({ eventList: events });
+        if (where && !isManager) {
+          where.status = 'admitted';
+        }
+
+        let events = await SeqModels.Event.findAll({
+          where,
+          include: [
+            {
+              as: 'headerImage',
+              model: SeqModels.HeaderImage,
+              required: false,
+            },
+          ],
+          order: [['updatedAt', 'DESC']],
+          transaction,
+        });
+
+        events = events.map(e => e.toJSON());
+
+        await EventService.acquireContributionsByEventList(events);
+
+        res.status(200).json({ eventList: events });
+      });
+    } catch (err) {
+      console.log(err);
+      return res.serverError(err);
+    }
   },
 
   createStack: async (req, res) => {
@@ -297,26 +336,44 @@ const EventController = {
     data.event = event.id;
     data.status = 'pending';
 
-    const existingNews = await News.findOne({ url: data.url, event: event.id });
-    if (existingNews) {
-      return res.status(409).json({
-        message: '审核队列或新闻合辑内已有相同链接的新闻',
-      });
-    }
-
     try {
-      news = await SQLService.create({
-        model: 'news',
-        data,
-        action: 'createNews',
-        client: req.session.clientId,
+      await sequelize.transaction(async transaction => {
+        const existingNews =
+          await SeqModels.News.findOne({
+            where: {
+              url: data.url,
+              event: event.id,
+            },
+            transaction,
+          });
+        if (existingNews) {
+          return res.status(409).json({
+            message: '审核队列或新闻合辑内已有相同链接的新闻',
+          });
+        }
+
+        const news = await SeqModels.News.create(data, {
+          raw: true,
+          transaction,
+        });
+
+        await SeqModels.Record.create({
+          model: 'news',
+          operation: 'create',
+          data,
+          target: news.id,
+          action: 'createNews',
+          client: req.session.clientId,
+        }, { transaction });
+
+        res.status(201).json({
+          message: '提交成功，该新闻在社区管理员审核通过后将很快开放',
+          news,
+        });
+        TelegramService.sendNewsCreated(event, news, client);
       });
-      res.status(201).json({
-        message: '提交成功，该新闻在社区管理员审核通过后将很快开放',
-        news,
-      });
-      TelegramService.sendNewsCreated(event, news, client);
     } catch (err) {
+      console.error(err);
       return res.serverError(err);
     }
 

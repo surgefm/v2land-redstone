@@ -1,18 +1,13 @@
 const request = require('supertest');
+
 let agent;
 
 const testEmail = process.env.TEST_EMAIL || 'test@langchao.org';
 
 describe('ClientController', function() {
   describe('#register()', function() {
-    before(function(done) {
-      Client.destroy({}, done);
-    });
-
-    after(async function() {
-      await Client.destroy({
-        username: 'testRegister',
-      });
+    before(async function() {
+      await global.sequelize.query(`DELETE FROM client`);
     });
 
     it('should return success', function(done) {
@@ -34,9 +29,7 @@ describe('ClientController', function() {
     const password = 'changedPassword';
 
     before(async function() {
-      await Client.destroy({
-        username: 'testChangePwd',
-      });
+      await global.sequelize.query(`DELETE FROM client`);
     });
 
     it('should successfully change password', async function() {
@@ -90,10 +83,7 @@ describe('ClientController', function() {
 
   describe('#login/logout()', function() {
     before(async function() {
-      // await Client.destroy({
-      //   username: 'testAccountLogin',
-      // });
-      await Client.destroy();
+      await global.sequelize.query(`DELETE FROM client`);
 
       await agent
         .post('/client/register')
@@ -143,14 +133,4 @@ describe('ClientController', function() {
         });
     });
   });
-
-  // describe('#logoutAfterGettingUnexistingClient', function() {
-  //   it('should logout after the client ID stored in session does not exist', async function() {
-  //     await agent
-  //       .get('/client/me')
-  //       .expect(401, {
-  //         message: '请在登录后进行该操作',
-  //       });
-  //   });
-  // });
 });

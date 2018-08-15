@@ -1,4 +1,5 @@
 const sails = require('sails');
+require('../config/globals');
 
 before(function(done) {
   // Increase the Mocha timeout so that Sails has enough time to lift.

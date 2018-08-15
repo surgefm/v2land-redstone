@@ -81,7 +81,7 @@ const StackController = {
     const queue = stacks.map((stack) => getDetail(stack));
     await Promise.all(queue);
 
-    await StackService.acquireContributionsByNewsList(stacks);
+    await StackService.acquireContributionsByStackList(stacks);
 
     res.status(200).json({
       stackList: stacks,
@@ -93,9 +93,17 @@ const StackController = {
     const data = req.body;
 
     try {
-      const cb = await StackService.updateStack(id, data, req.session.clientId);
-      return res.status(cb.status).json(cb.message);
+      await sequelize.transaction(async transaction => {
+        const cb = await StackService.updateStack({
+          id,
+          data,
+          clientId: req.session.clientId,
+          transaction,
+        });
+        return res.status(cb.status).json(cb.message);
+      });
     } catch (err) {
+      console.error(err);
       return res.serverError(err);
     }
   },

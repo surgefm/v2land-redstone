@@ -4,13 +4,11 @@
  * @description :: Server-side logic for managing clients
  * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
  */
+const bcrypt = require('bcryptjs');
+const Sequelize = require('sequelize');
+const SeqModels = require('../../seqModels');
 
-let bcrypt;
-try {
-  bcrypt = require('bcrypt');
-} catch (err) {
-  bcrypt = require('bcryptjs');
-}
+const Op = Sequelize.Op;
 
 module.exports = {
 
@@ -25,8 +23,10 @@ module.exports = {
   login: async (req, res) => {
     const data = req.body;
 
-    const client = await Client.findOne({
-      username: data.username,
+    const client = await SeqModels.Client.findOne({
+      where: {
+        username: data.username,
+      },
     });
 
     if (!client) {
@@ -64,70 +64,83 @@ module.exports = {
     let salt;
     let hash;
 
-    let client = await Client.findOne({
-      or: [
-        { username: data.username },
-        { email: data.email },
-      ],
-    });
-
-    if (client) {
-      const message = client.username === data.username
-        ? '该用户名已被占用'
-        : '该邮箱已被占用';
-      return res.status(406).json({ message });
-    }
-
     try {
-      salt = await bcrypt.genSalt(10);
-    } catch (err) {
-      return res.status(500).json({
-        message: 'Error occurs when generating salt',
-      });
-    }
+      await sequelize.transaction(async transaction => {
+        let client = await SeqModels.Client.findOne({
+          where: {
+            [Op.or]: [
+              { username: data.username },
+              { email: data.email },
+            ],
+          },
+          transaction,
+        });
 
-    try {
-      hash = await bcrypt.hash(data.password, salt);
-    } catch (err) {
-      return res.status(500).json({
-        message: 'Error occurs when generating hash',
-      });
-    }
+        if (client) {
+          const message = client.username === data.username
+            ? '该用户名已被占用'
+            : '该邮箱已被占用';
+          return res.status(406).json({ message });
+        }
 
-    try {
-      client = await SQLService.create({
-        model: 'client',
-        operation: 'create',
-        data: {
+        try {
+          salt = await bcrypt.genSalt(10);
+        } catch (err) {
+          return res.status(500).json({
+            message: 'Error occurs when generating salt',
+          });
+        }
+
+        try {
+          hash = await bcrypt.hash(data.password, salt);
+        } catch (err) {
+          return res.status(500).json({
+            message: 'Error occurs when generating hash',
+          });
+        }
+
+        client = await SeqModels.Client.create({
           username: data.username,
           password: hash,
           email: data.email,
           role: 'contributor',
-        },
-        action: 'createClient',
-        client: req.session.clientId,
-      });
+        }, {
+          raw: true,
+          transaction,
+        });
 
-      req.session.clientId = client.id;
-      res.status(201).json({
-        message: '注册成功，请在三天内至邮箱查收验证邮件',
-        client: await ClientService.findClient(client.id),
-      });
+        const verificationToken = ClientService.tokenGenerator();
 
-      const verificationToken = ClientService.tokenGenerator();
-      await Record.create({
-        model: 'Miscellaneous',
-        operation: 'create',
-        data: {
-          clientId: client.id,
-          verificationToken,
-          expire: new Date(Date.now() + 1000 * 60 * 60 * 24 * 3),
-        },
-        target: client.id,
-        action: 'createClientVerificationToken',
-        client: req.session.clientId,
+        await SeqModels.Record.create({
+          model: 'client',
+          operation: 'create',
+          data: client,
+          target: client.id,
+          action: 'createClient',
+          client: req.session.clientId,
+        }, { transaction });
+
+        await SeqModels.Record.create({
+          model: 'Miscellaneous',
+          operation: 'create',
+          data: {
+            clientId: client.id,
+            verificationToken,
+            expire: new Date(Date.now() + 1000 * 60 * 60 * 24 * 3),
+          },
+          target: client.id,
+          action: 'createClientVerificationToken',
+          client: req.session.clientId,
+        }, { transaction });
+
+        req.session.clientId = client.id;
+        res.status(201).json({
+          message: '注册成功，请在三天内至邮箱查收验证邮件',
+          client,
+        });
+
+        EmailService.register(client, verificationToken);
       });
-      EmailService.register(client, verificationToken);
     } catch (err) {
       console.log(err);
       return res.serverError(err);
@@ -153,55 +166,65 @@ module.exports = {
 
     const selfClient = req.currentClient;
 
-    const targetClient = await Client.findOne({
-      id: targetId,
-    });
-
-    if (typeof targetClient === 'undefined') {
-      return res.status(500).json({
-        message: '找不到目标用户',
-      });
-    }
-
-    if (targetId !== clientId && selfClient.role !== 'admin') {
-      return res.status(500).json({
-        message: '您没有修改此用户密码的权限',
-      });
-    }
-
     try {
-      salt = await bcrypt.genSalt(10);
-    } catch (err) {
-      sails.log.error(err);
-      return res.status(500).json({
-        message: '服务器发生未知错误，请联系开发者',
-      });
-    }
+      await sequelize.transaction(async transaction => {
+        const targetClient = await SeqModels.Client.findOne({
+          where: {
+            id: targetId,
+          },
+          transaction,
+        });
 
-    try {
-      hash = await bcrypt.hash(data.password, salt);
-    } catch (err) {
-      sails.log.error(err);
-      return res.status(500).json({
-        message: '服务器发生未知错误，请联系开发者',
-      });
-    }
+        if (typeof targetClient === 'undefined') {
+          return res.status(500).json({
+            message: '找不到目标用户',
+          });
+        }
 
-    try {
-      await SQLService.update({
-        where: { id: targetId },
-        model: 'client',
-        data: {
-          password: hash,
-        },
-        client: targetId,
-        action: 'updateClientPassword',
-      });
+        if (targetId !== clientId && selfClient.role !== 'admin') {
+          return res.status(500).json({
+            message: '您没有修改此用户密码的权限',
+          });
+        }
 
-      res.send(201, {
-        message: '更新密码成功',
+        try {
+          salt = await bcrypt.genSalt(10);
+        } catch (err) {
+          sails.log.error(err);
+          return res.status(500).json({
+            message: '服务器发生未知错误，请联系开发者',
+          });
+        }
+
+        try {
+          hash = await bcrypt.hash(data.password, salt);
+        } catch (err) {
+          sails.log.error(err);
+          return res.status(500).json({
+            message: '服务器发生未知错误，请联系开发者',
+          });
+        }
+
+        targetClient.password = hash;
+        await targetClient.save({ transaction });
+
+        await SeqModels.Record.create({
+          operation: 'update',
+          model: 'client',
+          data: {
+            password: hash,
+          },
+          action: 'updateClientPassword',
+          client: targetId,
+          target: targetId,
+        }, { transaction });
+
+        res.send(201, {
+          message: '更新密码成功',
+        });
       });
     } catch (err) {
+      console.log(err);
       return res.serverError(err);
     }
   },
@@ -231,33 +254,47 @@ module.exports = {
       });
     }
 
-    const targetCurrentRole = targetClient.role;
-    const targetNewRole = data.newRole;
-    const roleOptions = ['contributor', 'manager'];
-    if (targetCurrentRole === 'admin' ||
-      roleOptions.indexOf(targetCurrentRole) < 0 ||
-      roleOptions.indexOf(targetNewRole) < 0) {
-      return res.send(400, {
-        message: '您不可以这样修改此用户组',
-      });
-    }
-
-    if (targetCurrentRole === targetNewRole) {
-      res.send(200, {
-        message: '该用户已位于目标用户组中',
-      });
-    }
     try {
-      await SQLService.update({
-        where: { id: targetClient.id },
-        model: 'client',
-        data: { role: targetNewRole },
-        client: req.session.clientId,
-        action: 'updateClientRole',
-      });
+      await sequelize.transaction(async transaction => {
+        const targetClient = await Client.findOne({
+          where: {
+            id: data.id,
+          },
+          transaction,
+        });
+        const targetCurrentRole = targetClient.role;
+        const targetNewRole = data.newRole;
+        const roleOptions = ['contributor', 'manager'];
+        if (targetCurrentRole === 'admin' ||
+          roleOptions.indexOf(targetCurrentRole) < 0 ||
+          roleOptions.indexOf(targetNewRole) < 0) {
+          return res.send(400, {
+            message: '您不可以这样修改此用户组',
+          });
+        }
 
-      res.send(200, {
-        message: '成功更新用户组',
+        if (targetCurrentRole === targetNewRole) {
+          res.send(200, {
+            message: '该用户已位于目标用户组中',
+          });
+        }
+
+        targetClient.role = targetNewRole;
+
+        await targetClient.save({ transaction });
+
+        await SeqModels.Record.create({
+          operation: 'update',
+          model: 'client',
+          data: { role: targetNewRole },
+          client: req.session.clientId,
+          target: req.session.clientId,
+          action: 'updateClientRole',
+        }, { transaction });
+
+        res.send(200, {
+          message: '成功更新用户组',
+        });
       });
     } catch (err) {
       return res.serverError(err);
