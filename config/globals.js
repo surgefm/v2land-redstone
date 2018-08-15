@@ -30,7 +30,8 @@ const sequelize = new Sequelize(database, user, password, {
   },
 
   // http://docs.sequelizejs.com/manual/tutorial/querying.html#operators
-  operatorsAliases: false
+  operatorsAliases: false,
+  logging: process.env.NODE_ENV !== 'production',
 });
 
 global.sequelize = sequelize;
