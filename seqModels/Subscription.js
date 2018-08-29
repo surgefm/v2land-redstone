@@ -6,7 +6,7 @@ const Subscription = global.sequelize.define('subscription', {
     allowNull: false,
   },
   method: {
-    type: Sequelize.ENUM('twitter', 'weibo', 'twitterAt', 'weiboAt', 'email'),
+    type: Sequelize.ENUM('twitter', 'weibo', 'twitterAt', 'weiboAt', 'email', 'emailDailyReport'),
     allowNull: false,
   },
   contact: {
