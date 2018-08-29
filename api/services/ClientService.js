@@ -11,9 +11,9 @@ module.exports = {
   findClient: async (clientName, { transaction } = {}) => {
     let where;
 
-    if (typeof clientName === 'number') {
+    if (+clientName > 0) {
       where = {
-        id: clientName > -1 ? clientName : -1,
+        id: +clientName,
       };
     } else if (typeof clientName === 'string') {
       where = {
@@ -103,7 +103,7 @@ module.exports = {
 
   sanitizeClient: (client) => {
     const temp = {};
-    for (const attr of ['username', 'role', 'id', 'events']) {
+    for (const attr of ['username', 'role', 'id']) {
       temp[attr] = client[attr];
     }
 

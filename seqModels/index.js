@@ -8,6 +8,7 @@ const Notification = require('./Notification');
 const Record = require('./Record');
 const Stack = require('./Stack');
 const Subscription = require('./Subscription');
+const Report = require('./Report');
 
 Event.hasOne(HeaderImage, {
   as: 'headerImage',
@@ -22,11 +23,24 @@ Event.hasMany(Stack, {
 
 Event.hasMany(Critique, {
   foreignKey: 'event',
-})
+});
+
+Event.hasMany(Notification, {
+  foreignKey: 'event',
+});
+
+Event.hasMany(Subscription, {
+  foreignKey: 'event',
+});
 
 Stack.hasMany(News, {
   as: 'news',
   foreignKey: 'stack',
+  sourceKey: 'id',
+});
+
+Record.belongsTo(Client, {
+  foreignKey: 'client',
   sourceKey: 'id',
 });
 
@@ -36,23 +50,27 @@ Client.hasMany(Auth, {
   targetKey: 'id',
 });
 
-Auth.belongsTo(Client, {
-  foreignKey: 'owner',
-});
-
 Client.hasMany(Subscription, {
   as: 'subscriptions',
   foreignKey: 'subscriber',
   targetKey: 'id',
 });
 
+Client.hasMany(Report, {
+  as: 'reports',
+  foreignKey: 'client',
+});
+
+Auth.belongsTo(Client, {
+  foreignKey: 'owner',
+});
+
 Subscription.belongsTo(Client, {
   foreignKey: 'subscriber',
 });
 
-Client.hasMany(Record, {
-  as: 'records',
-  foreignKey: 'client',
+Notification.belongsToMany(Report, {
+  through: 'ReportNotification',
 });
 
 module.exports = {
@@ -66,4 +84,5 @@ module.exports = {
   Record,
   Stack,
   Subscription,
+  Report,
 };

@@ -1,4 +1,6 @@
-module.exports = {
+const SeqModels = require('../../seqModels');
+
+const NotificationService = {
 
   getNextTime: async (mode, event) => {
     return ModeService[mode].new({ event });
@@ -48,14 +50,20 @@ module.exports = {
   },
 
   updateForNewStack: async (event, stack, force = false) => {
-    const latestStack = await Stack.findOne({
-      where: { event: event.id, status: 'admitted' },
+    const modeSet = ['EveryNewStack', '30DaysSinceLatestStack'];
+
+    const latestStack = await SeqModels.Stack.findOne({
+      where: {
+        event: event.id,
+        status: 'admitted',
+        order: 1,
+      },
       sort: 'order DESC',
     });
 
     if (!force && (!latestStack || (+latestStack.id !== +stack.id))) return;
 
-    const record = await Record.count({
+    const record = await SeqModels.Record.count({
       model: 'Stack',
       target: stack.id,
       action: 'notifyNewStack',
@@ -63,27 +71,27 @@ module.exports = {
 
     if (record) return;
 
-    const notificationCollection = await Notification.find({
-      event: event.id,
-      mode: 'newStack',
-    });
+    await sequelize.transaction(async transaction => {
+      for (const mode of modeSet) {
+        await SeqModels.Notification.create({
+          time: await ModeService[mode].new({ event, stack, transaction }),
+          status: 'pending',
+          mode,
+          content: { event, stack },
+        }, { transaction });
+      }
 
-    for (const notification of notificationCollection) {
-      const mode = ModeService[notification.mode];
-      const time = await mode.update({ notification, event, latestStack });
-      notification.time = time;
-      notification.status = 'active';
-      await notification.save();
-    }
-
-    await Record.create({
-      model: 'Stack',
-      target: stack.id,
-      operation: 'create',
-      action: 'notifyNewStack',
+      await SeqModels.Record.create({
+        model: 'Stack',
+        target: stack.id,
+        operation: 'create',
+        action: 'notifyNewStack',
+      }, { transaction });
     });
 
     return;
   },
 
 };
+
+module.exports = NotificationService;

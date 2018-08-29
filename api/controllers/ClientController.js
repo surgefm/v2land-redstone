@@ -25,7 +25,10 @@ module.exports = {
 
     const client = await SeqModels.Client.findOne({
       where: {
-        username: data.username,
+        [Op.or]: [
+          { username: data.username },
+          { email: data.username },
+        ],
       },
     });
 
@@ -112,7 +115,7 @@ module.exports = {
         const verificationToken = ClientService.tokenGenerator();
 
         await SeqModels.Record.create({
-          model: 'client',
+          model: 'Client',
           operation: 'create',
           data: client,
           target: client.id,
@@ -210,7 +213,7 @@ module.exports = {
 
         await SeqModels.Record.create({
           operation: 'update',
-          model: 'client',
+          model: 'Client',
           data: {
             password: hash,
           },
@@ -285,7 +288,7 @@ module.exports = {
 
         await SeqModels.Record.create({
           operation: 'update',
-          model: 'client',
+          model: 'Client',
           data: { role: targetNewRole },
           client: req.session.clientId,
           target: req.session.clientId,
@@ -330,7 +333,7 @@ module.exports = {
         await client.save({ transaction });
         await SeqModels.Record.create({
           operation: 'update',
-          model: 'client',
+          model: 'Client',
           data: { settings },
           client: req.session.clientId,
           target: req.session.clientId,
@@ -377,7 +380,7 @@ module.exports = {
     try {
       await SQLService.update({
         action: 'updateClientDetail',
-        model: 'client',
+        model: 'Client',
         client: req.session.clientId,
         data: changes,
         where: { id: client.id },
