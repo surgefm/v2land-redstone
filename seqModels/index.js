@@ -59,11 +59,6 @@ Client.hasMany(Record, {
 Event.hasMany(NotificationItem, {
   as: 'NotificationItems',
   foreignKey: 'event',
-  targetKey: 'id',
-});
-
-NotificationItem.belongsTo(Event, {
-  foreignKey: 'event',
 });
 
 module.exports = {
