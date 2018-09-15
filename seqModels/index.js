@@ -60,6 +60,11 @@ Client.hasMany(Record, {
   foreignKey: 'client',
 });
 
+Client.hasMany(Report, {
+  as: 'reports',
+  foreignKey: 'client',
+});
+
 Notification.belongsToMany(Report, {
   through: 'ReportNotification',
 });

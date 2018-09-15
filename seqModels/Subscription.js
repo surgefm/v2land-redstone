@@ -1,10 +1,6 @@
 const Sequelize = require('sequelize');
 
 const Subscription = global.sequelize.define('subscription', {
-  mode: {
-    type: Sequelize.TEXT,
-    allowNull: false,
-  },
   method: {
     type: Sequelize.ENUM('twitter', 'weibo', 'twitterAt', 'weiboAt', 'email', 'emailDailyReport'),
     allowNull: false,
