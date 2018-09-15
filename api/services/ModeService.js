@@ -1,6 +1,8 @@
 const modeCollection = {
 
-  'newStack': require('../modes/newStack'),
+  'EveryNewStack': require('../modes/EveryNewStack'),
+
+  '30DaysSinceLatestStack': require('../modes/30DaysSinceLatestStack'),
 
   // Every time a latest news is admitted.
   'new': require('../modes/new'),
