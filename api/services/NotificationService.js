@@ -1,6 +1,4 @@
 const SeqModels = require('../../seqModels');
-const Sequelize = require('sequelize');
-const Op = Sequelize.Op;
 
 const NotificationService = {
 
@@ -55,7 +53,11 @@ const NotificationService = {
     const modeSet = ['EveryNewStack', '30DaysSinceLatestStack'];
 
     const latestStack = await SeqModels.Stack.findOne({
-      where: { event: event.id, status: 'admitted' },
+      where: {
+        event: event.id,
+        status: 'admitted',
+        order: 1,
+      },
       sort: 'order DESC',
     });
 
@@ -70,36 +72,13 @@ const NotificationService = {
     if (record) return;
 
     await sequelize.transaction(async transaction => {
-      const notificationCollection = await SeqModels.Notification.findAll({
-        where: {
-          event: event.id,
-          mode: {
-            [Op.or]: modeSet,
-          },
-        },
-        transaction,
-      });
-
-      for (const notification of notificationCollection) {
-        const mode = ModeService[notification.mode];
-        const time = await mode.update({ notification, event, stack });
-        await notification.upsert({
-          time,
-          status: 'pending',
-          content: stack,
-        }, { transaction });
-      }
-
-      const existingMode = notificationCollection.map(n => n.mode);
       for (const mode of modeSet) {
-        if (!existingMode.includes(mode)) {
-          await SeqModels.Notification.create({
-            time: await ModeService[mode].new({ event, stack }),
-            status: 'pending',
-            mode,
-            content: stack,
-          }, { transaction });
-        }
+        await SeqModels.Notification.create({
+          time: await ModeService[mode].new({ event, stack, transaction }),
+          status: 'pending',
+          mode,
+          content: { event, stack },
+        }, { transaction });
       }
 
       await SeqModels.Record.create({
