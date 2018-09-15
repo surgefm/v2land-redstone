@@ -9,6 +9,15 @@ const Subscription = global.sequelize.define('subscription', {
     type: Sequelize.ENUM('twitter', 'weibo', 'twitterAt', 'weiboAt', 'email', 'emailDailyReport'),
     allowNull: false,
   },
+  modes: {
+    type: Sequelize.ARRAY(Sequelize.ENUM(
+      'EveryNewStack',
+      '30DaysSinceLatestStack',
+      'new', '7DaysSinceLatestNews',
+      'daily', 'weekly', 'monthly',
+    )),
+    defaultValue: [],
+  },
   contact: {
     type: Sequelize.JSON,
     allowNull: false,
