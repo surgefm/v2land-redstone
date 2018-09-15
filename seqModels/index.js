@@ -8,6 +8,7 @@ const Notification = require('./Notification');
 const Record = require('./Record');
 const Stack = require('./Stack');
 const Subscription = require('./Subscription');
+const Report = require('./Report');
 
 Event.hasOne(HeaderImage, {
   as: 'headerImage',
@@ -59,6 +60,10 @@ Client.hasMany(Record, {
   foreignKey: 'client',
 });
 
+Notification.belongsToMany(Report, {
+  through: 'ReportNotification',
+});
+
 module.exports = {
   Auth,
   Client,
@@ -70,4 +75,5 @@ module.exports = {
   Record,
   Stack,
   Subscription,
+  Report,
 };
