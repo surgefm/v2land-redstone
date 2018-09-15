@@ -29,6 +29,10 @@ Event.hasMany(Notification, {
   foreignKey: 'event',
 });
 
+Event.hasMany(Subscription, {
+  foreignKey: 'event',
+});
+
 Stack.hasMany(News, {
   as: 'news',
   foreignKey: 'stack',
@@ -51,10 +55,6 @@ Client.hasMany(Subscription, {
   targetKey: 'id',
 });
 
-Subscription.belongsTo(Client, {
-  foreignKey: 'subscriber',
-});
-
 Client.hasMany(Record, {
   as: 'records',
   foreignKey: 'client',
@@ -63,6 +63,10 @@ Client.hasMany(Record, {
 Client.hasMany(Report, {
   as: 'reports',
   foreignKey: 'client',
+});
+
+Subscription.belongsTo(Client, {
+  foreignKey: 'subscriber',
 });
 
 Notification.belongsToMany(Report, {

@@ -1,5 +1,5 @@
 require('../config/globals');
-const models = require('../seqModels');
+const models = require('.');
 
 module.exports = function (modelName) {
   const cap = modelName[0].toUpperCase() + modelName.substr(1);
@@ -8,7 +8,7 @@ module.exports = function (modelName) {
 
   return {
     up: (queryInterface, Sequelize) => {
-      return queryInterface.createTable(low, model.tableAttributes);
+      return queryInterface.createTable(low, model.attributes);
       /*
         Add altering commands here.
         Return a promise to correctly handle asynchronicity.
