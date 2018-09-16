@@ -1,3 +1,6 @@
+const SeqModels = require('../../seqModels');
+const Sequelize = require('sequelize');
+const Op = Sequelize.Op;
 const pinyin = require('pinyin');
 
 const Mode1Sql = `
@@ -85,32 +88,33 @@ module.exports = {
 
   findEvent: async (eventName, { includes = {} } = {}) => {
     const checkNewsIncluded = includes.stack && includes.news;
+    const event = await SeqModels.Event.findOne({
+      where: {
+        [Op.or]: [
+          { id: parseInt(eventName) > -1 ? parseInt(eventName) : -1 },
+          { name: eventName },
+        ],
+      },
+    });
 
-    let event = await Event.findOne({
-      or: [
-        { id: parseInt(eventName) > -1 ? parseInt(eventName) : -1 },
-        { name: eventName },
-      ],
-    })
-      .populate('stack', {
-        where: {
-          status: 'admitted',
-          order: { '>': -1 },
-        },
-        sort: 'order DESC',
-      })
-      .populate('headerImage');
+    event.headerImage = await event.getHeaderImage();
+    event.stacks = await event.getStacks({
+      where: {
+        status: 'admitted',
+        order: { [Op.gte]: 0 },
+      },
+      order: [['order', 'DESC']],
+    });
 
     if (event) {
-      event = { ...event };
-      event.newsCount = await News.count({
+      event.newsCount = await SeqModels.News.count({
         where: {
           event: event.id,
           status: 'admitted',
         },
       });
 
-      event.stackCount = await Stack.count({
+      event.stackCount = await SeqModels.Stack.count({
         where: {
           event: event.id,
           status: 'admitted',
@@ -119,36 +123,38 @@ module.exports = {
 
       const queue = [];
       const getStackedNews = async (i) => {
-        const stack = { ...event.stack[i] };
+        const stack = { ...event.stacks[i] };
         let newsExist;
         if (checkNewsIncluded && +includes.stack === stack.id) {
-          newsExist = await News.count({
-            event: event.id,
-            id: +includes.news,
-            stack: stack.id,
-            status: 'admitted',
+          newsExist = await SeqModels.News.count({
+            where: {
+              event: event.id,
+              id: +includes.news,
+              stack: stack.id,
+              status: 'admitted',
+            },
           });
         }
-        stack.news = await News.find({
+        stack.news = await SeqModels.News.find({
           where: {
             stack: stack.id,
             status: 'admitted',
           },
-          sort: 'time ASC',
+          order: [['time', 'ASC']],
           ...(newsExist ? {} : { limit: 3 }),
         });
         if (!stack.time && stack.news.length) {
           stack.time = stack.news[0].time;
         }
-        stack.newsCount = await News.count({
+        stack.newsCount = await SeqModels.News.count({
           where: {
             stack: stack.id,
             status: 'admitted',
           },
         });
-        event.stack[i] = stack;
+        event.stacks[i] = stack;
       };
-      for (let i = 0; i < event.stack.length; i++) {
+      for (let i = 0; i < event.stacks.length; i++) {
         queue.push(getStackedNews(i));
       }
       await Promise.all(queue);
@@ -158,27 +164,40 @@ module.exports = {
   },
 
   getContribution: async (event, withData = true) => {
-    const select = ['model', 'target', 'operation', 'client'];
+    const attributes = ['model', 'target', 'operation', 'client'];
     if (withData) {
-      select.push('before');
-      select.push('data');
+      attributes.push('before');
+      attributes.push('data');
     }
 
-    let target = event.id;
+    let records = await SeqModels.Record.findAll({
+      attributes,
+      where: {
+        action: {
+          [Op.or]: ['createEvent', 'updateEventStatus', 'updateEventDetail'],
+        },
+        target: event.id,
+      },
+      include: [{ model: SeqModels.Client }],
+    });
 
     if (event.headerImage) {
-      if (typeof event.headerImage === 'number') {
-        target = [event.id, event.headerImage];
-      } else {
-        target = [event.id, event.headerImage.id];
-      }
-    }
+      const headerImageRecords = await SeqModels.Record.findAll({
+        attributes,
+        where: {
+          action: {
+            [Op.or]: ['createEventHeaderImage', 'updateEventHeaderImage'],
+          },
+          target: typeof event.headerImage === 'number'
+            ? event.headerImage
+            : event.headerImage.id,
+        },
+        include: [{ model: SeqModels.Client }],
+      });
 
-    const records = await Record.find({
-      action: ['createEvent', 'updateEventStatus', 'updateEventDetail', 'createEventHeaderImage', 'updateEventHeaderImage'],
-      target,
-      select,
-    }).populate('client');
+      records = records.concat[headerImageRecords];
+      records.sort((a, b) => a.updatedAt - b.updatedAt);
+    }
 
     for (const record of records) {
       if (record.client) {
