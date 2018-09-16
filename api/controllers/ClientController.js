@@ -25,7 +25,10 @@ module.exports = {
 
     const client = await SeqModels.Client.findOne({
       where: {
-        username: data.username,
+        [Op.or]: [
+          { username: data.username },
+          { email: data.username },
+        ],
       },
     });
 
