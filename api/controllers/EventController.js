@@ -72,11 +72,15 @@ const EventController = {
     data.pinyin = EventService.generatePinyin(data.name);
 
     try {
-      event = await SQLService.create({
-        model: 'event',
-        data,
-        action: 'createEvent',
-        client: req.session.clientId,
+      await sequelize.transaction(async transaction => {
+        event = await SeqModels.Event.create(data, { transaction });
+        await RecordService.create({
+          model: 'event',
+          data,
+          action: 'createEvent',
+          client: req.session.clientId,
+          target: event.id,
+        }, { transaction });
       });
 
       res.status(201).json({
