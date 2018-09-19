@@ -1,4 +1,5 @@
 const axios = require('axios');
+const SeqModels = require('../../seqModels');
 
 const { TELE_TOKEN } = process.env;
 
@@ -14,15 +15,18 @@ module.exports = {
     disableWebPagePreview,
     disableNotification,
     replyToMessageId,
-    replyMarkup
+    replyMarkup,
+    notifyMissingToken = false,
   ) {
-    if (!TELE_TOKEN) {
+    if (!TELE_TOKEN && notifyMissingToken) {
       throw new Error('Environment Variable for TelegramService \'TELE_TOKEN\' undefined');
     }
 
     if (
-      typeof chatId === 'undefined' ||
-      typeof text === 'undefined'
+      notifyMissingToken && (
+        typeof chatId === 'undefined' ||
+        typeof text === 'undefined'
+      )
     ) {
       throw new TypeError(`params chatId of text is undefined`);
     }
@@ -62,11 +66,17 @@ module.exports = {
 
   async sendNewsAdmitted(news, handler) {
     try {
-      const submitRecord = await Record.findOne({
-        model: 'News',
-        action: 'createNews',
-        target: news.id,
-      }).populate('client');
+      const submitRecord = await SeqModels.Record.findOne({
+        where: {
+          model: 'News',
+          action: 'createNews',
+          target: news.id,
+        },
+        include: [{
+          model: SeqModels.Client,
+          required: false,
+        }],
+      });
 
       if (!submitRecord) {
         throw new Error('Record is not exist');
@@ -88,11 +98,17 @@ module.exports = {
 
   async sendNewsRejected(news, handler) {
     try {
-      const submitRecord = await Record.findOne({
-        model: 'News',
-        action: 'createNews',
-        target: news.id,
-      }).populate('client');
+      const submitRecord = await SeqModels.Record.findOne({
+        where: {
+          model: 'News',
+          action: 'createNews',
+          target: news.id,
+        },
+        include: [{
+          model: SeqModels.Client,
+          required: false,
+        }],
+      });
 
       if (!submitRecord) {
         throw new Error('Record is not exist');
@@ -129,11 +145,17 @@ module.exports = {
 
   async sendEventAdmitted(event, handler) {
     try {
-      const submitRecord = await Record.findOne({
-        model: 'Event',
-        action: 'createEvent',
-        target: event.id,
-      }).populate('client');
+      const submitRecord = await SeqModels.Record.findOne({
+        where: {
+          model: 'Event',
+          action: 'createEvent',
+          target: event.id,
+        },
+        include: [{
+          model: SeqModels.Client,
+          required: false,
+        }],
+      });
 
       if (!submitRecord) {
         throw new Error('Record is not exist');
@@ -155,18 +177,24 @@ module.exports = {
 
   async sendEventRejected(event, handler) {
     try {
-      const submitRecord = await Record.findOne({
-        model: 'Event',
-        action: 'createEvent',
-        target: event.id,
-      }).populate('client');
+      const submitRecord = await SeqModels.Record.findOne({
+        where: {
+          model: 'Event',
+          action: 'createEvent',
+          target: event.id,
+        },
+        include: [{
+          model: SeqModels.Client,
+          required: false,
+        }],
+      });
 
       if (!submitRecord) {
-        throw new Error('Record is not exist');
+        throw new Error('Record does not exist');
       }
 
-      const username = (submitRecord.client && submitRecord.client.username)
-        ? submitRecord.client.username
+      const username = (submitRecord.owner && submitRecord.owner.username)
+        ? submitRecord.owner.username
         : '游客';
 
       const content =
