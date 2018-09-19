@@ -88,122 +88,134 @@ module.exports = {
 
   findEvent: async (eventName, { includes = {} } = {}) => {
     const checkNewsIncluded = includes.stack && includes.news;
-    const event = await SeqModels.Event.findOne({
+    let event = await SeqModels.Event.findOne({
+      attributes: { exclude: ['pinyin'] },
       where: {
         [Op.or]: [
           { id: parseInt(eventName) > -1 ? parseInt(eventName) : -1 },
           { name: eventName },
         ],
       },
+      include: [
+        {
+          model: SeqModels.HeaderImage,
+          as: 'headerImage',
+          required: false,
+        }, {
+          model: SeqModels.Stack,
+          as: 'stacks',
+          where: {
+            status: 'admitted',
+            order: { [Op.gte]: 0 },
+          },
+          order: [['order', 'DESC']],
+          required: false,
+          include: {
+            model: SeqModels.News,
+            as: 'news',
+            where: { status: 'admitted' },
+            order: [['time', 'ASC']],
+            limit: 3,
+            required: false,
+          },
+        },
+      ],
     });
 
-    event.headerImage = await event.getHeaderImage();
-    event.stacks = await event.getStacks({
+    if (!event) return;
+
+    event = event.get({ plain: true });
+
+    event.newsCount = await SeqModels.News.count({
       where: {
+        event: event.id,
         status: 'admitted',
-        order: { [Op.gte]: 0 },
       },
-      order: [['order', 'DESC']],
     });
 
-    if (event) {
-      event.newsCount = await SeqModels.News.count({
-        where: {
-          event: event.id,
-          status: 'admitted',
-        },
-      });
+    event.stackCount = await SeqModels.Stack.count({
+      where: {
+        event: event.id,
+        status: 'admitted',
+      },
+    });
 
-      event.stackCount = await SeqModels.Stack.count({
-        where: {
-          event: event.id,
-          status: 'admitted',
-        },
-      });
+    const queue = [];
+    const getStackedNews = async (i) => {
+      const stack = { ...event.stacks[i] };
+      let newsExist;
+      if (checkNewsIncluded && +includes.stack === stack.id) {
+        newsExist = await SeqModels.News.count({
+          where: {
+            event: event.id,
+            id: +includes.news,
+            stack: stack.id,
+            status: 'admitted',
+          },
+        });
+      }
 
-      const queue = [];
-      const getStackedNews = async (i) => {
-        const stack = { ...event.stacks[i] };
-        let newsExist;
-        if (checkNewsIncluded && +includes.stack === stack.id) {
-          newsExist = await SeqModels.News.count({
-            where: {
-              event: event.id,
-              id: +includes.news,
-              stack: stack.id,
-              status: 'admitted',
-            },
-          });
-        }
+      if (newsExist) {
         stack.news = await SeqModels.News.find({
           where: {
             stack: stack.id,
             status: 'admitted',
           },
           order: [['time', 'ASC']],
-          ...(newsExist ? {} : { limit: 3 }),
         });
-        if (!stack.time && stack.news.length) {
-          stack.time = stack.news[0].time;
-        }
-        stack.newsCount = await SeqModels.News.count({
-          where: {
-            stack: stack.id,
-            status: 'admitted',
-          },
-        });
-        event.stacks[i] = stack;
-      };
-      for (let i = 0; i < event.stacks.length; i++) {
-        queue.push(getStackedNews(i));
       }
-      await Promise.all(queue);
+
+      if (!stack.time && stack.news.length) {
+        stack.time = stack.news[0].time;
+      }
+
+      stack.newsCount = await SeqModels.News.count({
+        where: {
+          stack: stack.id,
+          status: 'admitted',
+        },
+      });
+      event.stacks[i] = stack;
+    };
+    for (let i = 0; i < event.stacks.length; i++) {
+      queue.push(getStackedNews(i));
     }
+    await Promise.all(queue);
 
     return event;
   },
 
   getContribution: async (event, withData = true) => {
-    const attributes = ['model', 'target', 'operation', 'client'];
+    const attributes = ['model', 'target', 'operation', 'owner'];
     if (withData) {
       attributes.push('before');
       attributes.push('data');
     }
 
-    let records = await SeqModels.Record.findAll({
+    const records = await SeqModels.Record.findAll({
       attributes,
       where: {
-        action: {
-          [Op.or]: ['createEvent', 'updateEventStatus', 'updateEventDetail'],
+        [Op.or]: [{
+          action: {
+            [Op.or]: ['createEvent', 'updateEventStatus', 'updateEventDetail'],
+          },
+          target: event.id,
         },
-        target: event.id,
-      },
-      include: [{ model: SeqModels.Client }],
-    });
-
-    if (event.headerImage) {
-      const headerImageRecords = await SeqModels.Record.findAll({
-        attributes,
-        where: {
+        event.headerImage ? {
           action: {
             [Op.or]: ['createEventHeaderImage', 'updateEventHeaderImage'],
           },
           target: typeof event.headerImage === 'number'
             ? event.headerImage
             : event.headerImage.id,
-        },
-        include: [{ model: SeqModels.Client }],
-      });
-
-      records = records.concat[headerImageRecords];
-      records.sort((a, b) => a.updatedAt - b.updatedAt);
-    }
-
-    for (const record of records) {
-      if (record.client) {
-        record.client = ClientService.sanitizeClient(record.client);
-      }
-    }
+        } : undefined],
+      },
+      include: [{
+        model: SeqModels.Client,
+        attributes: ['username', 'role', 'id'],
+      }],
+      order: [['updatedAt', 'DESC']],
+    });
 
     return records;
   },
