@@ -6,6 +6,7 @@
  */
 const SeqModels = require('../../seqModels');
 const _ = require('lodash');
+const isUrl = require('../../utils/urlValidator');
 
 const EventController = {
 
@@ -75,7 +76,7 @@ const EventController = {
       await sequelize.transaction(async transaction => {
         event = await SeqModels.Event.create(data, { transaction });
         await RecordService.create({
-          model: 'event',
+          model: 'Event',
           data,
           action: 'createEvent',
           client: req.session.clientId,
@@ -129,48 +130,62 @@ const EventController = {
     }
 
     try {
-      const query = {
-        model: 'event',
-        client: req.session.clientId,
-        where: { id: event.id },
-      };
+      await sequelize.transaction(async transaction => {
+        const query = {
+          model: 'Event',
+          client: req.session.clientId,
+        };
 
-      if (changes.status) {
-        await SQLService.update({
-          action: 'updateEventStatus',
-          data: { status: changes.status },
-          before: { status: event.status },
-          ...query,
-        });
-      }
+        if (changes.status) {
+          await SeqModels.Event.update({
+            status: changes.status,
+          }, {
+            where: { id: event.id },
+            transaction,
+          });
 
-      const selfClient = req.currentClient;
-      if (
-        (event.status === 'pending' || event.status === 'rejected') &&
-        changes.status === 'admitted'
-      ) {
-        TelegramService.sendEventAdmitted(event, selfClient);
-      } else if (
-        event.status === 'pending' &&
-        changes.status === 'rejected'
-      ) {
-        TelegramService.sendEventRejected(event, selfClient);
-      }
+          await RecordService.update({
+            ...query,
+            action: 'updateEventStatus',
+            data: { status: changes.status },
+            before: event.status,
+            target: event.id,
+          }, { transaction });
+        }
 
-      delete changes.status;
-      const before = {};
-      for (const i of Object.keys(changes)) {
-        before[i] = event[i];
-      }
+        const selfClient = req.currentClient;
+        if (
+          (event.status === 'pending' || event.status === 'rejected') &&
+          changes.status === 'admitted'
+        ) {
+          TelegramService.sendEventAdmitted(event, selfClient);
+        } else if (event.status === 'pending' && changes.status === 'rejected') {
+          TelegramService.sendEventRejected(event, selfClient);
+        }
 
-      if (Object.getOwnPropertyNames(changes).length > 0) {
-        await SQLService.update({
-          action: 'updateEventDetail',
-          data: changes,
-          before,
-          ...query,
-        });
-      }
+        delete changes.status;
+        const before = {};
+        for (const i of Object.keys(changes)) {
+          before[i] = event[i];
+        }
+
+        if (Object.getOwnPropertyNames(changes).length > 0) {
+          await SeqModels.Event.update({
+            status: changes.status,
+          }, {
+            where: { id: event.id },
+            transaction,
+          });
+
+          await RecordService.update({
+            ...query,
+            action: 'updateEventDetail',
+            data: changes,
+            before: event.status,
+            target: event.id,
+          }, { transaction });
+        }
+      });
 
       res.status(201).json({
         message: '修改成功',
@@ -228,9 +243,7 @@ const EventController = {
         if (where && req.session && req.session.clientId) {
           // const client = await Client.findOne({ id: req.session.clientId });
           const client = await SeqModels.Client.findOne({
-            where: {
-              id: req.session.clientId,
-            },
+            where: { id: req.session.clientId },
             transaction,
           });
 
@@ -245,13 +258,11 @@ const EventController = {
 
         let events = await SeqModels.Event.findAll({
           where,
-          include: [
-            {
-              as: 'headerImage',
-              model: SeqModels.HeaderImage,
-              required: false,
-            },
-          ],
+          include: [{
+            as: 'headerImage',
+            model: SeqModels.HeaderImage,
+            required: false,
+          }],
           order: [['updatedAt', 'DESC']],
           transaction,
         });
@@ -408,7 +419,7 @@ const EventController = {
       });
     }
 
-    let headerImage = { event: event.id };
+    const headerImage = { event: event.id };
 
     for (const attribute of ['imageUrl', 'source', 'sourceUrl']) {
       if (req.body[attribute]) {
@@ -416,25 +427,44 @@ const EventController = {
       }
     }
 
+    if ((headerImage.sourceUrl && !isUrl(headerImage.sourceUrl)) ||
+      (headerImage.imageUrl && !isUrl(headerImage.imageUrl))) {
+      console.log(headerImage.imageUrl, headerImage.sourceUrl);
+      return res.status(400).json({
+        message: '链接格式不规范',
+      });
+    }
+
     try {
-      const data = {
-        where: { event: event.id },
-        data: headerImage,
-        client: req.session.clientId,
+      const query = {
         model: 'HeaderImage',
+        client: req.session.clientId,
+        data: headerImage,
       };
-      if (req.method === 'PUT') {
-        headerImage = await SQLService.update({
-          action: 'updateEventHeaderImage',
-          before: event.headerImage,
-          ...data,
-        });
-      } else {
-        headerImage = await SQLService.create({
-          action: 'createEventHeaderImage',
-          ...data,
-        });
-      }
+
+      await sequelize.transaction(async transaction => {
+        if (req.method === 'PUT') {
+          await SeqModels.HeaderImage.upsert(headerImage, {
+            where: { id: event.headerImage.id },
+            transaction,
+          });
+          await RecordService.update({
+            ...query,
+            action: 'updateEventHeaderImage',
+            target: headerImage.id,
+            before: event.headerImage,
+          }, { transaction });
+        } else {
+          await SeqModels.HeaderImage.create({
+            ...headerImage,
+            event: event.id,
+          }, { transaction });
+          await RecordService.create({
+            ...query,
+            action: 'createEventHeaderImage',
+          }, { transaction });
+        }
+      });
     } catch (err) {
       return res.serverError(err);
     }
