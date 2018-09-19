@@ -48,6 +48,7 @@
     "urlencode": "^1.1.0",
     "uuid": "^3.2.1",
     "v2land-sails-pg-session": "^1.0.2",
+    "validator": "^10.7.1",
     "waterline-sequel": "^0.6.4",
     "yarn": "^1.5.1"
   },

@@ -5234,6 +5234,10 @@ validator@^10.4.0:
   version "10.4.0"
   resolved "https://registry.yarnpkg.com/validator/-/validator-10.4.0.tgz#ee99a44afb3bb5ed350a159f056ca72a204cfc3c"
 
+validator@^10.7.1:
+  version "10.7.1"
+  resolved "https://registry.yarnpkg.com/validator/-/validator-10.7.1.tgz#dd4cc750c2134ce4a15a2acfc7b233669d659c5b"
+
 validator@~3.41.2:
   version "3.41.3"
   resolved "https://registry.yarnpkg.com/validator/-/validator-3.41.3.tgz#bd214a4f7372db32ba78b899525f5f91adb3d217"
