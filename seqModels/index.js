@@ -39,11 +39,6 @@ Stack.hasMany(News, {
   sourceKey: 'id',
 });
 
-Record.belongsTo(Client, {
-  foreignKey: 'client',
-  sourceKey: 'id',
-});
-
 Client.hasMany(Auth, {
   as: 'auths',
   foreignKey: 'owner',
@@ -59,6 +54,10 @@ Client.hasMany(Subscription, {
 Client.hasMany(Report, {
   as: 'reports',
   foreignKey: 'client',
+});
+
+Record.belongsTo(Client, {
+  foreignKey: 'owner',
 });
 
 Auth.belongsTo(Client, {
