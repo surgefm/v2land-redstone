@@ -1,10 +1,6 @@
-const { URL } = require('url');
+const validator = require('validator');
 
-module.exports = (url) => {
-  try {
-    new URL(url);
-    return true;
-  } catch (err) {
-    return false;
-  }
-};
+module.exports = (url) => validator.isURL(url, {
+  protocols: ['http', 'https'],
+  require_protocol: true,
+});
