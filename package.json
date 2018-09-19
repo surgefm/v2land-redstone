@@ -30,7 +30,7 @@
     "nodemailer": "^4.4.2",
     "nodemailer-express-handlebars": "^2.0.0",
     "oauth": "^0.9.15",
-    "parse-domain": "^2.0.0",
+    "parse-domain": "^2.1.2",
     "pg": "^7.4.3",
     "pg-hstore": "^2.3.2",
     "pinyin": "^2.8.3",
