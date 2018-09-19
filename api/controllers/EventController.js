@@ -429,7 +429,6 @@ const EventController = {
 
     if ((headerImage.sourceUrl && !isUrl(headerImage.sourceUrl)) ||
       (headerImage.imageUrl && !isUrl(headerImage.imageUrl))) {
-      console.log(headerImage.imageUrl, headerImage.sourceUrl);
       return res.status(400).json({
         message: '链接格式不规范',
       });

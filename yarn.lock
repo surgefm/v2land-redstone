@@ -1993,8 +1993,8 @@ globule@^1.0.0:
     minimatch "~3.0.2"
 
 got@^8.0.1:
-  version "8.3.1"
-  resolved "https://registry.yarnpkg.com/got/-/got-8.3.1.tgz#093324403d4d955f5a16a7a8d39955d055ae10ed"
+  version "8.3.2"
+  resolved "https://registry.yarnpkg.com/got/-/got-8.3.2.tgz#1d23f64390e97f776cac52e5b936e5f514d2e937"
   dependencies:
     "@sindresorhus/is" "^0.7.0"
     cacheable-request "^2.1.1"
@@ -3048,8 +3048,8 @@ mimic-fn@^1.0.0:
   resolved "https://registry.yarnpkg.com/mimic-fn/-/mimic-fn-1.2.0.tgz#820c86a39334640e99516928bd03fca88057d022"
 
 mimic-response@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/mimic-response/-/mimic-response-1.0.0.tgz#df3d3652a73fded6b9b0b24146e6fd052353458e"
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/mimic-response/-/mimic-response-1.0.1.tgz#4923538878eef42063cb8a3e3b0798781487ab1b"
 
 "minimatch@2 || 3", minimatch@^3.0.2, minimatch@^3.0.4, minimatch@~3.0.0, minimatch@~3.0.2:
   version "3.0.4"
@@ -3375,7 +3375,7 @@ osenv@^0.1.4:
 
 p-cancelable@^0.4.0:
   version "0.4.1"
-  resolved "https://registry.yarnpkg.com/p-cancelable/-/p-cancelable-0.4.1.tgz#35f363d67d52081c8d9585e37bcceb7e0bbcb2a0"
+  resolved "http://registry.npmjs.org/p-cancelable/-/p-cancelable-0.4.1.tgz#35f363d67d52081c8d9585e37bcceb7e0bbcb2a0"
 
 p-finally@^1.0.0:
   version "1.0.0"
@@ -3419,9 +3419,9 @@ pako@~0.2.0:
   version "0.2.9"
   resolved "https://registry.yarnpkg.com/pako/-/pako-0.2.9.tgz#f3f7522f4ef782348da8161bad9ecfd51bf83a75"
 
-parse-domain@^2.0.0:
-  version "2.1.1"
-  resolved "https://registry.yarnpkg.com/parse-domain/-/parse-domain-2.1.1.tgz#e3b4b423011b902367cf0685bc482f3afa673a4d"
+parse-domain@^2.1.2:
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/parse-domain/-/parse-domain-2.1.2.tgz#8c536bdecf7a9af01bb6d7ad30eb794791d6c2c7"
   dependencies:
     chai "^4.1.2"
     fs-copy-file-sync "^1.1.1"
