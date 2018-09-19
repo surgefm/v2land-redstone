@@ -1,6 +1,7 @@
 language: node_js
 services:
   - redis-server
+  - postgresql
   - docker
 addons:
   postgresql: "10"
