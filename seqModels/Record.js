@@ -16,7 +16,6 @@ const Record = global.sequelize.define('record', {
   },
   target: {
     type: Sequelize.INTEGER,
-    allowNull: false,
   },
   operation: Sequelize.ENUM(
     'create',
