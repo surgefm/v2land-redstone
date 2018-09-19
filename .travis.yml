@@ -4,7 +4,7 @@ services:
   - postgresql
   - docker
 addons:
-  postgresql: "10"
+  postgresql: "9.4"
 node_js:
   - "8"
 env:
