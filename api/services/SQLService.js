@@ -20,7 +20,7 @@ const SQLService = {
     createdAt = createdAt || (data ? data.createdAt : null) || new Date();
     updatedAt = updatedAt || (data ? data.updatedAt : null) || new Date();
     return await pgClient.query(`
-      INSERT INTO record(model, operation, action, client, data, before, target, "createdAt", "updatedAt")
+      INSERT INTO record(model, operation, action, owner, data, before, target, "createdAt", "updatedAt")
       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
     `, [model, operation, action, client, data, before, target, createdAt, updatedAt]);
   },
@@ -189,7 +189,7 @@ const SQLService = {
         model,
         operation,
         action,
-        client,
+        owner: client,
         before,
         data: object,
         target: object.id,

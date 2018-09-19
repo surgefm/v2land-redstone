@@ -9,25 +9,29 @@ const refineData = (data = {}) => {
   return data;
 };
 
+/**
+ * model, action, target, client, data, before
+ */
+
 const RecordService = {
   create: async (data, options) => {
     return SeqModels.Record.create({
       ...refineData(data),
-      action: 'create',
+      operation: 'create',
     }, options);
   },
 
   update: async (data, options) => {
-    return SeqModels.Record.update({
+    return SeqModels.Record.create({
       ...refineData(data),
-      action: 'update',
+      operation: 'update',
     }, options);
   },
 
   destroy: async (data, options) => {
     return SeqModels.Record.create({
       ...refineData(data),
-      action: 'destroy',
+      operation: 'destroy',
     }, options);
   },
 };
