@@ -21,6 +21,10 @@ Event.hasMany(Stack, {
   sourceKey: 'id',
 });
 
+Event.hasMany(News, {
+  foreignKey: 'event',
+});
+
 Event.hasMany(Critique, {
   foreignKey: 'event',
 });

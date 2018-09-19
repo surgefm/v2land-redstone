@@ -1,8 +1,10 @@
 language: node_js
 services:
-  - postgresql
   - redis-server
+  - postgresql
   - docker
+addons:
+  postgresql: "9.4"
 node_js:
   - "8"
 env:

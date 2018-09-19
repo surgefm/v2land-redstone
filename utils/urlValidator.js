@@ -1,3 +1,5 @@
+const { URL } = require('url');
+
 module.exports = (url) => {
   try {
     new URL(url);
