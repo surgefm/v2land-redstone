@@ -1,8 +1,11 @@
+const Sequelize = require('sequelize');
+const Op = Sequelize.Op;
+const SeqModels = require('../../../seqModels');
+
 module.exports = function PgPoolInit(sails) {
   let Model;
   const checkInterval = 1000;
   return {
-
     initialize: function(cb) {
       sails.on('hook:orm:loaded', () => {
         if (sails.config.globals.notification) {
@@ -13,7 +16,6 @@ module.exports = function PgPoolInit(sails) {
         cb();
       });
     },
-
   };
 
   /**
@@ -21,20 +23,16 @@ module.exports = function PgPoolInit(sails) {
    */
   async function check() {
     try {
-      const notification = await Model.notification.findOne({
-        sort: 'time asc',
-        where: { status: 'active' },
-      })
-        .populate('event')
-        .populate('subscriptions', {
-          where: { status: 'active' },
-        });
+      const notification = await SeqModels.Notification.findOne({
+        order: sequelize.literal('time DESC'),
+        where: { status: 'pending' },
+        include: [SeqModels.Event],
+      });
 
       if (!notification) {
         setTimeout(check, checkInterval);
       } else if (!notification.event || !notification.event.name) {
-        notification.status = 'inactive';
-        await notification.save();
+        await notification.upsert({ status: 'inactive' });
         setTimeout(check, checkInterval);
       } else if (notification.time - Date.now() < 0) {
         await notify(notification);
@@ -52,90 +50,94 @@ module.exports = function PgPoolInit(sails) {
    * 发出推送
    */
   async function notify(notification) {
-    const { event, subscriptions } = notification;
+    const { event } = notification;
     const mode = ModeService[notification.mode];
-    const news = await Model.news.findOne({
-      where: {
-        status: 'admitted',
-        event: event.id,
-      },
-      sort: 'time desc',
+    const { news, stack } = notification.content;
+    if ((mode.needNews && !news) || (mode.needStack && !stack)) {
+      return SeqModels.Notification.upsert({ status: 'invalid' }, {
+        where: { id: notification.id },
+      });
+    }
+
+    const template = await mode.getTemplate({
+      notification,
+      event,
+      news: news, // news and stack may be undefined in some cases.
+      stack: stack,
     });
 
-    if (!news && mode.needNews) {
-      notification.status = 'inactive';
-      return notification.save();
-    }
-
-    const template = await mode.getTemplate({ notification, event, news });
-    const promises = [];
-    const notificationData = { ...notification };
-    for (const attribute of ['subscriptions', '_properties',
-      'associations', 'associationsCache', 'inspect']) {
-      delete notificationData[attribute];
-    }
-
+    const notificationData = notification.get({ plain: true });
     notificationData.event = notification.event.id;
 
-    for (const subscription of subscriptions) {
-      const notify = async () => {
-        try {
-          const data = {
-            model: 'Subscription',
-            target: subscription.id,
-            action: 'notify',
-            data: { ...notificationData },
-          };
+    const subscriptions = await SeqModels.Subscription.findAll({
+      where: {
+        modes: {
+          [Op.contains]: [notification.mode],
+        },
+        status: 'active',
+      },
+    });
 
-          const same = await SQLService.find({
-            model: 'record',
-            where: data,
-          });
-
-          if (same.length > 0) {
-            // Already notified.
-            return;
-          }
-
-          switch (subscription.method) {
-            case 'email':
-              await notifyByEmail(subscription, template);
-              break;
-            case 'twitter':
-              await notifyByTwitter(subscription, template);
-              break;
-            case 'twitterAt':
-              await notifyByTwitterAt(subscription, template);
-              break;
-            case 'weibo':
-              await notifyByWeibo(subscription, template);
-              break;
-            case 'weiboAt':
-              await notifyByWeiboAt(subscription, template);
-              break;
-          }
-          await Record.create({
-            model: 'Subscription',
-            operation: 'create',
-            action: 'notify',
-            target: subscription.id,
-            data,
-          });
-          return;
-        } catch (err) {
-          await disableSubscription(subscription);
-        }
+    const notify = async (subscription) => {
+      const data = {
+        model: 'Subscription',
+        target: subscription.id,
+        action: 'notify',
       };
 
-      promises.push(notify());
-    }
+      const same = await SeqModels.Record.count({
+        where: {
+          ...data,
+          'data.id': notificationData.id,
+        },
+      });
 
+      if (same > 0) {
+        // Already notified.
+        return;
+      }
+
+      if (subscription.isInstant) {
+        switch (subscription.method) {
+        case 'email':
+          await notifyByEmail(subscription, template);
+          break;
+        case 'twitter':
+          await notifyByTwitter(subscription, template);
+          break;
+        case 'twitterAt':
+          await notifyByTwitterAt(subscription, template);
+          break;
+        case 'weibo':
+          await notifyByWeibo(subscription, template);
+          break;
+        case 'weiboAt':
+          await notifyByWeiboAt(subscription, template);
+          break;
+        }
+      }
+
+      await sequelize.transaction(async transaction => {
+        if (subscription.isDailyReport) {
+          await SeqModels.Notification.addReport({
+            time: notificationData.time,
+            client: subscription.client,
+            status: 'pending',
+          }, { transaction });
+        }
+
+        await RecordService.create({
+          model: 'Subscription',
+          action: 'notify',
+          target: subscription.id,
+          data: notificationData,
+          transaction,
+        });
+      });
+    };
+
+    const promises = subscriptions.map(s => notify(s));
     await Promise.all(promises);
-    notification.time = await NotificationService.notified(
-      notification.mode,
-      notification.event,
-    );
-    await notification.save();
   }
 
   /**
@@ -256,10 +258,5 @@ module.exports = function PgPoolInit(sails) {
     message += template.url;
 
     return WeiboService.post(auth, message);
-  }
-
-  async function disableSubscription(subscription) {
-    // diasble function disabled.
-    return;
   }
 };

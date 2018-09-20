@@ -5,6 +5,8 @@
  * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
  */
 
+const SeqModels = require('../../seqModels');
+
 module.exports = {
 
   unsubscribe: async (req, res) => {
@@ -14,25 +16,36 @@ module.exports = {
       });
     }
 
-    const subscription = await Subscription.findOne(req.query);
+    const subscription = await SeqModels.Subscription.findOne({
+      where: req.query,
+    });
+
     if (!subscription) {
       return res.status(404).json({
         message: '未找到该关注',
       });
     }
 
-    await SQLService.update({
-      model: 'subscription',
-      action: 'cancelSubscription',
-      where: { id: subscription.id },
-      client: req.session.clientId,
-      data: { status: 'unsubscribed' },
+    await sequelize.transaction(async transaction => {
+      await SeqModels.Subscription.update({ status: 'unsubscribed' }, {
+        where: { id: subscription.id },
+        transaction,
+      });
+      await RecordService.update({
+        model: 'Subscription',
+        action: 'cancelSubscription',
+        client: req.session.clientId,
+        data: { status: 'unsubscribed' },
+        before: subscription,
+      }, { transaction });
     });
 
-    const otherSubscriptions = await Subscription.find({
-      subscriber: subscription.subscriber,
-      event: subscription.event,
-      id: { '!': subscription.id },
+    const otherSubscriptions = await SeqModels.Subscription.findAll({
+      where: {
+        subscriber: subscription.subscriber,
+        event: subscription.event,
+        id: { '!': subscription.id },
+      },
     });
 
     if (otherSubscriptions.length > 0) {
