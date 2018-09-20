@@ -6,6 +6,7 @@
  */
 
 const _ = require('lodash');
+const SeqModels = require('../../seqModels');
 
 const StackController = {
 
@@ -16,7 +17,9 @@ const StackController = {
       stack.contribution = await StackService.getContribution(id, true);
       if (stack.status !== 'admitted') {
         if (req.session.clientId) {
-          client = await Client.findOne({ id: req.session.clientId });
+          client = await SeqModels.Client.findOne({
+            where: { id: req.session.clientId },
+          });
           if (client && ['manager', 'admin'].includes(client.role)) {
             return res.status(200).json({ stack });
           }
@@ -40,8 +43,8 @@ const StackController = {
     }
 
     if (where && req.session.clientId) {
-      const client = await Client.findOne({
-        id: req.session.clientId,
+      const client = await SeqModels.Client.findOne({
+        where: { id: req.session.clientId },
       });
       if (client && ['manager', 'admin'].includes(client.role)) {
         isManager = true;
@@ -52,29 +55,30 @@ const StackController = {
       where.status = 'admitted';
     }
 
-    const stacks = await Stack.find({
+    const stacks = await SeqModels.Stack.findAll({
       where: where || {
         status: 'admitted',
       },
-      sort: 'updatedAt DESC',
+      include: [{
+        model: SeqModels.News,
+        where: { status: 'admitted' },
+        order: [['time', 'ASC']],
+        required: false,
+        limit: 3,
+      }],
+      order: [['updatedAt', 'DESC']],
     });
 
     const getDetail = async (stack) => {
-      if (stack.status === 'admitted') {
-        const news = await News.findOne({
-          where: {
-            status: 'admitted',
-            stack: stack.id,
-          },
-          sort: 'time ASC',
-        });
-        if (news) {
-          stack.time = news.time;
-        }
+      stack = stack.get({ plain: true });
+      if (stack.status === 'admitted' && stack.news.length) {
+        stack.time = stack.news[0].time;
       }
-      stack.newsCount = await News.count({
-        status: 'admitted',
-        stack: stack.id,
+      stack.newsCount = await SeqModels.News.count({
+        where: {
+          status: 'admitted',
+          stack: stack.id,
+        },
       });
     };
 
@@ -117,30 +121,21 @@ const StackController = {
       });
     }
 
-    const pg = await sails.pgPool.connect();
-
-    const queue = [];
-    const updateStack = async (stack) => {
-      if (pg.hasRolledBack) return;
-      await StackService.updateStack(stack.id, stack, req.session.clientId, pg);
-    };
-    for (const stack of stackList) {
-      queue.push(updateStack(stack));
-    }
-
     try {
-      await pg.query(`BEGIN`);
-      await Promise.all(queue);
-      if (!pg.hasRolledBack) {
-        await pg.query(`COMMIT`);
-      }
-      return res.status(201).json({
-        message: '修改成功',
+      await sequelize.transaction(async transaction => {
+        const queue = stackList.map(stack => StackService.updateStack({
+          id: stack.id,
+          data: stack,
+          clientId: req.session.clientId,
+          transaction,
+        }));
+        await Promise.all(queue);
+        return res.status(201).json({
+          message: '修改成功',
+        });
       });
     } catch (err) {
       return res.serverError(err);
-    } finally {
-      pg.release();
     }
   },
 
