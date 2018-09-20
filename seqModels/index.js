@@ -74,7 +74,15 @@ Subscription.belongsTo(Client, {
 
 Notification.belongsToMany(Report, {
   through: 'ReportNotification',
+  foreignKey: 'notificationId',
 });
+
+Report.belongsToMany(Notification, {
+  through: 'ReportNotification',
+  foreignKey: 'reportId',
+});
+
+sequelize.sync();
 
 module.exports = {
   Auth,
