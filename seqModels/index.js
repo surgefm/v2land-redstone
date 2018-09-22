@@ -9,6 +9,7 @@ const Record = require('./Record');
 const Stack = require('./Stack');
 const Subscription = require('./Subscription');
 const Report = require('./Report');
+const Contact = require('./Contact');
 
 Event.hasOne(HeaderImage, {
   as: 'headerImage',
@@ -105,4 +106,5 @@ module.exports = {
   Stack,
   Subscription,
   Report,
+  Contact,
 };
