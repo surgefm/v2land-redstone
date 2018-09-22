@@ -55,6 +55,11 @@ Client.hasMany(Subscription, {
   targetKey: 'id',
 });
 
+Client.hasMany(Contact, {
+  as: 'contacts',
+  foreignKey: 'owner',
+});
+
 Client.hasMany(Report, {
   as: 'reports',
   foreignKey: 'client',
@@ -72,6 +77,8 @@ Subscription.belongsTo(Client, {
   foreignKey: 'subscriber',
 });
 
+Subscription.hasOne(Contact);
+
 Notification.belongsToMany(Report, {
   through: 'ReportNotification',
   foreignKey: 'notificationId',
@@ -81,6 +88,8 @@ Report.belongsToMany(Notification, {
   through: 'ReportNotification',
   foreignKey: 'reportId',
 });
+
+Contact.hasOne(Auth);
 
 sequelize.sync();
 
