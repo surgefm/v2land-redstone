@@ -86,7 +86,7 @@ module.exports = {
     return events.toJSON();
   },
 
-  findEvent: async (eventName, { includes = {} } = {}) => {
+  findEvent: async (eventName, { includes = {}, eventOnly = false } = {}) => {
     const checkNewsIncluded = includes.stack && includes.news;
     let event = await SeqModels.Event.findOne({
       attributes: { exclude: ['pinyin'] },
@@ -96,7 +96,7 @@ module.exports = {
           { name: eventName },
         ],
       },
-      include: [
+      include: eventOnly ? [] : [
         {
           model: SeqModels.HeaderImage,
           as: 'headerImage',
