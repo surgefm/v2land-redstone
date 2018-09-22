@@ -14,10 +14,6 @@ const Subscription = global.sequelize.define('subscription', {
     )),
     defaultValue: [],
   },
-  contact: {
-    type: Sequelize.JSON,
-    allowNull: false,
-  },
   status: {
     type: Sequelize.ENUM('active', 'unsubscribed', 'failed'),
     defaultValue: 'active',
