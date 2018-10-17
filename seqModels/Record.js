@@ -40,6 +40,7 @@ const Record = global.sequelize.define('record', {
     'createSubscription',
     'updateSubscription',
     'cancelSubscription',
+    'addModeToSubscription',
     'createClient',
     'updateClientRole',
     'updateClientDetail',

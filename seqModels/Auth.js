@@ -2,7 +2,7 @@ const Sequelize = require('sequelize');
 
 const Auth = global.sequelize.define('auth', {
   site: {
-    type: Sequelize.TEXT,
+    type: Sequelize.ENUM('twitter', 'weibo', 'email'),
     allowNull: false,
   },
   profileId: Sequelize.TEXT, // 微博/Twitter 的用户 uid

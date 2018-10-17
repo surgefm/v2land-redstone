@@ -1,36 +1,29 @@
 const Sequelize = require('sequelize');
 
 const Subscription = global.sequelize.define('subscription', {
-  method: {
-    type: Sequelize.ENUM('twitter', 'weibo', 'twitterAt', 'weiboAt', 'email', 'emailDailyReport'),
-    allowNull: false,
-  },
-  modes: {
+  methods: {
     type: Sequelize.ARRAY(Sequelize.ENUM(
+      'twitter',
+      'weibo',
+      'twitterAt',
+      'weiboAt',
+      'email',
+      'emailDailyReport'
+    )),
+    defaultValue: [],
+  },
+  mode: {
+    type: Sequelize.ENUM(
       'EveryNewStack',
       '30DaysSinceLatestStack',
       'new', '7DaysSinceLatestNews',
       'daily', 'weekly', 'monthly',
-    )),
-    defaultValue: [],
+    ),
+    allowNull: false,
   },
   status: {
-    type: Sequelize.ENUM('active', 'unsubscribed', 'failed'),
+    type: Sequelize.ENUM('active', 'unsubscribed'),
     defaultValue: 'active',
-  },
-  isInstant: {
-    type: Sequelize.BOOLEAN,
-    defaultValue: false,
-  },
-  isDailyReport: {
-    type: Sequelize.BOOLEAN,
-    defaultValue: true,
-  },
-  // Use the lastUpdate field to mark the latest notification time
-  // so as to determine whether to send a notification.
-  lastUpdate: {
-    type: Sequelize.DATE,
-    defaultValue: new Date('2000.1.1'),
   },
   unsubscribeId: {
     type: Sequelize.TEXT,
