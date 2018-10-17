@@ -5,6 +5,10 @@ const Contact = global.sequelize.define('contact', {
     type: Sequelize.ENUM(['email', 'twitter', 'weibo', 'telegram']),
     allowNull: false,
   },
+  status: {
+    type: Sequelize.ENUM('active', 'expired'),
+    allowNull: false,
+  },
 }, {
   freezeTableName: true,
 });
