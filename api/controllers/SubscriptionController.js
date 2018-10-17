@@ -6,6 +6,8 @@
  */
 
 const SeqModels = require('../../seqModels');
+const { Op } = require('sequelize');
+const _ = require('lodash');
 
 module.exports = {
 
@@ -26,16 +28,21 @@ module.exports = {
       });
     }
 
+    let methods;
+
     await sequelize.transaction(async transaction => {
-      await SeqModels.Subscription.update({ status: 'unsubscribed' }, {
-        where: { id: subscription.id },
-        transaction,
-      });
+      if (req.query.method) {
+        methods = _.without(subscription.methods, req.query.method);
+        await subscription.update({ methods }, { transaction });
+      } else {
+        await subscription.update({ status: 'unsubscribed' }, { transaction });
+      }
+
       await RecordService.update({
         model: 'Subscription',
         action: 'cancelSubscription',
         client: req.session.clientId,
-        data: { status: 'unsubscribed' },
+        data: req.query.method ? methods : { status: 'unsubscribed' },
         before: subscription,
       }, { transaction });
     });
@@ -44,7 +51,7 @@ module.exports = {
       where: {
         subscriber: subscription.subscriber,
         event: subscription.event,
-        id: { '!': subscription.id },
+        id: { [Op.ne]: subscription.id },
       },
     });
 
@@ -73,117 +80,133 @@ module.exports = {
 
     if (!ModeService[mode]) {
       return res.status(404).json({
-        name: 'Subscribing mode not found.',
+        name: 'Subscribing mode not found',
         message: '未找到该关注模式',
       });
     }
 
-    const eventName = req.param('eventName');
-    const event = await Event.findOne({
-      or: [
-        { id: parseInt(eventName) > -1 ? parseInt(eventName) : -1 },
-        { name: eventName },
-      ],
+    if (!['twitter', 'twitterAt', 'weibo', 'weiboAt', 'email'].includes(contact.method)) {
+      return res.status(400).json({
+        name: 'Notification method not supported',
+        message: '不支持的推送方式',
+      });
+    }
+
+    const contactInDb = await SeqModels.Contact.findOne({
+      where: {
+        owner: req.session.cliendId,
+        type: ContactService.getTypeFromMethod(contact.method),
+      },
     });
+
+    if (!contactInDb) {
+      return res.status(400).json({
+        name: 'Corresponding third-party contact not found',
+        message: '未找到您在相关网络服务上的绑定。请于绑定后进行',
+      });
+    }
+
+    const eventName = req.param('eventName');
+    const event = await EventService.findEvent(eventName, { eventOnly: true });
 
     if (!event) {
       return res.status(404).json({
-        name: 'Event not found.',
+        name: 'Event not found',
         message: '未找到该事件',
       });
     }
 
     if (event.status !== 'admitted') {
       return res.status(406).json({
-        message: '该事件并不处于开放状态',
+        message: '该事件并不处于开放状态，无法进行关注',
       });
     }
 
-    const time = await NotificationService.getNextTime(mode, event);
-    const notification = await Notification.findOrCreate({
-      mode,
-      time,
-      event: event.id,
-    });
-
-    const subscriptions = await SQLService.find({
-      model: 'subscription',
+    let subscription = await SeqModels.Subscription.findOne({
       where: {
         subscriber: req.session.clientId,
-        notification: notification.id,
-        mode,
-        contact,
-        method: contact.method,
+        event: event.id,
+        mode: contact.mode,
         status: 'active',
       },
     });
 
-    if (subscriptions[0]) {
+    if (subscription && subscription.methods.includes(contact.method)) {
       return res.status(200).json({
         message: '已有相同关注',
-        subscription: subscriptions[0],
+        subscription,
       });
     }
 
-    let subscription = subscriptions[0];
-
-    if (contact.method === 'email' && !contact.email) {
-      return res.status(400).json({
-        message: '请提供推送邮箱',
-      });
-    } else if (['twitter', 'twitterAt'].includes(contact.method)) {
-      const auth = await Auth.findOne({
-        site: 'twitter',
-        id: contact.twitter,
-        owner: req.session.clientId,
-      });
-
-      if (!auth) {
-        return res.status(406).json({
-          message: '您尚未绑定 Twitter，无法采用该推送方式',
-        });
-      }
-    } else if (['weibo', 'weiboAt'].includes(contact.method)) {
-      const auth = await Auth.findOne({
-        site: 'weibo',
-        id: contact.weibo,
-        owner: req.session.clientId,
-      });
-
-      if (!auth) {
-        return res.status(406).json({
-          message: '您尚未绑定微博，无法采用该推送方式',
-        });
-      }
-    } else if (!['twitter', 'twitterAt', 'weibo', 'weiboAt', 'email'].includes(contact.method)) {
-      return res.status(400).json({
-        message: '不支持的推送方式',
-      });
-    }
+    // const time = await NotificationService.getNextTime(mode, event);
+    // const notification = await Notification.findOrCreate({
+    //   mode,
+    //   time,
+    //   event: event.id,
+    // });
 
     try {
-      const unsubscribeId = SubscriptionService.generateUnsubscribeId();
-      subscription = {
-        subscriber: req.session.clientId,
-        notification: notification.id,
-        event: event.id,
-        mode,
-        contact,
-        method: contact.method,
-        status: 'active',
-        unsubscribeId,
-      };
+      const beforeData = subscription.get({ plain: true });
+      await sequelize.transaction(async transaction => {
+        if (subscription) {
+          subscription = await subscription.update({
+            methods: [mode, ...subscription.modes],
+            status: 'active',
+          }, { transaction });
 
-      subscription = await SQLService.create({
-        model: 'subscription',
-        action: 'createSubscription',
-        client: req.session.clientId,
-        data: subscription,
-      });
+          await RecordService.update({
+            model: 'Subscription',
+            action: 'addModeToSubscription',
+            client: req.session.clientId,
+            data: subscription,
+            before: beforeData,
+          }, { transaction });
+        } else {
+          const notificationInDb = await SeqModels.Notification.findOne({
+            where: {
+              event: event.id,
+              mode,
+            },
+          });
 
-      res.status(201).json({
-        message: '关注成功',
-        subscription,
+          if (!notificationInDb) {
+            const time = await NotificationService.getNextTime(mode, event);
+            await SeqModels.Notification.create({
+              event: event.id,
+              content: event,
+              mode,
+              time,
+            }, { transaction });
+          }
+
+          const unsubscribeId = SubscriptionService.generateUnsubscribeId();
+          subscription = {
+            subscriber: req.session.clientId,
+            event: event.id,
+            mode,
+            methods: [contact.method],
+            status: 'active',
+            unsubscribeId,
+          };
+
+          subscription = await SeqModels.Subscription.create(
+            subscription,
+            { transaction },
+          );
+
+          await RecordService.create({
+            model: 'Subscription',
+            action: 'createSubscription',
+            client: req.session.clientId,
+            data: subscription,
+            before: beforeData,
+          }, { transaction });
+        }
+
+        return res.status(201).json({
+          message: '关注成功',
+          subscription,
+        });
       });
     } catch (err) {
       return res.serverError(err);
