@@ -138,13 +138,6 @@ module.exports = {
       });
     }
 
-    // const time = await NotificationService.getNextTime(mode, event);
-    // const notification = await Notification.findOrCreate({
-    //   mode,
-    //   time,
-    //   event: event.id,
-    // });
-
     try {
       const beforeData = subscription.get({ plain: true });
       await sequelize.transaction(async transaction => {
@@ -173,7 +166,6 @@ module.exports = {
             const time = await NotificationService.getNextTime(mode, event);
             await SeqModels.Notification.create({
               event: event.id,
-              content: event,
               mode,
               time,
             }, { transaction });
