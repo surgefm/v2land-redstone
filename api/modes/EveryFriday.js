@@ -1,8 +1,4 @@
 const time = require('time');
-const SeqModels = require('../../seqModels');
-const Sequelize = require('sequelize');
-const Op = Sequelize.Op;
-const { MissingParameterError } = require('../../utils/errors');
 
 const mode = {
   needNews: false,
@@ -13,12 +9,12 @@ const mode = {
     date.setHours(20);
     date.setMinutes(0);
     date.setSeconds(0);
-    date.setDate(date.getDate() + 1);
+    date.setDate(date.getDate() + 7 + (5 - date.getDay()));
 
     return date;
   },
-  notified: async (inputs) => {
-    return mode.new(inputs);
+  notified: async () => {
+    return mode.new();
   },
   getTemplate: async ({ notification, event, stack }) => {
     if (!event) {
@@ -45,13 +41,13 @@ const mode = {
       });
     }
 
-    let message = `${event.name} 发来了每日一次的定时提醒，`;
+    let message = `${event.name} 发来了每周五的定时提醒，`;
     message += stack
       ? `它的最新进展为 ${stack.title}。`
       : '该事件至今尚无进展。';
 
     return {
-      subject: `${event.name} 发来了每日一次的定时提醒`,
+      subject: `${event.name} 发来了每周五的定时提醒`,
       message,
       button: '点击按钮查看事件',
       url: `${sails.config.globals.site}/${event.id}`,

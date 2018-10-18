@@ -15,6 +15,8 @@ const modeCollection = {
 
   'monthly': require('../modes/monthly'),
 
+  'EveryFriday': require('../modes/EveryFriday'),
+
 };
 
 module.exports = modeCollection;
