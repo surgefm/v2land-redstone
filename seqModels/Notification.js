@@ -15,10 +15,6 @@ const Notification = global.sequelize.define('notification', {
     ),
     allowNull: false,
   },
-  content: {
-    type: Sequelize.JSONB,
-    allowNull: false,
-  },
   status: {
     type: Sequelize.ENUM([
       'pending', 'ongoing', 'complete',
