@@ -10,9 +10,7 @@ async function notifyByTwitter(subscription, template) {
       status: 'active',
       owner: subscription.subscriber,
     },
-    include: [{
-      model: SeqModels.Auth,
-    }],
+    include: [SeqModels.Auth],
   });
 
   if (!contact) {
@@ -21,10 +19,8 @@ async function notifyByTwitter(subscription, template) {
     return sails.log.error(new Error(`未找到用户 ${subscription.subscriber} 的 Twitter 绑定`));
   }
 
-  let message = template.message.length > 100
-    ? (template.message.slice(0, 100) + '... ')
-    : (template.message + ' ');
-  message += template.url + ' #浪潮';
+  let message = UtilService.shortenString(template.message, 100);
+  message += ' ' + template.url + ' #浪潮';
   return TwitterService.tweet(contact.auth, message);
 }
 

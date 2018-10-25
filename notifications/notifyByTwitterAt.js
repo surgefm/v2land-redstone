@@ -29,10 +29,8 @@ async function notifyByTwitterAt(subscription, template) {
   if (!client) return disableSubscription(subscription);
 
   let message = '@' + client.profile.screen_name + ' ';
-  message += (template.message.length > 100
-    ? (template.message.slice(0, 100) + '... ')
-    : (template.message + ' '))
-    + template.url + ' #浪潮';
+  message += UtilService.shortenString(template.message, 100);
+  message += ' ' + template.url + ' #浪潮';
   return TwitterService.tweet(auth, message);
 }
 

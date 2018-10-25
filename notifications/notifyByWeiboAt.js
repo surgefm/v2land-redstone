@@ -29,11 +29,9 @@ async function notifyByWeiboAt(subscription, template) {
   if (!client) return disableSubscription(subscription);
 
   let message = '@' + client.profile.screen_name + ' ';
-  message += template.message.length > 100
-    ? (template.message.slice(0, 100) + '...')
-    : (template);
+  message += UtilService.shortenString(template.message, 96);
   message += ' ' + UtilService.generateRandomV2landString(4);
-  message += template.url;
+  message += ' ' + template.url;
 
   return WeiboService.post(auth, message);
 }

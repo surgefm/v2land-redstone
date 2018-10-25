@@ -10,9 +10,7 @@ async function notifyByWeibo(subscription, template) {
       status: 'active',
       owner: subscription.subscriber,
     },
-    include: [{
-      model: SeqModels.Auth,
-    }],
+    include: [SeqModels.Auth],
   });
 
   if (!contact) {
@@ -20,9 +18,7 @@ async function notifyByWeibo(subscription, template) {
     return sails.log.error(new Error(`未找到用户 ${subscription.subscriber} 的微博绑定`));
   }
 
-  const message = (template.message.length > 100
-    ? (template.message.slice(0, 100) + '...')
-    : (template))
+  const message = UtilService.shortenString(template.message, 100)
     + ' ' + template.url;
   return WeiboService.post(contact.auth, message);
 }
