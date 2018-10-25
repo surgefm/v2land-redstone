@@ -2,15 +2,38 @@
  * 发出推送
  */
 const SeqModels = require('../seqModels');
+const notifyByEmail = require('./notifyByEmail');
+const notifyByEmailDailyReport = require('./notifyByEmailDailyReport');
+const notifyByTwitter = require('./notifyByTwitter');
+const notifyByTwitterAt = require('./notifyByTwitterAt');
+const notifyByWeibo = require('./notifyByWeibo');
+const notifyByWeiboAt = require('./notifyByWeiboAt');
 
 async function notify(notification) {
-  const { event } = notification;
+  const { event } = notification; // Event must be an object.
   const mode = ModeService[notification.mode];
-  const { news, stack } = notification.content;
-  if ((mode.needNews && !news) || (mode.needStack && !stack)) {
-    return SeqModels.Notification.upsert({ status: 'invalid' }, {
-      where: { id: notification.id },
+  let news;
+  let stack;
+  if (mode.needNews) {
+    news = SeqModels.News.findOne({
+      where: {
+        event: notification.event,
+        status: 'admitted',
+      },
+      order: [['time', 'DESC']],
     });
+    if (!news) return;
+  }
+
+  if (mode.needStack) {
+    stack = SeqModels.Stack.findOne({
+      where: {
+        event: notification.event,
+        order: { [Op.gte]: 0 },
+      },
+      order: [['order', 'DESC']],
+    });
+    if (!stack) return;
   }
 
   const template = await mode.getTemplate({
@@ -51,43 +74,31 @@ async function notify(notification) {
       return;
     }
 
-    if (subscription.isInstant) {
-      switch (subscription.method) {
+    const queue = [];
+
+    for (const method of subscription.methods) {
+      switch (method) {
       case 'email':
-        await notifyByEmail(subscription, template);
+        queue.push(notifyByEmail(subscription, template));
+        break;
+      case 'emailDailyReport':
+        queue.push(notifyByEmailDailyReport(subscription, template, notification));
         break;
       case 'twitter':
-        await notifyByTwitter(subscription, template);
+        queue.push(notifyByTwitter(subscription, template));
         break;
       case 'twitterAt':
-        await notifyByTwitterAt(subscription, template);
+        queue.push(notifyByTwitterAt(subscription, template));
         break;
       case 'weibo':
-        await notifyByWeibo(subscription, template);
+        queue.push(notifyByWeibo(subscription, template));
         break;
       case 'weiboAt':
-        await notifyByWeiboAt(subscription, template);
+        queue.push(notifyByWeiboAt(subscription, template));
         break;
       }
     }
-
-    await sequelize.transaction(async transaction => {
-      if (subscription.isDailyReport) {
-        await SeqModels.Notification.addReport({
-          time: notificationData.time,
-          client: subscription.client,
-          status: 'pending',
-        }, { transaction });
-      }
-
-      await RecordService.create({
-        model: 'Subscription',
-        action: 'notify',
-        target: subscription.id,
-        data: notificationData,
-        transaction,
-      });
-    });
+    await Promise.all(queue);
   };
 
   const promises = subscriptions.map(s => sendNotification(s));
