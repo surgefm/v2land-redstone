@@ -9,6 +9,7 @@ const Record = require('./Record');
 const Stack = require('./Stack');
 const Subscription = require('./Subscription');
 const Report = require('./Report');
+const ReportNotification = require('./ReportNotification');
 const Contact = require('./Contact');
 
 Event.hasOne(HeaderImage, {
@@ -63,7 +64,7 @@ Client.hasMany(Contact, {
 
 Client.hasMany(Report, {
   as: 'reports',
-  foreignKey: 'client',
+  foreignKey: 'owner',
 });
 
 Record.belongsTo(Client, {
@@ -81,12 +82,12 @@ Subscription.belongsTo(Client, {
 Subscription.hasOne(Contact);
 
 Notification.belongsToMany(Report, {
-  through: 'ReportNotification',
+  through: ReportNotification,
   foreignKey: 'notificationId',
 });
 
 Report.belongsToMany(Notification, {
-  through: 'ReportNotification',
+  through: ReportNotification,
   foreignKey: 'reportId',
 });
 
