@@ -19,4 +19,10 @@ const modeCollection = {
 
 };
 
-module.exports = modeCollection;
+const names = {};
+Object.keys(modeCollection).map(key => names[key] = modeCollection[key].name);
+
+module.exports = {
+  names,
+  ...modeCollection,
+};

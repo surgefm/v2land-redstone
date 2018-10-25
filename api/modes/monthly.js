@@ -1,6 +1,7 @@
 const time = require('time');
 
 const mode = {
+  name: '每月一次的定时提醒',
   needNews: false,
   new: async () => {
     const date = new time.Date();
