@@ -31,7 +31,7 @@ const EmailService = {
     const email = {
       to: client.email,
       from: {
-        name: '浪潮',
+        name: '浪潮 V2Land',
         address: 'verify@langchao.org',
       },
       template: 'registration',
@@ -56,7 +56,7 @@ const EmailService = {
 
     const email = {
       from: {
-        name: '浪潮',
+        name: '浪潮 V2Land',
         address: 'notify@langchao.org',
       },
       to: subscription.contact.email,
