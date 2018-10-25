@@ -4,6 +4,7 @@ const Op = Sequelize.Op;
 const { MissingParameterError } = require('../../utils/errors');
 
 module.exports = {
+  name: '新的事件进展',
   needStack: true,
   new: async () => {
     return new Date('1/1/2000');

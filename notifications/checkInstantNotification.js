@@ -1,32 +1,30 @@
 /**
- * 检查有没有需要发出的推送
+ * 检查有没有需要发出的即时推送
  */
 const SeqModels = require('../seqModels');
+const notify = require('./notify');
 const checkInterval = 500;
 
-async function check() {
+async function checkInstantNotification() {
   try {
     const notification = await SeqModels.Notification.findOne({
-      order: sequelize.literal('time DESC'),
+      order: [['time', 'DESC']],
       where: { status: 'pending' },
       include: [SeqModels.Event],
     });
 
     if (!notification) {
-      setTimeout(check, checkInterval);
-    } else if (!notification.event || !notification.event.name) {
-      await notification.upsert({ status: 'inactive' });
-      setTimeout(check, checkInterval);
+      setTimeout(checkInstantNotification, checkInterval);
     } else if (notification.time - Date.now() < 0) {
       await notify(notification);
       check();
     } else {
-      setTimeout(check, checkInterval);
+      setTimeout(checkInstantNotification, checkInterval);
     }
   } catch (err) {
     sails.log.error(err);
-    setTimeout(check, checkInterval);
+    setTimeout(checkInstantNotification, checkInterval);
   }
 }
 
-module.exports = check;
+module.exports = checkInstantNotification;

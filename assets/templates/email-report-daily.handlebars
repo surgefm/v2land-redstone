@@ -4,16 +4,8 @@
 <head>
   <meta name="viewport" content="width=device-width">
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  <title>你收到了一条通知</title>
+  <title>你的浪潮简讯 - {{date.str}}</title>
   <style>
-    /* -------------------------------------
-        INLINED WITH htmlemail.io/inline
-    ------------------------------------- */
-
-    /* -------------------------------------
-        RESPONSIVE AND MOBILE FRIENDLY STYLES
-    ------------------------------------- */
-
     @media only screen and (max-width: 620px) {
       table[class=body] h1 {
         font-size: 28px !important;
@@ -25,17 +17,20 @@
       table[class=body] td,
       table[class=body] span,
       table[class=body] a {
-        font-size: 16px !important;
+        font-size: 14px !important;
+      }
+      table[class=body] td {
+        padding: 8px 4px;
       }
       table[class=body] .wrapper,
       table[class=body] .article {
-        padding: 10px !important;
+        padding: 5px !important;
       }
       table[class=body] .content {
         padding: 0 !important;
       }
       table[class=body] .container {
-        padding: 0 !important;
+        padding: 12px 0 !important;
         width: 100% !important;
       }
       table[class=body] .main {
@@ -87,19 +82,74 @@
         background-color: #34495e !important;
         border-color: #34495e !important;
       }
+
+      .subtitle {
+        font-size: 16px;
+        font-family: sans-serif;
+        font-weight: bold;
+        margin: 0;
+        margin-bottom: 8px;
+      }
+
+      .paragraph {
+        font-size: 14px;
+        font-family: sans-serif;
+        font-weight: normal;
+        margin: 0;
+        margin-bottom: 4px;
+      }
+
+      .title-line {
+        border: none;
+        border-top: 1px solid #999999;
+        color: #999999;
+        overflow: visible;
+        text-align: center;
+        height: 5px;
+        margin-top: 10px;
+      }
+
+      .title-line:after {
+        background: #fff;
+        content: '✧';
+        padding: 0 4px;
+        position: relative;
+        top: -11px;
+      }
+
+      .subtitle-line {
+        border: none;
+        border-top: 1px solid #999999;
+        overflow: visible;
+        height: 5px;
+        margin: 9px 24px 4px 24px;
+      }
+
+      p, span, td {
+        color: #333333;
+      }
+
+      .light-color {
+        color: #1e8bc3 !important;
+      }
+
+      ol {
+        list-style-position: inside;
+        list-style-type: decimal;
+      }
     }
   </style>
 </head>
 
 <body class="" style="background-color: #f6f6f6; font-family: sans-serif; -webkit-font-smoothing: antialiased; font-size: 14px; line-height: 1.4; margin: 0; padding: 0; -ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%;">
-  <table border="0" cellpadding="0" cellspacing="0" class="body" style="border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%; background-color: #f6f6f6;">
+  <table border="0" cellpadding="0" cellspacing="0" class="body" style="border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%; background-color: #f7f6f7;">
     <tr>
       <td style="font-family: sans-serif; font-size: 14px; vertical-align: top;">&nbsp;</td>
       <td class="container" style="font-family: sans-serif; font-size: 14px; vertical-align: top; display: block; Margin: 0 auto; max-width: 580px; padding: 10px; width: 580px;">
         <div class="content" style="box-sizing: border-box; display: block; Margin: 0 auto; max-width: 580px; padding: 10px;">
 
           <!-- START CENTERED WHITE CONTAINER -->
-          <table class="main" style="border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%; background: #ffffff; border-radius: 3px;">
+          <table class="main" style="border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%; background: #ffffff; border-radius: 8px;">
 
             <!-- START MAIN CONTENT AREA -->
             <tr>
@@ -107,25 +157,23 @@
                 <table border="0" cellpadding="0" cellspacing="0" style="border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%;">
                   <tr>
                     <td style="font-family: sans-serif; font-size: 14px; vertical-align: top;">
-                      <p style="font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; Margin-bottom: 15px;">亲爱的浪潮用户：</p>
-                      <p style="font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; Margin-bottom: 15px;">{{{message}}}</p>
-                      <table border="0" cellpadding="0" cellspacing="0" class="btn btn-primary" style="border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%; box-sizing: border-box;">
-                        <tbody>
-                          <tr>
-                            <td align="left" style="font-family: sans-serif; font-size: 14px; vertical-align: top; padding-bottom: 15px;">
-                              <table border="0" cellpadding="0" cellspacing="0" style="border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: auto;">
-                                <tbody>
-                                  <tr>
-                                    <td style="font-family: sans-serif; font-size: 14px; vertical-align: top; background-color: #3498db; border-radius: 5px; text-align: center;">
-                                      <a href="{{{url}}}" target="_blank" style="display: inline-block; color: #ffffff; background-color: #3498db; border: solid 1px #3498db; border-radius: 5px; box-sizing: border-box; cursor: pointer; text-decoration: none; font-size: 14px; font-weight: bold; margin: 0; padding: 12px 25px; text-transform: capitalize; border-color: #3498db;">{{{button}}}</a>
-                                    </td>
-                                  </tr>
-                                </tbody>
-                              </table>
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
+                      <p style="font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; Margin-bottom: 15px;">亲爱的{{client.username}}：</p>
+                      <p style="font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; Margin-bottom: 15px;">今天是 {{date.year}} 年 {{date.month}} 月 {{date.day}} 日，浪潮为你准时送来你的{{#if reportCount}}第 {{reportCount}} 期{{/if}}定制化每日简讯。在过去的二十四小时中，你共收到 {{notifications.length}} 条推送。</p>
+                      {{#each notificationGroups as |group mode|}}
+                        <hr class="title-line" />
+                        <p class="subtitle">{{lookup ../modeNames mode}}</p>
+                        {{#each group as |notification index|}}
+                          <p class="paragraph"><b>{{plusOne index}}. {{notification.event.name}}</b></p>
+                          <p class="paragraph" style="margin-bottom: 0;"><a class="light-color" href="https://langchao.org/{{notification.event.id}}/{{notification.stack.id}}">{{notification.stack.title}}</a></p>
+                          <p class="paragraph">{{notification.stack.description}}</p>
+                          {{#if (lookup group (plusOne index))}}
+                            <hr class="subtitle-line" />
+                          {{/if}}
+                        {{/each}}
+                      {{/each}}
+                      <hr class="title-line" />
+                      <p style="paragraph">以上是你今日的浪潮简讯，愿你关注的事件都有好的发展。</p>
+                      <img style="height: 24px; width: 24px; margin-top: 16px; margin-left: auto; margin-right: auto;" src="https://assets.v2land.net/" />
                     </td>
                   </tr>
                 </table>
@@ -140,8 +188,8 @@
             <table border="0" cellpadding="0" cellspacing="0" style="border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%;">
               <tr>
                 <td class="content-block powered-by" style="font-family: sans-serif; vertical-align: top; padding-bottom: 10px; padding-top: 10px; font-size: 12px; color: #999999; text-align: center;">
-                  <a href="https://langchao.org" style="color: #999999; font-size: 12px; text-align: center; text-decoration: none; padding-right: 5px;">浪潮 - 渴望重回土地</a>
-                  <a href="{{{unsubscribe}}}" style="color: #999999; font-size: 12px; text-align: center; text-decoration: underline;">取消订阅</a>
+                  <a href="https://langchao.org" target="_blank" style="color: #999999; font-size: 12px; text-align: center; text-decoration: none; padding-right: 5px;">浪潮 - 你的社会事件追踪工具</a>
+                  <a href="https://langchao.org/subscription" target="_blank" style="color: #999999; font-size: 12px; text-align: center; text-decoration: underline;">管理关注</a>
                 </td>
               </tr>
             </table>

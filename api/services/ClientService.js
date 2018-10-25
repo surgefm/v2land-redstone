@@ -9,6 +9,10 @@ const Op = Sequelize.Op;
 module.exports = {
 
   findClient: async (clientName, { transaction } = {}) => {
+    if (!['string', 'number'].includes(typeof clientName)) {
+      return clientName;
+    }
+
     let where;
 
     if (+clientName > 0) {

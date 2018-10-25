@@ -1,4 +1,5 @@
 module.exports = {
+  name: '新的新闻报道',
   needNews: true,
   new: async () => {
     return new Date('1/1/3000');

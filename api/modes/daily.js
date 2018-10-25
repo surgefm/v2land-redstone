@@ -5,6 +5,7 @@ const Op = Sequelize.Op;
 const { MissingParameterError } = require('../../utils/errors');
 
 const mode = {
+  name: '每日一次的定时提醒',
   needNews: false,
   new: async () => {
     const date = new time.Date();
