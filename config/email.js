@@ -28,7 +28,16 @@ if (SES_USER && SES_PASS) {
   });
 
   transporter.use('compile', hbs({
-    viewEngine: 'handlebars',
+    viewEngine: {
+      helpers: {
+        plusOne: (index) => index + 1,
+        if: function(conditional, options) {
+          if(conditional) {
+            return options.fn(this);
+          }
+        },
+      },
+    },
     viewPath: path.resolve(__dirname, '../assets/templates'),
   }));
 
