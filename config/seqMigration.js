@@ -13,7 +13,5 @@ const connection = {
 };
 
 module.exports = {
-  development: connection,
-  test: connection,
-  production: connection,
+  [process.env.NODE_ENV || 'development']: connection,
 };

@@ -107,5 +107,6 @@ module.exports = {
   Stack,
   Subscription,
   Report,
+  ReportNotification,
   Contact,
 };
