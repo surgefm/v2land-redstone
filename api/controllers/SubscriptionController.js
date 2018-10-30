@@ -131,11 +131,19 @@ module.exports = {
       },
     });
 
-    if (subscription && subscription.methods.includes(contact.method)) {
-      return res.status(200).json({
-        message: '已有相同关注',
-        subscription,
+    if (subscription) {
+      const contact = await SeqModels.Contact.findOne({
+        subscriptionId: subscription.id,
+        method: contact.method,
+        profileId: contact.profileId,
       });
+
+      if (contact) {
+        return res.status(200).json({
+          message: '已有相同关注',
+          subscription,
+        });
+      }
     }
 
     try {
@@ -146,6 +154,12 @@ module.exports = {
             methods: [mode, ...subscription.modes],
             status: 'active',
           }, { transaction });
+          await SeqModels.Contact.create({
+            subscriptionId: subscription.id,
+            method: contact.method,
+            profileId: contact.profileId,
+            authId: contact.authId,
+          });
 
           await RecordService.update({
             model: 'Subscription',
