@@ -1,9 +1,10 @@
 /**
  * 使用浪潮的绑定账号发布微博并 @ 用户
  */
-const SeqModels = require('../seqModels');
 
-async function notifyByWeiboAt(subscription, template) {
+const disableSubscriptionMethod = require('./disableSubscriptionMethod');
+
+async function notifyByWeiboAt({ contact, subscription, template }) {
   if (!sails.config.globals.officialAccount.weibo) {
     return sails.log.error(new Error('未配置官方微博账号'));
   }
@@ -13,22 +14,14 @@ async function notifyByWeiboAt(subscription, template) {
     ? profileId[Math.floor(Math.random() * profileId.length)]
     : profileId;
 
-  const auth = await SeqModels.Auth.findOne({
-    where: {
-      site: 'weibo',
-      profileId,
-    },
-  });
-
   if (!auth) {
     return sails.log.error(new Error(`未找到浪潮微博 ${profileId} 的绑定`));
   }
 
-  if (!subscription.contact.weibo) return disableSubscription(subscription);
-  const client = await Model.auth.findOne({ id: subscription.contact.weibo });
-  if (!client) return disableSubscription(subscription);
+  if (!subscription.contact.weibo) return disableSubscriptionMethod(subscription);
+  if (!contact.auth) return disableSubscriptionMethod(subscription);
 
-  let message = '@' + client.profile.screen_name + ' ';
+  let message = '@' + contact.auth.profile.screen_name + ' ';
   message += UtilService.shortenString(template.message, 96);
   message += ' ' + UtilService.generateRandomV2landString(4);
   message += ' ' + template.url;

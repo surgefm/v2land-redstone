@@ -1,18 +1,7 @@
 /**
  * 使用用户的绑定 Twitter 账号发布推文
  */
-const SeqModels = require('../seqModels');
-
-async function notifyByTwitter(subscription, template) {
-  const contact = await SeqModels.Contact.findOne({
-    where: {
-      type: 'twitter',
-      status: 'active',
-      owner: subscription.subscriber,
-    },
-    include: [SeqModels.Auth],
-  });
-
+async function notifyByTwitter({ contact, subscription, template }) {
   if (!contact) {
     subscription.status = 'failed';
     await subscription.save();

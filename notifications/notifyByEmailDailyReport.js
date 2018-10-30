@@ -3,7 +3,7 @@
  */
 const SeqModels = require('../seqModels');
 
-async function notifyByEmailDailyReport(subscription, template, notification) {
+async function notifyByEmailDailyReport({ subscription, template, notification }) {
   const time = ModeService.daily.new();
 
   await sequelize.transaction(async transaction => {
