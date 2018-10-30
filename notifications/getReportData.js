@@ -20,7 +20,7 @@ async function getReportData(report) {
 
   notificationGroups = _.groupBy(notifications, 'mode');
 
-  const client = await SeqModels.Client.findById(report.owner);
+  const client = await SeqModels.Client.findByPk(report.owner);
   const reportCount = await SeqModels.Record.count({
     where: {
       action: ModeService.getRecordActionName(report),

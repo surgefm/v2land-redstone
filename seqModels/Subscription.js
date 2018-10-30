@@ -1,17 +1,6 @@
 const Sequelize = require('sequelize');
 
 const Subscription = global.sequelize.define('subscription', {
-  methods: {
-    type: Sequelize.ARRAY(Sequelize.ENUM(
-      'twitter',
-      'weibo',
-      'twitterAt',
-      'weiboAt',
-      'email',
-      'emailDailyReport'
-    )),
-    defaultValue: [],
-  },
   mode: {
     type: Sequelize.ENUM(
       'EveryNewStack',

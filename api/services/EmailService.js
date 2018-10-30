@@ -49,7 +49,7 @@ const EmailService = {
     return EmailService.send(email);
   },
 
-  notify: async (subscription, template) => {
+  notify: async (address, subscription, template) => {
     template.unsubscribe = `${sails.config.globals.api}/subscription/unsubscribe?` +
       `id=${ subscription.id }` +
       `&unsubscribeId=${ subscription.unsubscribeId }`;
@@ -59,7 +59,7 @@ const EmailService = {
         name: '浪潮 V2Land',
         address: 'notify@langchao.org',
       },
-      to: subscription.contact.email,
+      to: address,
       subject: template.subject,
       template: 'notification',
       context: template,

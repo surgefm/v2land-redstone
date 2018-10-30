@@ -76,25 +76,37 @@ async function notify(notification) {
 
     const queue = [];
 
-    for (const method of subscription.methods) {
-      switch (method) {
+    const contactList = await SeqModels.Contact.find({
+      where: {
+        subscriptionId: subscription.id,
+        status: 'active',
+      },
+      include: [{
+        model: SeqModels.Auth,
+        required: false,
+      }],
+    });
+
+    for (const contact of contactList) {
+      const inputs = { contact, subscription, template, notification };
+      switch (contact.method) {
       case 'email':
-        queue.push(notifyByEmail(subscription, template));
+        queue.push(notifyByEmail(inputs));
         break;
       case 'emailDailyReport':
-        queue.push(notifyByEmailDailyReport(subscription, template, notification));
+        queue.push(notifyByEmailDailyReport(inputs));
         break;
       case 'twitter':
-        queue.push(notifyByTwitter(subscription, template));
+        queue.push(notifyByTwitter(inputs));
         break;
       case 'twitterAt':
-        queue.push(notifyByTwitterAt(subscription, template));
+        queue.push(notifyByTwitterAt(inputs));
         break;
       case 'weibo':
-        queue.push(notifyByWeibo(subscription, template));
+        queue.push(notifyByWeibo(inputs));
         break;
       case 'weiboAt':
-        queue.push(notifyByWeiboAt(subscription, template));
+        queue.push(notifyByWeiboAt(inputs));
         break;
       }
     }
