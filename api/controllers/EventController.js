@@ -154,14 +154,7 @@ const EventController = {
         }
 
         const selfClient = req.currentClient;
-        if (
-          (event.status === 'pending' || event.status === 'rejected') &&
-          changes.status === 'admitted'
-        ) {
-          TelegramService.sendEventAdmitted(event, selfClient);
-        } else if (event.status === 'pending' && changes.status === 'rejected') {
-          TelegramService.sendEventRejected(event, selfClient);
-        }
+        NotificationService.notifyWhenEventStatusChanges(event, changes, selfClient);
 
         delete changes.status;
         const before = {};

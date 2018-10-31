@@ -1,4 +1,5 @@
 const SeqModels = require('../../seqModels');
+const notifyWhenEventStatusChanges = require('./NotificationService/notifyWhenEventStatusChanges');
 
 const NotificationService = {
 
@@ -94,4 +95,7 @@ const NotificationService = {
 
 };
 
-module.exports = NotificationService;
+module.exports = {
+  notifyWhenEventStatusChanges,
+  ...NotificationService,
+};
