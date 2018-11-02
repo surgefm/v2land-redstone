@@ -1,6 +1,6 @@
 const { MissingParameterError } = require('../../../utils/errors');
 
-async function notifyWhenEventStatusChanges(oldEvent, newEvent, client) {
+async function notifyWhenEventStatusChanged(oldEvent, newEvent, client) {
   if (!oldEvent) {
     throw new MissingParameterError('oldEvent');
   }
@@ -53,4 +53,4 @@ async function sendTelegramNotification(event, status, handler) {
   return TelegramService.sendText(content, 'Markdown');
 }
 
-module.exports = notifyWhenEventStatusChanges;
+module.exports = notifyWhenEventStatusChanged;
