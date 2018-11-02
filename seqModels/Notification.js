@@ -17,7 +17,7 @@ const Notification = global.sequelize.define('notification', {
   },
   status: {
     type: Sequelize.ENUM([
-      'pending', 'ongoing', 'complete',
+      'pending', 'ongoing', 'complete', 'discarded',
     ]),
     defaultValue: 'pending',
   },
