@@ -2,6 +2,11 @@ const uniqueString = require('unique-string');
 const _ = require('lodash');
 
 module.exports = {
+  isAdmin: async (client) => {
+    client = await ClientService.findClient(client);
+    return client.role === 'admin';
+  },
+
   validateNumber: (value, defaultValue) => {
     if (_.isNumber(value)) {
       return value;

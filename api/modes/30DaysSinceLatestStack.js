@@ -4,6 +4,7 @@ const seqModels = require('../../seqModels');
 const mode = {
   name: '三十天未更新新闻',
   needNews: false,
+  keepLatest: true,
   new: async ({ event, stack, transaction }) => {
     const latestStack = stack || await seqModels.Stack.findOne({
       where: {

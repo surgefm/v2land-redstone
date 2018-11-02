@@ -51,7 +51,6 @@ const EventController = {
   },
 
   createEvent: async (req, res) => {
-    let client;
     if (!(req.body && req.body.name && req.body.description)) {
       return res.status(400).json({
         message: '缺少参数 name 或 description',
@@ -89,7 +88,7 @@ const EventController = {
         event,
       });
 
-      TelegramService.sendEventCreated(event, client);
+      NotificationService.notifyWhenEventCreated(event, req.session.clientId);
     } catch (err) {
       return res.serverError(err);
     }
@@ -317,6 +316,7 @@ const EventController = {
 
     if (data.status === 'admitted' && isManager) {
       await NotificationService.updateForNewNews(event, news);
+      NotificationService.notifyWhenStackStatusChanges(null, stack, client);
     }
   },
 
