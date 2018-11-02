@@ -4,6 +4,7 @@
  * @description :: Server-side logic for managing events
  * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
  */
+const axios = require('axios');
 const SeqModels = require('../../seqModels');
 const _ = require('lodash');
 const isUrl = require('../../utils/urlValidator');
@@ -359,6 +360,9 @@ const EventController = {
             message: '审核队列或新闻合辑内已有相同链接的新闻',
           });
         }
+
+        // Ask the Wayback Machine of Internet Archive to archive the webpage.
+        axios.get(`https://web.archive.org/save/${data.url}`);
 
         const news = await SeqModels.News.create(data, {
           raw: true,
