@@ -1,0 +1,68 @@
+const SeqModels = require('../../../seqModels');
+
+async function updateStackNotifications(stack, { transaction, force = false } = {}) {
+  const latestStack = await SeqModels.Stack.findOne({
+    where: {
+      event: event.id,
+      status: 'admitted',
+      order: 1,
+    },
+    sort: 'order DESC',
+    attributes: ['id'],
+  });
+
+  if (!force && (!latestStack || (+latestStack.id !== +stack.id))) return;
+
+  const recordCount = await SeqModels.Record.count({
+    model: 'Stack',
+    target: stack.id,
+    action: 'notifyNewStack',
+  });
+
+  if (!force && recordCount) return;
+
+  let event = stack.event;
+  if (typeof event !== 'object') {
+    event = await SeqModels.Event.findByPk(event);
+  }
+
+  if (!transaction) {
+    await sequelize.transaction(async transaction => {
+      return updateNotifications(event, stack, transaction);
+    });
+  } else {
+    return updateNotifications(event, stack, transaction);
+  }
+}
+
+async function updateNotifications(event, stack, transaction) {
+  const modes = ['EveryNewStack', '30DaysSinceLatestStack'];
+
+  for (const mode of modes) {
+    if (ModeService[mode].keepLatest) {
+      await SeqModels.Notification.update({
+        status: 'discarded',
+      }, {
+        where: {
+          event: event.id,
+          mode,
+        },
+        transaction,
+      });
+    }
+    await SeqModels.Notification.create({
+      time: await ModeService[mode].new({ event, stack, transaction }),
+      status: 'pending',
+      mode,
+    }, { transaction });
+  }
+
+  await SeqModels.Record.create({
+    model: 'Stack',
+    target: stack.id,
+    operation: 'create',
+    action: 'notifyNewStack',
+  }, { transaction });
+}
+
+module.exports = updateStackNotifications;
