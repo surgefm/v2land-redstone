@@ -1,4 +1,5 @@
 const { MissingParameterError } = require('../../../utils/errors');
+
 async function notifyWhenNewsStatusChanged(oldNews, newNews, client) {
   if (!newNews) {
     throw MissingParameterError('newNews');

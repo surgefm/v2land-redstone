@@ -1,4 +1,5 @@
 const SeqModels = require('../../seqModels');
+const createEventIntervalNotifications = require('./NotificationService/createEventIntervalNotifications');
 const notifyWhenEventCreated = require('./NotificationService/notifyWhenEventCreated');
 const notifyWhenNewsCreated = require('./NotificationService/notifyWhenNewsCreated');
 const notifyWhenEventStatusChanged = require('./NotificationService/notifyWhenEventStatusChanged');
@@ -102,6 +103,7 @@ const NotificationService = {
 };
 
 module.exports = {
+  createEventIntervalNotifications,
   notifyWhenEventCreated,
   notifyWhenNewsCreated,
   notifyWhenEventStatusChanged,

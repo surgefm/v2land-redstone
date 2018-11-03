@@ -3,6 +3,7 @@ const time = require('time');
 const mode = {
   name: '每周五定时提醒',
   needNews: false,
+  isInterval: true,
   new: async () => {
     const date = new time.Date();
 

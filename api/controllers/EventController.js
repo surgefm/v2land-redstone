@@ -82,6 +82,7 @@ const EventController = {
           client: req.session.clientId,
           target: event.id,
         }, { transaction });
+        await NotificationService.createEventIntervalNotifications(event, { transaction });
       });
 
       res.status(201).json({
