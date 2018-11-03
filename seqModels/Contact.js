@@ -22,6 +22,7 @@ const Contact = global.sequelize.define('contact', {
   status: {
     type: Sequelize.ENUM('active', 'inactive', 'expired'),
     allowNull: false,
+    defaultValue: 'active',
   },
 }, {
   freezeTableName: true,
