@@ -8,7 +8,7 @@ const checkInterval = 2000;
 async function checkReportNotification() {
   try {
     const report = await SeqModels.Report.findOne({
-      order: [['time', 'DESC']],
+      order: [['time', 'ASC']],
       where: { status: 'pending' },
     });
 
