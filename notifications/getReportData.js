@@ -38,11 +38,10 @@ async function getReportData(report) {
 }
 
 async function getNotificationData(notification) {
-  if (!notification.event) return;
-  const eventId = notification.event.id;
+  if (!notification.eventId) return;
   notification.stack = await SeqModels.Stack.findOne({
     where: {
-      event: eventId,
+      eventId: notification.eventId,
       status: 'admitted',
       order: { [Op.gte]: 0 },
     },
@@ -56,7 +55,7 @@ async function getNotificationData(notification) {
       required: false,
     },
   });
-  if (notification.stack.news.length) {
+  if (notification.stack.news && notification.stack.news.length) {
     notification.news = notification.stack.news[0];
   }
   return notification;

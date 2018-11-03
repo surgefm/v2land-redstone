@@ -250,7 +250,7 @@ module.exports = {
       });
     }
 
-    const targetClient = await Client.findOne({ id: data.id });
+    const targetClient = await SeqModels.Client.findById(data.id);
     if (!targetClient) {
       return res.status(404).json({
         message: '未找到目标用户',
@@ -260,9 +260,7 @@ module.exports = {
     try {
       await sequelize.transaction(async transaction => {
         const targetClient = await SeqModels.Client.findOne({
-          where: {
-            id: data.id,
-          },
+          where: { id: data.id },
           transaction,
         });
         const targetCurrentRole = targetClient.role;
@@ -378,12 +376,16 @@ module.exports = {
       }
     }
     try {
-      await SQLService.update({
-        action: 'updateClientDetail',
-        model: 'Client',
-        client: req.session.clientId,
-        data: changes,
-        where: { id: client.id },
+      await sequelize.transaction(async transaction => {
+        const origClient = client.get({ plain: true });
+        await client.update(changes, { transaction });
+        await RecordService.update({
+          data: changes,
+          client: req.session.clientId,
+          model: 'Client',
+          before: origClient,
+          action: 'updateClientDetail',
+        }, { transaction });
       });
 
       client = req.currentClient = await ClientService.findClient(client.id);
@@ -414,8 +416,7 @@ module.exports = {
       });
     }
 
-    let record = await SQLService.find({
-      model: 'Record',
+    let record = await SeqModels.Record.findOne({
       where: {
         action: 'createClientVerificationToken',
         data: {
@@ -439,7 +440,7 @@ module.exports = {
       });
     }
 
-    const client = await Client.findOne({ id: record.data.clientId });
+    const client = await SeqModels.Client.findById(record.data.clientId);
 
     if (!client) {
       return res.status(404).json({
@@ -513,32 +514,24 @@ module.exports = {
       await Promise.all(promises);
     };
 
-    const select = ['id', 'email', 'username', 'role'];
-    let clients;
-    if (where) {
-      clients = await Client.find({
-        where,
-        select,
-        sort: 'updatedAt DESC',
-      })
-        .populate('auths', {
-          select: ['id', 'site', 'profileId', 'profile'],
-          where: { profileId: { '>=': 1 } },
-        });
-    } else {
-      clients = await Client.find({
-        sort: 'updatedAt DESC',
-        select,
-      })
-        .paginate({
-          page,
-          limit: 10,
-        })
-        .populate('auths', {
-          select: ['id', 'site', 'profileId', 'profile'],
-          where: { profileId: { '>=': 1 } },
-        });
-    }
+    const attributes = ['id', 'email', 'username', 'role'];
+    const clients = await SeqModels.Client.find({
+      where: where || {},
+      sort: [['updatedAt', 'DESC']],
+      attributes,
+      offset: (page - 1) * 10,
+      limit: 10,
+      include: [{
+        model: SeqModels.Auth,
+        as: 'auths',
+        attributes: ['id', 'site', 'profileId', 'profile'],
+        where: {
+          profileId: {
+            [Op.gte]: 1,
+          },
+        },
+      }],
+    });
 
     await fetchDetail(clients);
 

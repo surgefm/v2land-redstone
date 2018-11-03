@@ -3,7 +3,7 @@ const SeqModels = require('../../../seqModels');
 async function updateStackNotifications(stack, { transaction, force = false } = {}) {
   const latestStack = await SeqModels.Stack.findOne({
     where: {
-      event: event.id,
+      eventId: stack.eventId,
       status: 'admitted',
       order: 1,
     },
@@ -23,7 +23,7 @@ async function updateStackNotifications(stack, { transaction, force = false } = 
 
   let event = stack.event;
   if (typeof event !== 'object') {
-    event = await SeqModels.Event.findById(event);
+    event = await SeqModels.Event.findById(stack.eventId);
   }
 
   if (!transaction) {
@@ -44,7 +44,7 @@ async function updateNotifications(event, stack, transaction) {
         status: 'discarded',
       }, {
         where: {
-          event: event.id,
+          eventId: event.id,
           mode,
         },
         transaction,
@@ -53,6 +53,7 @@ async function updateNotifications(event, stack, transaction) {
     await SeqModels.Notification.create({
       time: await ModeService[mode].new({ event, stack, transaction }),
       status: 'pending',
+      eventId: event.id,
       mode,
     }, { transaction });
   }

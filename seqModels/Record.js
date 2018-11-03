@@ -54,8 +54,8 @@ const Record = global.sequelize.define('record', {
     'sendWeeklyDailyReport',
     'sendMonthlyDailyReport',
   ),
-  before: Sequelize.JSON,
-  data: Sequelize.JSON,
+  before: Sequelize.JSONB,
+  data: Sequelize.JSONB,
 }, {
   freezeTableName: true,
 });

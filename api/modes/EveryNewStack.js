@@ -17,23 +17,21 @@ module.exports = {
       if (!notification) {
         throw new MissingParameterError('notification');
       }
-      event = notification.event;
+      event = notification.eventId;
     }
 
     if (typeof event === 'number') {
-      event = await SeqModels.Event.findOne({
-        where: { id: event },
-      });
+      event = await SeqModels.Event.findById(event);
     }
 
     if (!stack) {
       stack = await SeqModels.Stack.findOne({
         where: {
-          event: event.id,
+          eventId: event.id,
           status: 'admitted',
           order: { [Op.gte]: 0 },
         },
-        order: [['order', ASC]],
+        order: [['order', 'DESC']],
       });
     }
 

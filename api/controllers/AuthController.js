@@ -244,8 +244,10 @@ module.exports = {
     response = JSON.parse(response);
     auth.profileId = response.id_str;
     const sameAuth = await SeqModels.Auth.findOne({
-      site: 'twitter',
-      profileId: response.id_str,
+      where: {
+        site: 'twitter',
+        profileId: response.id_str,
+      },
     });
 
     let account = sameAuth || auth;
@@ -436,8 +438,10 @@ module.exports = {
       return res.serverError(err);
     }
     const sameAuth = await SeqModels.Auth.findOne({
-      site: 'weibo',
-      profileId: response.data.uid,
+      where: {
+        site: 'weibo',
+        profileId: response.data.uid,
+      },
     });
 
     let account = sameAuth || auth;

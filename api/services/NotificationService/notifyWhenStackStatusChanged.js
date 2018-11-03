@@ -30,9 +30,9 @@ async function sendTelegramNotification(stack, status, handler) {
   };
 
   let event = stack.event;
-  if (typeof event === 'number') {
+  if (!event) {
     event = await SeqModels.Event.findOne({
-      where: { id: event },
+      where: { id: stack.eventId },
       attributes: ['id', 'title'],
     });
   }

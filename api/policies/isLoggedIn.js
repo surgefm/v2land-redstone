@@ -7,6 +7,8 @@
  *
  */
 
+const SeqModels = require('../../seqModels');
+
 module.exports = async function(req, res, next) {
   if (typeof req.session === 'undefined') {
     return res.status(401).json({
@@ -36,7 +38,7 @@ async function getClient(req, clientId) {
   if (!clientId) {
     return false;
   }
-  const client = await Client.findOne({ id: clientId });
+  const client = await SeqModels.Client.findById(clientId);
   if (!client) {
     delete req.session.clientId;
     return false;

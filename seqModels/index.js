@@ -14,34 +14,34 @@ const Contact = require('./Contact');
 
 Event.hasOne(HeaderImage, {
   as: 'headerImage',
-  foreignKey: 'event',
+  foreignKey: 'eventId',
 });
 
 Event.hasMany(Stack, {
   as: 'stacks',
-  foreignKey: 'event',
+  foreignKey: 'eventId',
   sourceKey: 'id',
 });
 
 Event.hasMany(News, {
-  foreignKey: 'event',
+  foreignKey: 'eventId',
 });
 
 Event.hasMany(Critique, {
-  foreignKey: 'event',
+  foreignKey: 'eventId',
 });
 
 Event.hasMany(Notification, {
-  foreignKey: 'event',
+  foreignKey: 'eventId',
 });
 
 Event.hasMany(Subscription, {
-  foreignKey: 'event',
+  foreignKey: 'eventId',
 });
 
 Stack.hasMany(News, {
   as: 'news',
-  foreignKey: 'stack',
+  foreignKey: 'stackId',
   sourceKey: 'id',
 });
 
@@ -84,6 +84,10 @@ Subscription.hasMany(Contact);
 Notification.belongsToMany(Report, {
   through: ReportNotification,
   foreignKey: 'notificationId',
+});
+
+Notification.belongsTo(Event, {
+  foreignKey: 'eventId',
 });
 
 Report.belongsToMany(Notification, {

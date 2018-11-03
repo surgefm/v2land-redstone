@@ -1,12 +1,13 @@
 const time = require('time');
+const SeqModels = require('../../seqModels');
 
 const mode = {
   name: '七天未更新新闻',
   needNews: false,
   keepLatestOnly: true,
   new: async ({ event, news }) => {
-    const latestNews = news || await News.findOne({
-      where: { status: 'admitted', event: event.id },
+    const latestNews = news || await SeqModels.News.findOne({
+      where: { status: 'admitted', eventId: event.id },
       sort: 'time DESC',
     });
 

@@ -50,7 +50,7 @@ module.exports = {
     const otherSubscriptions = await SeqModels.Subscription.findAll({
       where: {
         subscriber: subscription.subscriber,
-        event: subscription.event,
+        eventId: subscription.eventId,
         id: { [Op.ne]: subscription.id },
       },
     });
@@ -77,14 +77,17 @@ module.exports = {
     }
 
     const { mode, contact } = req.body;
-    const client = await SeqModels.Client.findOne({
-      where: { id: req.session.clientId },
-      include: [{
-        model: SeqModels.Auth,
-        require: false,
-        as: 'auths',
-      }],
-    });
+    let client;
+    if (req.session.clientId) {
+      client = await SeqModels.Client.findOne({
+        where: { id: req.session.clientId },
+        include: [{
+          model: SeqModels.Auth,
+          required: false,
+          as: 'auths',
+        }],
+      });
+    }
 
     if (!ModeService[mode]) {
       return res.status(404).json({
@@ -116,7 +119,7 @@ module.exports = {
         });
       }
     } else {
-      auth = { profileId: client.email };
+      auth = { profileId: req.session.clientId ? client.email : contact.profileId };
     }
 
     const eventName = req.param('eventName');
@@ -138,7 +141,7 @@ module.exports = {
     let subscription = await SeqModels.Subscription.findOne({
       where: {
         subscriber: req.session.clientId,
-        event: event.id,
+        eventId: event.id,
         mode: contact.mode,
         status: 'active',
       },
@@ -188,7 +191,7 @@ module.exports = {
         } else {
           const notificationInDb = await SeqModels.Notification.findOne({
             where: {
-              event: event.id,
+              eventId: event.id,
               mode,
             },
           });
@@ -196,7 +199,7 @@ module.exports = {
           if (!notificationInDb) {
             const time = await NotificationService.getNextTime(mode, event);
             await SeqModels.Notification.create({
-              event: event.id,
+              eventId: event.id,
               mode,
               time,
               status: 'pending',
@@ -206,7 +209,7 @@ module.exports = {
           const unsubscribeId = SubscriptionService.generateUnsubscribeId();
           subscription = {
             subscriber: req.session.clientId,
-            event: event.id,
+            eventId: event.id,
             mode,
             methods: [contact.method],
             status: 'active',

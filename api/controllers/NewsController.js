@@ -33,14 +33,20 @@ module.exports = {
       });
     }
 
-    const news = await News.findOne({ id }).populate('stack');
+    const news = await SeqModels.News.findOne({
+      where: { id },
+      include: [{
+        model: SeqModels.Stack,
+        as: 'stack',
+      }],
+    });
     if (!news) {
       return res.status(404).json({ message: '未找到该新闻' });
     }
 
     if (news.status !== 'admitted') {
       if (req.session.clientId) {
-        const client = await Client.findOne({ id: req.session.clientId });
+        const client = await SeqModels.Client.findById(req.session.clientId);
         if (!client || !['manager', 'admin'].includes(client.role)) {
           return res.status(404).json({ message: '该新闻尚未通过审核' });
         }
@@ -84,7 +90,7 @@ module.exports = {
     }
 
     if (where && req.session.clientId) {
-      const client = await Client.findOne({ id: req.session.clientId });
+      const client = await SeqModels.Client.findById(req.session.clientId);
       if (client && ['manager', 'admin'].includes(client.role)) {
         isManager = true;
       }
@@ -96,11 +102,10 @@ module.exports = {
 
     if (where) {
       try {
-        const newsList = await News.find({
+        const newsList = await SeqModels.News.find({
           where,
           sort: 'updatedAt DESC',
-        }).paginate({
-          page,
+          offset: (page - 1) * 15,
           limit: 15,
         });
 
@@ -121,7 +126,7 @@ module.exports = {
     const id = req.param('news');
     const data = req.body;
 
-    let news = await SeqModels.News.findOne({ where: { id } });
+    let news = await SeqModels.News.findById(id);
 
     if (!news) {
       return res.status(404).json({
@@ -130,7 +135,7 @@ module.exports = {
     }
 
     const changes = {};
-    for (const i of ['url', 'source', 'title', 'abstract', 'time', 'status', 'comment', 'stack']) {
+    for (const i of ['url', 'source', 'title', 'abstract', 'time', 'status', 'comment', 'stackId']) {
       if (data[i] && data[i] !== news[i]) {
         changes[i] = data[i];
       }
@@ -147,7 +152,7 @@ module.exports = {
       await sequelize.transaction(async transaction => {
         const changesCopy = { ...changes };
         const latestNews = await SeqModels.News.findOne({
-          where: { event: news.event, status: 'admitted' },
+          where: { eventId: news.eventId, status: 'admitted' },
           attributes: ['id'],
           sort: [['time', 'DESC']],
         });
@@ -175,13 +180,13 @@ module.exports = {
 
           NotificationService.notifyWhenNewsStatusChanged(news, newNews, req.session.clientId);
 
-          if (beforeStatus === 'admitted' && changes.status !== 'admitted' && news.stack) {
+          if (beforeStatus === 'admitted' && changes.status !== 'admitted' && news.stackId) {
             const newsCount = await SeqModels.News.count({
-              where: { stack: news.stack, status: 'admitted' },
+              where: { stackId: news.stackId, status: 'admitted' },
             });
             if (!newsCount) {
               const stack = await SeqModels.Stack.findOne({
-                where: { id: news.stack, status: 'admitted' },
+                where: { id: news.stackId, status: 'admitted' },
               });
               if (stack) {
                 await stack.update({ status: 'invalid' }, { transaction });
