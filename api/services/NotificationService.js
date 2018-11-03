@@ -1,7 +1,7 @@
 const SeqModels = require('../../seqModels');
 const notifyWhenEventCreated = require('./NotificationService/notifyWhenEventCreated');
-const notifyWhenEventStatusChanges = require('./NotificationService/notifyWhenEventStatusChanges');
-const notifyWhenStackStatusChanges = require('./NotificationService/notifyWhenStackStatusChanges');
+const notifyWhenEventStatusChanged = require('./NotificationService/notifyWhenEventStatusChanged');
+const notifyWhenStackStatusChanged = require('./NotificationService/notifyWhenStackStatusChanged');
 const updateStackNotifications = require('./NotificationService/updateStackNotifications');
 
 const NotificationService = {
@@ -100,8 +100,8 @@ const NotificationService = {
 
 module.exports = {
   notifyWhenEventCreated,
-  notifyWhenEventStatusChanges,
-  notifyWhenStackStatusChanges,
+  notifyWhenEventStatusChanged,
+  notifyWhenStackStatusChanged,
   updateStackNotifications,
   ...NotificationService,
 };

@@ -1,7 +1,7 @@
 const { MissingParameterError } = require('../../../utils/errors');
 const updateStackNotifications = require('./updateStackNotifications');
 
-async function notifyWhenStackStatusChanges(oldStack, newStack, client) {
+async function notifyWhenStackStatusChanged(oldStack, newStack, client) {
   if (!newStack) {
     throw MissingParameterError('newStack');
   }
@@ -28,6 +28,14 @@ async function sendTelegramNotification(stack, status, handler) {
     'hidden': '隐藏了，如有疑虑请咨询任一社区管理员。',
   };
 
+  let event = stack.event;
+  if (typeof event === 'number') {
+    event = await SeqModels.Event.findOne({
+      where: { id: event },
+      attributes: ['id', 'title'],
+    });
+  }
+
   const submitRecord = await SeqModels.Record.findOne({
     where: {
       model: 'Stack',
@@ -46,9 +54,9 @@ async function sendTelegramNotification(stack, status, handler) {
 
   const content =
     `*${ username }*创建的进展` +
-    `「[${ event.title }](${ sails.config.globals.site }/${ stack.event }/${ stack.id }) 」` +
+    `「[${ event.name }](${ sails.config.globals.site }/${ event.id }/${ stack.id }) 」` +
     `被管理员*${ handler.username }*${ newStatusStringSet[status] }`;
   return TelegramService.sendText(content, 'Markdown');
 }
 
-module.exports = notifyWhenStackStatusChanges;
+module.exports = notifyWhenStackStatusChanged;

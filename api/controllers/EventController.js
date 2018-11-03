@@ -316,8 +316,7 @@ const EventController = {
     }
 
     if (data.status === 'admitted' && isManager) {
-      await NotificationService.updateForNewNews(event, news);
-      NotificationService.notifyWhenStackStatusChanges(null, stack, client);
+      NotificationService.notifyWhenStackStatusChanged(null, stack, client);
     }
   },
 
