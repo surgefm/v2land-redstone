@@ -1,22 +1,28 @@
 const SeqModels = require('../../seqModels');
+const { Op } = require('sequelize');
 
 const StackService = {
 
   async findStack(id, withContributionData = true) {
-    const stack = await Stack.findOne({ id })
-      .populate('news', {
+    const stack = await SeqModels.Stack.findOne({
+      where: { id },
+      include: [{
+        model: SeqModels.News,
         where: { status: 'admitted' },
-        sort: 'time ASC',
+        sort: [['time', 'ASC']],
         limit: 15,
-      });
-
-    stack.newsCount = await News.count({
-      status: 'admitted',
-      stack: stack.id,
+      }],
     });
 
     if (stack) {
-      if (!stack.time && stack.news.length) {
+      stack.newsCount = await SeqModels.News.count({
+        where: {
+          status: 'admitted',
+          stackId: stack.id,
+        },
+      });
+
+      if (!stack.time && stack.news && stack.news.length) {
         stack.time = stack.news[0].time;
       }
       stack.contribution = await StackService.getContribution(id, withContributionData);
@@ -32,11 +38,19 @@ const StackService = {
       select.push('data');
     }
 
-    const records = await Record.find({
-      action: ['createStack', 'invalidateStack', 'updateStackStatus', 'updateStackDetail'],
-      target: stack.id,
-      select,
-    }).populate('client');
+    const records = await SeqModels.Record.find({
+      where: {
+        action: {
+          [Op.or]: ['createStack', 'invalidateStack', 'updateStackStatus', 'updateStackDetail'],
+        },
+        target: stack.id,
+        select,
+      },
+      include: [{
+        model: SeqModels.Client,
+        as: 'owner',
+      }],
+    });
 
     for (const record of records) {
       if (record.client) {
@@ -101,7 +115,7 @@ const StackService = {
       if (changes.status === 'admitted') {
         news = await SeqModels.News.findOne({
           where: {
-            stack: stack.id,
+            stackId: stack.id,
             status: 'admitted',
           },
           transaction,
@@ -164,7 +178,7 @@ const StackService = {
 
     if (data.enableNotification && changesCopy.status === 'admitted') {
       const event = await Event.findOne({
-        id: stack.event,
+        id: stack.eventId,
       });
       NotificationService.updateForNewStack(event, stack, data.forceUpdate);
       NotificationService.updateForNewNews(event, news, data.forceUpdate);

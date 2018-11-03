@@ -33,14 +33,20 @@ module.exports = {
       });
     }
 
-    const news = await News.findOne({ id }).populate('stack');
+    const news = await SeqModels.News.findOne({
+      where: { id },
+      include: [{
+        model: SeqModels.Stack,
+        as: 'stack',
+      }],
+    });
     if (!news) {
       return res.status(404).json({ message: '未找到该新闻' });
     }
 
     if (news.status !== 'admitted') {
       if (req.session.clientId) {
-        const client = await Client.findOne({ id: req.session.clientId });
+        const client = await SeqModels.Client.findById(req.session.clientId);
         if (!client || !['manager', 'admin'].includes(client.role)) {
           return res.status(404).json({ message: '该新闻尚未通过审核' });
         }
@@ -96,11 +102,10 @@ module.exports = {
 
     if (where) {
       try {
-        const newsList = await News.find({
+        const newsList = await SeqModels.News.find({
           where,
           sort: 'updatedAt DESC',
-        }).paginate({
-          page,
+          offset: (page - 1) * 15,
           limit: 15,
         });
 
@@ -121,7 +126,7 @@ module.exports = {
     const id = req.param('news');
     const data = req.body;
 
-    let news = await SeqModels.News.findOne({ where: { id } });
+    let news = await SeqModels.News.findById(id);
 
     if (!news) {
       return res.status(404).json({
