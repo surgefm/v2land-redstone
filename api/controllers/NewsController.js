@@ -121,7 +121,7 @@ module.exports = {
     const id = req.param('news');
     const data = req.body;
 
-    let news = await News.findOne({ id });
+    let news = await SeqModels.News.findOne({ where: { id } });
 
     if (!news) {
       return res.status(404).json({
@@ -144,83 +144,88 @@ module.exports = {
     }
 
     try {
-      const query = {
-        client: req.session.clientId,
-        where: { id: news.id },
-        model: 'news',
-      };
-
-      const changesCopy = { ...changes };
-      const latestNews = await News.findOne({
-        where: { event: news.event, status: 'admitted' },
-        sort: 'time DESC',
-      });
-
-      const updateNotification =
-        (latestNews && +latestNews.id === +news.id) ||
-        (changesCopy.status && changesCopy.status !== news.status) ||
-        (changesCopy.time && new Date(changesCopy.time).getTime() !== new Date(news.time).getTime());
-
-      if (changes.status) {
-        const beforeStatus = news.status;
-
-        news = await SQLService.update({
-          action: 'updateNewsStatus',
-          data: { status: changes.status },
-          before: { status: news.status },
-          ...query,
+      await sequelize.transaction(async transaction => {
+        const changesCopy = { ...changes };
+        const latestNews = await SeqModels.News.findOne({
+          where: { event: news.event, status: 'admitted' },
+          attributes: ['id'],
+          sort: [['time', 'DESC']],
         });
 
-        const selfClient = req.currentClient;
-        if (beforeStatus !== 'admitted' && changes.status === 'admitted') {
-          TelegramService.sendNewsAdmitted(news, selfClient);
-        } else if (beforeStatus !== 'rejected' && changes.status === 'rejected') {
-          TelegramService.sendNewsRejected(news, selfClient);
-        } else if (beforeStatus === 'admitted' && changes.status !== 'admitted' && news.stack) {
-          const newsCount = await News.count({ stack: news.stack, status: 'admitted' });
-          if (!newsCount) {
-            const stack = await Stack.count({ id: news.stack, status: 'admitted' });
-            if (stack) {
-              await SQLService.update({
-                action: 'invalidateStack',
-                data: { status: 'invalid' },
-                before: { status: 'admitted' },
-                model: 'stack',
-                where: { id: news.stack },
-                client: req.session.clientId,
+        const updateNotification =
+          (latestNews && +latestNews.id === +news.id) ||
+          (changesCopy.status && changesCopy.status !== news.status) ||
+          (changesCopy.time && new Date(changesCopy.time).getTime() !== new Date(news.time).getTime());
+
+        let newNews = news;
+        if (changes.status) {
+          const beforeStatus = news.status;
+
+          newNews = await news.update({
+            status: changes.status,
+          }, { transaction });
+          await RecordService.create({
+            model: 'news',
+            action: 'updateNewsStatus',
+            before: beforeStatus,
+            data: changes.status,
+            target: news.id,
+            client: req.session.clientId,
+          }, { transaction });
+
+          NotificationService.notifyWhenNewsStatusChanged(news, newNews, req.session.clientId);
+
+          if (beforeStatus === 'admitted' && changes.status !== 'admitted' && news.stack) {
+            const newsCount = await SeqModels.News.count({
+              where: { stack: news.stack, status: 'admitted' },
+            });
+            if (!newsCount) {
+              const stack = await SeqModels.Stack.findOne({
+                where: { id: news.stack, status: 'admitted' },
               });
+              if (stack) {
+                await stack.update({ status: 'invalid' }, { transaction });
+                await RecordService.update({
+                  action: 'invalidateStack',
+                  data: { status: 'invalid' },
+                  before: { status: 'admitted' },
+                  model: 'stack',
+                  target: stack.id,
+                  client: req.session.clientId,
+                }, { transaction });
+              }
             }
           }
         }
-      }
 
-      delete changes.status;
-      const before = {};
-      for (const i of Object.keys(changes)) {
-        before[i] = news[i];
-      }
-
-      if (Object.getOwnPropertyNames(changes).length > 0) {
-        news = await SQLService.update({
-          action: 'updateNewsDetail',
-          data: changes,
-          before,
-          ...query,
-        });
-      }
-
-      try {
-        if (updateNotification) {
-          const event = await Event.findOne({ id: news.event });
-          NotificationService.updateForNewNews(event, news, data.forceUpdate);
+        delete changes.status;
+        const before = {};
+        for (const i of Object.keys(changes)) {
+          before[i] = newNews[i];
         }
-      } catch (err) {
-        res.serverError(err);
-      }
 
-      res.status(201).json({
-        message: '修改成功',
-        news,
+        if (Object.getOwnPropertyNames(changes).length > 0) {
+          news = await newNews.update(changes, { transaction });
+          await RecordService.update({
+            action: 'updateNewsDetail',
+            data: changes,
+            before,
+            target: news.id,
+            client: req.session.clientId,
+            model: 'news',
+          }, { transaction });
+        }
+
+        if (updateNotification) {
+          NotificationService.updateNewsNotification(news, {
+            force: data.forceUpdate,
+          });
+        }
+
+        res.status(201).json({
+          message: '修改成功',
+          news,
+        });
       });
     } catch (err) {
       return res.serverError(err);
