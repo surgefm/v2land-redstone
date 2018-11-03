@@ -39,7 +39,7 @@ async function updateNotifications(event, stack, transaction) {
   const modes = ['EveryNewStack', '30DaysSinceLatestStack'];
 
   for (const mode of modes) {
-    if (ModeService[mode].keepLatest) {
+    if (ModeService[mode].keepLatestOnly) {
       await SeqModels.Notification.update({
         status: 'discarded',
       }, {
