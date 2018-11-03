@@ -77,6 +77,14 @@ module.exports = {
     }
 
     const { mode, contact } = req.body;
+    const client = await SeqModels.Client.findOne({
+      where: { id: req.session.clientId },
+      include: [{
+        model: SeqModels.Auth,
+        require: false,
+        as: 'auths',
+      }],
+    });
 
     if (!ModeService[mode]) {
       return res.status(404).json({
@@ -92,18 +100,23 @@ module.exports = {
       });
     }
 
-    const contactInDb = await SeqModels.Contact.findOne({
-      where: {
-        owner: req.session.cliendId,
-        type: ContactService.getTypeFromMethod(contact.method),
-      },
-    });
-
-    if (!contactInDb) {
-      return res.status(400).json({
-        name: 'Corresponding third-party contact not found',
-        message: '未找到您在相关网络服务上的绑定。请于绑定后进行',
-      });
+    let auth;
+    if (contact.method !== 'email') {
+      for (const item of client.auths) {
+        if (item.id === contact.authId &&
+          item.site === ContactService.getTypeFromMethod(contact.method)) {
+          auth = item;
+          break;
+        }
+      }
+      if (typeof auth === 'undefined') {
+        return res.status(400).json({
+          name: 'Corresponding third-party contact not found',
+          message: '未找到您在相关网络服务上的绑定。请于绑定后进行',
+        });
+      }
+    } else {
+      auth = { profileId: client.email };
     }
 
     const eventName = req.param('eventName');
@@ -135,7 +148,7 @@ module.exports = {
       const contact = await SeqModels.Contact.findOne({
         subscriptionId: subscription.id,
         method: contact.method,
-        profileId: contact.profileId,
+        profileId: auth.profileId,
       });
 
       if (contact) {
@@ -147,19 +160,23 @@ module.exports = {
     }
 
     try {
-      const beforeData = subscription.get({ plain: true });
+      const beforeData = subscription
+        ? subscription.get({ plain: true })
+        : {};
       await sequelize.transaction(async transaction => {
         if (subscription) {
           subscription = await subscription.update({
             methods: [mode, ...subscription.modes],
             status: 'active',
           }, { transaction });
+
           await SeqModels.Contact.create({
             subscriptionId: subscription.id,
             method: contact.method,
-            profileId: contact.profileId,
-            authId: contact.authId,
-          });
+            profileId: auth.profileId,
+            authId: auth.id,
+            type: ContactService.getTypeFromMethod(contact.method),
+          }, { transaction });
 
           await RecordService.update({
             model: 'Subscription',
@@ -182,6 +199,7 @@ module.exports = {
               event: event.id,
               mode,
               time,
+              status: 'pending',
             }, { transaction });
           }
 
@@ -199,6 +217,14 @@ module.exports = {
             subscription,
             { transaction },
           );
+
+          await SeqModels.Contact.create({
+            subscriptionId: subscription.id,
+            method: contact.method,
+            profileId: auth.profileId,
+            authId: auth.id,
+            type: ContactService.getTypeFromMethod(contact.method),
+          }, { transaction });
 
           await RecordService.create({
             model: 'Subscription',
