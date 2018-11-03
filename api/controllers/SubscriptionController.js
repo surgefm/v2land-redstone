@@ -50,7 +50,7 @@ module.exports = {
     const otherSubscriptions = await SeqModels.Subscription.findAll({
       where: {
         subscriber: subscription.subscriber,
-        event: subscription.event,
+        eventId: subscription.eventId,
         id: { [Op.ne]: subscription.id },
       },
     });
@@ -138,7 +138,7 @@ module.exports = {
     let subscription = await SeqModels.Subscription.findOne({
       where: {
         subscriber: req.session.clientId,
-        event: event.id,
+        eventId: event.id,
         mode: contact.mode,
         status: 'active',
       },
@@ -188,7 +188,7 @@ module.exports = {
         } else {
           const notificationInDb = await SeqModels.Notification.findOne({
             where: {
-              event: event.id,
+              eventId: event.id,
               mode,
             },
           });
@@ -196,7 +196,7 @@ module.exports = {
           if (!notificationInDb) {
             const time = await NotificationService.getNextTime(mode, event);
             await SeqModels.Notification.create({
-              event: event.id,
+              eventId: event.id,
               mode,
               time,
               status: 'pending',
@@ -206,7 +206,7 @@ module.exports = {
           const unsubscribeId = SubscriptionService.generateUnsubscribeId();
           subscription = {
             subscriber: req.session.clientId,
-            event: event.id,
+            eventId: event.id,
             mode,
             methods: [contact.method],
             status: 'active',

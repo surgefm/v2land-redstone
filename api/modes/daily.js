@@ -39,11 +39,11 @@ const mode = {
     if (!stack) {
       stack = await SeqModels.Stack.findOne({
         where: {
-          event: event.id,
+          eventId: event.id,
           status: 'admitted',
           order: { [Op.gte]: 0 },
         },
-        order: [['order', ASC]],
+        order: [['order', 'DESC']],
       });
     }
 

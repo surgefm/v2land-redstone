@@ -31,13 +31,13 @@ module.exports = {
       defaultsTo: -1,
     },
 
-    event: {
+    eventId: {
       model: 'event',
     },
 
     news: {
       collection: 'news',
-      via: 'stack',
+      via: 'stackId',
     },
 
     time: {

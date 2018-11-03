@@ -130,7 +130,7 @@ module.exports = {
     }
 
     const changes = {};
-    for (const i of ['url', 'source', 'title', 'abstract', 'time', 'status', 'comment', 'stack']) {
+    for (const i of ['url', 'source', 'title', 'abstract', 'time', 'status', 'comment', 'stackId']) {
       if (data[i] && data[i] !== news[i]) {
         changes[i] = data[i];
       }
@@ -147,7 +147,7 @@ module.exports = {
       await sequelize.transaction(async transaction => {
         const changesCopy = { ...changes };
         const latestNews = await SeqModels.News.findOne({
-          where: { event: news.event, status: 'admitted' },
+          where: { eventId: news.eventId, status: 'admitted' },
           attributes: ['id'],
           sort: [['time', 'DESC']],
         });
@@ -175,13 +175,13 @@ module.exports = {
 
           NotificationService.notifyWhenNewsStatusChanged(news, newNews, req.session.clientId);
 
-          if (beforeStatus === 'admitted' && changes.status !== 'admitted' && news.stack) {
+          if (beforeStatus === 'admitted' && changes.status !== 'admitted' && news.stackId) {
             const newsCount = await SeqModels.News.count({
-              where: { stack: news.stack, status: 'admitted' },
+              where: { stackId: news.stackId, status: 'admitted' },
             });
             if (!newsCount) {
               const stack = await SeqModels.Stack.findOne({
-                where: { id: news.stack, status: 'admitted' },
+                where: { id: news.stackId, status: 'admitted' },
               });
               if (stack) {
                 await stack.update({ status: 'invalid' }, { transaction });

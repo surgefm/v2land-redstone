@@ -8,12 +8,11 @@ const mode = {
   new: async ({ event, stack, transaction }) => {
     const latestStack = stack || await seqModels.Stack.findOne({
       where: {
+        eventId: event.id,
         status: 'admitted',
-        event: event.id,
-        order: 0,
+        order: { [Op.gte]: 0 },
       },
-      order: sequelize.literal('time DESC'),
-      transaction,
+      order: [['order', 'DESC']],
     });
 
     if (!latestStack) {

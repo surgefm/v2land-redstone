@@ -3,7 +3,7 @@ const SeqModels = require('../../../seqModels');
 async function updateNewsNotifications(news, { transaction, force = false } = {}) {
   const latestNews = await SeqModels.News.findOne({
     where: {
-      event: event.id,
+      eventId: news.eventId,
       status: 'admitted',
       order: 1,
     },
@@ -23,12 +23,12 @@ async function updateNewsNotifications(news, { transaction, force = false } = {}
 
   let event = news.event;
   if (typeof event !== 'object') {
-    event = await SeqModels.Event.findById(event);
+    event = await SeqModels.Event.findById(news.eventId);
   }
 
   let stack = news.stack;
   if (typeof stack !== 'object') {
-    stack = await SeqModels.Stack.findById(stack);
+    stack = await SeqModels.Stack.findById(news.stackId);
   }
 
   if (!transaction) {
@@ -49,7 +49,7 @@ async function updateNotifications(event, stack, news, transaction) {
         status: 'discarded',
       }, {
         where: {
-          event: event.id,
+          eventId: event.id,
           mode,
         },
         transaction,

@@ -6,7 +6,7 @@ const mode = {
   keepLatestOnly: true,
   new: async ({ event, news }) => {
     const latestNews = news || await News.findOne({
-      where: { status: 'admitted', event: event.id },
+      where: { status: 'admitted', eventId: event.id },
       sort: 'time DESC',
     });
 

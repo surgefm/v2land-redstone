@@ -23,7 +23,7 @@ module.exports = {
       ],
     },
 
-    event: {
+    eventId: {
       model: 'event',
     },
 

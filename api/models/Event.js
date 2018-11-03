@@ -39,17 +39,17 @@ module.exports = {
 
     news: {
       collection: 'news',
-      via: 'event',
+      via: 'eventId',
     },
 
     stack: {
       collection: 'stack',
-      via: 'event',
+      via: 'eventId',
     },
 
     critique: {
       collection: 'critique',
-      via: 'event',
+      via: 'eventId',
     },
 
     headerImage: {
@@ -58,12 +58,12 @@ module.exports = {
 
     notifications: {
       collection: 'notification',
-      via: 'event',
+      via: 'eventId',
     },
 
     subscriptions: {
       collection: 'subscription',
-      via: 'event',
+      via: 'eventId',
     },
 
   },

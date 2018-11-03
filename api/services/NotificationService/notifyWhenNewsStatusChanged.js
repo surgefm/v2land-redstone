@@ -26,17 +26,17 @@ async function sendTelegramNotification(news, status, handler) {
   };
 
   let event = news.event;
-  if (typeof event === 'number') {
+  if (!event) {
     event = await SeqModels.Event.findOne({
-      where: { id: event },
+      where: { id: news.eventId },
       attributes: ['id', 'name'],
     });
   }
 
   let stack = news.stack;
-  if (typeof stack === 'number') {
+  if (!stack) {
     stack = await SeqModels.Stack.findOne({
-      where: { id: stack },
+      where: { id: news.stackId },
       attributes: ['id', 'title'],
     });
   }

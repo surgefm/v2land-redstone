@@ -88,7 +88,7 @@ module.exports = {
 
       const content =
         `*${ username }*提交的新闻` +
-        `「[${ news.title }](${ sails.config.globals.site }/${ news.event }/${ news.stack }/${ news.id }) 」` +
+        `「[${ news.title }](${ sails.config.globals.site }/${ news.eventId }/${ news.stackId }/${ news.id }) 」` +
         `被管理员*${ handler.username }*审核通过了，进来看看吧！`;
       await this.sendText(content, 'Markdown');
     } catch (err) {

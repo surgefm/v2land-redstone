@@ -294,22 +294,28 @@ const EventController = {
     const id = event.id;
 
     try {
-      const stack = await SQLService.create({
-        model: 'stack',
-        data: {
+      await sequelize.transaction(async transaction => {
+        const data = {
           status: 'pending',
           title,
           description,
           order: order || -1,
-          event: id,
+          eventId: id,
           time,
-        },
-        action: 'createStack',
-        client: req.session.clientId,
-      });
-      res.status(201).json({
-        message: '提交成功，该进展在社区管理员审核通过后将很快开放',
-        stack,
+        };
+        const stack = await SeqModels.Stack.create(data, { transaction });
+        await RecordService.create({
+          model: 'stack',
+          data,
+          target: stack.id,
+          client: req.session.clientId,
+          action: 'createStack',
+        }, { transaction });
+
+        res.status(201).json({
+          message: '提交成功，该进展在社区管理员审核通过后将很快开放',
+          stack,
+        });
       });
     } catch (err) {
       return res.serverError(err);
@@ -339,7 +345,7 @@ const EventController = {
       });
     }
 
-    data.event = event.id;
+    data.eventId = event.id;
     data.status = 'pending';
 
     try {
@@ -348,7 +354,7 @@ const EventController = {
           await SeqModels.News.findOne({
             where: {
               url: data.url,
-              event: event.id,
+              eventId: event.id,
             },
             transaction,
           });
@@ -409,7 +415,7 @@ const EventController = {
       });
     }
 
-    const headerImage = { event: event.id };
+    const headerImage = { eventId: event.id };
 
     for (const attribute of ['imageUrl', 'source', 'sourceUrl']) {
       if (req.body[attribute]) {
@@ -446,7 +452,7 @@ const EventController = {
         } else {
           await SeqModels.HeaderImage.create({
             ...headerImage,
-            event: event.id,
+            eventId: event.id,
           }, { transaction });
           await RecordService.create({
             ...query,

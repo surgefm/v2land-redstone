@@ -40,7 +40,7 @@ module.exports = {
       model: 'client',
     },
 
-    event: {
+    eventId: {
       model: 'event',
     },
 

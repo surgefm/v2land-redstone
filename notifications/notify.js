@@ -10,14 +10,15 @@ const notifyByWeibo = require('./notifyByWeibo');
 const notifyByWeiboAt = require('./notifyByWeiboAt');
 
 async function notify(notification) {
-  const { event } = notification; // Event must be an object.
+  const eventId = notification.eventId;
+  const event = notification.event || await SeqModels.Event.findById(eventId);
   const mode = ModeService[notification.mode];
   let news;
   let stack;
   if (mode.needNews) {
     news = SeqModels.News.findOne({
       where: {
-        event: notification.event,
+        eventId: notification.eventId,
         status: 'admitted',
       },
       order: [['time', 'DESC']],
@@ -28,7 +29,7 @@ async function notify(notification) {
   if (mode.needStack) {
     stack = SeqModels.Stack.findOne({
       where: {
-        event: notification.event,
+        eventId: notification.eventId,
         order: { [Op.gte]: 0 },
       },
       order: [['order', 'DESC']],
@@ -44,7 +45,7 @@ async function notify(notification) {
   });
 
   const notificationData = notification.get({ plain: true });
-  notificationData.event = notification.event.id;
+  notificationData.eventId = event.id;
 
   const subscriptions = await SeqModels.Subscription.findAll({
     where: {
@@ -83,11 +84,13 @@ async function notify(notification) {
       },
       include: [{
         model: SeqModels.Auth,
+        as: 'auth',
         required: false,
       }],
     });
 
     for (const contact of contactList) {
+      contact.auth = (contact.auth || [])[0];
       const inputs = { contact, subscription, template, notification };
       switch (contact.method) {
       case 'email':

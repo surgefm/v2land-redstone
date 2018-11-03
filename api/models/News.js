@@ -45,11 +45,11 @@ module.exports = {
       type: 'text',
     },
 
-    event: {
+    eventId: {
       model: 'event',
     },
 
-    stack: {
+    stackId: {
       model: 'stack',
     },
 

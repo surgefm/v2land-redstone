@@ -128,14 +128,14 @@ module.exports = {
 
     event.newsCount = await SeqModels.News.count({
       where: {
-        event: event.id,
+        eventId: event.id,
         status: 'admitted',
       },
     });
 
     event.stackCount = await SeqModels.Stack.count({
       where: {
-        event: event.id,
+        eventId: event.id,
         status: 'admitted',
       },
     });
@@ -147,9 +147,9 @@ module.exports = {
       if (checkNewsIncluded && +includes.stack === stack.id) {
         newsExist = await SeqModels.News.count({
           where: {
-            event: event.id,
+            eventId: event.id,
             id: +includes.news,
-            stack: stack.id,
+            stackId: stack.id,
             status: 'admitted',
           },
         });
@@ -158,7 +158,7 @@ module.exports = {
       if (newsExist) {
         stack.news = await SeqModels.News.find({
           where: {
-            stack: stack.id,
+            stackId: stack.id,
             status: 'admitted',
           },
           order: [['time', 'ASC']],
@@ -171,7 +171,7 @@ module.exports = {
 
       stack.newsCount = await SeqModels.News.count({
         where: {
-          stack: stack.id,
+          stackId: stack.id,
           status: 'admitted',
         },
       });

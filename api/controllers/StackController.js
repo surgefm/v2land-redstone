@@ -71,13 +71,13 @@ const StackController = {
 
     const getDetail = async (stack) => {
       stack = stack.get({ plain: true });
-      if (stack.status === 'admitted' && stack.news.length) {
+      if (stack.status === 'admitted' && stack.news && stack.news.length) {
         stack.time = stack.news[0].time;
       }
       stack.newsCount = await SeqModels.News.count({
         where: {
           status: 'admitted',
-          stack: stack.id,
+          stackId: stack.id,
         },
       });
     };

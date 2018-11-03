@@ -24,7 +24,7 @@ module.exports = {
       required: false,
     },
 
-    event: {
+    eventId: {
       model: 'event',
       unique: true,
     },
