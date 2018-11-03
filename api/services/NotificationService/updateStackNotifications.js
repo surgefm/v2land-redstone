@@ -7,7 +7,7 @@ async function updateStackNotifications(stack, { transaction, force = false } = 
       status: 'admitted',
       order: 1,
     },
-    sort: 'order DESC',
+    sort: [['order', 'DESC']],
     attributes: ['id'],
   });
 

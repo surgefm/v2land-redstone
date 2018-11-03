@@ -1,6 +1,4 @@
 const { MissingParameterError } = require('../../../utils/errors');
-const updateNewsNotifications = require('./updateNewsNotifications');
-
 async function notifyWhenNewsStatusChanged(oldNews, newNews, client) {
   if (!newNews) {
     throw MissingParameterError('newNews');
@@ -12,7 +10,6 @@ async function notifyWhenNewsStatusChanged(oldNews, newNews, client) {
   if (['pending', 'rejected'].includes(oldNews.status) &&
     newNews.status === 'admitted') {
     await sendTelegramNotification(newNews, 'admitted', client);
-    await updateNewsNotifications(newNews);
   } else if (oldNews.status === 'admitted' &&
     newNews.status !== 'admitted') {
     await sendTelegramNotification(newNews, 'rejected', client);

@@ -1,7 +1,9 @@
 const { MissingParameterError } = require('../../../utils/errors');
-const updateStackNotifications = require('./updateStackNotifications');
 
 async function notifyWhenStackStatusChanged(oldStack, newStack, client) {
+  if (!oldStack) {
+    throw MissingParameterError('newStack');
+  }
   if (!newStack) {
     throw MissingParameterError('newStack');
   }
@@ -13,7 +15,6 @@ async function notifyWhenStackStatusChanged(oldStack, newStack, client) {
     newStack.status === 'admitted' &&
     newStack.order >= 0) {
     await sendTelegramNotification(newStack, 'admitted', client);
-    await updateStackNotifications(newStack);
   } else if (oldStack.status === 'admitted' &&
     newStack.status !== 'admitted') {
     await sendTelegramNotification(newStack, 'rejected', client);
