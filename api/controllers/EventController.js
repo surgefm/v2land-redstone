@@ -154,7 +154,7 @@ const EventController = {
         }
 
         const selfClient = req.currentClient;
-        NotificationService.notifyWhenEventStatusChanges(event, changes, selfClient);
+        NotificationService.notifyWhenEventStatusChanged(event, changes, selfClient);
 
         delete changes.status;
         const before = {};
@@ -314,18 +314,16 @@ const EventController = {
     } catch (err) {
       return res.serverError(err);
     }
-
-    if (data.status === 'admitted' && isManager) {
-      NotificationService.notifyWhenStackStatusChanged(null, stack, client);
-    }
   },
 
   createNews: async (req, res) => {
     const name = req.param('eventName');
     const data = req.body;
 
-    let news;
     let client;
+    if (req.session.clientId) {
+      client = await SeqModels.Client.findByPk(req.session.clientId);
+    }
 
     if (!data.url) {
       return res.status(400).json({
@@ -381,15 +379,11 @@ const EventController = {
           message: '提交成功，该新闻在社区管理员审核通过后将很快开放',
           news,
         });
-        TelegramService.sendNewsCreated(event, news, client);
+        NotificationService.notifyWhenNewsCreated(news, client);
       });
     } catch (err) {
       console.error(err);
       return res.serverError(err);
-    }
-
-    if (data.status === 'admitted' && isManager) {
-      await NotificationService.updateForNewNews(event, news);
     }
   },
 
