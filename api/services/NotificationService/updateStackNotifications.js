@@ -23,7 +23,7 @@ async function updateStackNotifications(stack, { transaction, force = false } = 
 
   let event = stack.event;
   if (typeof event !== 'object') {
-    event = await SeqModels.Event.findByPk(event);
+    event = await SeqModels.Event.findById(event);
   }
 
   if (!transaction) {

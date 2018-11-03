@@ -322,7 +322,7 @@ const EventController = {
 
     let client;
     if (req.session.clientId) {
-      client = await SeqModels.Client.findByPk(req.session.clientId);
+      client = await SeqModels.Client.findById(req.session.clientId);
     }
 
     if (!data.url) {

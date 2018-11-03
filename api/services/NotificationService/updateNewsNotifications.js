@@ -23,12 +23,12 @@ async function updateNewsNotifications(news, { transaction, force = false } = {}
 
   let event = news.event;
   if (typeof event !== 'object') {
-    event = await SeqModels.Event.findByPk(event);
+    event = await SeqModels.Event.findById(event);
   }
 
   let stack = news.stack;
   if (typeof stack !== 'object') {
-    stack = await SeqModels.Stack.findByPk(stack);
+    stack = await SeqModels.Stack.findById(stack);
   }
 
   if (!transaction) {

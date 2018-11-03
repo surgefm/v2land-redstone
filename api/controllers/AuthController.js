@@ -24,7 +24,7 @@ module.exports = {
       });
     }
 
-    const auth = await SeqModels.Auth.findByPk(req.body.authId);
+    const auth = await SeqModels.Auth.findById(req.body.authId);
     if (!auth || !auth.profile) {
       return res.status(404).json({
         message: '未找到该绑定信息',
@@ -80,7 +80,7 @@ module.exports = {
       });
     }
 
-    const auth = await SeqModels.Auth.findByPk(req.param('authId'));
+    const auth = await SeqModels.Auth.findById(req.param('authId'));
     if (!auth) {
       return res.status(404).json({
         message: '未找到该绑定信息',
@@ -293,7 +293,7 @@ module.exports = {
           auth: account,
         });
       } else {
-        const conflict = await SeqModels.Client.findByPk(account.owner);
+        const conflict = await SeqModels.Client.findById(account.owner);
         if (!conflict) {
           await account.save({
             owner: req.session.clientId,
@@ -343,7 +343,7 @@ module.exports = {
     }
 
     const { code, state } = req.query;
-    const auth = await SeqModels.Auth.findByPk(state);
+    const auth = await SeqModels.Auth.findById(state);
 
     if (!auth) {
       return res.status(404).json({
@@ -408,7 +408,7 @@ module.exports = {
     };
 
     const { accessToken, refreshToken } = await getAccessToken();
-    const auth = await SeqModels.Auth.findByPk(authId);
+    const auth = await SeqModels.Auth.findById(authId);
     if (!auth) {
       return res.status(404).json({
         message: '未找到该绑定信息',
@@ -483,7 +483,7 @@ module.exports = {
           auth: account,
         });
       } else {
-        const conflict = await SeqModels.Client.findByPk(account.owner);
+        const conflict = await SeqModels.Client.findById(account.owner);
         if (!conflict) {
           await account.update({
             owner: req.session.clientId,
