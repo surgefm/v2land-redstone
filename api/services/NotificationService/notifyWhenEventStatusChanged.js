@@ -13,7 +13,6 @@ async function notifyWhenEventStatusChanged(oldEvent, newEvent, client) {
   if ((oldEvent.status === 'pending' || oldEvent.status === 'rejected') &&
     newEvent.status === 'admitted') {
     await sendTelegramNotification(newEvent, 'admitted', client);
-    await updateNotifications(newEvent);
   } else if (oldEvent.status !== 'rejected' && newEvent.status === 'rejected') {
     await sendTelegramNotification(newEvent, 'rejected', client);
   } else if (oldEvent.status === 'hidden' && newEvent.status === 'admitted') {
