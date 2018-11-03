@@ -12,6 +12,7 @@ const Notification = global.sequelize.define('notification', {
       '30DaysSinceLatestStack',
       'new', '7DaysSinceLatestNews',
       'daily', 'weekly', 'monthly',
+      'EveryFriday',
     ),
     allowNull: false,
   },

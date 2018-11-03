@@ -7,6 +7,7 @@ const Subscription = global.sequelize.define('subscription', {
       '30DaysSinceLatestStack',
       'new', '7DaysSinceLatestNews',
       'daily', 'weekly', 'monthly',
+      'EveryFriday',
     ),
     allowNull: false,
   },

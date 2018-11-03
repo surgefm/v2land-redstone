@@ -3,6 +3,7 @@ const _ = require('lodash');
 
 module.exports = {
   isAdmin: async (client) => {
+    if (!client) return false;
     client = await ClientService.findClient(client);
     return client.role === 'admin';
   },

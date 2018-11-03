@@ -93,8 +93,6 @@ Report.belongsToMany(Notification, {
 
 Contact.belongsTo(Auth);
 
-sequelize.sync();
-
 module.exports = {
   Auth,
   Client,
