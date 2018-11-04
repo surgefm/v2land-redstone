@@ -1,6 +1,4 @@
 const axios = require('axios');
-const SeqModels = require('../../seqModels');
-
 const { TELE_TOKEN } = process.env;
 
 module.exports = {
@@ -62,85 +60,6 @@ module.exports = {
       parseMode,
       disableWebPagePreview
     );
-  },
-
-  async sendNewsAdmitted(news, handler) {
-    try {
-      const submitRecord = await SeqModels.Record.findOne({
-        where: {
-          model: 'News',
-          action: 'createNews',
-          target: news.id,
-        },
-        include: [{
-          model: SeqModels.Client,
-          required: false,
-        }],
-      });
-
-      if (!submitRecord) {
-        throw new Error('Record is not exist');
-      }
-
-      const username = (submitRecord.client && submitRecord.client.username)
-        ? submitRecord.client.username
-        : '游客';
-
-      const content =
-        `*${ username }*提交的新闻` +
-        `「[${ news.title }](${ sails.config.globals.site }/${ news.eventId }/${ news.stackId }/${ news.id }) 」` +
-        `被管理员*${ handler.username }*审核通过了，进来看看吧！`;
-      await this.sendText(content, 'Markdown');
-    } catch (err) {
-      sails.log.error(new Error(`Telegram sendNewsAdmitted: ${ err }`));
-    }
-  },
-
-  async sendNewsRejected(news, handler) {
-    try {
-      const submitRecord = await SeqModels.Record.findOne({
-        where: {
-          model: 'News',
-          action: 'createNews',
-          target: news.id,
-        },
-        include: [{
-          model: SeqModels.Client,
-          required: false,
-        }],
-      });
-
-      if (!submitRecord) {
-        throw new Error('Record is not exist');
-      }
-
-      const username = (submitRecord.client && submitRecord.client.username)
-        ? submitRecord.client.username
-        : '游客';
-
-      const content =
-        `*${username}*提交的新闻` +
-        `「${news.title}」被管理员*${handler.username}*拒绝了，` +
-        `如有疑虑请咨询任一社区管理员。`;
-
-      await this.sendText(content, 'Markdown');
-    } catch (err) {
-      sails.log.error(new Error(`Telegram sendNewsRejected: ${err}`));
-    }
-  },
-
-  async sendNewsCreated(event, news, handler) {
-    try {
-      const username = (handler && handler.username) || '游客';
-
-      const content =
-        `*${ username }*为事件*${ event.name }*提交了新闻` +
-        `「[${ news.title }](${ sails.config.globals.site }/${ event.id }/admit) 」` +
-        `，请管理员尽快审核`;
-      await this.sendText(content, 'Markdown', true);
-    } catch (err) {
-      sails.log.error(new Error(`Telegram sendNewsCreated: ${ err }`));
-    }
   },
 
 };
