@@ -77,14 +77,17 @@ module.exports = {
     }
 
     const { mode, contact } = req.body;
-    const client = await SeqModels.Client.findOne({
-      where: { id: req.session.clientId },
-      include: [{
-        model: SeqModels.Auth,
-        require: false,
-        as: 'auths',
-      }],
-    });
+    let client;
+    if (req.session.clientId) {
+      client = await SeqModels.Client.findOne({
+        where: { id: req.session.clientId },
+        include: [{
+          model: SeqModels.Auth,
+          required: false,
+          as: 'auths',
+        }],
+      });
+    }
 
     if (!ModeService[mode]) {
       return res.status(404).json({
@@ -116,7 +119,7 @@ module.exports = {
         });
       }
     } else {
-      auth = { profileId: client.email };
+      auth = { profileId: req.session.clientId ? client.email : contact.profileId };
     }
 
     const eventName = req.param('eventName');

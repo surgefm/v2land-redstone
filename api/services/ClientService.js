@@ -54,26 +54,6 @@ module.exports = {
 
     const data = client.toJSON();
 
-    // can use join
-
-    // const client = await Client.findOne({
-    //   or: [
-    //     { id: parseInt(clientName) > -1 ? parseInt(clientName) : -1 },
-    //     { username: clientName },
-    //     { email: clientName },
-    //   ],
-    // })
-    //   .populate('subscriptions', {
-    //     where: { status: 'active' },
-    //     sort: 'createdAt DESC',
-    //   })
-    //   .populate('auths', {
-    //     where: { profileId: { '>=': 1 } },
-    //   })
-    //   .populate('events', {
-    //     sort: 'updatedAt DESC',
-    //   });
-
     delete data.password;
     delete data.records;
     for (let i = 0; i < data.auths.length; i++) {

@@ -90,7 +90,7 @@ module.exports = {
     }
 
     if (where && req.session.clientId) {
-      const client = await Client.findOne({ id: req.session.clientId });
+      const client = await SeqModels.Client.findById(req.session.clientId);
       if (client && ['manager', 'admin'].includes(client.role)) {
         isManager = true;
       }

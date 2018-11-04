@@ -28,9 +28,9 @@ const EventController = {
   },
 
   getAllPendingEvents: async (req, res) => {
-    const eventCollection = await Event.find({
+    const eventCollection = await SeqModels.Event.findAll({
       where: { status: 'pending' },
-      sort: 'createdAt ASC',
+      sort: [['createdAt', 'ASC']],
     });
     res.status(200).json({ eventCollection });
   },
@@ -45,8 +45,14 @@ const EventController = {
       });
     }
 
-    const { news } = await Event.findOne({ id: event.id })
-      .populate('news', { status: 'pending' });
+    const { news } = await SeqModels.Event.findOne({
+      where: { id: event.id },
+      include: [{
+        model: SeqModels.News,
+        as: 'news',
+        where: { status: 'pending' },
+      }],
+    });
 
     return res.status(200).json({ newsCollection: news });
   },
@@ -234,7 +240,6 @@ const EventController = {
     try {
       await sequelize.transaction(async transaction => {
         if (where && req.session && req.session.clientId) {
-          // const client = await Client.findOne({ id: req.session.clientId });
           const client = await SeqModels.Client.findOne({
             where: { id: req.session.clientId },
             transaction,

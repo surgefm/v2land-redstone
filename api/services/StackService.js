@@ -177,9 +177,7 @@ const StackService = {
     // }
 
     if (data.enableNotification && changesCopy.status === 'admitted') {
-      const event = await Event.findOne({
-        id: stack.eventId,
-      });
+      const event = await SeqModels.Event.findById(stack.eventId);
       NotificationService.updateForNewStack(event, stack, data.forceUpdate);
       NotificationService.updateForNewNews(event, news, data.forceUpdate);
     }
