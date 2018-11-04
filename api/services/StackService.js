@@ -156,26 +156,6 @@ const StackService = {
       model: 'Stack',
     }, { transaction });
 
-    // if (news) {
-    //   const before = {};
-    //   for (const i of Object.keys(changes)) {
-    //     before[i] = news[i];
-    //   }
-
-    //   if (Object.getOwnPropertyNames(changes).length > 0) {
-    //     // FIXME: why???
-    //     news = await SQLService.update({
-    //       action: 'updateNewsDetail',
-    //       data: changes,
-    //       before,
-    //       client: clientId,
-    //       where: { id: news.id },
-    //       model: 'news',
-    //       pg,
-    //     });
-    //   }
-    // }
-
     if (data.enableNotification && changesCopy.status === 'admitted') {
       const event = await SeqModels.Event.findById(stack.eventId);
       NotificationService.updateForNewStack(event, stack, data.forceUpdate);

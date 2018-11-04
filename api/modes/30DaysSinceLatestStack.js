@@ -1,12 +1,12 @@
 const time = require('time');
-const seqModels = require('../../seqModels');
+const SeqModels = require('../../seqModels');
 
 const mode = {
   name: '三十天未更新新闻',
   needNews: false,
   keepLatestOnly: true,
   new: async ({ event, stack, transaction }) => {
-    const latestStack = stack || await seqModels.Stack.findOne({
+    const latestStack = stack || await SeqModels.Stack.findOne({
       where: {
         eventId: event.id,
         status: 'admitted',
