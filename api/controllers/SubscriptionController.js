@@ -119,7 +119,7 @@ module.exports = {
         });
       }
     } else {
-      auth = { profileId: req.session.clientId ? client.email : contact.profileId };
+      auth = { profileId: contact.profileId || client.email };
     }
 
     const eventName = req.param('eventName');
@@ -142,19 +142,22 @@ module.exports = {
       where: {
         subscriber: req.session.clientId,
         eventId: event.id,
-        mode: contact.mode,
+        mode,
         status: 'active',
       },
     });
 
     if (subscription) {
-      const contact = await SeqModels.Contact.findOne({
-        subscriptionId: subscription.id,
-        method: contact.method,
-        profileId: auth.profileId,
+      const oldContact = await SeqModels.Contact.findOne({
+        where: {
+          owner: req.session.clientId,
+          method: contact.method,
+          profileId: auth.profileId,
+          subscriptionId: subscription.id,
+        },
       });
 
-      if (contact) {
+      if (oldContact) {
         return res.status(200).json({
           message: '已有相同关注',
           subscription,
@@ -167,28 +170,8 @@ module.exports = {
         ? subscription.get({ plain: true })
         : {};
       await sequelize.transaction(async transaction => {
-        if (subscription) {
-          subscription = await subscription.update({
-            methods: [mode, ...subscription.modes],
-            status: 'active',
-          }, { transaction });
-
-          await SeqModels.Contact.create({
-            subscriptionId: subscription.id,
-            method: contact.method,
-            profileId: auth.profileId,
-            authId: auth.id,
-            type: ContactService.getTypeFromMethod(contact.method),
-          }, { transaction });
-
-          await RecordService.update({
-            model: 'Subscription',
-            action: 'addModeToSubscription',
-            client: req.session.clientId,
-            data: subscription,
-            before: beforeData,
-          }, { transaction });
-        } else {
+        const action = subscription ? 'addModeToSubscription' : 'createSubscription';
+        if (!subscription) {
           const notificationInDb = await SeqModels.Notification.findOne({
             where: {
               eventId: event.id,
@@ -220,23 +203,24 @@ module.exports = {
             subscription,
             { transaction },
           );
-
-          await SeqModels.Contact.create({
-            subscriptionId: subscription.id,
-            method: contact.method,
-            profileId: auth.profileId,
-            authId: auth.id,
-            type: ContactService.getTypeFromMethod(contact.method),
-          }, { transaction });
-
-          await RecordService.create({
-            model: 'Subscription',
-            action: 'createSubscription',
-            client: req.session.clientId,
-            data: subscription,
-            before: beforeData,
-          }, { transaction });
         }
+
+        await SeqModels.Contact.create({
+          subscriptionId: subscription.id,
+          method: contact.method,
+          profileId: auth.profileId,
+          authId: auth.id,
+          owner: req.session.clientId,
+          type: ContactService.getTypeFromMethod(contact.method),
+        }, { transaction });
+
+        await RecordService.create({
+          model: 'Subscription',
+          action,
+          client: req.session.clientId,
+          data: subscription,
+          before: beforeData,
+        }, { transaction });
 
         return res.status(201).json({
           message: '关注成功',
