@@ -79,7 +79,9 @@ Subscription.belongsTo(Client, {
   foreignKey: 'subscriber',
 });
 
-Subscription.hasMany(Contact);
+Subscription.hasMany(Contact, {
+  foreignKey: 'subscriptionId',
+});
 
 Notification.belongsToMany(Report, {
   through: ReportNotification,
