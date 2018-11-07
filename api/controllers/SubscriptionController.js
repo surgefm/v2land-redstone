@@ -96,7 +96,7 @@ module.exports = {
       });
     }
 
-    if (!['twitter', 'twitterAt', 'weibo', 'weiboAt', 'email'].includes(contact.method)) {
+    if (!['twitter', 'twitterAt', 'weibo', 'weiboAt', 'email', 'emailDailyReport'].includes(contact.method)) {
       return res.status(400).json({
         name: 'Notification method not supported',
         message: '不支持的推送方式',
@@ -104,7 +104,7 @@ module.exports = {
     }
 
     let auth;
-    if (contact.method !== 'email') {
+    if (ContactService.getTypeFromMethod(contact.method) !== 'email') {
       for (const item of client.auths) {
         if (item.id === contact.authId &&
           item.site === ContactService.getTypeFromMethod(contact.method)) {
