@@ -51,7 +51,7 @@ describe('NewsController', function() {
     await agent
       .post(`/event/${urlencode(testEventName + '吗？')}/news`)
       .send({
-        url: 'https://langchao.co',
+        url: 'https://langchao.com',
         source: 'source',
         title: '浪潮今天不上线',
         abstract: '浪潮今天不上线',
