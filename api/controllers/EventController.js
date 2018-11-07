@@ -8,6 +8,7 @@ const axios = require('axios');
 const SeqModels = require('../../seqModels');
 const _ = require('lodash');
 const isUrl = require('../../utils/urlValidator');
+const urlTrimmer = require('v2land-url-trimmer');
 
 const EventController = {
 
@@ -336,12 +337,15 @@ const EventController = {
       client = await SeqModels.Client.findById(req.session.clientId);
     }
 
-    if (!data.url) {
-      return res.status(400).json({
-        message: '缺少 url 参数',
-      });
+    for (const attr of ['url', 'source', 'abstract']) {
+      if (!data[attr]) {
+        return res.status(400).json({
+          message: `缺少 ${attr} 参数`,
+        });
+      }
     }
 
+    data.url = await urlTrimmer.trim(data.url).toString();
     const event = await EventService.findEvent(name);
 
     if (!event) {
@@ -377,9 +381,8 @@ const EventController = {
           transaction,
         });
 
-        await SeqModels.Record.create({
-          model: 'news',
-          operation: 'create',
+        await RecordService.create({
+          model: 'News',
           data,
           target: news.id,
           action: 'createNews',
