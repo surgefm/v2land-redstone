@@ -35,7 +35,7 @@ SELECT
 FROM
     "public"."event"
     RIGHT JOIN MATCH ON "event".id = MATCH.id
-    LEFT OUTER JOIN "public"."headerimage" AS "headerImage" ON "event"."headerImage" = "headerImage"."id"
+    LEFT OUTER JOIN "public"."headerimage" AS "headerImage" ON "event"."id" = "headerImage"."eventId"
 WHERE
     "event"."id" IN (
         SELECT
@@ -139,6 +139,16 @@ module.exports = {
         status: 'admitted',
       },
     });
+
+    if (event.newsCount > 0) {
+      event.lastUpdate = (await SeqModels.News.findOne({
+        where: {
+          eventId: event.id,
+          status: 'admitted',
+        },
+        order: [['time', 'DESC']],
+      })).time;
+    }
 
     const queue = [];
     const getStackedNews = async (i) => {

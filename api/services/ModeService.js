@@ -25,7 +25,7 @@ Object.keys(modeCollection).map(key => names[key] = modeCollection[key].name);
 function getRecordActionName(report) {
   const method = report.method.slice(0, 1).toUpperCase() + report.method.slice(1);
   const type = report.type.slice(0, 1).toUpperCase() + report.type.slice(1);
-  return `Send${method}${type}Report`;
+  return `send${method}${type}Report`;
 }
 
 module.exports = {

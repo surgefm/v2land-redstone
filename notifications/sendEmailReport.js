@@ -5,7 +5,7 @@ const getReportData = require('./getReportData');
 const SeqModels = require('../seqModels');
 
 async function sendEmailReport(report, { transaction }) {
-  const reportData = await getReportData(report);
+  const reportData = await getReportData(report, { transaction });
 
   const titles = {
     daily: '日报',

@@ -5,9 +5,8 @@ async function updateNewsNotifications(news, { transaction, force = false } = {}
     where: {
       eventId: news.eventId,
       status: 'admitted',
-      order: 1,
     },
-    sort: [['order', 'DESC']],
+    sort: [['time', 'DESC']],
     attributes: ['id'],
   });
 
