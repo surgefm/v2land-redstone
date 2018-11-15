@@ -345,7 +345,7 @@ const EventController = {
       }
     }
 
-    data.url = await urlTrimmer.trim(data.url).toString();
+    data.url = (await urlTrimmer.trim(data.url)).toString();
     const event = await EventService.findEvent(name);
 
     if (!event) {

@@ -134,6 +134,10 @@ module.exports = {
       });
     }
 
+    if (data.url) {
+      data.url = (await urlTrimmer.trim(data.url)).toString();
+    }
+
     const changes = {};
     for (const i of ['url', 'source', 'title', 'abstract', 'time', 'status', 'comment', 'stackId']) {
       if (data[i] && data[i] !== news[i]) {
@@ -222,7 +226,7 @@ module.exports = {
         }
 
         if (updateNotification) {
-          NotificationService.updateNewsNotification(news, {
+          NotificationService.updateNewsNotifications(news, {
             force: data.forceUpdate,
           });
         }
