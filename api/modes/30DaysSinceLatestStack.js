@@ -1,4 +1,4 @@
-const time = require('time');
+require('time')(Date);
 const SeqModels = require('../../seqModels');
 
 const mode = {
@@ -18,7 +18,8 @@ const mode = {
     if (!latestStack) {
       return new Date('1/1/3000');
     } else {
-      const date = new time.Date(latestStack.time, 'Asia/Shanghai');
+      const date = new Date(latestStack.time);
+      date.setTimezone('Asia/Shanghai');
       date.setHours(20);
       date.setMinutes(0);
       date.setSeconds(0);

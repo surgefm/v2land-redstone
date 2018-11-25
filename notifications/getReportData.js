@@ -6,7 +6,7 @@ const Op = Sequelize.Op;
 const SeqModels = require('../seqModels');
 const time = require('time');
 
-async function getReportData(report) {
+async function getReportData(report, { transaction }) {
   const notifications = await report.getNotifications({
     through: {
       where: { status: 'pending' },
@@ -55,7 +55,7 @@ async function getNotificationData(notification) {
       required: false,
     },
   });
-  if (notification.stack.news && notification.stack.news.length) {
+  if (notification.stack && notification.stack.news) {
     notification.news = notification.stack.news[0];
   }
   return notification;

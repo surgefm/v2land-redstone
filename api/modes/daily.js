@@ -1,4 +1,4 @@
-const time = require('time');
+require('time')(Date);
 const SeqModels = require('../../seqModels');
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
@@ -9,7 +9,7 @@ const mode = {
   needNews: false,
   isInterval: true,
   new: async () => {
-    const date = new time.Date();
+    const date = new Date();
 
     date.setTimezone('Asia/Shanghai');
     date.setHours(20);

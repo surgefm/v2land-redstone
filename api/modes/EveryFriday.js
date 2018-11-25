@@ -1,11 +1,13 @@
-const time = require('time');
+require('time')(Date);
+const SeqModels = require('../../seqModels');
+const { Op } = require('sequelize');
 
 const mode = {
   name: '每周五定时提醒',
   needNews: false,
   isInterval: true,
   new: async () => {
-    const date = new time.Date();
+    const date = new Date();
 
     date.setTimezone('Asia/Shanghai');
     date.setHours(20);

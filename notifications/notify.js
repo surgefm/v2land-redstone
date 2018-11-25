@@ -2,6 +2,7 @@
  * 发出推送
  */
 const SeqModels = require('../seqModels');
+const { Op } = require('sequelize');
 const notifyByEmail = require('./notifyByEmail');
 const notifyByEmailDailyReport = require('./notifyByEmailDailyReport');
 const notifyByTwitter = require('./notifyByTwitter');
@@ -49,9 +50,7 @@ async function notify(notification) {
 
   const subscriptions = await SeqModels.Subscription.findAll({
     where: {
-      modes: {
-        [Op.contains]: [notification.mode],
-      },
+      mode: notification.mode,
       status: 'active',
     },
   });
@@ -77,7 +76,7 @@ async function notify(notification) {
 
     const queue = [];
 
-    const contactList = await SeqModels.Contact.find({
+    const contactList = await SeqModels.Contact.findAll({
       where: {
         subscriptionId: subscription.id,
         status: 'active',
@@ -118,6 +117,15 @@ async function notify(notification) {
 
   const promises = subscriptions.map(s => sendNotification(s));
   await Promise.all(promises);
+
+  const nextTime = await mode.notified({
+    notification,
+    event,
+    news: news, // news and stack may be undefined in some cases.
+    stack: stack,
+  });
+
+  await notification.update({ time: nextTime });
 }
 
 module.exports = notify;

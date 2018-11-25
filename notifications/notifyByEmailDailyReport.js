@@ -4,20 +4,20 @@
 const SeqModels = require('../seqModels');
 
 async function notifyByEmailDailyReport({ subscription, template, notification }) {
-  const time = ModeService.daily.new();
+  const time = await ModeService.daily.new();
 
   await sequelize.transaction(async transaction => {
     const reportData = {
-      time,
+      time: time.getTime(),
       status: 'pending',
       type: 'daily',
       owner: subscription.subscriber,
     };
-    const report = await SeqModels.Report.findOrCreate({
+    const report = (await SeqModels.Report.findOrCreate({
       where: reportData,
       defaults: reportData,
       transaction,
-    })[0];
+    }))[0];
 
     const reportNotificationData = {
       status: 'pending',
