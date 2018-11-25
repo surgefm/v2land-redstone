@@ -11,7 +11,7 @@ async function getReportData(report, { transaction }) {
     through: {
       where: { status: 'pending' },
     },
-    inclues: [SeqModels.Event],
+    include: [SeqModels.Event],
     transaction,
   });
 
