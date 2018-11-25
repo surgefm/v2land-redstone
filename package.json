@@ -64,7 +64,7 @@
     "type": "git",
     "url": "https://github.com/v2land/v2land-redstone.git"
   },
-  "license": "UNLICENSED",
+  "license": "MIT",
   "devDependencies": {
     "babel-eslint": "^8.0.3",
     "husky": "^0.14.3",
