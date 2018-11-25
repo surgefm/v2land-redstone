@@ -347,7 +347,6 @@ const EventController = {
 
     data.url = (await urlTrimmer.trim(data.url)).toString();
     const event = await EventService.findEvent(name);
-
     if (!event) {
       return res.status(404).json({
         message: '未找到该事件',
