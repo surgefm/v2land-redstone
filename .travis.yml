@@ -14,7 +14,7 @@ node_js:
 env:
   - CXX=g++-4.8
 before_script:
-  - psql -c 'create database v2land;' -U postgres
+  - psql-10 -c 'create database v2land;' -U postgres
   - node ./node_modules/sequelize-cli/lib/sequelize db:migrate
 script: make test
 deploy:
