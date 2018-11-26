@@ -3,6 +3,7 @@ services:
   - redis-server
   - postgresql
   - docker
+dist: trusty
 addons:
   postgresql: "10"
   apt:
