@@ -10,6 +10,7 @@ addons:
     packages:
     - postgresql-10
     - postgresql-client-10
+    - g++-4.8
 env:
   - CXX=g++-4.8
 node_js:
