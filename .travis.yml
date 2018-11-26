@@ -1,6 +1,7 @@
 language: node_js
 services:
   - redis-server
+  - postgresql
   - docker
 dist: trusty
 addons:
@@ -9,10 +10,12 @@ addons:
     packages:
     - postgresql-10
     - postgresql-client-10
+env:
+  global:
+  - PGPORT=5433
+  - CXX=g++-4.8
 node_js:
   - "10"
-env:
-  - CXX=g++-4.8
 before_script:
   - psql-10 -c 'create database v2land;' -U postgres
   - node ./node_modules/sequelize-cli/lib/sequelize db:migrate
