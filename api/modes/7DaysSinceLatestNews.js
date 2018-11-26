@@ -8,7 +8,7 @@ const mode = {
   new: async ({ event, news }) => {
     const latestNews = news || await SeqModels.News.findOne({
       where: { status: 'admitted', eventId: event.id },
-      sort: 'time DESC',
+      order: [['time', 'DESC']],
     });
 
     if (!latestNews) {

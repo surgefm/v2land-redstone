@@ -1,14 +1,20 @@
+os: linux
+dist: xenial
 language: node_js
 services:
   - redis-server
-  - postgresql
   - docker
 addons:
   postgresql: "10"
-node_js:
-  - "10"
+  apt:
+    packages:
+    - postgresql-10
+    - postgresql-client-10
+    - g++-4.8
 env:
   - CXX=g++-4.8
+node_js:
+  - "10"
 before_script:
   - psql -c 'create database v2land;' -U postgres
   - node ./node_modules/sequelize-cli/lib/sequelize db:migrate

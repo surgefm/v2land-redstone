@@ -6,8 +6,8 @@ module.exports = function NotificationInit(sails) {
     initialize: function(cb) {
       sails.on('hook:orm:loaded', () => {
         if (sails.config.globals.notification) {
-          setTimeout(checkInstantNotification, 500);
-          setTimeout(checkReportNotification, 500);
+          checkInstantNotification();
+          checkReportNotification();
         }
 
         cb();
