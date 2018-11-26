@@ -1,7 +1,6 @@
 language: node_js
 services:
   - redis-server
-  - postgresql
   - docker
 dist: trusty
 addons:
