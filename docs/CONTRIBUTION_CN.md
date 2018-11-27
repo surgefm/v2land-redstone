@@ -17,7 +17,7 @@
 
 ## 开发
 
-v2land-redstone 是一个用 [Sails](https://sailsjs.com/) 重构的后端，目前我们线上的后端采用 Loopback 开发 [v2land-api](https://github.com/v2land/v2land-api)，已经不会再更新。
+v2land-redstone 是一个用 [Sails](https://sailsjs.com/) 重构的后端。先前我们线上的后端采用的基于 Loopback 开发 [v2land-api](https://github.com/v2land/v2land-api)已不会再更新。
 
 如果您想要参与到 Redstone 的开发当中，您可以做的事情有：
 
@@ -32,10 +32,10 @@ v2land-redstone 是一个用 [Sails](https://sailsjs.com/) 重构的后端，目
 
 [Sails](https://sailsjs.com/) 框架是基于 Node.js 技术栈的，所以我们的开发环境包括：
 
-- Node.js 8.9 或以上
+- Node.js 10.13 或以上
 - Yarn 1.32 或以上
-- PostgreSQL 10.1 或以上
-- Sails 0.12 或以上
+- PostgreSQL 10.4 或以上
+- Sails 0.12
 
 ### 开始开发
 
@@ -46,7 +46,7 @@ $ yarn install
 
 ### 分支
 
-开发时，新分支的命名应该保持规范。大部分情况下，新分支应基于 `develop` 分支建立。
+开发时，新分支的命名应该保持规范。大部分情况下，新分支应基于 `master` 分支建立。
 
 所有和 features 有关的分支以 feature 命名，如此类推：
 
@@ -118,4 +118,4 @@ make debug
 
 ## 提交 Pull Request
 
-当您完成开发之后，您就可以给我们的 `develop` 分支提交 PR，我们感谢您的付出和支持。
+当您完成开发之后，您就可以给我们的 `master` 分支提交 PR，我们感谢您的付出和支持。
