@@ -159,6 +159,7 @@ module.exports = {
           where: { eventId: news.eventId, status: 'admitted' },
           attributes: ['id'],
           sort: [['time', 'DESC']],
+          transaction,
         });
 
         const updateNotification =
@@ -191,6 +192,7 @@ module.exports = {
             if (!newsCount) {
               const stack = await SeqModels.Stack.findOne({
                 where: { id: news.stackId, status: 'admitted' },
+                transaction,
               });
               if (stack) {
                 await stack.update({ status: 'invalid' }, { transaction });

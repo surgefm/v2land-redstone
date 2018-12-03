@@ -9,6 +9,7 @@ async function updateStackNotifications(stack, { transaction, force = false } = 
     },
     sort: [['order', 'DESC']],
     attributes: ['id'],
+    transaction,
   });
 
   if (!force && (!latestStack || (+latestStack.id !== +stack.id))) return;
@@ -17,13 +18,14 @@ async function updateStackNotifications(stack, { transaction, force = false } = 
     model: 'Stack',
     target: stack.id,
     action: 'notifyNewStack',
+    transaction,
   });
 
   if (!force && recordCount) return;
 
   let event = stack.event;
   if (typeof event !== 'object') {
-    event = await SeqModels.Event.findById(stack.eventId);
+    event = await SeqModels.Event.findById(stack.eventId, { transaction });
   }
 
   if (!transaction) {

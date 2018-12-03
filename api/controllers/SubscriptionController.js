@@ -177,6 +177,7 @@ module.exports = {
               eventId: event.id,
               mode,
             },
+            transaction,
           });
 
           if (!notificationInDb) {

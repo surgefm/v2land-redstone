@@ -4,7 +4,7 @@ const Op = Sequelize.Op;
 
 const NewsService = {
 
-  async getContribution(news, withData) {
+  async getContribution(news, withData, { transaction } = {}) {
     const records = await SeqModels.Record.findAll({
       attributes: withData ? undefined : {
         exclude: ['data', 'before'],
@@ -21,16 +21,17 @@ const NewsService = {
         required: false,
         attributes: ['username', 'role', 'id'],
       },
+      transaction,
     });
 
     return records;
   },
 
-  async acquireContributionsByNewsList(newsList) {
+  async acquireContributionsByNewsList(newsList, withData, { transaction } = {}) {
     const queue = [];
 
     const getContribution = async (news) => {
-      news.contribution = await NewsService.getContribution(news);
+      news.contribution = await NewsService.getContribution(news, withData, { transaction });
     };
     for (const news of newsList) {
       queue.push(getContribution(news));

@@ -316,7 +316,8 @@ module.exports = {
       await sequelize.transaction(async transaction => {
         const client = await SeqModels.Client.findOne({
           where: { id: name },
-        }, { transaction });
+          transaction,
+        });
         if (!client) {
           return res.status(404).json({
             message: '未找到该用户',
@@ -515,7 +516,7 @@ module.exports = {
     };
 
     const attributes = ['id', 'email', 'username', 'role'];
-    const clients = await SeqModels.Client.find({
+    const clients = await SeqModels.Client.findAll({
       where: where || {},
       sort: [['updatedAt', 'DESC']],
       attributes,

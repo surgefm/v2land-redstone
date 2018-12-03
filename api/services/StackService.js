@@ -3,7 +3,7 @@ const { Op } = require('sequelize');
 
 const StackService = {
 
-  async findStack(id, withContributionData = true) {
+  async findStack(id, withContributionData = true, { transaction } = {}) {
     const stack = await SeqModels.Stack.findOne({
       where: { id },
       include: [{
@@ -12,6 +12,7 @@ const StackService = {
         sort: [['time', 'ASC']],
         limit: 15,
       }],
+      transaction,
     });
 
     if (stack) {
@@ -31,7 +32,7 @@ const StackService = {
     return stack;
   },
 
-  async getContribution(stack, withData = true) {
+  async getContribution(stack, withData = true, { transaction } = {}) {
     const select = ['model', 'target', 'operation', 'client'];
     if (withData) {
       select.push('before');
@@ -50,6 +51,7 @@ const StackService = {
         model: SeqModels.Client,
         as: 'owner',
       }],
+      transaction,
     });
 
     for (const record of records) {

@@ -86,7 +86,7 @@ module.exports = {
     return events.toJSON();
   },
 
-  findEvent: async (eventName, { includes = {}, eventOnly = false } = {}) => {
+  findEvent: async (eventName, { includes = {}, eventOnly = false, transaction } = {}) => {
     const checkNewsIncluded = includes.stack && includes.news;
     const event = await SeqModels.Event.findOne({
       attributes: { exclude: ['pinyin'] },
@@ -120,6 +120,7 @@ module.exports = {
           },
         },
       ],
+      transaction,
     });
 
     if (!event) return;
@@ -147,6 +148,7 @@ module.exports = {
           status: 'admitted',
         },
         order: [['time', 'DESC']],
+        transaction,
       })).time;
     }
 
@@ -162,6 +164,7 @@ module.exports = {
             stackId: stack.id,
             status: 'admitted',
           },
+          transaction,
         });
       }
 
@@ -172,6 +175,7 @@ module.exports = {
             status: 'admitted',
           },
           order: [['time', 'ASC']],
+          transaction,
         });
       }
 
@@ -184,6 +188,7 @@ module.exports = {
           stackId: stack.id,
           status: 'admitted',
         },
+        transaction,
       });
       event.stacks[i] = stack;
     };

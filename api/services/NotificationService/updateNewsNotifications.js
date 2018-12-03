@@ -8,6 +8,7 @@ async function updateNewsNotifications(news, { transaction, force = false } = {}
     },
     sort: [['time', 'DESC']],
     attributes: ['id'],
+    transaction,
   });
 
   if (!force && (!latestNews || (+latestNews.id !== +news.id))) return;
@@ -16,18 +17,19 @@ async function updateNewsNotifications(news, { transaction, force = false } = {}
     model: 'News',
     target: news.id,
     action: 'notifyNewNews',
+    transaction,
   });
 
   if (!force && recordCount) return;
 
   let event = news.event;
   if (typeof event !== 'object') {
-    event = await SeqModels.Event.findById(news.eventId);
+    event = await SeqModels.Event.findById(news.eventId, { transaction });
   }
 
   let stack = news.stack;
   if (typeof stack !== 'object') {
-    stack = await SeqModels.Stack.findById(news.stackId);
+    stack = await SeqModels.Stack.findById(news.stackId, { transaction });
   }
 
   if (!transaction) {
