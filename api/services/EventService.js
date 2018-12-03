@@ -160,6 +160,7 @@ module.exports = {
           stackId: null,
           isInTemporaryStack: true,
         },
+        order: [['time', 'DESC']],
         transaction,
       });
     }
