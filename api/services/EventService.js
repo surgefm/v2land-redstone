@@ -86,7 +86,7 @@ module.exports = {
     return events.toJSON();
   },
 
-  findEvent: async (eventName, { includes = {}, eventOnly = false } = {}) => {
+  findEvent: async (eventName, { includes = {}, eventOnly = false, transaction } = {}) => {
     const checkNewsIncluded = includes.stack && includes.news;
     const event = await SeqModels.Event.findOne({
       attributes: { exclude: ['pinyin'] },
@@ -120,6 +120,7 @@ module.exports = {
           },
         },
       ],
+      transaction,
     });
 
     if (!event) return;
@@ -131,6 +132,7 @@ module.exports = {
         eventId: event.id,
         status: 'admitted',
       },
+      transaction,
     });
 
     event.stackCount = await SeqModels.Stack.count({
@@ -138,6 +140,7 @@ module.exports = {
         eventId: event.id,
         status: 'admitted',
       },
+      transaction,
     });
 
     if (event.newsCount > 0) {
@@ -147,7 +150,18 @@ module.exports = {
           status: 'admitted',
         },
         order: [['time', 'DESC']],
+        transaction,
       })).time;
+
+      event.temporaryStack = await SeqModels.News.findAll({
+        where: {
+          eventId: event.id,
+          status: 'admitted',
+          stackId: null,
+          isInTemporaryStack: true,
+        },
+        transaction,
+      });
     }
 
     const queue = [];
@@ -162,6 +176,7 @@ module.exports = {
             stackId: stack.id,
             status: 'admitted',
           },
+          transaction,
         });
       }
 
@@ -172,6 +187,7 @@ module.exports = {
             status: 'admitted',
           },
           order: [['time', 'ASC']],
+          transaction,
         });
       }
 
@@ -184,6 +200,7 @@ module.exports = {
           stackId: stack.id,
           status: 'admitted',
         },
+        transaction,
       });
       event.stacks[i] = stack;
     };
