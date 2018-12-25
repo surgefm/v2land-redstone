@@ -88,7 +88,7 @@ module.exports = {
 
   findEvent: async (eventName, { includes = {}, eventOnly = false, transaction } = {}) => {
     const checkNewsIncluded = includes.stack && includes.news;
-    const event = await SeqModels.Event.findOne({
+    let event = await SeqModels.Event.findOne({
       attributes: { exclude: ['pinyin'] },
       where: {
         [Op.or]: [
@@ -125,6 +125,7 @@ module.exports = {
 
     if (!event) return;
 
+    event = event.get({ plain: true });
     event.stacks = event.stacks || [];
 
     event.newsCount = await SeqModels.News.count({
