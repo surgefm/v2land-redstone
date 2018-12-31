@@ -17,9 +17,9 @@
 
 ## 开发
 
-v2land-redstone 是一个用 [Sails](https://sailsjs.com/) 重构的后端，目前我们线上的后端采用 Loopback 开发 [v2land-api](https://github.com/v2land/v2land-api)，已经不会再更新。
+v2land-redstone 是一个用 [Sails](https://sailsjs.com/) 重构的后端。先前我们线上采用的基于 Loopback 开发的 [v2land-api](https://github.com/v2land/v2land-api)已不会再更新。
 
-如果您想要参与到 Redstone 的开发当中，您可以做的事情有：
+如果您想参与到 Redstone 的开发当中，您可以做的事情有：
 
 - API 的实现
 - 数据库的设计
@@ -32,10 +32,10 @@ v2land-redstone 是一个用 [Sails](https://sailsjs.com/) 重构的后端，目
 
 [Sails](https://sailsjs.com/) 框架是基于 Node.js 技术栈的，所以我们的开发环境包括：
 
-- Node.js 8.9 或以上
+- Node.js 10.13 或以上
 - Yarn 1.32 或以上
-- PostgreSQL 10.1 或以上
-- Sails 0.12 或以上
+- PostgreSQL 10.4 或以上
+- Sails 0.12
 
 ### 开始开发
 
