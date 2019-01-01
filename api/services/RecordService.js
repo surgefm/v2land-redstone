@@ -10,7 +10,7 @@ const refineData = (data = {}) => {
 };
 
 /**
- * model, action, target, client, data, before
+ * model, action, target, owner, data, before
  */
 
 const RecordService = {

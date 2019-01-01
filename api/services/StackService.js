@@ -33,32 +33,27 @@ const StackService = {
   },
 
   async getContribution(stack, withData = true, { transaction } = {}) {
-    const select = ['model', 'target', 'operation', 'client'];
+    const attributes = ['model', 'target', 'operation', 'owner'];
     if (withData) {
-      select.push('before');
-      select.push('data');
+      attributes.push('before');
+      attributes.push('data');
     }
 
-    const records = await SeqModels.Record.find({
+    const records = await SeqModels.Record.findAll({
       where: {
         action: {
           [Op.or]: ['createStack', 'invalidateStack', 'updateStackStatus', 'updateStackDetail'],
         },
         target: stack.id,
-        select,
       },
+      attributes,
       include: [{
         model: SeqModels.Client,
-        as: 'owner',
+        as: 'client',
+        attributes: ['username', 'role', 'id'],
       }],
       transaction,
     });
-
-    for (const record of records) {
-      if (record.client) {
-        record.client = ClientService.sanitizeClient(record.client);
-      }
-    }
 
     return records;
   },

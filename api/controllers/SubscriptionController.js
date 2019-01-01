@@ -41,7 +41,7 @@ module.exports = {
       await RecordService.update({
         model: 'Subscription',
         action: 'cancelSubscription',
-        client: req.session.clientId,
+        owner: req.session.clientId,
         data: req.query.method ? methods : { status: 'unsubscribed' },
         before: subscription,
       }, { transaction });
@@ -218,7 +218,7 @@ module.exports = {
         await RecordService.create({
           model: 'Subscription',
           action,
-          client: req.session.clientId,
+          owner: req.session.clientId,
           data: subscription,
           before: beforeData,
         }, { transaction });

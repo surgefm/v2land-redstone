@@ -45,6 +45,16 @@ Stack.hasMany(News, {
   sourceKey: 'id',
 });
 
+News.belongsTo(Stack, {
+  foreignKey: 'stackId',
+});
+
+Client.hasMany(Record, {
+  as: 'records',
+  foreignKey: 'owner',
+  targetKey: 'id',
+});
+
 Client.hasMany(Auth, {
   as: 'auths',
   foreignKey: 'owner',

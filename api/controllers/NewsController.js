@@ -5,6 +5,8 @@
  * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
  */
 const SeqModels = require('../../seqModels');
+const { Op } = require('sequelize');
+const _ = require('lodash');
 
 module.exports = {
   getAllPendingNews: async (req, res) => {
@@ -33,7 +35,7 @@ module.exports = {
       });
     }
 
-    const news = await SeqModels.News.findOne({
+    let news = await SeqModels.News.findOne({
       where: { id },
       include: [{
         model: SeqModels.Stack,
@@ -43,6 +45,7 @@ module.exports = {
     if (!news) {
       return res.status(404).json({ message: '未找到该新闻' });
     }
+    news = news.get({ plain: true });
 
     if (news.status !== 'admitted') {
       if (req.session.clientId) {
@@ -98,11 +101,13 @@ module.exports = {
 
     if (where && !isManager) {
       where.status = 'admitted';
+    } else if (where && isManager && _.isArray(where.status)) {
+      where.status = { [Op.in]: where.status };
     }
 
     if (where) {
       try {
-        const newsList = await SeqModels.News.find({
+        const newsList = await SeqModels.News.findAll({
           where,
           sort: 'updatedAt DESC',
           offset: (page - 1) * 15,
@@ -180,7 +185,7 @@ module.exports = {
             before: beforeStatus,
             data: changes.status,
             target: news.id,
-            client: req.session.clientId,
+            owner: req.session.clientId,
           }, { transaction });
 
           NotificationService.notifyWhenNewsStatusChanged(news, newNews, req.session.clientId);
@@ -202,7 +207,7 @@ module.exports = {
                   before: { status: 'admitted' },
                   model: 'stack',
                   target: stack.id,
-                  client: req.session.clientId,
+                  owner: req.session.clientId,
                 }, { transaction });
               }
             }
@@ -222,7 +227,7 @@ module.exports = {
             data: changes,
             before,
             target: news.id,
-            client: req.session.clientId,
+            owner: req.session.clientId,
             model: 'news',
           }, { transaction });
         }

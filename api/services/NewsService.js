@@ -17,7 +17,7 @@ const NewsService = {
       },
       include: {
         model: SeqModels.Client,
-        as: 'owner',
+        as: 'client',
         required: false,
         attributes: ['username', 'role', 'id'],
       },

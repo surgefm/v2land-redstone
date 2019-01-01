@@ -46,16 +46,14 @@ const EventController = {
       });
     }
 
-    const { news } = await SeqModels.Event.findOne({
-      where: { id: event.id },
-      include: [{
-        model: SeqModels.News,
-        as: 'news',
-        where: { status: 'pending' },
-      }],
+    const newsCollection = await SeqModels.News.findAll({
+      where: {
+        eventId: event.id,
+        status: 'pending',
+      },
     });
 
-    return res.status(200).json({ newsCollection: news });
+    return res.status(200).json({ newsCollection });
   },
 
   createEvent: async (req, res) => {
@@ -86,7 +84,7 @@ const EventController = {
           model: 'Event',
           data,
           action: 'createEvent',
-          client: req.session.clientId,
+          owner: req.session.clientId,
           target: event.id,
         }, { transaction });
       });
@@ -140,7 +138,7 @@ const EventController = {
       await sequelize.transaction(async transaction => {
         const query = {
           model: 'Event',
-          client: req.session.clientId,
+          owner: req.session.clientId,
         };
 
         if (changes.status) {
@@ -169,10 +167,8 @@ const EventController = {
           before[i] = event[i];
         }
 
-        if (Object.getOwnPropertyNames(changes).length > 0) {
-          await SeqModels.Event.update({
-            status: changes.status,
-          }, {
+        if (Object.keys(changes).length > 0) {
+          await SeqModels.Event.update(changes, {
             where: { id: event.id },
             transaction,
           });
@@ -181,7 +177,7 @@ const EventController = {
             ...query,
             action: 'updateEventDetail',
             data: changes,
-            before: event.status,
+            before,
             target: event.id,
           }, { transaction });
         }
@@ -314,7 +310,7 @@ const EventController = {
           model: 'stack',
           data,
           target: stack.id,
-          client: req.session.clientId,
+          owner: req.session.clientId,
           action: 'createStack',
         }, { transaction });
 
@@ -385,7 +381,7 @@ const EventController = {
           data,
           target: news.id,
           action: 'createNews',
-          client: req.session.clientId,
+          owner: req.session.clientId,
         }, { transaction });
 
         res.status(201).json({
@@ -410,6 +406,12 @@ const EventController = {
       });
     }
 
+    if (!req.body.imageUrl) {
+      return res.status(400).json({
+        message: '缺少参数：imageUrl。',
+      });
+    }
+
     if (req.method === 'PUT' && !event.headerImage) {
       return res.status(400).json({
         message: '未找到该题图，请改用 POST 方法请求创建',
@@ -430,8 +432,7 @@ const EventController = {
       }
     }
 
-    if ((headerImage.sourceUrl && !isUrl(headerImage.sourceUrl)) ||
-      (headerImage.imageUrl && !isUrl(headerImage.imageUrl))) {
+    if (headerImage.sourceUrl && !isUrl(headerImage.sourceUrl)) {
       return res.status(400).json({
         message: '链接格式不规范',
       });
@@ -440,7 +441,7 @@ const EventController = {
     try {
       const query = {
         model: 'HeaderImage',
-        client: req.session.clientId,
+        owner: req.session.clientId,
         data: headerImage,
       };
 

@@ -60,7 +60,7 @@ module.exports = {
           model: 'Auth',
           target: data.id,
           data,
-          client: req.session.clientId,
+          owner: req.session.clientId,
           action: 'authorizeThirdPartyAccount',
         }, { transaction });
 
@@ -265,7 +265,7 @@ module.exports = {
           await RecordService.create({
             model: 'auth',
             action: 'authorizeThirdPartyAccount',
-            client: req.session.clientId,
+            owner: req.session.clientId,
             target: account.id,
           }, { transaction });
         });
@@ -459,7 +459,7 @@ module.exports = {
           await RecordService.create({
             model: 'auth',
             action: 'authorizeThirdPartyAccount',
-            client: req.session.clientId,
+            owner: req.session.clientId,
             target: account.id,
           }, { transaction });
         });

@@ -382,7 +382,7 @@ module.exports = {
         await client.update(changes, { transaction });
         await RecordService.update({
           data: changes,
-          client: req.session.clientId,
+          owner: req.session.clientId,
           model: 'Client',
           before: origClient,
           action: 'updateClientDetail',

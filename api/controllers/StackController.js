@@ -61,6 +61,7 @@ const StackController = {
       },
       include: [{
         model: SeqModels.News,
+        as: 'news',
         where: { status: 'admitted' },
         order: [['time', 'ASC']],
         required: false,
