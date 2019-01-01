@@ -161,9 +161,9 @@ describe('EventController', function() {
       agent
         .put(`/event/${urlencode('浪潮今天发布了吗？')}/header_image`)
         .send({
-          imageUrl: '<script></script>',
+          imageUrl: 'hfdshjk.jpg',
           source: '浪潮',
-          sourceUrl: 'https://langchao.co/',
+          sourceUrl: '<script></script>',
         })
         .expect(400, done);
     });
