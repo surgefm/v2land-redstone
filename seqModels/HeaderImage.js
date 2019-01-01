@@ -1,9 +1,12 @@
 const Sequelize = require('sequelize');
 
-const HeaderImage = global.sequelize.define('headerimage', {
+const HeaderImage = global.sequelize.define('headerImage', {
   imageUrl: {
     type: Sequelize.TEXT,
     allowNull: false,
+    validate: {
+      isUrl: true,
+    },
   },
   source: {
     type: Sequelize.TEXT,
@@ -12,6 +15,9 @@ const HeaderImage = global.sequelize.define('headerimage', {
   sourceUrl: {
     type: Sequelize.TEXT,
     allowNull: true,
+    validate: {
+      isUrl: true,
+    },
   },
 }, {
   freezeTableName: true,

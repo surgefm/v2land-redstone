@@ -1,17 +1,21 @@
-const time = require('time');
+require('time')(Date);
+const SeqModels = require('../../seqModels');
 
 const mode = {
+  name: '七天未更新新闻',
   needNews: false,
+  keepLatestOnly: true,
   new: async ({ event, news }) => {
-    const latestNews = news || await News.findOne({
-      where: { status: 'admitted', event: event.id },
-      sort: 'time DESC',
+    const latestNews = news || await SeqModels.News.findOne({
+      where: { status: 'admitted', eventId: event.id },
+      order: [['time', 'DESC']],
     });
 
     if (!latestNews) {
       return new Date('1/1/3000');
     } else {
-      const date = new time.Date(latestNews.time, 'Asia/Shanghai');
+      const date = new Date(latestNews.time);
+      date.setTimezone('Asia/Shanghai');
       date.setHours(8);
       date.setMinutes(0);
       date.setSeconds(0);

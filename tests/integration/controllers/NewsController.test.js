@@ -48,10 +48,11 @@ describe('NewsController', function() {
   });
 
   it('should return 404', async function() {
+    this.timeout(50000);
     await agent
       .post(`/event/${urlencode(testEventName + '吗？')}/news`)
       .send({
-        url: 'https://langchao.co',
+        url: 'https://langchao.org',
         source: 'source',
         title: '浪潮今天不上线',
         abstract: '浪潮今天不上线',

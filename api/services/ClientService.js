@@ -9,11 +9,15 @@ const Op = Sequelize.Op;
 module.exports = {
 
   findClient: async (clientName, { transaction } = {}) => {
+    if (!['string', 'number'].includes(typeof clientName)) {
+      return clientName;
+    }
+
     let where;
 
-    if (typeof clientName === 'number') {
+    if (+clientName > 0) {
       where = {
-        id: clientName > -1 ? clientName : -1,
+        id: +clientName,
       };
     } else if (typeof clientName === 'string') {
       where = {
@@ -50,26 +54,6 @@ module.exports = {
 
     const data = client.toJSON();
 
-    // can use join
-
-    // const client = await Client.findOne({
-    //   or: [
-    //     { id: parseInt(clientName) > -1 ? parseInt(clientName) : -1 },
-    //     { username: clientName },
-    //     { email: clientName },
-    //   ],
-    // })
-    //   .populate('subscriptions', {
-    //     where: { status: 'active' },
-    //     sort: 'createdAt DESC',
-    //   })
-    //   .populate('auths', {
-    //     where: { profileId: { '>=': 1 } },
-    //   })
-    //   .populate('events', {
-    //     sort: 'updatedAt DESC',
-    //   });
-
     delete data.password;
     delete data.records;
     for (let i = 0; i < data.auths.length; i++) {
@@ -103,11 +87,25 @@ module.exports = {
 
   sanitizeClient: (client) => {
     const temp = {};
-    for (const attr of ['username', 'role', 'id', 'events']) {
+    for (const attr of ['username', 'role', 'id']) {
       temp[attr] = client[attr];
     }
 
     return temp;
+  },
+
+  validateSettings: async (settings) => {
+    for (const attr of Object.keys(settings)) {
+      switch (attr) {
+      case 'defaultSubscriptionMethod':
+        if (!['EveryNewStack', '30DaysSinceLatestStack'].includes(settings[attr])) {
+          throw new Error(`'defaultSubscriptionMethod' 字段不得为 ${settings[attr]}`);
+        }
+        break;
+      default:
+        throw new Error(`不存在 '${attr}' 字段`);
+      }
+    }
   },
 
 };

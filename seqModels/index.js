@@ -8,26 +8,51 @@ const Notification = require('./Notification');
 const Record = require('./Record');
 const Stack = require('./Stack');
 const Subscription = require('./Subscription');
+const Report = require('./Report');
+const ReportNotification = require('./ReportNotification');
+const Contact = require('./Contact');
 
 Event.hasOne(HeaderImage, {
   as: 'headerImage',
-  foreignKey: 'event',
+  foreignKey: 'eventId',
 });
 
 Event.hasMany(Stack, {
   as: 'stacks',
-  foreignKey: 'event',
+  foreignKey: 'eventId',
   sourceKey: 'id',
 });
 
+Event.hasMany(News, {
+  foreignKey: 'eventId',
+});
+
 Event.hasMany(Critique, {
-  foreignKey: 'event',
-})
+  foreignKey: 'eventId',
+});
+
+Event.hasMany(Notification, {
+  foreignKey: 'eventId',
+});
+
+Event.hasMany(Subscription, {
+  foreignKey: 'eventId',
+});
 
 Stack.hasMany(News, {
   as: 'news',
-  foreignKey: 'stack',
+  foreignKey: 'stackId',
   sourceKey: 'id',
+});
+
+News.belongsTo(Stack, {
+  foreignKey: 'stackId',
+});
+
+Client.hasMany(Record, {
+  as: 'records',
+  foreignKey: 'owner',
+  targetKey: 'id',
 });
 
 Client.hasMany(Auth, {
@@ -36,24 +61,53 @@ Client.hasMany(Auth, {
   targetKey: 'id',
 });
 
-Auth.belongsTo(Client, {
-  foreignKey: 'owner',
-});
-
 Client.hasMany(Subscription, {
   as: 'subscriptions',
   foreignKey: 'subscriber',
   targetKey: 'id',
 });
 
+Client.hasMany(Contact, {
+  as: 'contacts',
+  foreignKey: 'owner',
+});
+
+Client.hasMany(Report, {
+  as: 'reports',
+  foreignKey: 'owner',
+});
+
+Record.belongsTo(Client, {
+  foreignKey: 'owner',
+});
+
+Auth.belongsTo(Client, {
+  foreignKey: 'owner',
+});
+
 Subscription.belongsTo(Client, {
   foreignKey: 'subscriber',
 });
 
-Client.hasMany(Record, {
-  as: 'records',
-  foreignKey: 'client',
+Subscription.hasMany(Contact, {
+  foreignKey: 'subscriptionId',
 });
+
+Notification.belongsToMany(Report, {
+  through: ReportNotification,
+  foreignKey: 'notificationId',
+});
+
+Notification.belongsTo(Event, {
+  foreignKey: 'eventId',
+});
+
+Report.belongsToMany(Notification, {
+  through: ReportNotification,
+  foreignKey: 'reportId',
+});
+
+Contact.belongsTo(Auth);
 
 module.exports = {
   Auth,
@@ -66,4 +120,7 @@ module.exports = {
   Record,
   Stack,
   Subscription,
+  Report,
+  ReportNotification,
+  Contact,
 };

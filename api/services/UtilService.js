@@ -2,6 +2,12 @@ const uniqueString = require('unique-string');
 const _ = require('lodash');
 
 module.exports = {
+  isAdmin: async (client) => {
+    if (!client) return false;
+    client = await ClientService.findClient(client);
+    return client.role === 'admin';
+  },
+
   validateNumber: (value, defaultValue) => {
     if (_.isNumber(value)) {
       return value;
@@ -22,6 +28,27 @@ module.exports = {
     const extension = parts[parts.length - 1].toLowerCase();
     const newFilename = uniqueString() + Date.now() + '.' + extension;
     return newFilename;
+  },
+
+  generateRandomV2landString: length => {
+    const charset = ['🧜‍♀️', '🧜‍♂️', '🐠', '🐟', '🐬', '🐳', '🐋',
+      '💧', '💦', '🌊', '🏄‍♀️', '🏄‍♂️', '🏊‍♀️', '🏊‍♂️', '🚣‍♀️', '🚣‍♂️',
+      '🚤', '🛥', '⛵️', '🛶', '🛳', '⛴', '🚢', '💙', '🏖', '🏝'];
+
+    let string = '';
+    for (let i = 0; i < length; i++) {
+      const index = Math.floor(Math.random() * charset.length);
+      string += charset[index];
+    }
+
+    return string;
+  },
+
+  shortenString: (str, length = 100) => {
+    if (!str || length < 1) return;
+    return str.length > length
+      ? (str.slice(0, length - 1) + '…')
+      : str;
   },
 
   /**

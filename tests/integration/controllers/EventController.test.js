@@ -103,27 +103,35 @@ describe('EventController', function() {
 
   describe('Event\'s header image', function() {
     before(async function() {
-      await Event.destroy({
-        name: '浪潮今天发布了吗？',
+      await SeqModels.Event.destroy({
+        where: {
+          name: '浪潮今天发布了吗？',
+        },
       });
 
-      await HeaderImage.destroy({
-        sourceUrl: 'https://langchao.co/',
+      await SeqModels.HeaderImage.destroy({
+        where: {
+          sourceUrl: 'https://langchao.org/',
+        },
       });
 
-      await Event.create({
+      await SeqModels.Event.create({
         name: '浪潮今天发布了吗？',
         description: '浪潮今天发布了吗？',
       });
     });
 
     after(async function() {
-      await Event.destroy({
-        name: '浪潮今天发布了吗？',
+      await SeqModels.Event.destroy({
+        where: {
+          name: '浪潮今天发布了吗？',
+        },
       });
 
-      await HeaderImage.destroy({
-        sourceUrl: 'https://langchao.co/',
+      await SeqModels.HeaderImage.destroy({
+        where: {
+          sourceUrl: 'https://langchao.org/',
+        },
       });
     });
 
@@ -153,9 +161,9 @@ describe('EventController', function() {
       agent
         .put(`/event/${urlencode('浪潮今天发布了吗？')}/header_image`)
         .send({
-          imageUrl: '<script></script>',
+          imageUrl: 'hfdshjk.jpg',
           source: '浪潮',
-          sourceUrl: 'https://langchao.co/',
+          sourceUrl: '<script></script>',
         })
         .expect(400, done);
     });

@@ -6,6 +6,7 @@
  */
 
 const axios = require('axios');
+const SeqModels = require('../../seqModels');
 
 module.exports = {
 
@@ -23,7 +24,7 @@ module.exports = {
       });
     }
 
-    const auth = await Auth.findOne({ id: req.body.authId });
+    const auth = await SeqModels.Auth.findById(req.body.authId);
     if (!auth || !auth.profile) {
       return res.status(404).json({
         message: '未找到该绑定信息',
@@ -42,28 +43,34 @@ module.exports = {
       });
     }
 
-    auth.owner = req.body.clientId || req.session.clientId;
-    await auth.save();
+    try {
+      await sequelize.transaction(async transaction => {
+        await auth.update({
+          owner: req.body.clientId || req.session.clientId,
+        }, { transaction });
 
-    res.status(201).json({
-      message: '绑定成功',
-    });
+        const data = {
+          id: auth.id,
+          site: auth.site,
+          profileId: auth.profileId,
+          owner: auth.owner,
+        };
 
-    const data = {
-      id: auth.id,
-      site: auth.site,
-      profileId: auth.profileId,
-      owner: auth.owner,
-    };
+        await RecordService.update({
+          model: 'Auth',
+          target: data.id,
+          data,
+          owner: req.session.clientId,
+          action: 'authorizeThirdPartyAccount',
+        }, { transaction });
 
-    await Record.create({
-      model: 'Auth',
-      target: data.id,
-      data,
-      client: req.session.clientId,
-      operation: 'update',
-      action: 'authorizeThirdPartyAccount',
-    });
+        res.status(201).json({
+          message: '绑定成功',
+        });
+      });
+    } catch (err) {
+      return res.serverError(err);
+    }
   },
 
   unauthorize: async (req, res) => {
@@ -73,7 +80,7 @@ module.exports = {
       });
     }
 
-    const auth = await Auth.findOne({ id: req.param('authId') });
+    const auth = await SeqModels.Auth.findById(req.param('authId'));
     if (!auth) {
       return res.status(404).json({
         message: '未找到该绑定信息',
@@ -86,12 +93,21 @@ module.exports = {
       });
     }
 
-    await SQLService.destroy({
-      model: 'auth',
-      action: 'unauthorizeThirdPartyAccount',
-      client: req.session.clientId,
-      where: { id: auth.id },
-    });
+    try {
+      await sequelize.transaction(async transaction => {
+        await SeqModels.Auth.destroy(
+          { where: { id: auth.id } },
+          { transaction });
+
+        await RecordService.destroy({
+          target: auth.id,
+          owner: req.session.clientId,
+          action: 'unauthorizeThirdPartyAccount',
+        }, { transaction });
+      });
+    } catch (err) {
+      return res.serverError(err);
+    }
 
     res.status(201).json({
       message: '成功解除绑定',
@@ -118,7 +134,7 @@ module.exports = {
 
     try {
       const { token, tokenSecret } = await getToken();
-      await Auth.create({
+      await SeqModels.Auth.create({
         site: 'twitter',
         token,
         tokenSecret,
@@ -147,7 +163,7 @@ module.exports = {
     const token = req.query.oauth_token;
     const verifier = req.query.oauth_verifier;
 
-    const auth = await Auth.findOne({ token });
+    const auth = await SeqModels.Auth.findOne({ token });
     if (!auth) {
       return res.status(404).json({
         message: '未找到该绑定信息',
@@ -175,7 +191,7 @@ module.exports = {
     const oa = sails.config.oauth.twitter;
     const { token, verifier } = req.query;
 
-    const auth = await Auth.findOne({ token });
+    const auth = await SeqModels.Auth.findOne({ token });
     if (!auth) {
       return res.status(404).json({
         message: '未找到该绑定信息',
@@ -227,9 +243,11 @@ module.exports = {
     if (!response) return;
     response = JSON.parse(response);
     auth.profileId = response.id_str;
-    const sameAuth = await Auth.findOne({
-      site: 'twitter',
-      profileId: response.id_str,
+    const sameAuth = await SeqModels.Auth.findOne({
+      where: {
+        site: 'twitter',
+        profileId: response.id_str,
+      },
     });
 
     let account = sameAuth || auth;
@@ -238,22 +256,35 @@ module.exports = {
 
     if (account.createdAt.toString() == account.updatedAt.toString()
       && req.session.clientId) {
-      account.owner = req.session.clientId;
-      account.profile = { ...response };
-      await account.save();
-      res.status(201).json(AuthService.sanitize(account));
+      try {
+        await sequelize.transaction(async transaction => {
+          await account.update({
+            owner: req.session.clientId,
+            profile: { ...response },
+          }, { transaction });
+          await RecordService.create({
+            model: 'auth',
+            action: 'authorizeThirdPartyAccount',
+            owner: req.session.clientId,
+            target: account.id,
+          }, { transaction });
+        });
+        res.status(201).json(AuthService.sanitize(account));
+      } catch (err) {
+        return res.serverError(err);
+      }
     } else if (account.owner && (!req.session.clientId ||
       (req.session.clientId === account.owner))) {
-      account.profile = { ...response };
-      await account.save();
+      await account.update({
+        profile: { ...resposne },
+      });
       req.session.clientId = account.owner;
       res.status(200).json(AuthService.sanitize(account));
     } else {
       const profile = { ...response };
       profile.expireTime = Date.now() + 1000 * 60 * 60 * 12; // expires in 12 hours.
       profile.owner = req.sessionID;
-      account.profile = profile;
-      await account.save();
+      await account.update({ profile });
 
       if (!account.owner && !req.session.clientId) {
         account = AuthService.sanitize(account);
@@ -264,11 +295,12 @@ module.exports = {
           auth: account,
         });
       } else {
-        const conflict = await Client.findOne({ id: account.owner });
+        const conflict = await SeqModels.Client.findById(account.owner);
         if (!conflict) {
-          account.owner = req.session.clientId;
-          account.profile = { ...response };
-          await account.save();
+          await account.save({
+            owner: req.session.clientId,
+            profile: { ...response },
+          });
           return res.status(201).json(AuthService.sanitize(account));
         }
         account = AuthService.sanitize(account);
@@ -291,7 +323,7 @@ module.exports = {
       });
     }
 
-    const auth = await Auth.create({
+    const auth = await SeqModels.Auth.create({
       site: 'weibo',
       owner: req.session.clientId,
       redirect: req.query ? req.query.redirect : '',
@@ -313,7 +345,7 @@ module.exports = {
     }
 
     const { code, state } = req.query;
-    const auth = await Auth.findOne({ id: state });
+    const auth = await SeqModels.Auth.findById(state);
 
     if (!auth) {
       return res.status(404).json({
@@ -378,7 +410,7 @@ module.exports = {
     };
 
     const { accessToken, refreshToken } = await getAccessToken();
-    const auth = await Auth.findOne({ id: authId });
+    const auth = await SeqModels.Auth.findById(authId);
     if (!auth) {
       return res.status(404).json({
         message: '未找到该绑定信息',
@@ -405,9 +437,11 @@ module.exports = {
     } catch (err) {
       return res.serverError(err);
     }
-    const sameAuth = await Auth.findOne({
-      site: 'weibo',
-      profileId: response.data.uid,
+    const sameAuth = await SeqModels.Auth.findOne({
+      where: {
+        site: 'weibo',
+        profileId: response.data.uid,
+      },
     });
 
     let account = sameAuth || auth;
@@ -416,22 +450,33 @@ module.exports = {
 
     if (account.createdAt.toString() == account.updatedAt.toString() &&
       req.session.clientId) {
-      account.profile = { ...data };
-      account.owner = req.session.clientId;
-      await account.save();
-      res.status(201).json(AuthService.sanitize(account));
+      try {
+        await sequelize.transaction(async transaction => {
+          await account.update({
+            owner: req.session.clientId,
+            profile: { ...data },
+          }, { transaction });
+          await RecordService.create({
+            model: 'auth',
+            action: 'authorizeThirdPartyAccount',
+            owner: req.session.clientId,
+            target: account.id,
+          }, { transaction });
+        });
+        res.status(201).json(AuthService.sanitize(account));
+      } catch (err) {
+        return res.serverError(err);
+      }
     } else if (account.owner && (!req.session.clientId ||
       (req.session.clientId === account.owner))) {
-      account.profile = { ...data };
-      await account.save();
+      await account.update({ profile: { ...data } });
       req.session.clientId = account.owner;
       res.status(200).json(AuthService.sanitize(account));
     } else {
       const profile = { ...data };
       profile.expireTime = Date.now() + 1000 * 60 * 60 * 12; // expires in 12 hours.
       profile.owner = req.sessionID;
-      account.profile = profile;
-      await account.save();
+      await account.update({ profile });
 
       if (!account.owner && !req.session.clientId) {
         account = AuthService.sanitize(account);
@@ -442,11 +487,12 @@ module.exports = {
           auth: account,
         });
       } else {
-        const conflict = await Client.findOne({ id: account.owner });
+        const conflict = await SeqModels.Client.findById(account.owner);
         if (!conflict) {
-          account.profile = { ...data };
-          account.owner = req.session.clientId;
-          await account.save();
+          await account.update({
+            owner: req.session.clientId,
+            profile: { ...data },
+          });
           return res.status(201).json(AuthService.sanitize(account));
         }
         account = AuthService.sanitize(account);

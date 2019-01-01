@@ -46,6 +46,10 @@ const Client = global.sequelize.define('client', {
     allowNull: false,
     defaultValue: false,
   },
+  settings: {
+    type: Sequelize.JSONB,
+    defaultValue: {},
+  },
 }, {
   freezeTableName: true,
 });

@@ -1,29 +1,37 @@
+const SeqModels = require('../../seqModels');
+const Sequelize = require('sequelize');
+const Op = Sequelize.Op;
+
 const NewsService = {
 
-  async getContribution(news, withData) {
-    const records = await Record.find({
-      action: ['updateNewsStatus', 'updateNewsDetail', 'createNews'],
-      target: news.id,
-    }).populate('client');
-
-    for (const record of records) {
-      if (!withData) {
-        delete record.data;
-        delete record.before;
-      }
-      if (record.client) {
-        record.client = ClientService.sanitizeClient(record.client);
-      }
-    }
+  async getContribution(news, withData, { transaction } = {}) {
+    const records = await SeqModels.Record.findAll({
+      attributes: withData ? undefined : {
+        exclude: ['data', 'before'],
+      },
+      where: {
+        action: {
+          [Op.or]: ['updateNewsStatus', 'updateNewsDetail', 'createNews'],
+        },
+        target: news.id,
+      },
+      include: {
+        model: SeqModels.Client,
+        as: 'client',
+        required: false,
+        attributes: ['username', 'role', 'id'],
+      },
+      transaction,
+    });
 
     return records;
   },
 
-  async acquireContributionsByNewsList(newsList) {
+  async acquireContributionsByNewsList(newsList, withData, { transaction } = {}) {
     const queue = [];
 
     const getContribution = async (news) => {
-      news.contribution = await NewsService.getContribution(news);
+      news.contribution = await NewsService.getContribution(news, withData, { transaction });
     };
     for (const news of newsList) {
       queue.push(getContribution(news));

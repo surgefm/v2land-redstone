@@ -1,9 +1,11 @@
-const time = require('time');
+require('time')(Date);
 
 const mode = {
+  name: '每月一次的定时提醒',
   needNews: false,
+  isInterval: true,
   new: async () => {
-    const date = new time.Date();
+    const date = new Date();
 
     date.setTimezone('Asia/Shanghai');
     date.setHours(8);

@@ -3,7 +3,6 @@ const fs = require('fs');
 
 module.exports = function PgSessionInit(sails) {
   return {
-
     initialize: function(cb) {
       if (!process.env.REDIS_HOST) {
         const postgresConfig = { ...sails.config.connections.postgresql }; // copy the config
@@ -27,8 +26,6 @@ module.exports = function PgSessionInit(sails) {
       } else {
         cb();
       }
-
     },
-
   };
 };

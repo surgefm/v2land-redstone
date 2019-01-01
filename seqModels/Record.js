@@ -10,13 +10,13 @@ const Record = global.sequelize.define('record', {
       'HeaderImage',
       'Subscription',
       'Auth',
+      'Report',
       'Miscellaneous',
     ),
     allowNull: false,
   },
   target: {
     type: Sequelize.INTEGER,
-    allowNull: false,
   },
   operation: Sequelize.ENUM(
     'create',
@@ -41,6 +41,7 @@ const Record = global.sequelize.define('record', {
     'createSubscription',
     'updateSubscription',
     'cancelSubscription',
+    'addModeToSubscription',
     'createClient',
     'updateClientRole',
     'updateClientDetail',
@@ -49,9 +50,12 @@ const Record = global.sequelize.define('record', {
     'authorizeThirdPartyAccount',
     'unauthorizeThirdPartyAccount',
     'notify',
+    'sendEmailDailyReport',
+    'sendWeeklyDailyReport',
+    'sendMonthlyDailyReport',
   ),
-  before: Sequelize.JSON,
-  data: Sequelize.JSON,
+  before: Sequelize.JSONB,
+  data: Sequelize.JSONB,
 }, {
   freezeTableName: true,
 });

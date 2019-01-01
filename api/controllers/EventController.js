@@ -4,8 +4,11 @@
  * @description :: Server-side logic for managing events
  * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
  */
+const axios = require('axios');
 const SeqModels = require('../../seqModels');
 const _ = require('lodash');
+const isUrl = require('../../utils/urlValidator');
+const urlTrimmer = require('v2land-url-trimmer');
 
 const EventController = {
 
@@ -26,9 +29,9 @@ const EventController = {
   },
 
   getAllPendingEvents: async (req, res) => {
-    const eventCollection = await Event.find({
+    const eventCollection = await SeqModels.Event.findAll({
       where: { status: 'pending' },
-      sort: 'createdAt ASC',
+      sort: [['createdAt', 'ASC']],
     });
     res.status(200).json({ eventCollection });
   },
@@ -43,14 +46,17 @@ const EventController = {
       });
     }
 
-    const { news } = await Event.findOne({ id: event.id })
-      .populate('news', { status: 'pending' });
+    const newsCollection = await SeqModels.News.findAll({
+      where: {
+        eventId: event.id,
+        status: 'pending',
+      },
+    });
 
-    return res.status(200).json({ newsCollection: news });
+    return res.status(200).json({ newsCollection });
   },
 
   createEvent: async (req, res) => {
-    let client;
     if (!(req.body && req.body.name && req.body.description)) {
       return res.status(400).json({
         message: '缺少参数 name 或 description',
@@ -72,11 +78,15 @@ const EventController = {
     data.pinyin = EventService.generatePinyin(data.name);
 
     try {
-      event = await SQLService.create({
-        model: 'event',
-        data,
-        action: 'createEvent',
-        client: req.session.clientId,
+      await sequelize.transaction(async transaction => {
+        event = await SeqModels.Event.create(data, { transaction });
+        await RecordService.create({
+          model: 'Event',
+          data,
+          action: 'createEvent',
+          owner: req.session.clientId,
+          target: event.id,
+        }, { transaction });
       });
 
       res.status(201).json({
@@ -84,7 +94,7 @@ const EventController = {
         event,
       });
 
-      TelegramService.sendEventCreated(event, client);
+      NotificationService.notifyWhenEventCreated(event, req.session.clientId);
     } catch (err) {
       return res.serverError(err);
     }
@@ -125,48 +135,53 @@ const EventController = {
     }
 
     try {
-      const query = {
-        model: 'event',
-        client: req.session.clientId,
-        where: { id: event.id },
-      };
+      await sequelize.transaction(async transaction => {
+        const query = {
+          model: 'Event',
+          owner: req.session.clientId,
+        };
 
-      if (changes.status) {
-        await SQLService.update({
-          action: 'updateEventStatus',
-          data: { status: changes.status },
-          before: { status: event.status },
-          ...query,
-        });
-      }
+        if (changes.status) {
+          await SeqModels.Event.update({
+            status: changes.status,
+          }, {
+            where: { id: event.id },
+            transaction,
+          });
 
-      const selfClient = req.currentClient;
-      if (
-        (event.status === 'pending' || event.status === 'rejected') &&
-        changes.status === 'admitted'
-      ) {
-        TelegramService.sendEventAdmitted(event, selfClient);
-      } else if (
-        event.status === 'pending' &&
-        changes.status === 'rejected'
-      ) {
-        TelegramService.sendEventRejected(event, selfClient);
-      }
+          await RecordService.update({
+            ...query,
+            action: 'updateEventStatus',
+            data: { status: changes.status },
+            before: event.status,
+            target: event.id,
+          }, { transaction });
+        }
 
-      delete changes.status;
-      const before = {};
-      for (const i of Object.keys(changes)) {
-        before[i] = event[i];
-      }
+        const selfClient = req.currentClient;
+        NotificationService.notifyWhenEventStatusChanged(event, changes, selfClient);
 
-      if (Object.getOwnPropertyNames(changes).length > 0) {
-        await SQLService.update({
-          action: 'updateEventDetail',
-          data: changes,
-          before,
-          ...query,
-        });
-      }
+        delete changes.status;
+        const before = {};
+        for (const i of Object.keys(changes)) {
+          before[i] = event[i];
+        }
+
+        if (Object.keys(changes).length > 0) {
+          await SeqModels.Event.update(changes, {
+            where: { id: event.id },
+            transaction,
+          });
+
+          await RecordService.update({
+            ...query,
+            action: 'updateEventDetail',
+            data: changes,
+            before,
+            target: event.id,
+          }, { transaction });
+        }
+      });
 
       res.status(201).json({
         message: '修改成功',
@@ -222,11 +237,8 @@ const EventController = {
     try {
       await sequelize.transaction(async transaction => {
         if (where && req.session && req.session.clientId) {
-          // const client = await Client.findOne({ id: req.session.clientId });
           const client = await SeqModels.Client.findOne({
-            where: {
-              id: req.session.clientId,
-            },
+            where: { id: req.session.clientId },
             transaction,
           });
 
@@ -241,13 +253,11 @@ const EventController = {
 
         let events = await SeqModels.Event.findAll({
           where,
-          include: [
-            {
-              as: 'headerImage',
-              model: SeqModels.HeaderImage,
-              required: false,
-            },
-          ],
+          include: [{
+            as: 'headerImage',
+            model: SeqModels.HeaderImage,
+            required: false,
+          }],
           order: [['updatedAt', 'DESC']],
           transaction,
         });
@@ -286,29 +296,31 @@ const EventController = {
     const id = event.id;
 
     try {
-      const stack = await SQLService.create({
-        model: 'stack',
-        data: {
+      await sequelize.transaction(async transaction => {
+        const data = {
           status: 'pending',
           title,
           description,
           order: order || -1,
-          event: id,
+          eventId: id,
           time,
-        },
-        action: 'createStack',
-        client: req.session.clientId,
-      });
-      res.status(201).json({
-        message: '提交成功，该进展在社区管理员审核通过后将很快开放',
-        stack,
+        };
+        const stack = await SeqModels.Stack.create(data, { transaction });
+        await RecordService.create({
+          model: 'stack',
+          data,
+          target: stack.id,
+          owner: req.session.clientId,
+          action: 'createStack',
+        }, { transaction });
+
+        res.status(201).json({
+          message: '提交成功，该进展在社区管理员审核通过后将很快开放',
+          stack,
+        });
       });
     } catch (err) {
       return res.serverError(err);
-    }
-
-    if (data.status === 'admitted' && isManager) {
-      await NotificationService.updateForNewNews(event, news);
     }
   },
 
@@ -316,24 +328,28 @@ const EventController = {
     const name = req.param('eventName');
     const data = req.body;
 
-    let news;
     let client;
-
-    if (!data.url) {
-      return res.status(400).json({
-        message: '缺少 url 参数',
-      });
+    if (req.session.clientId) {
+      client = await SeqModels.Client.findById(req.session.clientId);
     }
 
-    const event = await EventService.findEvent(name);
+    for (const attr of ['url', 'source', 'abstract']) {
+      if (!data[attr]) {
+        return res.status(400).json({
+          message: `缺少 ${attr} 参数`,
+        });
+      }
+    }
 
+    data.url = (await urlTrimmer.trim(data.url)).toString();
+    const event = await EventService.findEvent(name);
     if (!event) {
       return res.status(404).json({
         message: '未找到该事件',
       });
     }
 
-    data.event = event.id;
+    data.eventId = event.id;
     data.status = 'pending';
 
     try {
@@ -342,7 +358,7 @@ const EventController = {
           await SeqModels.News.findOne({
             where: {
               url: data.url,
-              event: event.id,
+              eventId: event.id,
             },
             transaction,
           });
@@ -352,33 +368,31 @@ const EventController = {
           });
         }
 
+        // Ask the Wayback Machine of Internet Archive to archive the webpage.
+        axios.get(`https://web.archive.org/save/${data.url}`);
+
         const news = await SeqModels.News.create(data, {
           raw: true,
           transaction,
         });
 
-        await SeqModels.Record.create({
-          model: 'news',
-          operation: 'create',
+        await RecordService.create({
+          model: 'News',
           data,
           target: news.id,
           action: 'createNews',
-          client: req.session.clientId,
+          owner: req.session.clientId,
         }, { transaction });
 
         res.status(201).json({
           message: '提交成功，该新闻在社区管理员审核通过后将很快开放',
           news,
         });
-        TelegramService.sendNewsCreated(event, news, client);
+        NotificationService.notifyWhenNewsCreated(news, client);
       });
     } catch (err) {
       console.error(err);
       return res.serverError(err);
-    }
-
-    if (data.status === 'admitted' && isManager) {
-      await NotificationService.updateForNewNews(event, news);
     }
   },
 
@@ -389,6 +403,12 @@ const EventController = {
     if (!event) {
       return res.status(404).json({
         message: '未找到该事件',
+      });
+    }
+
+    if (!req.body.imageUrl) {
+      return res.status(400).json({
+        message: '缺少参数：imageUrl。',
       });
     }
 
@@ -404,7 +424,7 @@ const EventController = {
       });
     }
 
-    let headerImage = { event: event.id };
+    const headerImage = { eventId: event.id };
 
     for (const attribute of ['imageUrl', 'source', 'sourceUrl']) {
       if (req.body[attribute]) {
@@ -412,25 +432,42 @@ const EventController = {
       }
     }
 
+    if (headerImage.sourceUrl && !isUrl(headerImage.sourceUrl)) {
+      return res.status(400).json({
+        message: '链接格式不规范',
+      });
+    }
+
     try {
-      const data = {
-        where: { event: event.id },
-        data: headerImage,
-        client: req.session.clientId,
+      const query = {
         model: 'HeaderImage',
+        owner: req.session.clientId,
+        data: headerImage,
       };
-      if (req.method === 'PUT') {
-        headerImage = await SQLService.update({
-          action: 'updateEventHeaderImage',
-          before: event.headerImage,
-          ...data,
-        });
-      } else {
-        headerImage = await SQLService.create({
-          action: 'createEventHeaderImage',
-          ...data,
-        });
-      }
+
+      await sequelize.transaction(async transaction => {
+        if (req.method === 'PUT') {
+          await SeqModels.HeaderImage.upsert(headerImage, {
+            where: { id: event.headerImage.id },
+            transaction,
+          });
+          await RecordService.update({
+            ...query,
+            action: 'updateEventHeaderImage',
+            target: headerImage.id,
+            before: event.headerImage,
+          }, { transaction });
+        } else {
+          await SeqModels.HeaderImage.create({
+            ...headerImage,
+            eventId: event.id,
+          }, { transaction });
+          await RecordService.create({
+            ...query,
+            action: 'createEventHeaderImage',
+          }, { transaction });
+        }
+      });
     } catch (err) {
       return res.serverError(err);
     }

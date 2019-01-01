@@ -2,19 +2,17 @@ const Sequelize = require('sequelize');
 
 const Subscription = global.sequelize.define('subscription', {
   mode: {
-    type: Sequelize.TEXT,
-    allowNull: false,
-  },
-  method: {
-    type: Sequelize.ENUM('twitter', 'weibo', 'twitterAt', 'weiboAt', 'email'),
-    allowNull: false,
-  },
-  contact: {
-    type: Sequelize.JSON,
+    type: Sequelize.ENUM(
+      'EveryNewStack',
+      '30DaysSinceLatestStack',
+      'new', '7DaysSinceLatestNews',
+      'daily', 'weekly', 'monthly',
+      'EveryFriday',
+    ),
     allowNull: false,
   },
   status: {
-    type: Sequelize.ENUM('active', 'unsubscribed', 'failed'),
+    type: Sequelize.ENUM('active', 'unsubscribed'),
     defaultValue: 'active',
   },
   unsubscribeId: {

@@ -25,7 +25,10 @@ module.exports = {
 
     const client = await SeqModels.Client.findOne({
       where: {
-        username: data.username,
+        [Op.or]: [
+          { username: data.username },
+          { email: data.username },
+        ],
       },
     });
 
@@ -112,7 +115,7 @@ module.exports = {
         const verificationToken = ClientService.tokenGenerator();
 
         await SeqModels.Record.create({
-          model: 'client',
+          model: 'Client',
           operation: 'create',
           data: client,
           target: client.id,
@@ -210,7 +213,7 @@ module.exports = {
 
         await SeqModels.Record.create({
           operation: 'update',
-          model: 'client',
+          model: 'Client',
           data: {
             password: hash,
           },
@@ -247,7 +250,7 @@ module.exports = {
       });
     }
 
-    const targetClient = await Client.findOne({ id: data.id });
+    const targetClient = await SeqModels.Client.findById(data.id);
     if (!targetClient) {
       return res.status(404).json({
         message: '未找到目标用户',
@@ -256,10 +259,8 @@ module.exports = {
 
     try {
       await sequelize.transaction(async transaction => {
-        const targetClient = await Client.findOne({
-          where: {
-            id: data.id,
-          },
+        const targetClient = await SeqModels.Client.findOne({
+          where: { id: data.id },
           transaction,
         });
         const targetCurrentRole = targetClient.role;
@@ -285,15 +286,61 @@ module.exports = {
 
         await SeqModels.Record.create({
           operation: 'update',
-          model: 'client',
+          model: 'Client',
           data: { role: targetNewRole },
           client: req.session.clientId,
           target: req.session.clientId,
           action: 'updateClientRole',
         }, { transaction });
 
-        res.send(200, {
+        res.send(201, {
           message: '成功更新用户组',
+        });
+      });
+    } catch (err) {
+      return res.serverError(err);
+    }
+  },
+
+  updateSettings: async (req, res) => {
+    if (!req.body || !req.body.settings) {
+      return res.status(400).json({
+        message: '缺少修改信息',
+      });
+    }
+
+    const { settings } = req.body;
+    const name = req.param('clientName');
+    try {
+      await ClientService.validateSettings(settings);
+      await sequelize.transaction(async transaction => {
+        const client = await SeqModels.Client.findOne({
+          where: { id: name },
+          transaction,
+        });
+        if (!client) {
+          return res.status(404).json({
+            message: '未找到该用户',
+          });
+        }
+
+        client.settings = {
+          ...client.settings,
+          ...settings,
+        };
+
+        await client.save({ transaction });
+        await SeqModels.Record.create({
+          operation: 'update',
+          model: 'Client',
+          data: { settings },
+          client: req.session.clientId,
+          target: req.session.clientId,
+          action: 'updateClientSettings',
+        }, { transaction });
+
+        res.status(201).json({
+          message: '成功更新用户设置',
         });
       });
     } catch (err) {
@@ -330,12 +377,16 @@ module.exports = {
       }
     }
     try {
-      await SQLService.update({
-        action: 'updateClientDetail',
-        model: 'client',
-        client: req.session.clientId,
-        data: changes,
-        where: { id: client.id },
+      await sequelize.transaction(async transaction => {
+        const origClient = client.get({ plain: true });
+        await client.update(changes, { transaction });
+        await RecordService.update({
+          data: changes,
+          owner: req.session.clientId,
+          model: 'Client',
+          before: origClient,
+          action: 'updateClientDetail',
+        }, { transaction });
       });
 
       client = req.currentClient = await ClientService.findClient(client.id);
@@ -366,8 +417,7 @@ module.exports = {
       });
     }
 
-    let record = await SQLService.find({
-      model: 'Record',
+    let record = await SeqModels.Record.findOne({
       where: {
         action: 'createClientVerificationToken',
         data: {
@@ -391,7 +441,7 @@ module.exports = {
       });
     }
 
-    const client = await Client.findOne({ id: record.data.clientId });
+    const client = await SeqModels.Client.findById(record.data.clientId);
 
     if (!client) {
       return res.status(404).json({
@@ -465,32 +515,24 @@ module.exports = {
       await Promise.all(promises);
     };
 
-    const select = ['id', 'email', 'username', 'role'];
-    let clients;
-    if (where) {
-      clients = await Client.find({
-        where,
-        select,
-        sort: 'updatedAt DESC',
-      })
-        .populate('auths', {
-          select: ['id', 'site', 'profileId', 'profile'],
-          where: { profileId: { '>=': 1 } },
-        });
-    } else {
-      clients = await Client.find({
-        sort: 'updatedAt DESC',
-        select,
-      })
-        .paginate({
-          page,
-          limit: 10,
-        })
-        .populate('auths', {
-          select: ['id', 'site', 'profileId', 'profile'],
-          where: { profileId: { '>=': 1 } },
-        });
-    }
+    const attributes = ['id', 'email', 'username', 'role'];
+    const clients = await SeqModels.Client.findAll({
+      where: where || {},
+      sort: [['updatedAt', 'DESC']],
+      attributes,
+      offset: (page - 1) * 10,
+      limit: 10,
+      include: [{
+        model: SeqModels.Auth,
+        as: 'auths',
+        attributes: ['id', 'site', 'profileId', 'profile'],
+        where: {
+          profileId: {
+            [Op.gte]: 1,
+          },
+        },
+      }],
+    });
 
     await fetchDetail(clients);
 

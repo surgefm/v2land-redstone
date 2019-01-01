@@ -1,6 +1,8 @@
 const modeCollection = {
 
-  'newStack': require('../modes/newStack'),
+  'EveryNewStack': require('../modes/EveryNewStack'),
+
+  '30DaysSinceLatestStack': require('../modes/30DaysSinceLatestStack'),
 
   // Every time a latest news is admitted.
   'new': require('../modes/new'),
@@ -13,6 +15,21 @@ const modeCollection = {
 
   'monthly': require('../modes/monthly'),
 
+  'EveryFriday': require('../modes/EveryFriday'),
+
 };
 
-module.exports = modeCollection;
+const names = {};
+Object.keys(modeCollection).map(key => names[key] = modeCollection[key].name);
+
+function getRecordActionName(report) {
+  const method = report.method.slice(0, 1).toUpperCase() + report.method.slice(1);
+  const type = report.type.slice(0, 1).toUpperCase() + report.type.slice(1);
+  return `send${method}${type}Report`;
+}
+
+module.exports = {
+  names,
+  getRecordActionName,
+  ...modeCollection,
+};

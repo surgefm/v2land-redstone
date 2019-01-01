@@ -1,22 +1,29 @@
 const SeqModels = require('../../seqModels');
+const { Op } = require('sequelize');
 
 const StackService = {
 
-  async findStack(id, withContributionData = true) {
-    const stack = await Stack.findOne({ id })
-      .populate('news', {
+  async findStack(id, withContributionData = true, { transaction } = {}) {
+    const stack = await SeqModels.Stack.findOne({
+      where: { id },
+      include: [{
+        model: SeqModels.News,
         where: { status: 'admitted' },
-        sort: 'time ASC',
+        sort: [['time', 'ASC']],
         limit: 15,
-      });
-
-    stack.newsCount = await News.count({
-      status: 'admitted',
-      stack: stack.id,
+      }],
+      transaction,
     });
 
     if (stack) {
-      if (!stack.time && stack.news.length) {
+      stack.newsCount = await SeqModels.News.count({
+        where: {
+          status: 'admitted',
+          stackId: stack.id,
+        },
+      });
+
+      if (!stack.time && stack.news && stack.news.length) {
         stack.time = stack.news[0].time;
       }
       stack.contribution = await StackService.getContribution(id, withContributionData);
@@ -25,24 +32,28 @@ const StackService = {
     return stack;
   },
 
-  async getContribution(stack, withData = true) {
-    const select = ['model', 'target', 'operation', 'client'];
+  async getContribution(stack, withData = true, { transaction } = {}) {
+    const attributes = ['model', 'target', 'operation', 'owner'];
     if (withData) {
-      select.push('before');
-      select.push('data');
+      attributes.push('before');
+      attributes.push('data');
     }
 
-    const records = await Record.find({
-      action: ['createStack', 'invalidateStack', 'updateStackStatus', 'updateStackDetail'],
-      target: stack.id,
-      select,
-    }).populate('client');
-
-    for (const record of records) {
-      if (record.client) {
-        record.client = ClientService.sanitizeClient(record.client);
-      }
-    }
+    const records = await SeqModels.Record.findAll({
+      where: {
+        action: {
+          [Op.or]: ['createStack', 'invalidateStack', 'updateStackStatus', 'updateStackDetail'],
+        },
+        target: stack.id,
+      },
+      attributes,
+      include: [{
+        model: SeqModels.Client,
+        as: 'client',
+        attributes: ['username', 'role', 'id'],
+      }],
+      transaction,
+    });
 
     return records;
   },
@@ -101,7 +112,7 @@ const StackService = {
       if (changes.status === 'admitted') {
         news = await SeqModels.News.findOne({
           where: {
-            stack: stack.id,
+            stackId: stack.id,
             status: 'admitted',
           },
           transaction,
@@ -142,32 +153,8 @@ const StackService = {
       model: 'Stack',
     }, { transaction });
 
-    // if (news) {
-    //   const before = {};
-    //   for (const i of Object.keys(changes)) {
-    //     before[i] = news[i];
-    //   }
-
-    //   if (Object.getOwnPropertyNames(changes).length > 0) {
-    //     // FIXME: why???
-    //     news = await SQLService.update({
-    //       action: 'updateNewsDetail',
-    //       data: changes,
-    //       before,
-    //       client: clientId,
-    //       where: { id: news.id },
-    //       model: 'news',
-    //       pg,
-    //     });
-    //   }
-    // }
-
     if (data.enableNotification && changesCopy.status === 'admitted') {
-      const event = await SeqModels.Event.findOne({
-        where: {
-          id: stack.event,
-        },
-      });
+      const event = await SeqModels.Event.findById(stack.eventId);
       NotificationService.updateForNewStack(event, stack, data.forceUpdate);
       NotificationService.updateForNewNews(event, news, data.forceUpdate);
     }
