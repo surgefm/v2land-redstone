@@ -30,6 +30,7 @@ module.exports = {
 
     const client = await SeqModels.Client.findOne({
       where,
+      attributes: { exclude: ['password'] },
       include: [
         {
           as: 'auths',
@@ -37,6 +38,7 @@ module.exports = {
           where: {
             profileId: { [Op.not]: null },
           },
+          attributes: ['id', 'site', 'profileId', 'profile'],
           required: false,
         },
         {
@@ -50,28 +52,7 @@ module.exports = {
       transaction,
     });
 
-    if (client === null) return null;
-
-    const data = client.toJSON();
-
-    delete data.password;
-    delete data.records;
-    for (let i = 0; i < data.auths.length; i++) {
-      const auth = {};
-      for (const attr of ['id', 'site', 'profileId', 'profile']) {
-        auth[attr] = data.auths[i][attr];
-      }
-      const profile = {};
-      for (const attr of ['screen_name', 'name', 'id', 'id_str']) {
-        if (auth.profile[attr]) {
-          profile[attr] = auth.profile[attr];
-        }
-      }
-      auth.profile = profile;
-      data.auths[i] = auth;
-    }
-
-    return data;
+    return client;
   },
 
   /**

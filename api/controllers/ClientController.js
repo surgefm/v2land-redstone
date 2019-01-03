@@ -507,7 +507,9 @@ module.exports = {
       const promises = [];
       for (const client of clients) {
         const fetch = async () => {
-          client.subscriptionCount = await Subscription.count({ subscriber: client.id });
+          client.subscriptionCount = await SeqModels.Subscription.count({
+            where: { subscriber: client.id },
+          });
         };
         promises.push(fetch());
       }
@@ -528,9 +530,10 @@ module.exports = {
         attributes: ['id', 'site', 'profileId', 'profile'],
         where: {
           profileId: {
-            [Op.gte]: 1,
+            [Op.ne]: null,
           },
         },
+        required: false,
       }],
     });
 
