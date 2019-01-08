@@ -6,6 +6,7 @@
  */
 const SeqModels = require('../../seqModels');
 const { Op } = require('sequelize');
+const urlTrimmer = require('v2land-url-trimmer');
 const _ = require('lodash');
 
 module.exports = {
