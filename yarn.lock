@@ -6514,10 +6514,10 @@ v2land-sails-pg-session@^1.0.2:
     debug "*"
     pg "^7.4.1"
 
-v2land-url-trimmer@0.0.9:
-  version "0.0.9"
-  resolved "https://registry.yarnpkg.com/v2land-url-trimmer/-/v2land-url-trimmer-0.0.9.tgz#1f4ee6d1574f983763a6b60ca011627ca0d04c67"
-  integrity sha512-VmGyf2vwvDPpjWwSiPPgjk90Ov1bEM8DNQLHiKNWlpMJg5pRU/h2QiZu2zGgqTon0gtkPWRrYyP2mz++I0Firg==
+v2land-url-trimmer@0.0.10:
+  version "0.0.10"
+  resolved "https://registry.yarnpkg.com/v2land-url-trimmer/-/v2land-url-trimmer-0.0.10.tgz#5767e9449b8f0fccb1e720b0b716480574a9dfec"
+  integrity sha512-kJ9WdiacXTmRixyu+9l/RqEPuHh4sByRuQFXAOZFfKdWvu+kYZUCyF131p9nbGRyl0atvR/jZa9YZcUQO88u4w==
   dependencies:
     babel-eslint "^10.0.1"
     cheerio "^1.0.0-rc.2"
