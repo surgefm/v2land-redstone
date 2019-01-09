@@ -57,11 +57,26 @@ async function sendTelegramNotification(news, status, handler) {
     ? submitRecord.client.username
     : '游客';
 
-  const content =
-    `*${ username }*添加的新闻` +
-    `「[${ event.name }](${ sails.config.globals.site }/${ event.id }/${ stack.id }/${ news.id }) 」` +
-    `被管理员*${ handler.username }*${ newStatusStringSet[status] }`;
-  return TelegramService.sendText(content, 'Markdown');
+  const sendSlack = async () => {
+    const content =
+      `*${ username }* 添加的新闻` +
+      ` <${ sails.config.globals.site }/${ event.id }/${ stack.id }/${ news.id }|${ event.name }> ` +
+      `被管理员 *${ handler.username }* ${ newStatusStringSet[status] }`;
+    return SlackService.sendText(content);
+  }
+
+  const sendTelegram = async () => {
+    const content =
+      `*${ username }*添加的新闻` +
+      `「[${ event.name }](${ sails.config.globals.site }/${ event.id }/${ stack.id }/${ news.id }) 」` +
+      `被管理员*${ handler.username }*${ newStatusStringSet[status] }`;
+    return TelegramService.sendText(content, 'Markdown');
+  }
+
+  return Promise.all([
+    sendSlack(),
+    sendTelegram(),
+  ]);
 }
 
 module.exports = notifyWhenNewsStatusChanged;

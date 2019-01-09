@@ -48,11 +48,9 @@ module.exports = {
   },
 
   sendText(text, parseMode, disableWebPagePreview) {
-    let chatId;
-    if (sails.config.environment === 'production') {
-      chatId = sails.config.globals.telegramReviewChatId;
-    } else {
-      chatId = sails.config.globals.telegramTestChatId;
+    const chatId = sails.config.globals.telegramReviewChatId;
+    if (sails.config.environment !== 'production') {
+      return;
     }
     return this.sendMessage(
       chatId,

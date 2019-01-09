@@ -12,15 +12,15 @@ async function notifyWhenEventStatusChanged(oldEvent, newEvent, client) {
 
   if ((oldEvent.status === 'pending' || oldEvent.status === 'rejected') &&
     newEvent.status === 'admitted') {
-    await sendTelegramNotification(newEvent, 'admitted', client);
+    await sendNotification(newEvent, 'admitted', client);
   } else if (oldEvent.status !== 'rejected' && newEvent.status === 'rejected') {
-    await sendTelegramNotification(newEvent, 'rejected', client);
+    await sendNotification(newEvent, 'rejected', client);
   } else if (oldEvent.status === 'hidden' && newEvent.status === 'admitted') {
-    await sendTelegramNotification(newEvent, 'admittedFromHidden', client);
+    await sendNotification(newEvent, 'admittedFromHidden', client);
   }
 }
 
-async function sendTelegramNotification(event, status, handler) {
+async function sendNotification(event, status, handler) {
   const newStatusStringSet = {
     'admitted': '审核通过了，进来看看吧！',
     'admittedFromHidden': '转为公开状态，进来看看吧！',
@@ -45,11 +45,26 @@ async function sendTelegramNotification(event, status, handler) {
     ? submitRecord.client.username
     : '游客';
 
-  const content =
-    `*${ username }*提交的事件` +
-    `「[${ event.name }](${ sails.config.globals.site }/${ event.id }) 」` +
-    `被管理员*${ handler.username }*${ newStatusStringSet[status] }`;
-  return TelegramService.sendText(content, 'Markdown');
+  const sendTelegram = async () => {
+    const content =
+      `*${ username }*提交的事件` +
+      `「[${ event.name }](${ sails.config.globals.site }/${ event.id }) 」` +
+      `被管理员*${ handler.username }*${ newStatusStringSet[status] }`;
+    return TelegramService.sendText(content, 'Markdown');
+  }
+
+  const sendSlack = async () => {
+    const content =
+      `*${ username }* 提交的事件` +
+      ` <${ sails.config.globals.site }/${ event.id }|${ event.name }>  ` +
+      `被管理员 *${ handler.username }* ${ newStatusStringSet[status] }`;
+    return SlackService.sendText(content);
+  }
+
+  return Promise.all([
+    sendTelegram(),
+    sendSlack(),
+  ]);
 }
 
 module.exports = notifyWhenEventStatusChanged;
