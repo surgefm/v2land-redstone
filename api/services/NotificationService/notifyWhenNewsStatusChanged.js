@@ -58,10 +58,10 @@ async function sendTelegramNotification(news, status, handler) {
     : '游客';
 
   const content =
-    `*${ username }*添加的新闻` +
-    `「[${ event.name }](${ sails.config.globals.site }/${ event.id }/${ stack.id }/${ news.id }) 」` +
-    `被管理员*${ handler.username }*${ newStatusStringSet[status] }`;
-  return TelegramService.sendText(content, 'Markdown');
+    `*${ username }* 添加的新闻` +
+    `「<${ sails.config.globals.site }/${ event.id }/${ stack.id }/${ news.id }|${ event.name }> 」` +
+    `被管理员 *${ handler.username }* ${ newStatusStringSet[status] }`;
+  return SlackService.sendText(content, 'Markdown');
 }
 
 module.exports = notifyWhenNewsStatusChanged;

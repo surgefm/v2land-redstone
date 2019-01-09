@@ -46,10 +46,10 @@ async function sendTelegramNotification(event, status, handler) {
     : '游客';
 
   const content =
-    `*${ username }*提交的事件` +
-    `「[${ event.name }](${ sails.config.globals.site }/${ event.id }) 」` +
+    `*${ username }* 提交的事件` +
+    `「<${ sails.config.globals.site }/${ event.id }|${ event.name }> 」` +
     `被管理员*${ handler.username }*${ newStatusStringSet[status] }`;
-  return TelegramService.sendText(content, 'Markdown');
+  return SlackService.sendText(content, 'Markdown');
 }
 
 module.exports = notifyWhenEventStatusChanged;
