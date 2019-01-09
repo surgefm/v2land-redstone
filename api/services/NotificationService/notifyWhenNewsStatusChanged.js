@@ -59,7 +59,7 @@ async function sendTelegramNotification(news, status, handler) {
 
   const content =
     `*${ username }* 添加的新闻` +
-    `「<${ sails.config.globals.site }/${ event.id }/${ stack.id }/${ news.id }|${ event.name }> 」` +
+    ` <${ sails.config.globals.site }/${ event.id }/${ stack.id }/${ news.id }|${ event.name }> ` +
     `被管理员 *${ handler.username }* ${ newStatusStringSet[status] }`;
   return SlackService.sendText(content, 'Markdown');
 }

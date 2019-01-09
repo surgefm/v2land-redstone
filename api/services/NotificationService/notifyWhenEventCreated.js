@@ -7,7 +7,7 @@ async function notifyWhenEventCreated(event, handler) {
 
   if (isAdmin && event.status === 'admitted') {
     content = `管理员 *${username}* 提交了事件` +
-    `「<${sails.config.globals.site}/${event.id}|${event.name}>」` +
+    ` <${sails.config.globals.site}/${event.id}|${event.name}> ` +
     `，进来看看吧！`;
   }
 
