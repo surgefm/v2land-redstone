@@ -48,7 +48,7 @@ module.exports = {
   },
 
   sendText(text, parseMode, disableWebPagePreview) {
-    let chatId;
+    const chatId = sails.config.globals.telegramReviewChatId;
     if (sails.config.environment !== 'production') {
       return;
     }

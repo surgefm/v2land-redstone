@@ -31,7 +31,7 @@ async function notifyWhenEventCreated(event, handler) {
    return TelegramService.sendText(content, 'Markdown', true);
   }
 
-  Promise.all([
+  return Promise.all([
     sendSlackMessage(),
     sendTelegramMessage(),
   ])
