@@ -24,6 +24,7 @@ const EventController = {
   createNews: require('./EventController/createNews'),
 
   updateHeaderImage: require('./EventController/updateHeaderImage'),
+
 };
 
 module.exports = EventController;
