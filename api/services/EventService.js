@@ -143,6 +143,17 @@ module.exports = {
     });
 
     if (event.newsCount > 0) {
+      event.temporaryStack = await SeqModels.News.findAll({
+        where: {
+          eventId: event.id,
+          status: 'admitted',
+          stackId: null,
+          isInTemporaryStack: true,
+        },
+        order: [['time', 'DESC']],
+        transaction,
+      });
+
       event.lastUpdate = (await SeqModels.News.findOne({
         where: {
           eventId: event.id,
