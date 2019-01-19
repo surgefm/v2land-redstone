@@ -31,7 +31,7 @@ async function updateEvent (req, res) {
   }
 
   if (changes.name) {
-    changes.pinyin = EventService.generatePinyin(changes.name);
+    changes.pinyin = await EventService.generatePinyin(changes.name);
   }
 
   try {
