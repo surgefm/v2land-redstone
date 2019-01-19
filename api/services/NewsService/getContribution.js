@@ -1,4 +1,4 @@
-const SeqModels = require('../../seqModels');
+const SeqModels = require('../../../seqModels');
 const { Op } = require('sequelize');
 
 async function getContribution (news, withData, { transaction } = {}) {
