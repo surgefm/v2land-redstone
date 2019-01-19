@@ -19,7 +19,7 @@ async function createEvent (req, res) {
 
   data.status = 'pending';
 
-  data.pinyin = EventService.generatePinyin(data.name);
+  data.pinyin = await EventService.generatePinyin(data.name);
 
   try {
     await sequelize.transaction(async transaction => {
