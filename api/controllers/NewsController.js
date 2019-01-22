@@ -189,6 +189,8 @@ module.exports = {
             owner: req.session.clientId,
           }, { transaction });
 
+          await EventService.updateAdmittedLatestNews(newNews.eventId, { transaction });
+
           NotificationService.notifyWhenNewsStatusChanged(news, newNews, req.session.clientId);
 
           if (beforeStatus === 'admitted' && changes.status !== 'admitted' && news.stackId) {

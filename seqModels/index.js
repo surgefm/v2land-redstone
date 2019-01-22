@@ -12,6 +12,11 @@ const Report = require('./Report');
 const ReportNotification = require('./ReportNotification');
 const Contact = require('./Contact');
 
+Event.belongsTo(News, {
+  as: 'latestAdmittedNews',
+  foreignKey: 'latestAdmittedNewsId',
+});
+
 Event.hasOne(HeaderImage, {
   as: 'headerImage',
   foreignKey: 'eventId',
