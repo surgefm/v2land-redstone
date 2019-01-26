@@ -27,6 +27,7 @@ async function unauthorize (req, res) {
         { transaction });
 
       await RecordService.destroy({
+        model: 'auth',
         target: auth.id,
         owner: req.session.clientId,
         action: 'unauthorizeThirdPartyAccount',
