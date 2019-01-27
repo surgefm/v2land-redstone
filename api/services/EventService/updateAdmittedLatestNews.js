@@ -1,3 +1,4 @@
+const SeqModels = require('../../../seqModels');
 
 async function updateAdmittedLatestNews(eventId, { transaction }) {
   const latestAdmittedNews = await SeqModels.News.findOne({
