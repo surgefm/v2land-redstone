@@ -29,6 +29,10 @@ const News = global.sequelize.define('news', {
     defaultValue: 'pending',
   },
   comment: Sequelize.TEXT,
+  isInTemporaryStack: {
+    type: Sequelize.BOOLEAN,
+    defaultValue: false,
+  },
 }, {
   freezeTableName: true,
 });
