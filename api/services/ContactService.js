@@ -8,6 +8,8 @@ module.exports = {
       return 'twitter';
     case 'weiboAt':
       return 'weibo';
+    case 'appNotification':
+      return 'app';
     default:
       return method;
     }
