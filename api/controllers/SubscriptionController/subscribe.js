@@ -27,7 +27,7 @@ async function subscribe (req, res) {
     });
   }
 
-  if (!['twitter', 'twitterAt', 'weibo', 'weiboAt', 'email', 'emailDailyReport'].includes(contact.method)) {
+  if (!['twitter', 'twitterAt', 'weibo', 'weiboAt', 'email', 'emailDailyReport', 'appNotification'].includes(contact.method)) {
     return res.status(400).json({
       name: 'Notification method not supported',
       message: '不支持的推送方式',
@@ -35,7 +35,7 @@ async function subscribe (req, res) {
   }
 
   let auth;
-  if (ContactService.getTypeFromMethod(contact.method) !== 'email') {
+  if (!['email', 'app'].includes(ContactService.getTypeFromMethod(contact.method))) {
     for (const item of client.auths) {
       if (item.id === contact.authId &&
         item.site === ContactService.getTypeFromMethod(contact.method)) {
