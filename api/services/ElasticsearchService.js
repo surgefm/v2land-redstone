@@ -23,4 +23,9 @@ module.exports = {
     });
   }),
 
+  msearch: (query) => {
+    if (!client) return resolve();
+    return client ? client.msearch(query) : null;
+  },
+
 };

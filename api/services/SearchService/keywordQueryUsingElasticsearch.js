@@ -1,4 +1,5 @@
 async function keywordQueryUsingElasticsearch (keyword) {
+  if (!ElasticsearchService.client) return {};
   const queryBulk = [
     { index: 'events' },
     {
@@ -49,7 +50,7 @@ async function keywordQueryUsingElasticsearch (keyword) {
     { query: { match: { username: keyword } }, size: 10 },
   ];
 
-  const { responses } = await ElasticsearchService.client.msearch({ body: queryBulk });
+  const { responses } = await ElasticsearchService.msearch({ body: queryBulk });
   const results = {};
   for (let i = 0; i < 4; i++) {
     const type = ['events', 'stacks', 'news', 'clients'][i];
