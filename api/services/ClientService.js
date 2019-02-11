@@ -8,4 +8,6 @@ module.exports = {
 
   validateSettings: require('./ClientService/validateSettings'),
 
+  updateElasticsearchIndex: require('./ClientService/updateElasticsearchIndex'),
+
 };

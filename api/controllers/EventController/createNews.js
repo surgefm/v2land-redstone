@@ -66,7 +66,9 @@ async function createNews (req, res) {
         message: '提交成功，该新闻在社区管理员审核通过后将很快开放',
         news,
       });
+
       NotificationService.notifyWhenNewsCreated(news, client);
+      NewsService.updateElasticsearchIndex({ newsId: news.id });
     });
   } catch (err) {
     console.error(err);

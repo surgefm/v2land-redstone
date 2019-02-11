@@ -81,6 +81,8 @@ async function updateHeaderImage (req, res) {
     message: event.headerImage ? '修改成功' : '添加成功',
     headerImage,
   });
+
+  EventService.updateElasticsearchIndex({ eventId: event.id });
 }
 
 module.exports = updateHeaderImage;

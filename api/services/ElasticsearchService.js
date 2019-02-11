@@ -10,13 +10,10 @@ module.exports = {
     return client ? client.search(query) : null;
   },
 
-  update: (data) => new Promise((resolve, reject) => {
+  update: async (query) => {
     if (!client) return resolve();
-    client.update(data, (err, res) => {
-      if (err) return reject(err);
-      resolve(res);
-    });
-  }),
+    return client ? client.update(query) : null;
+  },
 
   bulk: (query) => new Promise((resolve, reject) => {
     if (!client) return resolve();

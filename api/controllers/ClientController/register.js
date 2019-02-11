@@ -89,6 +89,8 @@ async function register (req, res) {
     console.log(err);
     return res.serverError(err);
   }
+
+  ClientService.updateElasticsearchIndex({ clientId: client.id });
 }
 
 module.exports = register;
