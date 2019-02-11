@@ -5,7 +5,7 @@ module.exports = function PgSessionInit(sails) {
   return {
     initialize: function(cb) {
       if (!process.env.REDIS_HOST) {
-        const postgresConfig = { ...sails.config.connections.postgresql }; // copy the config
+        const postgresConfig = { ...sails.config.datastores.postgresql }; // copy the config
         delete postgresConfig['adapter'];
         const content = fs.readFileSync('node_modules/v2land-sails-pg-session/sql/sails-pg-session-support.sql', 'utf8');
 
