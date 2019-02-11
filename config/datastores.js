@@ -19,7 +19,7 @@
  * http://sailsjs.org/#!/documentation/reference/sails.config/sails.config.connections.html
  */
 
-module.exports.connections = {
+module.exports.datastores = {
 
   /***************************************************************************
   *                                                                          *
@@ -37,7 +37,8 @@ module.exports.connections = {
     host: process.env.POSTGRES_HOST || '127.0.0.1',
     user: process.env.POSTGRES_USER || 'postgres',
     password: process.env.POSTGRES_PWD,
-    database: process.env.POSTGRES_DB || 'v2land'
+    database: process.env.POSTGRES_DB || 'v2land',
+    port: process.env.POSTGRES_PORT || 5432,
   },
 
 }

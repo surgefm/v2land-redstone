@@ -1,22 +1,17 @@
 /**
- * Global Variable Configuration
- * (sails.config.globals)
- *
- * Configure which global variables which will be exposed
- * automatically by Sails.
- *
- * For more information on configuration, check out:
- * http://sailsjs.org/#!/documentation/reference/sails.config/sails.config.globals.html
+ * THIS FILE WAS ADDED AUTOMATICALLY by the Sails 1.0 app migration tool.
+ * The original file was backed up as `config/globals-old.js.txt`
  */
+
 const Sequelize = require('sequelize');
-const { connections } = require('./connections');
+const { datastores } = require('./datastores');
 
 const {
   host,
   user,
   password,
   database,
-} = connections.postgresql;
+} = datastores.postgresql;
 
 const sequelize = new Sequelize(database, user, password, {
   host,
@@ -38,6 +33,14 @@ global.sequelize = sequelize;
 
 module.exports.globals = {
 
+  _: require('lodash'),
+
+  async: require('async'),
+
+  models: true,
+
+  sails: true,
+
   site: process.env.SITE || 'https://langchao.org',
   api: process.env.API || 'https://api.langchao.org',
 
@@ -52,4 +55,4 @@ module.exports.globals = {
 
   inviteCode: process.env.INVITE_CODE || '渴望重回土地',
 
-}
+};
