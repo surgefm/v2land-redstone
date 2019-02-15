@@ -12,5 +12,6 @@ module.exports = {
 
   generateWhereQuery: require('./UtilService/generateWhereQuery'),
 
+  convertWhereQuery: require('./UtilService/convertWhereQuery'),
 
 };
