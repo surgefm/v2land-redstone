@@ -6,7 +6,7 @@ function convertWhereQuery (where) {
 
   for (const key of Object.keys(where)) {
     if (key === 'contains') {
-      where[Op.contains] = where[key];
+      where[Op.like] = `%${where[key]}%`;
       delete where.contains;
     } else if (key === 'or' && _.isArray(where[key])) {
       const or = where[key].map(w => convertWhereQuery(w));

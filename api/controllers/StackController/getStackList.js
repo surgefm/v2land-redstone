@@ -21,6 +21,10 @@ async function getStackList (req, res) {
     where.status = 'admitted';
   }
 
+  if (where) {
+    where = UtilService.convertWhereQuery(where);
+  }
+
   const stacks = await SeqModels.Stack.findAll({
     where: where || {
       status: 'admitted',

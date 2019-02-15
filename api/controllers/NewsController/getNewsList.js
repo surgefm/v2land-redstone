@@ -41,11 +41,10 @@ async function getNewsList (req, res) {
 
   if (where && !isManager) {
     where.status = 'admitted';
-  } else if (where && isManager && _.isArray(where.status)) {
-    where.status = { [Op.in]: where.status };
   }
 
   if (where) {
+    where = UtilService.convertWhereQuery(where);
     try {
       const newsList = await SeqModels.News.findAll({
         where,
