@@ -22,6 +22,8 @@ async function getClientList (req, res) {
     try {
       where = JSON.parse(where);
     } catch (err) {/* happy */}
+
+    where = UtilService.convertWhereQuery(where);
   }
 
   const fetchDetail = async (clients) => {
