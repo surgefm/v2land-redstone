@@ -1,7 +1,7 @@
 /**
  * 向用户的移动设备发布推送
  */
-async function notifyByAppNotification({ contact, subscription, template }) {
+async function notifyByMobileAppNotification({ contact, subscription, template }) {
   if (!contact) {
     subscription.status = 'failed';
     await subscription.save();
@@ -21,4 +21,4 @@ async function notifyByAppNotification({ contact, subscription, template }) {
   });
 }
 
-module.exports = notifyByAppNotification;
+module.exports = notifyByMobileAppNotification;

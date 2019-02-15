@@ -9,6 +9,7 @@ const notifyByTwitter = require('./notifyByTwitter');
 const notifyByTwitterAt = require('./notifyByTwitterAt');
 const notifyByWeibo = require('./notifyByWeibo');
 const notifyByWeiboAt = require('./notifyByWeiboAt');
+const notifyByMobileAppNotification = require('./notifyByMobileAppNotification');
 
 async function notify(notification) {
   const eventId = notification.eventId;
@@ -109,6 +110,9 @@ async function notify(notification) {
         break;
       case 'weiboAt':
         queue.push(notifyByWeiboAt(inputs));
+        break;
+      case 'mobileAppNotification':
+        queue.push(notifyByMobileAppNotification(inputs));
         break;
       }
     }
