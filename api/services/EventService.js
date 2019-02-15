@@ -1,5 +1,7 @@
 module.exports = {
 
+  updateAdmittedLatestNews: require('./EventService/updateAdmittedLatestNews'),
+
   getEventList: require('./EventService/getEventList'),
 
   findEvent: require('./EventService/findEvent'),
