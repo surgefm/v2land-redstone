@@ -16,21 +16,21 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
--- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: -
 --
 
 CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
 
 
 --
--- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: -
 --
 
 COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
 
 
 --
--- Name: enum_auth_site; Type: TYPE; Schema: public; Owner: v2land
+-- Name: enum_auth_site; Type: TYPE; Schema: public; Owner: -
 --
 
 CREATE TYPE public.enum_auth_site AS ENUM (
@@ -40,10 +40,8 @@ CREATE TYPE public.enum_auth_site AS ENUM (
 );
 
 
-ALTER TYPE public.enum_auth_site OWNER TO v2land;
-
 --
--- Name: enum_client_role; Type: TYPE; Schema: public; Owner: v2land
+-- Name: enum_client_role; Type: TYPE; Schema: public; Owner: -
 --
 
 CREATE TYPE public.enum_client_role AS ENUM (
@@ -53,10 +51,8 @@ CREATE TYPE public.enum_client_role AS ENUM (
 );
 
 
-ALTER TYPE public.enum_client_role OWNER TO v2land;
-
 --
--- Name: enum_contact_method; Type: TYPE; Schema: public; Owner: v2land
+-- Name: enum_contact_method; Type: TYPE; Schema: public; Owner: -
 --
 
 CREATE TYPE public.enum_contact_method AS ENUM (
@@ -69,10 +65,8 @@ CREATE TYPE public.enum_contact_method AS ENUM (
 );
 
 
-ALTER TYPE public.enum_contact_method OWNER TO v2land;
-
 --
--- Name: enum_contact_status; Type: TYPE; Schema: public; Owner: v2land
+-- Name: enum_contact_status; Type: TYPE; Schema: public; Owner: -
 --
 
 CREATE TYPE public.enum_contact_status AS ENUM (
@@ -82,10 +76,8 @@ CREATE TYPE public.enum_contact_status AS ENUM (
 );
 
 
-ALTER TYPE public.enum_contact_status OWNER TO v2land;
-
 --
--- Name: enum_contact_type; Type: TYPE; Schema: public; Owner: v2land
+-- Name: enum_contact_type; Type: TYPE; Schema: public; Owner: -
 --
 
 CREATE TYPE public.enum_contact_type AS ENUM (
@@ -96,10 +88,8 @@ CREATE TYPE public.enum_contact_type AS ENUM (
 );
 
 
-ALTER TYPE public.enum_contact_type OWNER TO v2land;
-
 --
--- Name: enum_critique_status; Type: TYPE; Schema: public; Owner: v2land
+-- Name: enum_critique_status; Type: TYPE; Schema: public; Owner: -
 --
 
 CREATE TYPE public.enum_critique_status AS ENUM (
@@ -110,10 +100,8 @@ CREATE TYPE public.enum_critique_status AS ENUM (
 );
 
 
-ALTER TYPE public.enum_critique_status OWNER TO v2land;
-
 --
--- Name: enum_event_status; Type: TYPE; Schema: public; Owner: v2land
+-- Name: enum_event_status; Type: TYPE; Schema: public; Owner: -
 --
 
 CREATE TYPE public.enum_event_status AS ENUM (
@@ -125,10 +113,8 @@ CREATE TYPE public.enum_event_status AS ENUM (
 );
 
 
-ALTER TYPE public.enum_event_status OWNER TO v2land;
-
 --
--- Name: enum_news_status; Type: TYPE; Schema: public; Owner: v2land
+-- Name: enum_news_status; Type: TYPE; Schema: public; Owner: -
 --
 
 CREATE TYPE public.enum_news_status AS ENUM (
@@ -139,10 +125,8 @@ CREATE TYPE public.enum_news_status AS ENUM (
 );
 
 
-ALTER TYPE public.enum_news_status OWNER TO v2land;
-
 --
--- Name: enum_notification_mode; Type: TYPE; Schema: public; Owner: v2land
+-- Name: enum_notification_mode; Type: TYPE; Schema: public; Owner: -
 --
 
 CREATE TYPE public.enum_notification_mode AS ENUM (
@@ -157,10 +141,8 @@ CREATE TYPE public.enum_notification_mode AS ENUM (
 );
 
 
-ALTER TYPE public.enum_notification_mode OWNER TO v2land;
-
 --
--- Name: enum_notification_status; Type: TYPE; Schema: public; Owner: v2land
+-- Name: enum_notification_status; Type: TYPE; Schema: public; Owner: -
 --
 
 CREATE TYPE public.enum_notification_status AS ENUM (
@@ -171,10 +153,8 @@ CREATE TYPE public.enum_notification_status AS ENUM (
 );
 
 
-ALTER TYPE public.enum_notification_status OWNER TO v2land;
-
 --
--- Name: enum_record_action; Type: TYPE; Schema: public; Owner: v2land
+-- Name: enum_record_action; Type: TYPE; Schema: public; Owner: -
 --
 
 CREATE TYPE public.enum_record_action AS ENUM (
@@ -210,10 +190,8 @@ CREATE TYPE public.enum_record_action AS ENUM (
 );
 
 
-ALTER TYPE public.enum_record_action OWNER TO v2land;
-
 --
--- Name: enum_record_model; Type: TYPE; Schema: public; Owner: v2land
+-- Name: enum_record_model; Type: TYPE; Schema: public; Owner: -
 --
 
 CREATE TYPE public.enum_record_model AS ENUM (
@@ -229,10 +207,8 @@ CREATE TYPE public.enum_record_model AS ENUM (
 );
 
 
-ALTER TYPE public.enum_record_model OWNER TO v2land;
-
 --
--- Name: enum_record_operation; Type: TYPE; Schema: public; Owner: v2land
+-- Name: enum_record_operation; Type: TYPE; Schema: public; Owner: -
 --
 
 CREATE TYPE public.enum_record_operation AS ENUM (
@@ -242,10 +218,8 @@ CREATE TYPE public.enum_record_operation AS ENUM (
 );
 
 
-ALTER TYPE public.enum_record_operation OWNER TO v2land;
-
 --
--- Name: enum_reportNotification_status; Type: TYPE; Schema: public; Owner: v2land
+-- Name: enum_reportNotification_status; Type: TYPE; Schema: public; Owner: -
 --
 
 CREATE TYPE public."enum_reportNotification_status" AS ENUM (
@@ -255,10 +229,8 @@ CREATE TYPE public."enum_reportNotification_status" AS ENUM (
 );
 
 
-ALTER TYPE public."enum_reportNotification_status" OWNER TO v2land;
-
 --
--- Name: enum_report_method; Type: TYPE; Schema: public; Owner: v2land
+-- Name: enum_report_method; Type: TYPE; Schema: public; Owner: -
 --
 
 CREATE TYPE public.enum_report_method AS ENUM (
@@ -267,10 +239,8 @@ CREATE TYPE public.enum_report_method AS ENUM (
 );
 
 
-ALTER TYPE public.enum_report_method OWNER TO v2land;
-
 --
--- Name: enum_report_status; Type: TYPE; Schema: public; Owner: v2land
+-- Name: enum_report_status; Type: TYPE; Schema: public; Owner: -
 --
 
 CREATE TYPE public.enum_report_status AS ENUM (
@@ -281,10 +251,8 @@ CREATE TYPE public.enum_report_status AS ENUM (
 );
 
 
-ALTER TYPE public.enum_report_status OWNER TO v2land;
-
 --
--- Name: enum_report_type; Type: TYPE; Schema: public; Owner: v2land
+-- Name: enum_report_type; Type: TYPE; Schema: public; Owner: -
 --
 
 CREATE TYPE public.enum_report_type AS ENUM (
@@ -294,10 +262,8 @@ CREATE TYPE public.enum_report_type AS ENUM (
 );
 
 
-ALTER TYPE public.enum_report_type OWNER TO v2land;
-
 --
--- Name: enum_stack_status; Type: TYPE; Schema: public; Owner: v2land
+-- Name: enum_stack_status; Type: TYPE; Schema: public; Owner: -
 --
 
 CREATE TYPE public.enum_stack_status AS ENUM (
@@ -310,10 +276,8 @@ CREATE TYPE public.enum_stack_status AS ENUM (
 );
 
 
-ALTER TYPE public.enum_stack_status OWNER TO v2land;
-
 --
--- Name: enum_subscription_mode; Type: TYPE; Schema: public; Owner: v2land
+-- Name: enum_subscription_mode; Type: TYPE; Schema: public; Owner: -
 --
 
 CREATE TYPE public.enum_subscription_mode AS ENUM (
@@ -328,10 +292,8 @@ CREATE TYPE public.enum_subscription_mode AS ENUM (
 );
 
 
-ALTER TYPE public.enum_subscription_mode OWNER TO v2land;
-
 --
--- Name: enum_subscription_status; Type: TYPE; Schema: public; Owner: v2land
+-- Name: enum_subscription_status; Type: TYPE; Schema: public; Owner: -
 --
 
 CREATE TYPE public.enum_subscription_status AS ENUM (
@@ -340,10 +302,8 @@ CREATE TYPE public.enum_subscription_status AS ENUM (
 );
 
 
-ALTER TYPE public.enum_subscription_status OWNER TO v2land;
-
 --
--- Name: sails_session_store_clear(); Type: FUNCTION; Schema: public; Owner: v2land
+-- Name: sails_session_store_clear(); Type: FUNCTION; Schema: public; Owner: -
 --
 
 CREATE FUNCTION public.sails_session_store_clear() RETURNS void
@@ -355,10 +315,8 @@ END;
 $$;
 
 
-ALTER FUNCTION public.sails_session_store_clear() OWNER TO v2land;
-
 --
--- Name: sails_session_store_destroy(text); Type: FUNCTION; Schema: public; Owner: v2land
+-- Name: sails_session_store_destroy(text); Type: FUNCTION; Schema: public; Owner: -
 --
 
 CREATE FUNCTION public.sails_session_store_destroy(sid_in text) RETURNS void
@@ -370,10 +328,8 @@ END;
 $$;
 
 
-ALTER FUNCTION public.sails_session_store_destroy(sid_in text) OWNER TO v2land;
-
 --
--- Name: sails_session_store_get(text); Type: FUNCTION; Schema: public; Owner: v2land
+-- Name: sails_session_store_get(text); Type: FUNCTION; Schema: public; Owner: -
 --
 
 CREATE FUNCTION public.sails_session_store_get(sid_in text, OUT data_out json) RETURNS json
@@ -385,10 +341,8 @@ END;
 $$;
 
 
-ALTER FUNCTION public.sails_session_store_get(sid_in text, OUT data_out json) OWNER TO v2land;
-
 --
--- Name: sails_session_store_length(); Type: FUNCTION; Schema: public; Owner: v2land
+-- Name: sails_session_store_length(); Type: FUNCTION; Schema: public; Owner: -
 --
 
 CREATE FUNCTION public.sails_session_store_length(OUT length integer) RETURNS integer
@@ -400,10 +354,8 @@ END;
 $$;
 
 
-ALTER FUNCTION public.sails_session_store_length(OUT length integer) OWNER TO v2land;
-
 --
--- Name: sails_session_store_set(text, json); Type: FUNCTION; Schema: public; Owner: v2land
+-- Name: sails_session_store_set(text, json); Type: FUNCTION; Schema: public; Owner: -
 --
 
 CREATE FUNCTION public.sails_session_store_set(sid_in text, data_in json) RETURNS void
@@ -417,14 +369,12 @@ END;
 $$;
 
 
-ALTER FUNCTION public.sails_session_store_set(sid_in text, data_in json) OWNER TO v2land;
-
 SET default_tablespace = '';
 
 SET default_with_oids = false;
 
 --
--- Name: auth; Type: TABLE; Schema: public; Owner: v2land
+-- Name: auth; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.auth (
@@ -444,10 +394,8 @@ CREATE TABLE public.auth (
 );
 
 
-ALTER TABLE public.auth OWNER TO v2land;
-
 --
--- Name: auth_id_seq; Type: SEQUENCE; Schema: public; Owner: v2land
+-- Name: auth_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
 CREATE SEQUENCE public.auth_id_seq
@@ -458,17 +406,15 @@ CREATE SEQUENCE public.auth_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.auth_id_seq OWNER TO v2land;
-
 --
--- Name: auth_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: v2land
+-- Name: auth_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
 ALTER SEQUENCE public.auth_id_seq OWNED BY public.auth.id;
 
 
 --
--- Name: client; Type: TABLE; Schema: public; Owner: v2land
+-- Name: client; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.client (
@@ -484,10 +430,8 @@ CREATE TABLE public.client (
 );
 
 
-ALTER TABLE public.client OWNER TO v2land;
-
 --
--- Name: client_events__event_subscribers; Type: TABLE; Schema: public; Owner: v2land
+-- Name: client_events__event_subscribers; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.client_events__event_subscribers (
@@ -497,10 +441,8 @@ CREATE TABLE public.client_events__event_subscribers (
 );
 
 
-ALTER TABLE public.client_events__event_subscribers OWNER TO v2land;
-
 --
--- Name: client_events__event_subscribers_id_seq; Type: SEQUENCE; Schema: public; Owner: v2land
+-- Name: client_events__event_subscribers_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
 CREATE SEQUENCE public.client_events__event_subscribers_id_seq
@@ -511,17 +453,15 @@ CREATE SEQUENCE public.client_events__event_subscribers_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.client_events__event_subscribers_id_seq OWNER TO v2land;
-
 --
--- Name: client_events__event_subscribers_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: v2land
+-- Name: client_events__event_subscribers_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
 ALTER SEQUENCE public.client_events__event_subscribers_id_seq OWNED BY public.client_events__event_subscribers.id;
 
 
 --
--- Name: client_id_seq; Type: SEQUENCE; Schema: public; Owner: v2land
+-- Name: client_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
 CREATE SEQUENCE public.client_id_seq
@@ -532,17 +472,15 @@ CREATE SEQUENCE public.client_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.client_id_seq OWNER TO v2land;
-
 --
--- Name: client_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: v2land
+-- Name: client_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
 ALTER SEQUENCE public.client_id_seq OWNED BY public.client.id;
 
 
 --
--- Name: contact_id_seq; Type: SEQUENCE; Schema: public; Owner: v2land
+-- Name: contact_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
 CREATE SEQUENCE public.contact_id_seq
@@ -553,10 +491,8 @@ CREATE SEQUENCE public.contact_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.contact_id_seq OWNER TO v2land;
-
 --
--- Name: contact; Type: TABLE; Schema: public; Owner: v2land
+-- Name: contact; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.contact (
@@ -573,10 +509,8 @@ CREATE TABLE public.contact (
 );
 
 
-ALTER TABLE public.contact OWNER TO v2land;
-
 --
--- Name: critique_id_seq; Type: SEQUENCE; Schema: public; Owner: v2land
+-- Name: critique_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
 CREATE SEQUENCE public.critique_id_seq
@@ -587,10 +521,8 @@ CREATE SEQUENCE public.critique_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.critique_id_seq OWNER TO v2land;
-
 --
--- Name: critique; Type: TABLE; Schema: public; Owner: v2land
+-- Name: critique; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.critique (
@@ -607,10 +539,8 @@ CREATE TABLE public.critique (
 );
 
 
-ALTER TABLE public.critique OWNER TO v2land;
-
 --
--- Name: event; Type: TABLE; Schema: public; Owner: v2land
+-- Name: event; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.event (
@@ -625,10 +555,8 @@ CREATE TABLE public.event (
 );
 
 
-ALTER TABLE public.event OWNER TO v2land;
-
 --
--- Name: event_id_seq; Type: SEQUENCE; Schema: public; Owner: v2land
+-- Name: event_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
 CREATE SEQUENCE public.event_id_seq
@@ -639,17 +567,15 @@ CREATE SEQUENCE public.event_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.event_id_seq OWNER TO v2land;
-
 --
--- Name: event_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: v2land
+-- Name: event_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
 ALTER SEQUENCE public.event_id_seq OWNED BY public.event.id;
 
 
 --
--- Name: headerImage; Type: TABLE; Schema: public; Owner: v2land
+-- Name: headerImage; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public."headerImage" (
@@ -663,10 +589,8 @@ CREATE TABLE public."headerImage" (
 );
 
 
-ALTER TABLE public."headerImage" OWNER TO v2land;
-
 --
--- Name: headerimage_id_seq; Type: SEQUENCE; Schema: public; Owner: v2land
+-- Name: headerimage_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
 CREATE SEQUENCE public.headerimage_id_seq
@@ -677,17 +601,15 @@ CREATE SEQUENCE public.headerimage_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.headerimage_id_seq OWNER TO v2land;
-
 --
--- Name: headerimage_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: v2land
+-- Name: headerimage_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
 ALTER SEQUENCE public.headerimage_id_seq OWNED BY public."headerImage".id;
 
 
 --
--- Name: headerimage; Type: TABLE; Schema: public; Owner: v2land
+-- Name: headerimage; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.headerimage (
@@ -701,10 +623,8 @@ CREATE TABLE public.headerimage (
 );
 
 
-ALTER TABLE public.headerimage OWNER TO v2land;
-
 --
--- Name: masked_client; Type: TABLE; Schema: public; Owner: v2land
+-- Name: masked_client; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.masked_client (
@@ -713,10 +633,8 @@ CREATE TABLE public.masked_client (
 );
 
 
-ALTER TABLE public.masked_client OWNER TO v2land;
-
 --
--- Name: news; Type: TABLE; Schema: public; Owner: v2land
+-- Name: news; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.news (
@@ -736,10 +654,8 @@ CREATE TABLE public.news (
 );
 
 
-ALTER TABLE public.news OWNER TO v2land;
-
 --
--- Name: news_id_seq; Type: SEQUENCE; Schema: public; Owner: v2land
+-- Name: news_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
 CREATE SEQUENCE public.news_id_seq
@@ -750,17 +666,15 @@ CREATE SEQUENCE public.news_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.news_id_seq OWNER TO v2land;
-
 --
--- Name: news_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: v2land
+-- Name: news_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
 ALTER SEQUENCE public.news_id_seq OWNED BY public.news.id;
 
 
 --
--- Name: notification; Type: TABLE; Schema: public; Owner: v2land
+-- Name: notification; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.notification (
@@ -774,10 +688,8 @@ CREATE TABLE public.notification (
 );
 
 
-ALTER TABLE public.notification OWNER TO v2land;
-
 --
--- Name: notification_id_seq; Type: SEQUENCE; Schema: public; Owner: v2land
+-- Name: notification_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
 CREATE SEQUENCE public.notification_id_seq
@@ -788,17 +700,15 @@ CREATE SEQUENCE public.notification_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.notification_id_seq OWNER TO v2land;
-
 --
--- Name: notification_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: v2land
+-- Name: notification_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
 ALTER SEQUENCE public.notification_id_seq OWNED BY public.notification.id;
 
 
 --
--- Name: record; Type: TABLE; Schema: public; Owner: v2land
+-- Name: record; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.record (
@@ -815,10 +725,8 @@ CREATE TABLE public.record (
 );
 
 
-ALTER TABLE public.record OWNER TO v2land;
-
 --
--- Name: record_id_seq; Type: SEQUENCE; Schema: public; Owner: v2land
+-- Name: record_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
 CREATE SEQUENCE public.record_id_seq
@@ -829,17 +737,15 @@ CREATE SEQUENCE public.record_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.record_id_seq OWNER TO v2land;
-
 --
--- Name: record_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: v2land
+-- Name: record_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
 ALTER SEQUENCE public.record_id_seq OWNED BY public.record.id;
 
 
 --
--- Name: report_id_seq; Type: SEQUENCE; Schema: public; Owner: v2land
+-- Name: report_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
 CREATE SEQUENCE public.report_id_seq
@@ -850,10 +756,8 @@ CREATE SEQUENCE public.report_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.report_id_seq OWNER TO v2land;
-
 --
--- Name: report; Type: TABLE; Schema: public; Owner: v2land
+-- Name: report; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.report (
@@ -868,10 +772,8 @@ CREATE TABLE public.report (
 );
 
 
-ALTER TABLE public.report OWNER TO v2land;
-
 --
--- Name: reportNotification; Type: TABLE; Schema: public; Owner: v2land
+-- Name: reportNotification; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public."reportNotification" (
@@ -883,10 +785,8 @@ CREATE TABLE public."reportNotification" (
 );
 
 
-ALTER TABLE public."reportNotification" OWNER TO v2land;
-
 --
--- Name: sails_session_store; Type: TABLE; Schema: public; Owner: v2land
+-- Name: sails_session_store; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.sails_session_store (
@@ -896,10 +796,8 @@ CREATE TABLE public.sails_session_store (
 );
 
 
-ALTER TABLE public.sails_session_store OWNER TO v2land;
-
 --
--- Name: stack_id_seq; Type: SEQUENCE; Schema: public; Owner: v2land
+-- Name: stack_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
 CREATE SEQUENCE public.stack_id_seq
@@ -910,10 +808,8 @@ CREATE SEQUENCE public.stack_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.stack_id_seq OWNER TO v2land;
-
 --
--- Name: stack; Type: TABLE; Schema: public; Owner: v2land
+-- Name: stack; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.stack (
@@ -929,10 +825,8 @@ CREATE TABLE public.stack (
 );
 
 
-ALTER TABLE public.stack OWNER TO v2land;
-
 --
--- Name: subscription; Type: TABLE; Schema: public; Owner: v2land
+-- Name: subscription; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.subscription (
@@ -947,10 +841,8 @@ CREATE TABLE public.subscription (
 );
 
 
-ALTER TABLE public.subscription OWNER TO v2land;
-
 --
--- Name: subscription_id_seq; Type: SEQUENCE; Schema: public; Owner: v2land
+-- Name: subscription_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
 CREATE SEQUENCE public.subscription_id_seq
@@ -961,80 +853,78 @@ CREATE SEQUENCE public.subscription_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.subscription_id_seq OWNER TO v2land;
-
 --
--- Name: subscription_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: v2land
+-- Name: subscription_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
 ALTER SEQUENCE public.subscription_id_seq OWNED BY public.subscription.id;
 
 
 --
--- Name: auth id; Type: DEFAULT; Schema: public; Owner: v2land
+-- Name: auth id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.auth ALTER COLUMN id SET DEFAULT nextval('public.auth_id_seq'::regclass);
 
 
 --
--- Name: client id; Type: DEFAULT; Schema: public; Owner: v2land
+-- Name: client id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.client ALTER COLUMN id SET DEFAULT nextval('public.client_id_seq'::regclass);
 
 
 --
--- Name: client_events__event_subscribers id; Type: DEFAULT; Schema: public; Owner: v2land
+-- Name: client_events__event_subscribers id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.client_events__event_subscribers ALTER COLUMN id SET DEFAULT nextval('public.client_events__event_subscribers_id_seq'::regclass);
 
 
 --
--- Name: event id; Type: DEFAULT; Schema: public; Owner: v2land
+-- Name: event id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.event ALTER COLUMN id SET DEFAULT nextval('public.event_id_seq'::regclass);
 
 
 --
--- Name: headerImage id; Type: DEFAULT; Schema: public; Owner: v2land
+-- Name: headerImage id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public."headerImage" ALTER COLUMN id SET DEFAULT nextval('public.headerimage_id_seq'::regclass);
 
 
 --
--- Name: news id; Type: DEFAULT; Schema: public; Owner: v2land
+-- Name: news id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.news ALTER COLUMN id SET DEFAULT nextval('public.news_id_seq'::regclass);
 
 
 --
--- Name: notification id; Type: DEFAULT; Schema: public; Owner: v2land
+-- Name: notification id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.notification ALTER COLUMN id SET DEFAULT nextval('public.notification_id_seq'::regclass);
 
 
 --
--- Name: record id; Type: DEFAULT; Schema: public; Owner: v2land
+-- Name: record id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.record ALTER COLUMN id SET DEFAULT nextval('public.record_id_seq'::regclass);
 
 
 --
--- Name: subscription id; Type: DEFAULT; Schema: public; Owner: v2land
+-- Name: subscription id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.subscription ALTER COLUMN id SET DEFAULT nextval('public.subscription_id_seq'::regclass);
 
 
 --
--- Name: auth auth_pkey; Type: CONSTRAINT; Schema: public; Owner: v2land
+-- Name: auth auth_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.auth
@@ -1042,7 +932,7 @@ ALTER TABLE ONLY public.auth
 
 
 --
--- Name: client client_email_key; Type: CONSTRAINT; Schema: public; Owner: v2land
+-- Name: client client_email_key; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.client
@@ -1050,7 +940,7 @@ ALTER TABLE ONLY public.client
 
 
 --
--- Name: client_events__event_subscribers client_events__event_subscribers_pkey; Type: CONSTRAINT; Schema: public; Owner: v2land
+-- Name: client_events__event_subscribers client_events__event_subscribers_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.client_events__event_subscribers
@@ -1058,7 +948,7 @@ ALTER TABLE ONLY public.client_events__event_subscribers
 
 
 --
--- Name: client client_pkey; Type: CONSTRAINT; Schema: public; Owner: v2land
+-- Name: client client_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.client
@@ -1066,7 +956,7 @@ ALTER TABLE ONLY public.client
 
 
 --
--- Name: client client_username_key; Type: CONSTRAINT; Schema: public; Owner: v2land
+-- Name: client client_username_key; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.client
@@ -1074,7 +964,7 @@ ALTER TABLE ONLY public.client
 
 
 --
--- Name: contact contact_pkey; Type: CONSTRAINT; Schema: public; Owner: v2land
+-- Name: contact contact_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.contact
@@ -1082,7 +972,7 @@ ALTER TABLE ONLY public.contact
 
 
 --
--- Name: critique critique_pkey; Type: CONSTRAINT; Schema: public; Owner: v2land
+-- Name: critique critique_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.critique
@@ -1090,7 +980,7 @@ ALTER TABLE ONLY public.critique
 
 
 --
--- Name: event event_name_key; Type: CONSTRAINT; Schema: public; Owner: v2land
+-- Name: event event_name_key; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.event
@@ -1098,7 +988,7 @@ ALTER TABLE ONLY public.event
 
 
 --
--- Name: event event_pkey; Type: CONSTRAINT; Schema: public; Owner: v2land
+-- Name: event event_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.event
@@ -1106,7 +996,7 @@ ALTER TABLE ONLY public.event
 
 
 --
--- Name: headerimage headerimage_event_key; Type: CONSTRAINT; Schema: public; Owner: v2land
+-- Name: headerimage headerimage_event_key; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.headerimage
@@ -1114,7 +1004,7 @@ ALTER TABLE ONLY public.headerimage
 
 
 --
--- Name: headerimage headerimage_pkey; Type: CONSTRAINT; Schema: public; Owner: v2land
+-- Name: headerimage headerimage_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.headerimage
@@ -1122,7 +1012,7 @@ ALTER TABLE ONLY public.headerimage
 
 
 --
--- Name: masked_client masked_client_pkey; Type: CONSTRAINT; Schema: public; Owner: v2land
+-- Name: masked_client masked_client_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.masked_client
@@ -1130,7 +1020,7 @@ ALTER TABLE ONLY public.masked_client
 
 
 --
--- Name: news news_pkey; Type: CONSTRAINT; Schema: public; Owner: v2land
+-- Name: news news_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.news
@@ -1138,7 +1028,7 @@ ALTER TABLE ONLY public.news
 
 
 --
--- Name: notification notification_pkey; Type: CONSTRAINT; Schema: public; Owner: v2land
+-- Name: notification notification_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.notification
@@ -1146,7 +1036,7 @@ ALTER TABLE ONLY public.notification
 
 
 --
--- Name: record record_pkey; Type: CONSTRAINT; Schema: public; Owner: v2land
+-- Name: record record_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.record
@@ -1154,7 +1044,7 @@ ALTER TABLE ONLY public.record
 
 
 --
--- Name: reportNotification reportNotification_pkey; Type: CONSTRAINT; Schema: public; Owner: v2land
+-- Name: reportNotification reportNotification_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public."reportNotification"
@@ -1162,7 +1052,7 @@ ALTER TABLE ONLY public."reportNotification"
 
 
 --
--- Name: report report_pkey; Type: CONSTRAINT; Schema: public; Owner: v2land
+-- Name: report report_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.report
@@ -1170,7 +1060,7 @@ ALTER TABLE ONLY public.report
 
 
 --
--- Name: sails_session_store sails_session_store_pkey; Type: CONSTRAINT; Schema: public; Owner: v2land
+-- Name: sails_session_store sails_session_store_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.sails_session_store
@@ -1178,7 +1068,7 @@ ALTER TABLE ONLY public.sails_session_store
 
 
 --
--- Name: stack stack_pkey; Type: CONSTRAINT; Schema: public; Owner: v2land
+-- Name: stack stack_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.stack
@@ -1186,7 +1076,7 @@ ALTER TABLE ONLY public.stack
 
 
 --
--- Name: subscription subscription_pkey; Type: CONSTRAINT; Schema: public; Owner: v2land
+-- Name: subscription subscription_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.subscription
@@ -1194,7 +1084,7 @@ ALTER TABLE ONLY public.subscription
 
 
 --
--- Name: contact contact_authId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: v2land
+-- Name: contact contact_authId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.contact
@@ -1202,7 +1092,7 @@ ALTER TABLE ONLY public.contact
 
 
 --
--- Name: contact contact_owner_fkey; Type: FK CONSTRAINT; Schema: public; Owner: v2land
+-- Name: contact contact_owner_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.contact
@@ -1210,7 +1100,7 @@ ALTER TABLE ONLY public.contact
 
 
 --
--- Name: contact contact_subscriptionId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: v2land
+-- Name: contact contact_subscriptionId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.contact
@@ -1218,7 +1108,7 @@ ALTER TABLE ONLY public.contact
 
 
 --
--- Name: critique critique_event_fkey; Type: FK CONSTRAINT; Schema: public; Owner: v2land
+-- Name: critique critique_event_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.critique
@@ -1226,7 +1116,7 @@ ALTER TABLE ONLY public.critique
 
 
 --
--- Name: reportNotification reportNotification_notificationId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: v2land
+-- Name: reportNotification reportNotification_notificationId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public."reportNotification"
@@ -1234,7 +1124,7 @@ ALTER TABLE ONLY public."reportNotification"
 
 
 --
--- Name: reportNotification reportNotification_reportId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: v2land
+-- Name: reportNotification reportNotification_reportId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public."reportNotification"
@@ -1242,7 +1132,7 @@ ALTER TABLE ONLY public."reportNotification"
 
 
 --
--- Name: report report_owner_fkey; Type: FK CONSTRAINT; Schema: public; Owner: v2land
+-- Name: report report_owner_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.report
@@ -1250,21 +1140,11 @@ ALTER TABLE ONLY public.report
 
 
 --
--- Name: stack stack_event_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: v2land
+-- Name: stack stack_event_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.stack
     ADD CONSTRAINT stack_event_id_fk FOREIGN KEY ("eventId") REFERENCES public.event(id) ON DELETE CASCADE;
-
-
---
--- Name: SCHEMA public; Type: ACL; Schema: -; Owner: v2land
---
-
-REVOKE ALL ON SCHEMA public FROM duzhongchen;
-REVOKE ALL ON SCHEMA public FROM PUBLIC;
-GRANT ALL ON SCHEMA public TO v2land;
-GRANT ALL ON SCHEMA public TO PUBLIC;
 
 
 --
