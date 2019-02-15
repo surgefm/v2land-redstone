@@ -17,7 +17,8 @@ node_js:
   - "10"
 before_script:
   - psql -c 'create database v2land;' -U postgres
-  - node ./node_modules/sequelize-cli/lib/sequelize db:migrate
+  - psql -U postgres -f ./scripts/db-01.sql
+  # - node ./node_modules/sequelize-cli/lib/sequelize db:migrate
 script: make test
 deploy:
   provider: script
