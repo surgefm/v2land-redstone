@@ -11,7 +11,6 @@ module.exports = {
   },
 
   update: async (query) => {
-    if (!client) return resolve();
     return client ? client.update(query) : null;
   },
 
@@ -24,7 +23,6 @@ module.exports = {
   }),
 
   msearch: (query) => {
-    if (!client) return resolve();
     return client ? client.msearch(query) : null;
   },
 
