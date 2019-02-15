@@ -6414,10 +6414,10 @@ uws@~9.14.0:
   resolved "https://registry.yarnpkg.com/uws/-/uws-9.14.0.tgz#fac8386befc33a7a3705cbd58dc47b430ca4dd95"
   integrity sha512-HNMztPP5A1sKuVFmdZ6BPVpBQd5bUjNC8EFMFiICK+oho/OQsAJy5hnIx4btMHiOk8j04f/DbIlqnEZ9d72dqg==
 
-v2land-sails-pg-session@^1.0.2:
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/v2land-sails-pg-session/-/v2land-sails-pg-session-1.0.3.tgz#309d9f331b7cb16ebfb4d9a7047c4c23fe621138"
-  integrity sha512-TmBw+GjwqR767a3T7wSNgqMkNVG1K8M5j1BJOLf9ICY8bGBCXhNiVhVHdhZdEu7p0G7UlQIhD6ALOqbPCvkY7w==
+v2land-sails-pg-session@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/v2land-sails-pg-session/-/v2land-sails-pg-session-1.0.4.tgz#e043a7ccaec664eb7c5f29ce2d9cf035e098e31a"
+  integrity sha512-jsRa/12giWsZaz/pIFIDwJIc9cgkywEN+/JCWcpI6bGey/mj2LJu6IxP3/VczKV6IrcM+Nbxrdh1GEHkk9gsyw==
   dependencies:
     debug "*"
     pg "^7.4.1"
