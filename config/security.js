@@ -19,7 +19,7 @@ module.exports.security = {
   *                                                                          *
   ***************************************************************************/
 
-  allowOrigins: (process.env.CORS || 'http://localhost:3000,https://langchao.co,https://v2land.net').split(','),
+  allowOrigins: (process.env.CORS || 'http://localhost:3000,https://langchao.org,https://v2land.net').split(','),
 
   /***************************************************************************
   *                                                                          *

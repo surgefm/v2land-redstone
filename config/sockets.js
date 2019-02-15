@@ -12,6 +12,8 @@
 
 module.exports.sockets = {
 
+  onlyAllowOrigins: (process.env.CORS || 'http://localhost:3000,https://langchao.org,https://v2land.net').split(','),
+
   /***************************************************************************
   *                                                                          *
   * Node.js (and consequently Sails.js) apps scale horizontally. It's a      *
