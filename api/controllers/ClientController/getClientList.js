@@ -47,17 +47,6 @@ async function getClientList (req, res) {
     attributes,
     offset: (page - 1) * 10,
     limit: 10,
-    include: [{
-      model: SeqModels.Auth,
-      as: 'auths',
-      attributes: ['id', 'site', 'profileId', 'profile'],
-      where: {
-        profileId: {
-          [Op.ne]: null,
-        },
-      },
-      required: false,
-    }],
   });
 
   await fetchDetail(clients);

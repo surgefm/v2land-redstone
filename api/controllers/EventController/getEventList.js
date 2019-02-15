@@ -61,6 +61,10 @@ async function getEventList (req, res) {
         where.status = 'admitted';
       }
 
+      if (where) {
+        where = UtilService.convertWhereQuery(where);
+      }
+
       let events = await SeqModels.Event.findAll({
         where,
         include: [{
