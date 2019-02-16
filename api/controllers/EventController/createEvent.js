@@ -37,11 +37,12 @@ async function createEvent (req, res) {
       message: '提交成功，该事件在社区管理员审核通过后将很快开放',
       event,
     });
-
-    NotificationService.notifyWhenEventCreated(event, req.session.clientId);
   } catch (err) {
     return res.serverError(err);
   }
+
+  NotificationService.notifyWhenEventCreated(event, req.session.clientId);
+  EventService.updateElasticsearchIndex({ event });
 }
 
 module.exports = createEvent;

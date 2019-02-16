@@ -90,4 +90,8 @@ module.exports.policies = {
     '*': false,
   },
 
+  SearchController: {
+    'keywordSearch': true,
+  },
+
 };

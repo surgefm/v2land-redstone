@@ -47,6 +47,8 @@ async function updateClient (req, res) {
   } catch (err) {
     return res.serverError(err);
   }
+
+  ClientService.updateElasticsearchIndex({ clientId: client.id });
 }
 
 module.exports = updateClient;

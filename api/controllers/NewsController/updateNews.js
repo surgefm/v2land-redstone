@@ -122,6 +122,8 @@ async function updateNews (req, res) {
   } catch (err) {
     return res.serverError(err);
   }
+
+  NewsService.updateElasticsearchIndex({ newsId: id });
 }
 
 module.exports = updateNews;

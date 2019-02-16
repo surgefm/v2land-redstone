@@ -3,8 +3,8 @@
  * specifying the database connection methods.
  */
 
-const { connections } = require('./connections');
-const { postgresql } = connections;
+const { datastores } = require('./datastores');
+const { postgresql } = datastores;
 
 const connection = {
   ...postgresql,

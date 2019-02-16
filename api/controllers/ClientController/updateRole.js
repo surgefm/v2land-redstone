@@ -64,6 +64,8 @@ async function updateRole (req, res) {
       res.send(201, {
         message: '成功更新用户组',
       });
+
+      ClientService.updateElasticsearchIndex({ clientId: targetClient.id });
     });
   } catch (err) {
     return res.serverError(err);

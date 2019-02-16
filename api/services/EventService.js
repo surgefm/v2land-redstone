@@ -1,7 +1,5 @@
 module.exports = {
 
-  updateAdmittedLatestNews: require('./EventService/updateAdmittedLatestNews'),
-
   getEventList: require('./EventService/getEventList'),
 
   findEvent: require('./EventService/findEvent'),
@@ -11,5 +9,9 @@ module.exports = {
   acquireContributionsByEventList: require('./EventService/acquireContributionsByEventList'),
 
   generatePinyin: require('./EventService/generatePinyin'),
+
+  updateElasticsearchIndex: require('./EventService/updateElasticsearchIndex'),
+
+  updateAdmittedLatestNews: require('./EventService/updateAdmittedLatestNews'),
 
 };

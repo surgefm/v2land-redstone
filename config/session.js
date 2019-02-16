@@ -20,7 +20,10 @@ const cookie = {
   domain: ((process.env.NODE_ENV === 'production' || process.env.CUSTOM_DOMAIN) && url)
     ? ('.' + url.domain + '.' + url.tld)
     : null,
-}
+  secure: typeof process.env.SECURE_COOKIE !== 'undefined'
+    ? process.env.SECURE_COOKIE === 'true'
+    : process.env.NODE_ENV === 'production',
+};
 
 let connection = {};
 
@@ -43,7 +46,7 @@ if (process.env.REDIS_HOST) {
     host: process.env.POSTGRES_HOST || '127.0.0.1',
     user: process.env.POSTGRES_USER || 'postgres',
     password: process.env.POSTGRES_PWD,
-    port: process.env.POSTGRES_HOST || 5432,
+    port: process.env.POSTGRES_PORT || 5432,
   };
 
   console.info('Using PostgreSQL as session storage. One service instance at most.');
