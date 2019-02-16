@@ -4,6 +4,8 @@ const NewsService = {
 
   acquireContributionsByNewsList: require('./NewsService/acquireContributionsByNewsList'),
 
+  updateElasticsearchIndex: require('./NewsService/updateElasticsearchIndex'),
+
 };
 
 module.exports = NewsService;

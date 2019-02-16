@@ -8,6 +8,8 @@ const StackService = {
 
   updateStack: require('./StackService/updateStack'),
 
+  updateElasticsearchIndex: require('./StackService/updateElasticsearchIndex'),
+
 };
 
 module.exports = StackService;

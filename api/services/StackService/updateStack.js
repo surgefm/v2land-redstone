@@ -1,4 +1,5 @@
 const SeqModels = require('../../../seqModels');
+const updateElasticsearchIndex = require('./updateElasticsearchIndex');
 
 async function updateStack ({ id = -1, data = {}, clientId, transaction }) {
   let stack = await SeqModels.Stack.findOne({
@@ -85,6 +86,8 @@ async function updateStack ({ id = -1, data = {}, clientId, transaction }) {
     NotificationService.updateForNewStack(event, stack, data.forceUpdate);
     NotificationService.updateForNewNews(event, news, data.forceUpdate);
   }
+
+  updateElasticsearchIndex({ stackId: stack.id });
 
   return {
     status: 201,

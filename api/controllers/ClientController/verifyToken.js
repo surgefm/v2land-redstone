@@ -55,6 +55,8 @@ async function verifyToken (req, res) {
   res.status(201).json({
     message: '账户验证成功',
   });
+
+  ClientService.updateElasticsearchIndex({ client });
 }
 
 module.exports = verifyToken;

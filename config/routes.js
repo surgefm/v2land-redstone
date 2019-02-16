@@ -79,4 +79,6 @@ module.exports.routes = {
 
   'POST /upload': 'UploadController.upload',
 
+  'GET /search': 'SearchController.keywordSearch',
+
 }

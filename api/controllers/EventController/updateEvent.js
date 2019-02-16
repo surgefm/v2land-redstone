@@ -90,6 +90,8 @@ async function updateEvent (req, res) {
   } catch (err) {
     return res.serverError(err);
   }
+
+  EventService.updateElasticsearchIndex({ eventId: event.id });
 }
 
 module.exports = updateEvent;

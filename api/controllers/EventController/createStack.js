@@ -44,6 +44,8 @@ async function createStack (req, res) {
         message: '提交成功，该进展在社区管理员审核通过后将很快开放',
         stack,
       });
+
+      StackService.updateElasticsearchIndex({ stackId: stack.id });
     });
   } catch (err) {
     return res.serverError(err);

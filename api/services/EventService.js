@@ -10,4 +10,6 @@ module.exports = {
 
   generatePinyin: require('./EventService/generatePinyin'),
 
+  updateElasticsearchIndex: require('./EventService/updateElasticsearchIndex'),
+
 };
