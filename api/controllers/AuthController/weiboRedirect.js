@@ -49,7 +49,7 @@ async function weiboRedirect (req, res) {
   } catch (err) {
     return res.serverError(err);
   }
-  auth.profileId = response.data.uid;
+  auth.profileId = response.data.uid + '';
 
   let data;
   try {
@@ -63,13 +63,14 @@ async function weiboRedirect (req, res) {
   const sameAuth = await SeqModels.Auth.findOne({
     where: {
       site: 'weibo',
-      profileId: response.data.uid,
+      profileId: response.data.uid + '',
     },
   });
 
   let account = sameAuth || auth;
   account.accessToken = accessToken;
   account.refreshToken = refreshToken;
+  await account.save();
 
   if (account.createdAt.toString() == account.updatedAt.toString() &&
     req.session.clientId) {

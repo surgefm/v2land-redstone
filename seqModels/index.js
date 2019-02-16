@@ -49,6 +49,11 @@ News.belongsTo(Stack, {
   foreignKey: 'stackId',
 });
 
+Event.belongsTo(News, {
+  as: 'latestAdmittedNews',
+  foreignKey: 'latestAdmittedNewsId',
+});
+
 Client.hasMany(Record, {
   as: 'records',
   foreignKey: 'owner',

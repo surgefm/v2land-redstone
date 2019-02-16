@@ -12,4 +12,6 @@ module.exports = {
 
   updateElasticsearchIndex: require('./EventService/updateElasticsearchIndex'),
 
+  updateAdmittedLatestNews: require('./EventService/updateAdmittedLatestNews'),
+
 };

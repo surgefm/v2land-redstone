@@ -10,7 +10,7 @@ async function twitterRedirect (req, res) {
   const oa = sails.config.oauth.twitter;
   const { token, verifier } = req.query;
 
-  const auth = await SeqModels.Auth.findOne({ token });
+  const auth = await SeqModels.Auth.findOne({ where: { token } });
   if (!auth) {
     return res.status(404).json({
       message: '未找到该绑定信息',
@@ -72,6 +72,7 @@ async function twitterRedirect (req, res) {
   let account = sameAuth || auth;
   account.accessToken = accessToken;
   account.accessTokenSecret = accessTokenSecret;
+  await account.save();
 
   if (account.createdAt.toString() == account.updatedAt.toString()
     && req.session.clientId) {
@@ -95,7 +96,7 @@ async function twitterRedirect (req, res) {
   } else if (account.owner && (!req.session.clientId ||
     (req.session.clientId === account.owner))) {
     await account.update({
-      profile: { ...resposne },
+      profile: { ...response },
     });
     req.session.clientId = account.owner;
     res.status(200).json(AuthService.sanitize(account));

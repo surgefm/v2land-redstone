@@ -5,7 +5,13 @@ const Contact = global.sequelize.define('contact', {
     type: Sequelize.TEXT,
   },
   type: {
-    type: Sequelize.ENUM(['email', 'twitter', 'weibo', 'telegram']),
+    type: Sequelize.ENUM([
+      'email',
+      'twitter',
+      'weibo',
+      'telegram',
+      'mobileApp',
+    ]),
     allowNull: false,
   },
   method: {
@@ -15,7 +21,8 @@ const Contact = global.sequelize.define('contact', {
       'twitterAt',
       'weiboAt',
       'email',
-      'emailDailyReport'
+      'emailDailyReport',
+      'mobileAppNotification',
     ),
     allowNull: false,
   },

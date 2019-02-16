@@ -29,6 +29,7 @@
     "grunt-sails-linker": "~0.10.1",
     "grunt-sync": "0.5.2",
     "include-all": "^1.0.0",
+    "leancloud-storage": "^3.11.1",
     "lodash": "^4.17.11",
     "md5": "^2.2.1",
     "mocha": "^4.0.1",
