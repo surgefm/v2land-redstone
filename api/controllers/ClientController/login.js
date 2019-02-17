@@ -1,18 +1,12 @@
 const bcrypt = require('bcryptjs');
-const Sequelize = require('sequelize');
-const Op = Sequelize.Op;
-const SeqModels = require('../../../seqModels');
 
 async function login (req, res) {
   const data = req.body;
 
-  const client = await SeqModels.Client.findOne({
-    where: {
-      [Op.or]: [
-        { username: data.username },
-        { email: data.username },
-      ],
-    },
+  const client = await ClientService.findClient(data.username, {
+    withAuths: false,
+    withSubscriptions: false,
+    withPassword: true,
   });
 
   if (!client) {
@@ -33,7 +27,7 @@ async function login (req, res) {
 
   res.status(200).json({
     message: '登录成功',
-    client: await ClientService.findClient(client.id),
+    client,
   });
 }
 

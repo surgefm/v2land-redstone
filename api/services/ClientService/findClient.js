@@ -2,7 +2,7 @@ const SeqModels = require('../../../seqModels');
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 
-async function findClient (clientName, { transaction } = {}) {
+async function findClient (clientName, { transaction, withAuths = true, withSubscriptions = true, withPassword = false } = {}) {
   if (!['string', 'number'].includes(typeof clientName)) {
     return clientName;
   }
@@ -14,35 +14,41 @@ async function findClient (clientName, { transaction } = {}) {
       id: +clientName,
     };
   } else if (typeof clientName === 'string') {
+    clientName = clientName.trim();
     where = {
       [Op.or]: [
-        { username: clientName },
-        { email: clientName },
+        { username: { [Op.iLike]: clientName } },
+        { email: { [Op.iLike]: clientName } },
       ],
     };
   }
 
+  const include = [];
+  if (withAuths) {
+    include.push({
+      as: 'auths',
+      model: SeqModels.Auth,
+      where: {
+        profileId: { [Op.not]: null },
+      },
+      attributes: ['id', 'site', 'profileId', 'profile'],
+      required: false,
+    });
+  }
+  if (withSubscriptions) {
+    include.push({
+      as: 'subscriptions',
+      model: SeqModels.Subscription,
+      where: { status: 'active' },
+      order: [['createdAt', 'DESC']],
+      required: false,
+    });
+  }
+
   const client = await SeqModels.Client.findOne({
     where,
-    attributes: { exclude: ['password'] },
-    include: [
-      {
-        as: 'auths',
-        model: SeqModels.Auth,
-        where: {
-          profileId: { [Op.not]: null },
-        },
-        attributes: ['id', 'site', 'profileId', 'profile'],
-        required: false,
-      },
-      {
-        as: 'subscriptions',
-        model: SeqModels.Subscription,
-        where: { status: 'active' },
-        order: [['createdAt', 'DESC']],
-        required: false,
-      },
-    ],
+    attributes: { exclude: withPassword ? [] : ['password'] },
+    include,
     transaction,
   });
 

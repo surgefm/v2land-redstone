@@ -1,4 +1,3 @@
-
 module.exports = function DBInit(sails) {
   return {
     initialize: function(cb) {
