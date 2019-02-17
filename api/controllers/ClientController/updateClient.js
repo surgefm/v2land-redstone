@@ -6,7 +6,10 @@ async function updateClient (req, res) {
   }
 
   const name = req.param('clientName');
-  let client = await ClientService.findClient(name);
+  let client = await ClientService.findClient(name, {
+    withAuths: false,
+    withSubscriptions: false,
+  });
   if (!client) {
     return res.status(404).json({
       message: '未找到该用户',

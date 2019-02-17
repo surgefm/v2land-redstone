@@ -1,6 +1,4 @@
 const bcrypt = require('bcryptjs');
-const Sequelize = require('sequelize');
-const Op = Sequelize.Op;
 const SeqModels = require('../../../seqModels');
 
 async function register (req, res) {
@@ -10,14 +8,9 @@ async function register (req, res) {
 
   try {
     await sequelize.transaction(async transaction => {
-      let client = await SeqModels.Client.findOne({
-        where: {
-          [Op.or]: [
-            { username: data.username },
-            { email: data.email },
-          ],
-        },
-        transaction,
+      let client = await ClientService.findClient(data.username, {
+        withAuths: false,
+        withSubscriptions: false,
       });
 
       if (client) {

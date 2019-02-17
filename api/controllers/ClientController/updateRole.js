@@ -18,19 +18,20 @@ async function updateRole (req, res) {
     });
   }
 
-  const targetClient = await SeqModels.Client.findById(data.id);
-  if (!targetClient) {
-    return res.status(404).json({
-      message: '未找到目标用户',
-    });
-  }
-
   try {
     await sequelize.transaction(async transaction => {
-      const targetClient = await SeqModels.Client.findOne({
-        where: { id: data.id },
+      const targetClient = await ClientService.findClient(data.id, {
+        withAuths: false,
+        withSubscriptions: false,
         transaction,
       });
+
+      if (!targetClient) {
+        return res.status(404).json({
+          message: '未找到目标用户',
+        });
+      }
+
       const targetCurrentRole = targetClient.role;
       const targetNewRole = data.newRole;
       const roleOptions = ['contributor', 'manager'];

@@ -1,6 +1,6 @@
 function sanitizeClient (client) {
   const temp = {};
-  for (const attr of ['username', 'role', 'id']) {
+  for (const attr of ['username', 'role', 'id', 'description']) {
     temp[attr] = client[attr];
   }
 

@@ -12,10 +12,12 @@ async function updateSettings (req, res) {
   try {
     await ClientService.validateSettings(settings);
     await sequelize.transaction(async transaction => {
-      const client = await SeqModels.Client.findOne({
-        where: { id: name },
+      const client = await ClientService.findClient(name, {
+        withAuths: false,
+        withSubscriptions: false,
         transaction,
       });
+
       if (!client) {
         return res.status(404).json({
           message: '未找到该用户',

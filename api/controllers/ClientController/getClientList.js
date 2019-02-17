@@ -1,5 +1,3 @@
-const Sequelize = require('sequelize');
-const Op = Sequelize.Op;
 const SeqModels = require('../../../seqModels');
 
 async function getClientList (req, res) {
