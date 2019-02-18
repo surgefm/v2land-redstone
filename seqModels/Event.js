@@ -9,7 +9,7 @@ const Event = global.sequelize.define('event', {
     validate: {
       isName(value) {
         if (!_.isString(value) || value.length === 0) return false;
-        if (/\r?\n|\r| /.test(value)) return false;
+        if (value.trim() !== value) return false;
 
         let allDigit = true;
         for (const char of value) {
