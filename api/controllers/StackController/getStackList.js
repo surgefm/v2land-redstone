@@ -40,9 +40,10 @@ async function getStackList (req, res) {
     order: [['updatedAt', 'DESC']],
   });
 
-  const getDetail = async (stack) => {
+  const getDetail = async (i) => {
+    let stack = stacks[i];
     stack = stack.get({ plain: true });
-    if (stack.status === 'admitted' && stack.news && stack.news.length) {
+    if (!stack.time && stack.status === 'admitted' && stack.news && stack.news.length) {
       stack.time = stack.news[0].time;
     }
     stack.newsCount = await SeqModels.News.count({
@@ -51,9 +52,13 @@ async function getStackList (req, res) {
         stackId: stack.id,
       },
     });
+    stacks[i] = stack;
   };
 
-  const queue = stacks.map((stack) => getDetail(stack));
+  const queue = [];
+  for (let i = 0; i < stacks.length; i++) {
+    queue.push(getDetail(i));
+  }
   await Promise.all(queue);
 
   await StackService.acquireContributionsByStackList(stacks);

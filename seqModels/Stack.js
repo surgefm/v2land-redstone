@@ -18,6 +18,10 @@ const Stack = global.sequelize.define('stack', {
     type: Sequelize.INTEGER,
     defaultValue: -1,
   },
+  time: {
+    type: Sequelize.DATE,
+    allowNull: false,
+  },
 }, {
   freezeTableName: true,
 });

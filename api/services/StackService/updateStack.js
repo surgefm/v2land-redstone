@@ -16,6 +16,8 @@ async function updateStack ({ id = -1, data = {}, clientId, transaction }) {
     });
   }
 
+  stack = stack.get({ plain: true });
+
   const changes = {};
   for (const i of ['title', 'description', 'status', 'order', 'time']) {
     if (typeof data[i] !== 'undefined' && data[i] !== stack[i]) {
@@ -53,7 +55,9 @@ async function updateStack ({ id = -1, data = {}, clientId, transaction }) {
 
     jsonData = stack.toJSON();
 
-    await stack.update({
+    stack.status = changes.status;
+    await SeqModels.Stack.upsert({
+      id: stack.id,
       status: changes.status,
     }, { transaction });
 
@@ -69,15 +73,16 @@ async function updateStack ({ id = -1, data = {}, clientId, transaction }) {
 
   delete changes.status;
 
-  jsonData = stack.toJSON();
-  stack = await stack.update(changes, { transaction });
+  jsonData = JSON.stringify(stack);
+  stack = { ...stack, ...changes };
+  await SeqModels.Stack.upsert(stack, { transaction });
 
   await SeqModels.Record.create({
     action: 'updateStackDetail',
     target: id,
     client: clientId,
     data: changes,
-    before: stack.toJSON(),
+    before: jsonData,
     model: 'Stack',
   }, { transaction });
 
