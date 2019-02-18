@@ -20,7 +20,7 @@ const Stack = global.sequelize.define('stack', {
   },
   time: {
     type: Sequelize.DATE,
-    allowNull: false,
+    allowNull: true,
   },
 }, {
   freezeTableName: true,

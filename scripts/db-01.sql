@@ -61,7 +61,8 @@ CREATE TYPE public.enum_contact_method AS ENUM (
     'twitterAt',
     'weiboAt',
     'email',
-    'emailDailyReport'
+    'emailDailyReport',
+    'mobileAppNotification'
 );
 
 
@@ -84,7 +85,8 @@ CREATE TYPE public.enum_contact_type AS ENUM (
     'email',
     'twitter',
     'weibo',
-    'telegram'
+    'telegram',
+    'mobileApp'
 );
 
 
