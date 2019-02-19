@@ -53,8 +53,6 @@ async function updateStack ({ id = -1, data = {}, clientId, transaction }) {
       }
     }
 
-    jsonData = stack.toJSON();
-
     stack.status = changes.status;
     await SeqModels.Stack.upsert({
       id: stack.id,
