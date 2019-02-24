@@ -63,6 +63,7 @@ module.exports.policies = {
   },
 
   SubscriptionController: {
+    'removeContact': true,
     'unsubscribe': true,
     'subscribe': true,
     '*': false,

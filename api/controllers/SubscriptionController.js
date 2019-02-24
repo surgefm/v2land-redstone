@@ -7,6 +7,8 @@
 
 module.exports = {
 
+  removeContact: require('./SubscriptionController/removeContact'),
+
   unsubscribe: require('./SubscriptionController/unsubscribe'),
 
   subscribe: require('./SubscriptionController/subscribe'),
