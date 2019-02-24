@@ -101,7 +101,7 @@ async function subscribe (req, res) {
       ? subscription.get({ plain: true })
       : {};
     await sequelize.transaction(async transaction => {
-      const action = subscription ? 'addModeToSubscription' : 'createSubscription';
+      const action = subscription ? 'addContactToSubscription' : 'createSubscription';
       if (!subscription) {
         const notificationInDb = await SeqModels.Notification.findOne({
           where: {

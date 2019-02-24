@@ -31,6 +31,10 @@ const Contact = global.sequelize.define('contact', {
     allowNull: false,
     defaultValue: 'active',
   },
+  unsubscribeId: {
+    type: Sequelize.TEXT,
+    allowNull: true,
+  },
 }, {
   freezeTableName: true,
 });

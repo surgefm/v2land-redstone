@@ -64,6 +64,7 @@ module.exports.routes = {
   'POST /news': 'NewsController.getNewsList',
   'PUT /news/:news': 'NewsController.updateNews',
 
+  'GET /subscription/unsubscribe/contact': 'SubscriptionController.removeContact',
   'GET /subscription/unsubscribe': 'SubscriptionController.unsubscribe',
   'POST /subscription/:eventName': 'SubscriptionController.subscribe',
 
