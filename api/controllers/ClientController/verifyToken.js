@@ -17,23 +17,25 @@ async function verifyToken (req, res) {
     });
   }
 
-  let record = await SeqModels.Record.findOne({
+  const record = await SeqModels.Record.findOne({
     where: {
       action: 'createClientVerificationToken',
-      data: {
-        verificationToken: token,
-        clientId: id,
-      },
+      target: +id,
     },
+    order: [['createdAt', 'DESC']],
   });
 
-  if (!record || !record[0]) {
+  if (!record) {
     return res.status(404).json({
       message: '未找到该 token',
     });
   }
 
-  record = record[0];
+  if (record.data.verificationToken !== token) {
+    return res.status(404).json({
+      message: '该 token 无效',
+    });
+  }
 
   if (new Date(record.data.expire).getTime() < Date.now()) {
     return res.status(404).json({
@@ -41,7 +43,7 @@ async function verifyToken (req, res) {
     });
   }
 
-  const client = await SeqModels.Client.findById(record.data.clientId);
+  const client = await SeqModels.Client.findByPk(record.data.clientId);
 
   if (!client) {
     return res.status(404).json({
