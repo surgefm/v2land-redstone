@@ -44,7 +44,7 @@ async function findClient (clientName, { transaction, withAuths = true, withSubs
       required: false,
       include: {
         model: SeqModels.Contact,
-        status: 'active',
+        where: { status: 'active' },
       },
     });
   }

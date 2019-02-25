@@ -35,10 +35,10 @@ async function subscribe (req, res) {
   }
 
   let auth;
-  if (!['email', 'mobileApp'].includes(ContactService.getTypeFromMethod(contact.method))) {
+  const type = ContactService.getTypeFromMethod(contact.method);
+  if (!['email', 'mobileApp'].includes(type)) {
     for (const item of client.auths) {
-      if (item.id === contact.authId &&
-        item.site === ContactService.getTypeFromMethod(contact.method)) {
+      if (item.id === contact[type] && item.site === type) {
         auth = item;
         break;
       }
@@ -85,6 +85,7 @@ async function subscribe (req, res) {
         method: contact.method,
         profileId: auth.profileId,
         subscriptionId: subscription.id,
+        status: 'active',
       },
     });
 
@@ -144,6 +145,7 @@ async function subscribe (req, res) {
         authId: auth.id,
         owner: req.session.clientId,
         type: ContactService.getTypeFromMethod(contact.method),
+        unsubscribeId: SubscriptionService.generateUnsubscribeId(),
       }, { transaction });
 
       await RecordService.create({
@@ -153,6 +155,16 @@ async function subscribe (req, res) {
         data: subscription,
         before: beforeData,
       }, { transaction });
+
+      subscription = await SeqModels.Subscription.findOne({
+        where: { id: subscription.id },
+        include: [{
+          model: SeqModels.Contact,
+          required: false,
+          where: { status: 'active' },
+        }],
+        transaction,
+      });
 
       return res.status(201).json({
         message: '关注成功',
