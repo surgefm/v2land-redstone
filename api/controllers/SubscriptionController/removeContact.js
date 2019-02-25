@@ -24,19 +24,19 @@ async function removeContact (req, res) {
   }
 
   await sequelize.transaction(async transaction => {
-    await SeqModels.Contact.upsert({
-      where: {
-        id: contact.id,
-        status: 'inactive',
-      },
-    }, { transaction });
+    await SeqModels.Contact.update({
+      status: 'inactive',
+    }, {
+      where: { id: contact.id },
+      transaction,
+    });
 
     await RecordService.update({
       model: 'Contact',
       action: 'removeSubscriptionContact',
       owner: req.session.clientId,
       data: { status: 'inactive' },
-      before: subscription,
+      before: { status: contact.status },
     }, { transaction });
   });
 
