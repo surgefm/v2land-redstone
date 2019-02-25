@@ -12,6 +12,7 @@
     "bodybuilder": "^2.2.16",
     "colors": "^1.1.2",
     "connect-redis": "^3.3.3",
+    "deep-extend": "^0.5.1",
     "ejs": "^2.5.5",
     "elasticsearch": "^15.4.1",
     "eslint": "^5.6.0",
