@@ -77,13 +77,12 @@ async function register (req, res) {
       });
 
       EmailService.register(client, verificationToken);
+      ClientService.updateElasticsearchIndex({ clientId: client.id });
     });
   } catch (err) {
     console.log(err);
     return res.serverError(err);
   }
-
-  ClientService.updateElasticsearchIndex({ clientId: client.id });
 }
 
 module.exports = register;
