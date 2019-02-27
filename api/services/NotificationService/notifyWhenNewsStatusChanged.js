@@ -63,7 +63,7 @@ async function sendTelegramNotification(news, status, handler) {
       ` <${ sails.config.globals.site }/${ event.id }/${ stack.id }/${ news.id }|${ event.name }> ` +
       `被管理员 *${ handler.username }* ${ newStatusStringSet[status] }`;
     return SlackService.sendText(content);
-  }
+  };
 
   const sendTelegram = async () => {
     const content =
@@ -71,7 +71,7 @@ async function sendTelegramNotification(news, status, handler) {
       `「[${ event.name }](${ sails.config.globals.site }/${ event.id }/${ stack.id }/${ news.id }) 」` +
       `被管理员*${ handler.username }*${ newStatusStringSet[status] }`;
     return TelegramService.sendText(content, 'Markdown');
-  }
+  };
 
   return Promise.all([
     sendSlack(),

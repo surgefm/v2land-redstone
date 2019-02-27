@@ -1,7 +1,7 @@
 /**
  * 使用浪潮的绑定账号发布微博并 @ 用户
  */
-
+const SeqModels = require('../seqModels');
 const disableSubscriptionMethod = require('./disableSubscriptionMethod');
 
 async function notifyByWeiboAt({ contact, subscription, template }) {
@@ -14,11 +14,17 @@ async function notifyByWeiboAt({ contact, subscription, template }) {
     ? profileId[Math.floor(Math.random() * profileId.length)]
     : profileId;
 
+  const auth = await SeqModels.Auth.findOne({
+    where: {
+      site: 'weibo',
+      profileId,
+    },
+  });
+
   if (!auth) {
     return sails.log.error(new Error(`未找到浪潮微博 ${profileId} 的绑定`));
   }
 
-  if (!subscription.contact.weibo) return disableSubscriptionMethod(subscription);
   if (!contact.auth) return disableSubscriptionMethod(subscription);
 
   let message = '@' + contact.auth.profile.screen_name + ' ';

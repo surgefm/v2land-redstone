@@ -1,13 +1,14 @@
 const SeqModels = require('../../../seqModels');
+const { Op } = require('sequelize');
 
 async function updateStackNotifications(stack, { transaction, force = false } = {}) {
   const latestStack = await SeqModels.Stack.findOne({
     where: {
       eventId: stack.eventId,
       status: 'admitted',
-      order: 1,
+      order: { [Op.gte]: 0 },
     },
-    sort: [['order', 'DESC']],
+    order: [['order', 'DESC']],
     attributes: ['id'],
     transaction,
   });
@@ -15,9 +16,11 @@ async function updateStackNotifications(stack, { transaction, force = false } = 
   if (!force && (!latestStack || (+latestStack.id !== +stack.id))) return;
 
   const recordCount = await SeqModels.Record.count({
-    model: 'Stack',
-    target: stack.id,
-    action: 'notifyNewStack',
+    where: {
+      model: 'Stack',
+      target: stack.id,
+      action: 'notifyNewStack',
+    },
     transaction,
   });
 
@@ -25,7 +28,7 @@ async function updateStackNotifications(stack, { transaction, force = false } = 
 
   let event = stack.event;
   if (typeof event !== 'object') {
-    event = await SeqModels.Event.findById(stack.eventId, { transaction });
+    event = await SeqModels.Event.findByPk(stack.eventId, { transaction });
   }
 
   if (!transaction) {

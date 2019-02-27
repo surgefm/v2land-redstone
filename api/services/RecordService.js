@@ -6,6 +6,10 @@ const refineData = (data = {}) => {
   data.model = (model === 'Headerimage') ? 'HeaderImage' : model;
   data.createdAt = data.createdAt || new Date();
   data.updatedAt = data.updatedAt || new Date();
+  if (data.client) {
+    data.owner = data.client;
+    delete data.client;
+  }
   return data;
 };
 

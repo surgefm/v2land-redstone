@@ -17,6 +17,7 @@ async function updateStack ({ id = -1, data = {}, clientId, transaction }) {
   }
 
   stack = stack.get({ plain: true });
+  const oldStack = stack;
 
   const changes = {};
   for (const i of ['title', 'description', 'status', 'order', 'time']) {
@@ -64,39 +65,42 @@ async function updateStack ({ id = -1, data = {}, clientId, transaction }) {
       data: { status: changes.status },
       before: { status: stack.status },
       target: id,
-      client: clientId,
+      owner: clientId,
       model: 'Stack',
     }, { transaction });
   }
 
   delete changes.status;
 
-  jsonData = JSON.stringify(stack);
-  stack = { ...stack, ...changes };
-  await SeqModels.Stack.upsert(stack, { transaction });
+  if (Object.keys(changes).length) {
+    jsonData = JSON.stringify(stack);
+    stack = { ...stack, ...changes };
+    await SeqModels.Stack.upsert(stack, { transaction });
 
-  await SeqModels.Record.create({
-    action: 'updateStackDetail',
-    target: id,
-    client: clientId,
-    data: changes,
-    before: jsonData,
-    model: 'Stack',
-  }, { transaction });
-
-  if (data.enableNotification && changesCopy.status === 'admitted') {
-    const event = await SeqModels.Event.findById(stack.eventId);
-    NotificationService.updateForNewStack(event, stack, data.forceUpdate);
-    NotificationService.updateForNewNews(event, news, data.forceUpdate);
+    await SeqModels.Record.create({
+      action: 'updateStackDetail',
+      target: id,
+      owner: clientId,
+      data: changes,
+      before: jsonData,
+      model: 'Stack',
+    }, { transaction });
   }
 
-  updateElasticsearchIndex({ stackId: stack.id });
+  setTimeout(() => {
+    if (data.enableNotification && changesCopy.status === 'admitted') {
+      NotificationService.updateStackNotifications(stack, { force: data.forceUpdate });
+      NotificationService.notifyWhenStackStatusChanged(oldStack, stack, clientId);
+    }
+
+    updateElasticsearchIndex({ stackId: stack.id });
+  });
 
   return {
     status: 201,
     message: {
       message: '修改成功',
-      news,
+      stack,
     },
   };
 }

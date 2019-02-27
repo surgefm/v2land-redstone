@@ -17,7 +17,7 @@ async function notifyWhenNewsCreated(news, handler) {
     }
 
     return SlackService.sendText(content, 'Markdown', true);
-  }
+  };
 
   const sendTelegram = async () => {
     let content = `*${username}*提交了新闻*「${news.title}*」` +
@@ -32,12 +32,12 @@ async function notifyWhenNewsCreated(news, handler) {
 
 
     return TelegramService.sendText(content, 'Markdown', true);
-  }
+  };
 
   return Promise.all([
     sendSlack(),
     sendTelegram(),
-  ])
+  ]);
 }
 
 module.exports = notifyWhenNewsCreated;

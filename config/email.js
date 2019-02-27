@@ -32,7 +32,7 @@ if (SES_USER && SES_PASS) {
       helpers: {
         plusOne: (index) => index + 1,
         if: function(conditional, options) {
-          if(conditional) {
+          if (conditional) {
             return options.fn(this);
           }
         },
