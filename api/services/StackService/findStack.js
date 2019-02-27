@@ -5,6 +5,7 @@ async function findStack (id, withContributionData = true, { transaction } = {})
     where: { id },
     include: [{
       model: SeqModels.News,
+      as: 'news',
       where: { status: 'admitted' },
       sort: [['time', 'ASC']],
       limit: 15,

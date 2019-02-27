@@ -129,7 +129,20 @@ async function notify(notification) {
     stack: stack,
   });
 
-  await notification.update({ time: nextTime });
+  await SeqModels.Notification.update({
+    status: 'complete',
+  }, {
+    where: { id: notification.id },
+  });
+
+  if (!['new', 'EveryNewStack'].includes(notification.mode)) {
+    await SeqModels.Notification.create({
+      eventId: notification.eventId,
+      mode: notification.mode,
+      time: nextTime,
+      status: 'pending',
+    });
+  }
 }
 
 module.exports = notify;

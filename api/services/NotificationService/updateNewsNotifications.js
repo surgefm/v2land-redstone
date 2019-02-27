@@ -6,7 +6,7 @@ async function updateNewsNotifications(news, { transaction, force = false } = {}
       eventId: news.eventId,
       status: 'admitted',
     },
-    sort: [['time', 'DESC']],
+    order: [['time', 'DESC']],
     attributes: ['id'],
     transaction,
   });
@@ -14,9 +14,11 @@ async function updateNewsNotifications(news, { transaction, force = false } = {}
   if (!force && (!latestNews || (+latestNews.id !== +news.id))) return;
 
   const recordCount = await SeqModels.Record.count({
-    model: 'News',
-    target: news.id,
-    action: 'notifyNewNews',
+    where: {
+      model: 'News',
+      target: news.id,
+      action: 'notifyNewNews',
+    },
     transaction,
   });
 

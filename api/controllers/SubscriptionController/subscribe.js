@@ -104,13 +104,15 @@ async function subscribe (req, res) {
     await sequelize.transaction(async transaction => {
       const action = subscription ? 'addContactToSubscription' : 'createSubscription';
       if (!subscription) {
-        const notificationInDb = await SeqModels.Notification.findOne({
-          where: {
-            eventId: event.id,
-            mode,
-          },
-          transaction,
-        });
+        const notificationInDb = ['new', 'EveryNewStack'].includes(mode)
+          ? true
+          : await SeqModels.Notification.findOne({
+            where: {
+              eventId: event.id,
+              mode,
+            },
+            transaction,
+          });
 
         if (!notificationInDb) {
           const time = await NotificationService.getNextTime(mode, event);
