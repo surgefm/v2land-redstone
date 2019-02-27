@@ -129,7 +129,11 @@ async function notify(notification) {
   };
 
   const promises = subscriptions.map(s => sendNotification(s));
-  await Promise.all(promises);
+  try {
+    await Promise.all(promises);
+  } catch (err) {
+    sails.log.error(err);
+  }
 
   const nextTime = await mode.notified({
     notification,
