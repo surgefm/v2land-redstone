@@ -4,14 +4,20 @@
 
 | Property | Type |
 |:---------|:-----|
+| id | string | 
 | name | string | 
 | description | text |
 | status | string |
-| subscribers | Client collection |
-| news | News collection |
+| createdAt | string |
+| updatedAt | string |
+| lastAdmittedNewsId | int |
+| stacks | stacks collection |
 | headerImage | HeaderImage associated |
-| notifications | Notification collection |
-| subscriptions | Subscription collection |
+| contribution | contribution collection |
+| lastUpdate | string |
+| stackCount | int |
+| temporaryStack | stacks collection |
+| newsCount | int |
 
 ---
 
