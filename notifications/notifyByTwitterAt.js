@@ -13,6 +13,13 @@ async function notifyByTwitterAt({ contact, subscription, template }) {
     ? profileId[Math.floor(Math.random() * profileId.length)]
     : profileId;
 
+  const auth = await SeqModels.Auth.findOne({
+    where: {
+      site: 'twitter',
+      profileId,
+    },
+  });
+
   if (!auth) {
     return sails.log.error(new Error(`未找到浪潮 Twitter ${profileId} 的绑定`));
   }
