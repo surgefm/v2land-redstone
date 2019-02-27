@@ -55,7 +55,7 @@ Otherwise, the event will be pending and needs to be checked by a manager.
 
 | Property | Value |
 |:---------|:------|
-| URL | /event/{ eventName | id } |
+| URL | /event/{ eventName \| id } |
 | Method | POST |
 | Post Data Form | JSON |
 | Return Data Form | JSON |
@@ -98,7 +98,7 @@ Otherwise, the event will be pending and needs to be checked by a manager.
 
 | Property | Value |
 |:---------|:------|
-| URL | /event/{ eventName | id } |
+| URL | /event/{ eventName \| id } |
 | Method | GET |
 | Return Data Form | JSON |
 | Require Logging in | false |
@@ -141,7 +141,7 @@ Otherwise, the event will be pending and needs to be checked by a manager.
 
 | Property | Value |
 |:---------|:------|
-| URL | /event/{ eventName | id }/pending |
+| URL | /event/{ eventName \| id }/pending |
 | Method | GET |
 | Return Data Form | JSON |
 | Require Logging in | true |
@@ -192,7 +192,7 @@ Otherwise, the event will be pending and needs to be checked by a manager.
 
 | Property | Value |
 |:---------|:------|
-| URL | /event/{ eventName | id }/news |
+| URL | /event/{ eventName \| id }/news |
 | Method | POST |
 | Post Data Form | JSON |
 | Return Data Form | JSON |
@@ -244,7 +244,7 @@ News created by contributors and visitors requires revewing by a manager before 
 
 | Property | Value |
 |:---------|:------|
-| URL | /event/{ eventName | id }/header_image |
+| URL | /event/{ eventName \| id }/header_image |
 | Method | POST |
 | Post Data Form | JSON |
 | Return Data Form | JSON |
@@ -277,7 +277,7 @@ News created by contributors and visitors requires revewing by a manager before 
 
 | Property | Value |
 |:---------|:------|
-| URL | /event/{ eventName | id }/header_image |
+| URL | /event/{ eventName \| id }/header_image |
 | Method | PUT |
 | Post Data Form | JSON |
 | Return Data Form | JSON |
