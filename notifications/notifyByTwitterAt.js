@@ -1,6 +1,7 @@
 /**
  * 使用浪潮的绑定账号发布推文并 @ 用户
  */
+const SeqModels = require('../seqModels');
 const disableSubscriptionMethod = require('./disableSubscriptionMethod');
 
 async function notifyByTwitterAt({ contact, subscription, template }) {
