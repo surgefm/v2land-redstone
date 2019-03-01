@@ -25,7 +25,6 @@ async function notifyByTwitterAt({ contact, subscription, template }) {
     return sails.log.error(new Error(`未找到浪潮 Twitter ${profileId} 的绑定`));
   }
 
-  if (!subscription.contact.twitter) return disableSubscriptionMethod(subscription);
   if (!contact.auth) return disableSubscriptionMethod(subscription);
 
   let message = '@' + contact.auth.profile.screen_name + ' ';

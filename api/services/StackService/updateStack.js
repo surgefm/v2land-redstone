@@ -88,7 +88,10 @@ async function updateStack ({ id = -1, data = {}, clientId, transaction }) {
   }
 
   setTimeout(() => {
-    if (data.enableNotification && changesCopy.status === 'admitted') {
+    if (data.enableNotification && (
+      changesCopy.status === 'admitted' ||
+      (typeof changesCopy.order !== 'undefined' && stack.status === 'admitted')
+    )) {
       NotificationService.updateStackNotifications(stack, { force: data.forceUpdate });
       NotificationService.notifyWhenStackStatusChanged(oldStack, stack, clientId);
     }
