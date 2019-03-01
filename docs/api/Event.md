@@ -11,6 +11,7 @@
 | createdAt | string |
 | updatedAt | string |
 | lastAdmittedNewsId | int |
+| latestAdmittedNews | News |
 | stacks | stacks collection |
 | headerImage | HeaderImage associated |
 | contribution | contribution collection |
@@ -18,6 +19,8 @@
 | stackCount | int |
 | temporaryStack | stacks collection |
 | newsCount | int |
+
+Notice: Not all the properties above are returned at a specific response.
 
 ---
 
@@ -49,7 +52,7 @@ Otherwise, the event will be pending and needs to be checked by a manager.
 | Property | Type | Description |
 |:---------|:-----|:------------|
 | message | string | 
-| event | event | the created event |
+| event | Event | the created event |
 
 400 Missing parameter `name` or `description`
 
@@ -85,14 +88,14 @@ Otherwise, the event will be pending and needs to be checked by a manager.
 | Property | Type |
 |:---------|:-----|
 | message | string | 
-| event | event |
+| event | Event |
 
 200 Nothing happens
 
 | Property | Type |
 |:---------|:-----|
 | message | string | 
-| event | event |
+| event | Event |
 
 400 Missing parameter
 
@@ -113,9 +116,7 @@ Otherwise, the event will be pending and needs to be checked by a manager.
 
 200 Successful
 
-| Property | Type |
-|:---------|:-----|
-| event | event |
+Event object
 
 404 Event not found
 
@@ -137,7 +138,7 @@ Otherwise, the event will be pending and needs to be checked by a manager.
 
 | Property | Type | Description |
 |:---------|:-----|:------------|
-| eventCollection | event[] | An array of Event objects |
+| eventCollection | Event[] | An array of Event objects |
 
 404 Event not found
 
