@@ -4,7 +4,7 @@
 
 | Property | Type |
 |:---------|:-----|
-| id | string | 
+| id | int | 
 | name | string | 
 | description | text |
 | status | string |
@@ -12,15 +12,31 @@
 | updatedAt | string |
 | lastAdmittedNewsId | int |
 | latestAdmittedNews | News |
-| stacks | stacks collection |
+| stacks | Stacks[] |
 | headerImage | HeaderImage associated |
-| contribution | contribution collection |
+| contribution | Record[] |
 | lastUpdate | string |
 | stackCount | int |
-| temporaryStack | stacks collection |
+| temporaryStack | Stacks[] |
 | newsCount | int |
 
 Notice: Not all the properties above are returned at a specific response.
+
+# Stack Object Model
+
+| Property | Type |
+|:---------|:-----|
+| id | int | 
+| title | string | 
+| description | text |
+| status | string |
+| createdAt | string |
+| updatedAt | string |
+| order | int |
+| time | string |
+| eventId | int |
+| news | News[] |
+| newsCount | int |
 
 ---
 
