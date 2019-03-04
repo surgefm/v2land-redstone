@@ -4,14 +4,39 @@
 
 | Property | Type |
 |:---------|:-----|
+| id | int | 
 | name | string | 
 | description | text |
 | status | string |
-| subscribers | Client collection |
-| news | News collection |
+| createdAt | string |
+| updatedAt | string |
+| lastAdmittedNewsId | int |
+| latestAdmittedNews | News |
+| stacks | Stack[] |
 | headerImage | HeaderImage associated |
-| notifications | Notification collection |
-| subscriptions | Subscription collection |
+| contribution | Record[] |
+| lastUpdate | string |
+| stackCount | int |
+| temporaryStack | News[] |
+| newsCount | int |
+
+Notice: Not all the properties above are returned at a specific response.
+
+# Stack Object Model
+
+| Property | Type |
+|:---------|:-----|
+| id | int | 
+| title | string | 
+| description | text |
+| status | string |
+| createdAt | string |
+| updatedAt | string |
+| order | int |
+| time | string |
+| eventId | int |
+| news | News[] |
+| newsCount | int |
 
 ---
 
@@ -43,7 +68,7 @@ Otherwise, the event will be pending and needs to be checked by a manager.
 | Property | Type | Description |
 |:---------|:-----|:------------|
 | message | string | 
-| event | event | the created event |
+| event | Event | the created event |
 
 400 Missing parameter `name` or `description`
 
@@ -79,14 +104,14 @@ Otherwise, the event will be pending and needs to be checked by a manager.
 | Property | Type |
 |:---------|:-----|
 | message | string | 
-| event | event |
+| event | Event |
 
 200 Nothing happens
 
 | Property | Type |
 |:---------|:-----|
 | message | string | 
-| event | event |
+| event | Event |
 
 400 Missing parameter
 
@@ -107,9 +132,7 @@ Otherwise, the event will be pending and needs to be checked by a manager.
 
 200 Successful
 
-| Property | Type |
-|:---------|:-----|
-| event | event |
+Event object
 
 404 Event not found
 
@@ -131,7 +154,7 @@ Otherwise, the event will be pending and needs to be checked by a manager.
 
 | Property | Type | Description |
 |:---------|:-----|:------------|
-| eventCollection | event[] | An array of Event objects |
+| eventCollection | Event[] | An array of Event objects |
 
 404 Event not found
 
