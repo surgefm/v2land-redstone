@@ -12,12 +12,12 @@
 | updatedAt | string |
 | lastAdmittedNewsId | int |
 | latestAdmittedNews | News |
-| stacks | Stacks[] |
+| stacks | Stack[] |
 | headerImage | HeaderImage associated |
 | contribution | Record[] |
 | lastUpdate | string |
 | stackCount | int |
-| temporaryStack | Stacks[] |
+| temporaryStack | News[] |
 | newsCount | int |
 
 Notice: Not all the properties above are returned at a specific response.
