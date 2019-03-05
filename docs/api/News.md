@@ -10,9 +10,13 @@
 | abstract | text |
 | time | date |
 | status (optional) | string | pending / admitted / rejected / removed |
-| comment (optional) | text |
-| event (optional) | Event |
-
+| comment (optional) | Comment |
+| eventId (optional) | int |
+| stackId (optional) | int |
+| createdAt | string |
+| updatedAt | string |
+| isInTemporaryStack | False |
+ 
 ---
 
 ## Update News 更新新闻

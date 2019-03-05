@@ -1,6 +1,7 @@
 /**
  * 使用浪潮的绑定账号发布推文并 @ 用户
  */
+const SeqModels = require('../seqModels');
 const disableSubscriptionMethod = require('./disableSubscriptionMethod');
 
 async function notifyByTwitterAt({ contact, subscription, template }) {
@@ -13,11 +14,17 @@ async function notifyByTwitterAt({ contact, subscription, template }) {
     ? profileId[Math.floor(Math.random() * profileId.length)]
     : profileId;
 
+  const auth = await SeqModels.Auth.findOne({
+    where: {
+      site: 'twitter',
+      profileId,
+    },
+  });
+
   if (!auth) {
     return sails.log.error(new Error(`未找到浪潮 Twitter ${profileId} 的绑定`));
   }
 
-  if (!subscription.contact.twitter) return disableSubscriptionMethod(subscription);
   if (!contact.auth) return disableSubscriptionMethod(subscription);
 
   let message = '@' + contact.auth.profile.screen_name + ' ';

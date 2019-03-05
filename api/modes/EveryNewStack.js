@@ -39,7 +39,7 @@ module.exports = {
       subject: `${event.name} 有了新的进展`,
       message: `${event.name} 最新进展：「${stack.title}」`,
       button: '点击按钮查看进展',
-      url: `${sails.config.globals.site}/${event.id}?stack=${stack.id}`,
+      url: `${sails.config.globals.site}/${event.id}/${stack.id}`,
     };
   },
 };

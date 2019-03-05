@@ -1,5 +1,6 @@
 require('time')(Date);
 const SeqModels = require('../../seqModels');
+const { Op } = require('sequelize');
 
 const mode = {
   name: '三十天未更新新闻',

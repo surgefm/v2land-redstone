@@ -18,7 +18,7 @@ async function notify(notification) {
   let news;
   let stack;
   if (mode.needNews) {
-    news = SeqModels.News.findOne({
+    news = await SeqModels.News.findOne({
       where: {
         eventId: notification.eventId,
         status: 'admitted',
@@ -29,7 +29,7 @@ async function notify(notification) {
   }
 
   if (mode.needStack) {
-    stack = SeqModels.Stack.findOne({
+    stack = await SeqModels.Stack.findOne({
       where: {
         eventId: notification.eventId,
         order: { [Op.gte]: 0 },
@@ -91,6 +91,15 @@ async function notify(notification) {
 
     for (const contact of contactList) {
       contact.auth = (contact.auth || [])[0];
+      if (!contact.auth && ['twitter', 'weibo', 'telegram'].includes(contact.type)) {
+        contact.auth = await SeqModels.Auth.findOne({
+          where: {
+            site: contact.type,
+            profileId: contact.profileId,
+          },
+          order: [['updatedAt', 'DESC']],
+        });
+      }
       const inputs = { contact, subscription, template, notification };
       switch (contact.method) {
       case 'email':
@@ -120,7 +129,11 @@ async function notify(notification) {
   };
 
   const promises = subscriptions.map(s => sendNotification(s));
-  await Promise.all(promises);
+  try {
+    await Promise.all(promises);
+  } catch (err) {
+    sails.log.error(err);
+  }
 
   const nextTime = await mode.notified({
     notification,

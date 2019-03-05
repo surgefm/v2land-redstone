@@ -37,6 +37,7 @@ if (SES_USER && SES_PASS) {
           }
         },
       },
+      partialsDir: path.resolve(__dirname, '../assets/templates'),
     },
     viewPath: path.resolve(__dirname, '../assets/templates'),
   }));
