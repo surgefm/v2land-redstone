@@ -177,8 +177,7 @@ CREATE TYPE public.enum_record_action AS ENUM (
     'createSubscription',
     'updateSubscription',
     'cancelSubscription',
-    'addContactToSubscription',
-    'removeSubscriptionContact',
+    'addModeToSubscription',
     'createClient',
     'updateClientRole',
     'updateClientDetail',
@@ -189,7 +188,9 @@ CREATE TYPE public.enum_record_action AS ENUM (
     'notify',
     'sendEmailDailyReport',
     'sendWeeklyDailyReport',
-    'sendMonthlyDailyReport'
+    'sendMonthlyDailyReport',
+    'addContactToSubscription',
+    'removeSubscriptionContact'
 );
 
 
@@ -204,10 +205,10 @@ CREATE TYPE public.enum_record_model AS ENUM (
     'Client',
     'HeaderImage',
     'Subscription',
-    'Contact',
     'Auth',
     'Report',
-    'Miscellaneous'
+    'Miscellaneous',
+    'Contact'
 );
 
 
@@ -505,12 +506,12 @@ CREATE TABLE public.contact (
     type public.enum_contact_type NOT NULL,
     method public.enum_contact_method NOT NULL,
     status public.enum_contact_status NOT NULL,
-    "unsubscribeId" text,
     "createdAt" timestamp with time zone NOT NULL,
     "updatedAt" timestamp with time zone NOT NULL,
     owner integer,
     "subscriptionId" integer,
-    "authId" integer
+    "authId" integer,
+    "unsubscribeId" text
 );
 
 
@@ -556,7 +557,8 @@ CREATE TABLE public.event (
     "createdAt" timestamp with time zone,
     "updatedAt" timestamp with time zone,
     pinyin text,
-    "latestAdmittedNewsId" integer
+    "latestAdmittedNewsId" integer,
+    latestadmittednewsid integer
 );
 
 
@@ -611,21 +613,6 @@ CREATE SEQUENCE public.headerimage_id_seq
 --
 
 ALTER SEQUENCE public.headerimage_id_seq OWNED BY public."headerImage".id;
-
-
---
--- Name: headerimage; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.headerimage (
-    "imageUrl" text,
-    source text,
-    "sourceUrl" text,
-    event integer,
-    id integer DEFAULT nextval('public.headerimage_id_seq'::regclass) NOT NULL,
-    "createdAt" timestamp with time zone,
-    "updatedAt" timestamp with time zone
-);
 
 
 --
@@ -767,7 +754,7 @@ CREATE SEQUENCE public.report_id_seq
 
 CREATE TABLE public.report (
     id integer DEFAULT nextval('public.report_id_seq'::regclass) NOT NULL,
-    "time" timestamp with time zone DEFAULT '2018-10-27 02:08:13.457+08'::timestamp with time zone NOT NULL,
+    "time" timestamp with time zone DEFAULT '2018-10-26 18:08:13.457+00'::timestamp with time zone NOT NULL,
     type public.enum_report_type DEFAULT 'daily'::public.enum_report_type,
     method public.enum_report_method DEFAULT 'email'::public.enum_report_method,
     status public.enum_report_status DEFAULT 'pending'::public.enum_report_status,
@@ -1001,18 +988,18 @@ ALTER TABLE ONLY public.event
 
 
 --
--- Name: headerimage headerimage_event_key; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: headerImage headerimage_event_key; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.headerimage
-    ADD CONSTRAINT headerimage_event_key UNIQUE (event);
+ALTER TABLE ONLY public."headerImage"
+    ADD CONSTRAINT headerimage_event_key UNIQUE ("eventId");
 
 
 --
--- Name: headerimage headerimage_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: headerImage headerimage_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.headerimage
+ALTER TABLE ONLY public."headerImage"
     ADD CONSTRAINT headerimage_pkey PRIMARY KEY (id);
 
 
@@ -1118,6 +1105,30 @@ ALTER TABLE ONLY public.contact
 
 ALTER TABLE ONLY public.critique
     ADD CONSTRAINT critique_event_fkey FOREIGN KEY ("eventId") REFERENCES public.event(id) ON UPDATE CASCADE ON DELETE SET NULL;
+
+
+--
+-- Name: event event_latestadmittednewsid_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.event
+    ADD CONSTRAINT event_latestadmittednewsid_fk FOREIGN KEY ("latestAdmittedNewsId") REFERENCES public.news(id) ON DELETE SET NULL;
+
+
+--
+-- Name: headerImage headerimage_event_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public."headerImage"
+    ADD CONSTRAINT headerimage_event_id_fk FOREIGN KEY ("eventId") REFERENCES public.event(id) ON DELETE CASCADE;
+
+
+--
+-- Name: news news_event_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.news
+    ADD CONSTRAINT news_event_id_fk FOREIGN KEY ("eventId") REFERENCES public.event(id) ON DELETE CASCADE;
 
 
 --

@@ -76,7 +76,10 @@ async function getEventList (req, res) {
           model: SeqModels.News,
           required: false,
         }],
-        order: [['updatedAt', 'DESC']],
+        order: [
+          [SeqModels.Event.associations.latestAdmittedNews, 'time', 'DESC'],
+          ['updatedAt', 'DESC'],
+        ],
         transaction,
       });
 
