@@ -1120,7 +1120,7 @@ ALTER TABLE ONLY public.event
 --
 
 ALTER TABLE ONLY public."headerImage"
-    ADD CONSTRAINT headerimage_event_id_fk FOREIGN KEY ("eventId") REFERENCES public.event(id);
+    ADD CONSTRAINT headerimage_event_id_fk FOREIGN KEY ("eventId") REFERENCES public.event(id) ON DELETE CASCADE;
 
 
 --
