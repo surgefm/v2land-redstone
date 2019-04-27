@@ -52,6 +52,7 @@ async function notify(notification) {
   const subscriptions = await SeqModels.Subscription.findAll({
     where: {
       mode: notification.mode,
+      eventId: notification.eventId,
       status: 'active',
     },
   });

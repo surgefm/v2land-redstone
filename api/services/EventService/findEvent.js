@@ -97,7 +97,7 @@ async function findEvent (eventName, { includes = {}, eventOnly = false, transac
     }
 
     if (newsExist) {
-      stack.news = await SeqModels.News.find({
+      stack.news = await SeqModels.News.findAll({
         where: {
           stackId: stack.id,
           status: 'admitted',
