@@ -18,9 +18,11 @@ async function updateElasticsearchIndex({ event, eventId }) {
 
   return ElasticsearchService.update({
     index: 'events',
-    type: 'event',
     id: event.id,
-    body: event,
+    body: {
+      'doc': event,
+      'doc_as_upsert': true,
+    },
   });
 }
 

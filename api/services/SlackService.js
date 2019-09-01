@@ -7,7 +7,6 @@ module.exports = {
     if (sails.config.environment !== 'production') {
       console.log('send slack', {
         text,
-        parseMode,
       });
       return;
     }

@@ -16,9 +16,11 @@ async function updateElasticsearchIndex({ client, clientId }) {
 
   return ElasticsearchService.update({
     index: 'clients',
-    type: 'client',
     id: client.id,
-    body: client,
+    body: {
+      'doc': client,
+      'doc_as_upsert': true,
+    },
   });
 }
 

@@ -12,7 +12,7 @@ async function updateAdmittedLatestNews(eventId, { transaction }) {
     transaction,
   });
   if (!latestAdmittedNews) return;
-  await SeqModels.Event.update({
+  return SeqModels.Event.update({
     latestAdmittedNewsId: latestAdmittedNews.id,
   }, {
     where: {

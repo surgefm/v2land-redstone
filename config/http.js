@@ -30,7 +30,6 @@ module.exports.http = {
   ***************************************************************************/
 
     order: [
-      'startRequestTimer',
       'cookieParser',
       'session',
       'bodyParser',
@@ -41,8 +40,6 @@ module.exports.http = {
       'router',
       'www',
       'favicon',
-      '404',
-      '500'
     ],
 
   /****************************************************************************

@@ -13,9 +13,11 @@ async function updateElasticsearchIndex({ news, newsId }) {
 
   return ElasticsearchService.update({
     index: 'news',
-    type: 'news',
     id: news.id,
-    body: news,
+    body: {
+      'doc': news,
+      'doc_as_upsert': true,
+    },
   });
 }
 

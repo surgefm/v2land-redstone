@@ -1,6 +1,6 @@
-const es = require('elasticsearch');
+const es = require('@elastic/elasticsearch');
 const url = process.env.ES_URL;
-const client = url ? new es.Client({ host: url }) : null;
+const client = url ? new es.Client({ node: url }) : null;
 
 module.exports = {
 

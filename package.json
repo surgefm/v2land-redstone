@@ -4,6 +4,7 @@
   "version": "0.0.0",
   "description": "langchao.org backend service",
   "dependencies": {
+    "@elastic/elasticsearch": "^7.3.0",
     "@sailshq/upgrade": "^1.0.9",
     "async": "2.1.4",
     "aws-sdk": "^2.188.0",
@@ -13,8 +14,8 @@
     "colors": "^1.1.2",
     "connect-redis": "^3.3.3",
     "deep-extend": "^0.5.1",
+    "dotenv": "^8.1.0",
     "ejs": "^2.5.5",
-    "elasticsearch": "^15.4.1",
     "eslint": "^5.6.0",
     "eslint-config-v2land": "^1.0.4",
     "grunt": "1.0.1",

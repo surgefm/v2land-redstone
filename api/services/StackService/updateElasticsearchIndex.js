@@ -13,9 +13,11 @@ async function updateElasticsearchIndex({ stack, stackId }) {
 
   return ElasticsearchService.update({
     index: 'stacks',
-    type: 'stack',
     id: stack.id,
-    body: stack,
+    body: {
+      'doc': stack,
+      'doc_as_upsert': true,
+    },
   });
 }
 

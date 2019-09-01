@@ -1,19 +1,21 @@
 module.exports = function DBInit(sails) {
   return {
-    initialize: function(cb) {
+    initialize: async function(cb) {
       const SeqModels = require('../../../seqModels');
       const { Event } = SeqModels;
-      Event.findAll({
+      const events = await Event.findAll({
         where: {
           latestAdmittedNewsId: null,
         },
-      }).then(events => {
-        const promises = [];
-        events.forEach(event => {
-          promises.push(EventService.updateAdmittedLatestNews(event.id, {}));
-        });
-        return Promise.all(promises);
-      }).then(() => cb());
+      });
+
+      const promises = [];
+      events.forEach(event => {
+        promises.push(EventService.updateAdmittedLatestNews(event.id, {}));
+      });
+
+      await Promise.all(promises);
+      cb();
     },
   };
 };
