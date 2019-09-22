@@ -50,7 +50,8 @@ async function keywordQueryUsingElasticsearch (keyword) {
     { query: { match: { username: keyword } }, size: 10 },
   ];
 
-  const { responses } = await ElasticsearchService.msearch({ body: queryBulk });
+  const { body } = await ElasticsearchService.msearch({ body: queryBulk });
+  const { responses } = body;
   const results = {};
   for (let i = 0; i < 4; i++) {
     const type = ['events', 'stacks', 'news', 'clients'][i];
