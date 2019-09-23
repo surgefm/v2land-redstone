@@ -86,6 +86,10 @@ module.exports.policies = {
     '*': false,
   },
 
+  OAuth2Controller: {
+    '*': true,
+  },
+
   UploadController: {
     'upload': ['isLoggedIn', 'isManager'],
     '*': false,
@@ -93,6 +97,7 @@ module.exports.policies = {
 
   SearchController: {
     'keywordSearch': true,
+    '*': false,
   },
 
 };

@@ -38,7 +38,7 @@ async function getClient(req, clientId) {
   if (!clientId) {
     return false;
   }
-  const client = await SeqModels.Client.findById(clientId);
+  const client = await SeqModels.Client.findByPk(clientId);
   if (!client) {
     delete req.session.clientId;
     return false;
