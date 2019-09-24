@@ -16,7 +16,7 @@ async function granting (req, res) {
     });
   }
 
-  const accessToken = await OAuth2Service.getNewAccessToken(clientId, authorizationClientId);
+  const accessToken = await OAuth2Service.getNewAccessToken(clientId, authorizationClientId, true);
   return res.status(201).json({
     message: '操作成功',
     accessToken,

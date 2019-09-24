@@ -30,7 +30,7 @@ async function implicitGrant (req, res) {
     });
   }
 
-  const accessToken = await OAuth2Service.getNewAccessToken(client.id, authorizationClientId);
+  const accessToken = await OAuth2Service.getNewAccessToken(client.id, authorizationClientId, false);
   return res.status(201).json({
     message: '操作成功',
     accessToken,

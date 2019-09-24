@@ -5,7 +5,7 @@ const AuthorizationAccessToken = global.sequelize.define('authorizationAccessTok
     type: Sequelize.TEXT,
     allowNull: false,
   },
-  refresh_token: {
+  refreshToken: {
     type: Sequelize.TEXT,
     allowNull: true,
   },

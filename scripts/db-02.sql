@@ -33,6 +33,16 @@ COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
 -- Name: enum_auth_site; Type: TYPE; Schema: public; Owner: -
 --
 
+CREATE TYPE public.enum_authorizationAccessCode_status AS ENUM (
+    'active',
+    'revoked'
+);
+
+
+--
+-- Name: enum_auth_site; Type: TYPE; Schema: public; Owner: -
+--
+
 CREATE TYPE public.enum_auth_site AS ENUM (
     'twitter',
     'weibo',
@@ -418,6 +428,98 @@ CREATE SEQUENCE public.auth_id_seq
 ALTER SEQUENCE public.auth_id_seq OWNED BY public.auth.id;
 
 
+CREATE TABLE public."authorizationClient" (
+    name text NOT NULL,
+    description text,
+    "redirectURI" text,
+    id integer NOT NULL,
+    "createdAt" timestamp with time zone,
+    "updatedAt" timestamp with time zone
+);
+
+
+--
+-- Name: auth_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public."authorizationClient_id_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: authorizationClient_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public."authorizationClient_id_seq" OWNED BY public."authorizationClient".id;
+
+
+CREATE TABLE public."authorizationCode" (
+    code text NOT NULL,
+    url text,
+    owner integer NOT NULL,
+    "authorizationClientId" integer NOT NULL,
+    id integer NOT NULL,
+    "expire" timestamp with time zone NOT NULL,
+    "createdAt" timestamp with time zone,
+    "updatedAt" timestamp with time zone
+);
+
+
+--
+-- Name: authorizationCode_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public."authorizationCode_id_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: authorizationCode_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public."authorizationCode_id_seq" OWNED BY public."authorizationCode".id;
+
+
+CREATE TABLE public."authorizationAccessToken" (
+    token text NOT NULL,
+    "refreshToken" text,
+    owner integer NOT NULL,
+    "authorizationClientId" integer NOT NULL,
+    status public."enum_authorizationAccessToken_status"
+    id integer NOT NULL,
+    "expire" timestamp with time zone NOT NULL,
+    "createdAt" timestamp with time zone,
+    "updatedAt" timestamp with time zone
+);
+
+
+--
+-- Name: authorizationAccessToken_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public."authorizationAccessToken_id_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: authorizationAccessToken_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public."authorizationAccessToken_id_seq" OWNED BY public."authorizationAccessToken".id;
+
+
 --
 -- Name: client; Type: TABLE; Schema: public; Owner: -
 --
@@ -557,8 +659,7 @@ CREATE TABLE public.event (
     "createdAt" timestamp with time zone,
     "updatedAt" timestamp with time zone,
     pinyin text,
-    "latestAdmittedNewsId" integer,
-    latestadmittednewsid integer
+    "latestAdmittedNewsId" integer
 );
 
 
@@ -1089,6 +1190,37 @@ ALTER TABLE ONLY public.contact
 
 ALTER TABLE ONLY public.contact
     ADD CONSTRAINT contact_owner_fkey FOREIGN KEY (owner) REFERENCES public.client(id) ON UPDATE CASCADE ON DELETE SET NULL;
+
+--
+-- Name: authorizationCode authorizationCode_owner_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public."authorizationCode"
+    ADD CONSTRAINT "authorizationCode_owner_fkey" FOREIGN KEY (owner) REFERENCES public.client(id) ON UPDATE CASCADE ON DELETE SET NULL;
+
+
+--
+-- Name: authorizationCode authorizationCode_owner_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public."authorizationCode"
+    ADD CONSTRAINT "authorizationCode_authorizationClient_fkey" FOREIGN KEY (owner) REFERENCES public."authorizationClient"(id) ON UPDATE CASCADE ON DELETE SET NULL;
+
+
+--
+-- Name: authorizationAccessToken authorizationAccessToken_owner_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public."authorizationAccessToken"
+    ADD CONSTRAINT "authorizationAccessToken_owner_fkey" FOREIGN KEY (owner) REFERENCES public.client(id) ON UPDATE CASCADE ON DELETE SET NULL;
+
+
+--
+-- Name: authorizationAccessToken authorizationAccessToken_owner_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public."authorizationAccessToken"
+    ADD CONSTRAINT "authorizationCode_authorizationClient_fkey" FOREIGN KEY (owner) REFERENCES public."authorizationClient"(id) ON UPDATE CASCADE ON DELETE SET NULL;
 
 
 --
