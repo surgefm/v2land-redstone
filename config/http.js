@@ -32,6 +32,7 @@ module.exports.http = {
     order: [
       'cookieParser',
       'session',
+      'bearerAuthentication',
       'bodyParser',
       'compress',
       'poweredBy',
@@ -42,12 +43,6 @@ module.exports.http = {
       'favicon',
     ],
 
-  /****************************************************************************
-  *                                                                           *
-  * Example custom middleware; logs each request to the console.              *
-  *                                                                           *
-  ****************************************************************************/
-
     noCache: function (req, res, next) {
       res.header("Cache-Control", "no-cache, no-store");
       return next();
@@ -55,22 +50,34 @@ module.exports.http = {
 
     bodyParser: require('skipper')({ limit: '4mb' }),
 
-  /***************************************************************************
-  *                                                                          *
-  * The body parser that will handle incoming multipart HTTP requests. By    *
-  * default as of v0.10, Sails uses                                          *
-  * [skipper](http://github.com/balderdashy/skipper). See                    *
-  * http://www.senchalabs.org/connect/multipart.html for other options.      *
-  *                                                                          *
-  * Note that Sails uses an internal instance of Skipper by default; to      *
-  * override it and specify more options, make sure to "npm install skipper" *
-  * in your project first.  You can also specify a different body parser or  *
-  * a custom function with req, res and next parameters (just like any other *
-  * middleware function).                                                    *
-  *                                                                          *
-  ***************************************************************************/
+    bearerAuthentication: function (req, res, next) {
+      if ((req.session && req.session.clientId) || !req.get('Authorization')) {
+        return next();
+      }
 
-    // bodyParser: require('skipper')({strict: true})
+      const authorization = req.get('Authorization');
+      if (authorization.slice(0, 7) != 'Bearer ') {
+        return next();
+      }
+
+      const accessTokenStr = authorization.slice(7);
+      const AuthorizationAccessToken = require('../seqModels/AuthorizationAccessToken');
+      AuthorizationAccessToken.findOne({ where: { token: accessTokenStr } }).then(accessToken => {
+        if (accessToken == null) {
+          return res.status(400).json({
+            message: '未找到该 AccessToken。',
+          });
+        } else if (accessToken.status == 'revoked') {
+          return res.status(400).json({
+            message: '你的 AccessToken 已失效。',
+          });
+        }
+
+        req.session = req.session || {};
+        req.session.clientId = accessToken.owner;
+        next();
+      });
+    },
 
   }
 

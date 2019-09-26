@@ -11,6 +11,9 @@ const Subscription = require('./Subscription');
 const Report = require('./Report');
 const ReportNotification = require('./ReportNotification');
 const Contact = require('./Contact');
+const AuthorizationClient = require('./AuthorizationClient');
+const AuthorizationCode = require('./AuthorizationCode');
+const AuthorizationAccessToken = require('./AuthorizationAccessToken');
 
 Event.hasOne(HeaderImage, {
   as: 'headerImage',
@@ -82,6 +85,26 @@ Client.hasMany(Report, {
   foreignKey: 'owner',
 });
 
+Client.hasMany(AuthorizationCode, {
+  as: 'authorizationCodes',
+  foreignKey: 'owner',
+});
+
+Client.hasMany(AuthorizationAccessToken, {
+  as: 'authorizationAccessTokens',
+  foreignKey: 'owner',
+});
+
+AuthorizationClient.hasMany(AuthorizationCode, {
+  as: 'authorizationCodes',
+  foreignKey: 'authorizationClientId',
+});
+
+AuthorizationClient.hasMany(AuthorizationAccessToken, {
+  as: 'authorizationAccessTokens',
+  foreignKey: 'authorizationClientId',
+});
+
 Record.belongsTo(Client, {
   foreignKey: 'owner',
 });
@@ -128,4 +151,7 @@ module.exports = {
   Report,
   ReportNotification,
   Contact,
+  AuthorizationClient,
+  AuthorizationCode,
+  AuthorizationAccessToken,
 };

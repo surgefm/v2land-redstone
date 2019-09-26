@@ -13,6 +13,7 @@
     "bodybuilder": "^2.2.16",
     "colors": "^1.1.2",
     "connect-redis": "^3.3.3",
+    "crypto-random-string": "^3.0.1",
     "deep-extend": "^0.5.1",
     "dotenv": "^8.1.0",
     "ejs": "^2.5.5",
