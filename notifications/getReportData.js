@@ -3,7 +3,7 @@
  */
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
-const SeqModels = require('../seqModels');
+const SeqModels = require('../models');
 const time = require('time');
 
 async function getReportData(report, { transaction }) {

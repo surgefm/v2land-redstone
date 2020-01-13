@@ -1,5 +1,5 @@
 require('time')(Date);
-const SeqModels = require('../../seqModels');
+const SeqModels = require('../../models');
 
 const mode = {
   name: '七天未更新新闻',

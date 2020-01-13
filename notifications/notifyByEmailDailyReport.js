@@ -1,7 +1,7 @@
 /**
  * 将通知添加到每日邮件简讯中
  */
-const SeqModels = require('../seqModels');
+const SeqModels = require('../models');
 
 async function notifyByEmailDailyReport({ subscription, template, notification }) {
   const time = await ModeService.daily.new();

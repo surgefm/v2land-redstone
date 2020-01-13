@@ -1,5 +1,5 @@
 require('../config/globals');
-const models = require('../seqModels');
+const models = require('../models');
 
 module.exports = function(modelName) {
   const cap = modelName[0].toUpperCase() + modelName.substr(1);

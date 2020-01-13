@@ -1,4 +1,4 @@
-const SeqModels = require('../../seqModels');
+const SeqModels = require('../../models');
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 const { MissingParameterError } = require('../../utils/errors');

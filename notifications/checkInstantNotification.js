@@ -1,7 +1,7 @@
 /**
  * 检查有没有需要发出的即时推送
  */
-const SeqModels = require('../seqModels');
+const SeqModels = require('../models');
 const { Op } = require('sequelize');
 const notify = require('./notify');
 const checkInterval = 1000;

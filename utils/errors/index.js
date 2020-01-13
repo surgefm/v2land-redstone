@@ -1,5 +1,5 @@
-const MissingParameterError = require('./MissingParameterError');
+import MissingParameterError from './MissingParameterError';
 
-module.exports = {
+export {
   MissingParameterError,
 };

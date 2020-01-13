@@ -1,7 +1,7 @@
 /**
  * 使用浪潮的绑定账号发布微博并 @ 用户
  */
-const SeqModels = require('../seqModels');
+const SeqModels = require('../models');
 const disableSubscriptionMethod = require('./disableSubscriptionMethod');
 
 async function notifyByWeiboAt({ contact, subscription, template }) {
