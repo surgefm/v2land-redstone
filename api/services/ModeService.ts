@@ -1,28 +1,13 @@
 import { Report } from '@Models';
+import * as modeCollection from '@Modes';
+import { NotificationMode } from '@Types';
 
-const modeCollection = {
+const names: Record<string, NotificationMode> = {};
 
-  'EveryNewStack': require('../modes/EveryNewStack'),
-
-  '30DaysSinceLatestStack': require('../modes/30DaysSinceLatestStack'),
-
-  // Every time a latest news is admitted.
-  'new': require('../modes/new'),
-
-  '7DaysSinceLatestNews': require('../modes/7DaysSinceLatestNews'),
-
-  'daily': require('../modes/daily'),
-
-  'weekly': require('../modes/weekly'),
-
-  'monthly': require('../modes/monthly'),
-
-  'EveryFriday': require('../modes/EveryFriday'),
-
-};
-
-const names: Record<string, string> = {};
-Object.keys(modeCollection).map(key => names[key] = (modeCollection as any)[key].name);
+for (const key of Object.keys(modeCollection)) {
+  const mode: NotificationMode = (modeCollection as any)[key];
+  names[mode.name] = mode;
+}
 
 function getRecordActionName(report: Report) {
   const method = report.method.slice(0, 1).toUpperCase() + report.method.slice(1);
@@ -31,7 +16,8 @@ function getRecordActionName(report: Report) {
 }
 
 function getMode(mode: string) {
-  return (modeCollection as any)[mode];
+  if ((modeCollection as any)[mode]) return (modeCollection as any)[mode];
+  return names[mode] || null;
 }
 
 export {
