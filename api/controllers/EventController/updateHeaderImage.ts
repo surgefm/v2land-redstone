@@ -1,7 +1,7 @@
 import { RedstoneRequest, RedstoneResponse, sequelize } from '@Types';
 import { HeaderImage } from '@Models';
 import { EventService, RecordService } from '@Services';
-import * as isUrl from '@Utils/urlValidator';
+import isURL from '@Utils/urlValidator';
 
 async function updateHeaderImage (req: RedstoneRequest, res: RedstoneResponse) {
   const name = req.param('eventName');
@@ -39,7 +39,7 @@ async function updateHeaderImage (req: RedstoneRequest, res: RedstoneResponse) {
     }
   }
 
-  if (headerImage.sourceUrl && !isUrl(headerImage.sourceUrl)) {
+  if (headerImage.sourceUrl && !isURL(headerImage.sourceUrl)) {
     return res.status(400).json({
       message: '链接格式不规范',
     });

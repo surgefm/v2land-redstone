@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { Logger } from 'pino';
 import { Client, Record as RecordModel, Stack, News } from '@Models';
 import { Sequelize } from 'sequelize-typescript';
+import { NotificationMode, NotificationModeInput } from './NotificationMode';
 
 interface RedstoneRequest extends Request {
   sessionID?: string;
@@ -46,3 +47,14 @@ interface EventObj extends SimplifiedEventInterface {
 }
 
 declare let sequelize: Sequelize;
+
+export {
+  RedstoneRequest,
+  RedstoneResponse,
+  SimplifiedEventInterface,
+  EventObj,
+  StackObj,
+  sequelize,
+  NotificationMode,
+  NotificationModeInput,
+};
