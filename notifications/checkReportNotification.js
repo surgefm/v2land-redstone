@@ -1,7 +1,7 @@
 /**
  * 检查有没有需要发出的汇总推送
  */
-const SeqModels = require('../seqModels');
+const SeqModels = require('../models');
 const { Op } = require('sequelize');
 const sendReport = require('./sendReport');
 const checkInterval = 2000;

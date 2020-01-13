@@ -1,0 +1,40 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist/",
+    "sourceMap": true,
+    "noImplicitAny": true,
+    "moduleResolution": "node",
+    "module": "commonjs",
+    "target": "es6",
+    "jsx": "react",
+    "allowJs": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "baseUrl": ".",
+    "paths": {
+      "~/*": ["./*"],
+      "@Controllers": ["./api/controllers"],
+      "@Controllers/*": ["./api/controllers/*"],
+      "@Services": ["./api/services"],
+      "@Services/*": ["./api/services/*"],
+      "@Models": ["./models"],
+      "@Models/*": ["./models/*"],
+      "@Configs": ["./config"],
+      "@Configs/*": ["./config/*"],
+      "@Types": ["./types"],
+      "@Types/*": ["./types/*"],
+      "@Utils": ["./utils"],
+      "@Utils/*": ["./utils/*"]
+    }
+  },
+  "include": [
+    "*",
+    "*/*",
+    "**/*",
+    "interfaces.d.ts"
+  ],
+  "exclude": [
+    "dist",
+    "node_modules"
+  ]
+}

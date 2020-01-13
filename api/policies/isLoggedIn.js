@@ -7,7 +7,7 @@
  *
  */
 
-const SeqModels = require('../../seqModels');
+const SeqModels = require('../../models');
 
 module.exports = async function(req, res, next) {
   if (typeof req.session === 'undefined') {

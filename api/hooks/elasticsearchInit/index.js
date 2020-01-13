@@ -2,7 +2,7 @@ module.exports = function elasticsearchInit(sails) {
   return {
     initialize: async function(cb) {
       if (process.env.INIT_ELASTICSEARCH) {
-        const SeqModels = require('../../../seqModels');
+        const SeqModels = require('../../../models');
         const { Event, News, Stack, Client } = SeqModels;
         const events = await Event.findAll();
         const news = await News.findAll();

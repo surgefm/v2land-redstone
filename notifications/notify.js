@@ -1,7 +1,7 @@
 /**
  * 发出推送
  */
-const SeqModels = require('../seqModels');
+const SeqModels = require('../models');
 const { Op } = require('sequelize');
 const notifyByEmail = require('./notifyByEmail');
 const notifyByEmailDailyReport = require('./notifyByEmailDailyReport');

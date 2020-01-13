@@ -2,7 +2,7 @@
  * 正式发送邮件简讯（每日简讯/周报悉可）
  */
 const getReportData = require('./getReportData');
-const SeqModels = require('../seqModels');
+const SeqModels = require('../models');
 
 async function sendEmailReport(report, { transaction }) {
   const reportData = await getReportData(report, { transaction });

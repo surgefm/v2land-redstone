@@ -1,7 +1,7 @@
 module.exports = function DBInit(sails) {
   return {
     initialize: async function(cb) {
-      const SeqModels = require('../../../seqModels');
+      const SeqModels = require('../../../models');
       const { Event } = SeqModels;
       const events = await Event.findAll({
         where: {

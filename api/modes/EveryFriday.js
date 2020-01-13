@@ -1,5 +1,5 @@
 require('time')(Date);
-const SeqModels = require('../../seqModels');
+const SeqModels = require('../../models');
 const { Op } = require('sequelize');
 
 const mode = {

@@ -1,0 +1,103 @@
+/**
+ * Policy Mappings
+ * (sails.config.policies)
+ *
+ * Policies are simple functions which run **before** your controllers.
+ * You can apply one or more policies to a given controller, or protect
+ * its actions individually.
+ *
+ * Any policy file (e.g. `api/policies/authenticated.js`) can be accessed
+ * below by its filename, minus the extension, (e.g. "authenticated")
+ *
+ * For more information on how policies work, see:
+ * http://sailsjs.org/#!/documentation/concepts/Policies
+ *
+ * For more information on configuring policies, check out:
+ * http://sailsjs.org/#!/documentation/reference/sails.config/sails.config.policies.html
+ */
+
+export default {
+  NewsController: {
+    'getNews': true,
+    'getNewsList': true,
+    'updateNews': ['isLoggedIn', 'isManager'],
+    'getAllPendingNews': ['isLoggedIn', 'isManager'],
+    '*': false,
+  },
+
+  EventController: {
+    'findEvent': true,
+    'getEvent': true,
+    'createEvent': true,
+    'updateEvent': ['isLoggedIn', 'isManager'],
+    'getEventList': true,
+    'getAllPendingEvents': ['isLoggedIn', 'isManager'],
+    'getPendingNews': ['isLoggedIn', 'isManager'],
+    'createStack': true,
+    'createNews': true,
+    'updateHeaderImage': ['isLoggedIn', 'isManager'],
+    '*': false,
+  },
+
+  StackController: {
+    'getStack': true,
+    'getStackList': true,
+    'updateStack': ['isLoggedIn', 'isManager'],
+    'updateMultipleStacks': ['isLoggedIn', 'isManager'],
+    '*': false,
+  },
+
+  ClientController: {
+    'inviteCode': true,
+    'updateClient': ['isLoggedIn'],
+    'findClient': true,
+    'login': true,
+    'register': true,
+    'verifyToken': true,
+    'changePassword': 'isLoggedIn',
+    'updateRole': ['isLoggedIn', 'isAdmin'],
+    'getClientList': ['isLoggedIn', 'isAdmin'],
+    'getClientDetail': 'isLoggedIn',
+    'logout': 'isLoggedIn',
+    '*': false,
+  },
+
+  SubscriptionController: {
+    'removeContact': true,
+    'unsubscribe': true,
+    'subscribe': true,
+    '*': false,
+  },
+
+  HeaderImageController: {
+    '*': false,
+  },
+
+  AuthController: {
+    'options': true,
+    'authorize': true,
+    'unauthorize': true,
+    'twitter': true,
+    'twitterRedirect': true,
+    'twitterCallback': true,
+    'weibo': true,
+    'weiboRedirect': true,
+    'weiboCallback': true,
+    '*': false,
+  },
+
+  OAuth2Controller: {
+    '*': true,
+  },
+
+  UploadController: {
+    'upload': ['isLoggedIn', 'isManager'],
+    '*': false,
+  },
+
+  SearchController: {
+    'keywordSearch': true,
+    '*': false,
+  },
+
+};
