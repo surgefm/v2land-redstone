@@ -1,13 +1,15 @@
 /**
  * 正式发送邮件简讯（每日简讯/周报悉可）
  */
+import { Report, ReportNotification } from '@Models';
+import { EmailService, RecordService, ModeService } from '@Services';
+import { Transaction } from 'sequelize';
 const getReportData = require('./getReportData');
-const SeqModels = require('../models');
 
-async function sendEmailReport(report, { transaction }) {
+async function sendEmailReport(report: Report, { transaction }: { transaction: Transaction }) {
   const reportData = await getReportData(report, { transaction });
 
-  const titles = {
+  const titles: { [index: string]: string } = {
     daily: '日报',
     weekly: '周报',
     monthly: '月报',
@@ -27,7 +29,7 @@ async function sendEmailReport(report, { transaction }) {
   await EmailService.send(email);
 
   await report.update({ status: 'complete' }, { transaction });
-  await SeqModels.ReportNotification.update(
+  await ReportNotification.update(
     { status: 'complete' },
     {
       where: {
@@ -46,4 +48,4 @@ async function sendEmailReport(report, { transaction }) {
   }, { transaction });
 }
 
-module.exports = sendEmailReport;
+export default sendEmailReport;

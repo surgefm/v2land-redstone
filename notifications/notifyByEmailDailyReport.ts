@@ -1,19 +1,23 @@
 /**
  * 将通知添加到每日邮件简讯中
  */
-const SeqModels = require('../models');
+import { Notification, Subscription, Report, ReportNotification } from '@Models';
+import { ModeService } from '@Services';
 
-async function notifyByEmailDailyReport({ subscription, template, notification }) {
-  const time = await ModeService.daily.new();
+async function notifyByEmailDailyReport({ subscription, notification }: {
+  notification: Notification,
+  subscription: Subscription,
+}) {
+  const time = await ModeService.getMode('daily').new();
 
-  await sequelize.transaction(async transaction => {
+  await global.sequelize.transaction(async transaction => {
     const reportData = {
       time: time.getTime(),
       status: 'pending',
       type: 'daily',
       owner: subscription.subscriber,
     };
-    const report = (await SeqModels.Report.findOrCreate({
+    const report = (await Report.findOrCreate({
       where: reportData,
       defaults: reportData,
       transaction,
@@ -24,7 +28,7 @@ async function notifyByEmailDailyReport({ subscription, template, notification }
       reportId: report.id,
       notificationId: notification.id,
     };
-    await SeqModels.ReportNotification.findOrCreate({
+    await ReportNotification.findOrCreate({
       where: reportNotificationData,
       defaults: reportNotificationData,
       transaction,
@@ -32,4 +36,4 @@ async function notifyByEmailDailyReport({ subscription, template, notification }
   });
 }
 
-module.exports = notifyByEmailDailyReport;
+export default notifyByEmailDailyReport;
