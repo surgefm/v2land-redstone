@@ -36,8 +36,8 @@ export default {
 
   notification: process.env.ENABLE_NOTIFICATION,
   officialAccount: {
-    twitter: process.env.OFFICIAL_TWITTER || '768458621613072384',
-    weibo: process.env.OFFICIAL_WEIBO || '6264484740',
+    twitter: process.env.OFFICIAL_TWITTER || '768458621613072384' as (string | [string]),
+    weibo: process.env.OFFICIAL_WEIBO || '6264484740' as (string | [string]),
   },
 
   telegramReviewChatId: process.env.TELEGRAM_REVIEW_ACCOUNT || '@langchao_review',

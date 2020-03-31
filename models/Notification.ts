@@ -12,6 +12,8 @@ import {
 } from 'sequelize-typescript';
 
 import Event from './Event';
+import Stack from './Stack';
+import News from './News';
 import Report from './Report';
 import ReportNotification from './ReportNotification';
 
@@ -49,6 +51,9 @@ class Notification extends Model<Notification> {
 
   @BelongsToMany(() => Report, () => ReportNotification, 'notificationId', 'reportId')
   reports: Report[];
+
+  stack?: Stack;
+  news?: News;
 }
 
 export default Notification;

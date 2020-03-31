@@ -1,24 +1,27 @@
 /**
  * 发出推送
  */
-const SeqModels = require('../models');
-const { Op } = require('sequelize');
-const notifyByEmail = require('./notifyByEmail');
-const notifyByEmailDailyReport = require('./notifyByEmailDailyReport');
-const notifyByTwitter = require('./notifyByTwitter');
-const notifyByTwitterAt = require('./notifyByTwitterAt');
-const notifyByWeibo = require('./notifyByWeibo');
-const notifyByWeiboAt = require('./notifyByWeiboAt');
-const notifyByMobileAppNotification = require('./notifyByMobileAppNotification');
+import { Event, Notification, News, Stack, Subscription, Record, Contact, Auth } from '@Models';
+import { ModeService } from '@Services';
+import { Op } from 'sequelize';
+import notifyByEmail from './notifyByEmail';
+import notifyByEmailDailyReport from './notifyByEmailDailyReport';
+import notifyByTwitter from './notifyByTwitter';
+import notifyByTwitterAt from './notifyByTwitterAt';
+import notifyByWeibo from './notifyByWeibo';
+import notifyByWeiboAt from './notifyByWeiboAt';
+import notifyByMobileAppNotification from './notifyByMobileAppNotification';
+import * as pino from 'pino';
+const logger = pino();
 
-async function notify(notification) {
+async function notify(notification: Notification) {
   const eventId = notification.eventId;
-  const event = notification.event || await SeqModels.Event.findById(eventId);
-  const mode = ModeService[notification.mode];
+  const event = notification.event || await Event.findByPk(eventId);
+  const mode = ModeService.getMode(notification.mode);
   let news;
   let stack;
   if (mode.needNews) {
-    news = await SeqModels.News.findOne({
+    news = await News.findOne({
       where: {
         eventId: notification.eventId,
         status: 'admitted',
@@ -29,7 +32,7 @@ async function notify(notification) {
   }
 
   if (mode.needStack) {
-    stack = await SeqModels.Stack.findOne({
+    stack = await Stack.findOne({
       where: {
         eventId: notification.eventId,
         order: { [Op.gte]: 0 },
@@ -46,10 +49,10 @@ async function notify(notification) {
     stack: stack,
   });
 
-  const notificationData = notification.get({ plain: true });
+  const notificationData: any = notification.get({ plain: true });
   notificationData.eventId = event.id;
 
-  const subscriptions = await SeqModels.Subscription.findAll({
+  const subscriptions = await Subscription.findAll({
     where: {
       mode: notification.mode,
       eventId: notification.eventId,
@@ -57,14 +60,14 @@ async function notify(notification) {
     },
   });
 
-  const sendNotification = async (subscription) => {
+  const sendNotification = async (subscription: Subscription) => {
     const data = {
       model: 'Subscription',
       target: subscription.id,
       action: 'notify',
     };
 
-    const same = await SeqModels.Record.count({
+    const same = await Record.count({
       where: {
         ...data,
         'data.id': notificationData.id,
@@ -78,22 +81,21 @@ async function notify(notification) {
 
     const queue = [];
 
-    const contactList = await SeqModels.Contact.findAll({
+    const contactList = await Contact.findAll({
       where: {
         subscriptionId: subscription.id,
         status: 'active',
       },
       include: [{
-        model: SeqModels.Auth,
+        model: Auth,
         as: 'auth',
         required: false,
       }],
     });
 
     for (const contact of contactList) {
-      contact.auth = (contact.auth || [])[0];
       if (!contact.auth && ['twitter', 'weibo', 'telegram'].includes(contact.type)) {
-        contact.auth = await SeqModels.Auth.findOne({
+        contact.auth = await Auth.findOne({
           where: {
             site: contact.type,
             profileId: contact.profileId,
@@ -133,7 +135,7 @@ async function notify(notification) {
   try {
     await Promise.all(promises);
   } catch (err) {
-    sails.log.error(err);
+    logger.error(err);
   }
 
   const nextTime = await mode.notified({
@@ -143,14 +145,14 @@ async function notify(notification) {
     stack: stack,
   });
 
-  await SeqModels.Notification.update({
+  await Notification.update({
     status: 'complete',
   }, {
     where: { id: notification.id },
   });
 
   if (!['new', 'EveryNewStack'].includes(notification.mode)) {
-    await SeqModels.Notification.create({
+    await Notification.create({
       eventId: notification.eventId,
       mode: notification.mode,
       time: nextTime,
@@ -159,4 +161,4 @@ async function notify(notification) {
   }
 }
 
-module.exports = notify;
+export default notify;

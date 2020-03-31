@@ -1,11 +1,20 @@
 /**
  * 向用户的移动设备发布推送
  */
-async function notifyByMobileAppNotification({ contact, subscription, template }) {
+import { Contact, Subscription } from '@Models';
+import { LeanCloudService, UtilService } from '@Services';
+import * as pino from 'pino';
+const logger = pino();
+
+async function notifyByMobileAppNotification({ contact, subscription, template }: {
+  contact: Contact,
+  subscription: Subscription,
+  template: any,
+}) {
   if (!contact) {
     subscription.status = 'failed';
     await subscription.save();
-    return sails.log.error(new Error(`未找到用户 ${subscription.subscriber} 的 App 绑定`));
+    return logger.error(new Error(`未找到用户 ${subscription.subscriber} 的 App 绑定`));
   }
 
   const message = UtilService.shortenString(template.message, 100);
@@ -21,4 +30,4 @@ async function notifyByMobileAppNotification({ contact, subscription, template }
   });
 }
 
-module.exports = notifyByMobileAppNotification;
+export default notifyByMobileAppNotification;

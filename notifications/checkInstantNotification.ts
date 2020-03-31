@@ -1,20 +1,22 @@
 /**
  * 检查有没有需要发出的即时推送
  */
-const SeqModels = require('../models');
-const { Op } = require('sequelize');
-const notify = require('./notify');
+import { Notification, Event } from '@Models';
+import { Op } from 'sequelize';
+import notify from './notify';
+import * as pino from 'pino';
+const logger = pino();
 const checkInterval = 1000;
 
 async function checkInstantNotification() {
   try {
-    const notification = await SeqModels.Notification.findOne({
+    const notification = await Notification.findOne({
       order: [['time', 'DESC']],
       where: {
         status: 'pending',
         time: { [Op.lte]: Date.now() },
       },
-      include: [SeqModels.Event],
+      include: [Event],
     });
 
     if (!notification) {
@@ -24,7 +26,7 @@ async function checkInstantNotification() {
       checkInstantNotification();
     }
   } catch (err) {
-    sails.log.error(err);
+    logger.error(err);
     setTimeout(checkInstantNotification, checkInterval);
   }
 }
