@@ -1,3 +1,4 @@
+import { EventObj } from '@Types';
 import notifyWhenEventCreated from './notifyWhenEventCreated';
 import notifyWhenEventStatusChanged from './notifyWhenEventStatusChanged';
 import notifyWhenNewsCreated from './notifyWhenNewsCreated';
@@ -7,11 +8,11 @@ import updateNewsNotifications from './updateNewsNotifications';
 import updateStackNotifications from './updateStackNotifications';
 import * as ModeService from '../ModeService';
 
-async function getNextTime (mode: string, event: Event) {
+async function getNextTime (mode: string, event: EventObj) {
   return ModeService.getMode(mode).new({ event });
 }
 
-async function notified (mode: string, event: Event) {
+async function notified (mode: string, event: EventObj) {
   return ModeService.getMode(mode).notified({ event });
 }
 
