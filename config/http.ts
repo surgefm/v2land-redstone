@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { RedstoneRequest } from '~/interfaces';
+import { RedstoneRequest } from '@Types';
 
 export default {
 

@@ -24,3 +24,10 @@ export async function bulk (query: any) {
 export async function msearch (query: any) {
   return client ? client.msearch(query) : null;
 }
+
+export default {
+  search,
+  update,
+  bulk,
+  msearch,
+};
