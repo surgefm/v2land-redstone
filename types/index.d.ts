@@ -13,7 +13,11 @@ interface RedstoneRequest extends Request {
 
 interface RedstoneResponse extends Response {}
 
-interface SimplifiedEventInterface {
+interface StringIndexInterface {
+  [index: string]: any
+}
+
+interface SimplifiedEventInterface extends StringIndexInterface {
   id?: number;
   headerImage?: number | { id?: number };
   contribution?: RecordModel[];

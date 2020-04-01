@@ -3,10 +3,10 @@ import { Client } from '@Models';
 import { StackService } from '@Services';
 
 async function getStack (req: RedstoneRequest, res: RedstoneResponse) {
-  const id = req.param('stackId');
+  const id = +req.param('stackId');
   const stack = await StackService.findStack(id);
   if (stack) {
-    stack.contribution = await StackService.getContribution(id, true);
+    stack.contribution = await StackService.getContribution({ id }, true);
     if (stack.status !== 'admitted') {
       if (req.session.clientId) {
         const client = await Client.findOne({
