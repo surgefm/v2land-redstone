@@ -7,6 +7,7 @@
     "start": "node node_modules/gulp-cli/bin/gulp.js scripts && node dist/app.js"
   },
   "dependencies": {
+    "@elastic/elasticsearch": "^7.6.1",
     "@types/pinyin": "^2.8.1",
     "aws-sdk": "^2.600.0",
     "axios": "^0.19.1",
@@ -24,9 +25,13 @@
     "multer-s3": "^2.9.0",
     "nodemailer": "^6.4.2",
     "nodemailer-express-handlebars": "^3.1.0",
+    "oauth": "^0.9.15",
+    "parse-domain": "^2.3.4",
+    "pg": "^8.0.0",
     "pinyin": "^2.9.0",
     "sequelize": "^5.21.3",
     "sequelize-typescript": "^1.1.0",
+    "skipper": "^0.8.7",
     "skipper-s3": "^0.6.0",
     "uuid": "^3.3.3",
     "v2land-url-trimmer": "^0.0.10",
@@ -50,6 +55,19 @@
     "gulp-sourcemaps": "^2.6.5",
     "gulp-typescript": "^6.0.0-alpha.1",
     "husky": "^4.2.3",
+    "module-alias": "^2.2.2",
+    "reflect-metadata": "^0.1.13",
     "typescript": "^3.8.3"
+  },
+  "_moduleAliases": {
+    "~": "dist",
+    "@": "dist/src",
+    "@Configs": "dist/config",
+    "@Models": "dist/models",
+    "@Types": "dist/types",
+    "@Utils": "dist/utils",
+    "@Controllers": "dist/api/controllers",
+    "@Policies": "dist/api/policies",
+    "@Services": "dist/api/services"
   }
 }

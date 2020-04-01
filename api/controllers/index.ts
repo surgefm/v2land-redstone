@@ -9,6 +9,12 @@ import * as SearchController from './SearchController';
 import * as StackController from './StackController';
 import * as SubscriptionController from './SubscriptionController';
 import * as UploadController from './UploadController';
+import { ControllerAction } from '@Types';
+
+export type ControllerType = typeof AuthController | typeof ClientController |
+  typeof EventController | typeof HeaderImageController | typeof NewsController |
+  typeof NotificationController | typeof OAuth2Controller | typeof SearchController |
+  typeof StackController | typeof SubscriptionController | typeof UploadController;
 
 export {
   AuthController,
@@ -23,3 +29,17 @@ export {
   SubscriptionController,
   UploadController,
 };
+
+export default {
+  AuthController,
+  ClientController,
+  EventController,
+  HeaderImageController,
+  NewsController,
+  NotificationController,
+  OAuth2Controller,
+  SearchController,
+  StackController,
+  SubscriptionController,
+  UploadController,
+} as { [index: string]: { [index: string]: ControllerAction } };

@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { Logger } from 'pino';
 import { Client, Record as RecordModel, Stack, News } from '@Models';
 import { Sequelize } from 'sequelize-typescript';
@@ -12,6 +12,8 @@ interface RedstoneRequest extends Request {
 }
 
 interface RedstoneResponse extends Response {}
+interface RedstoneNextFunction extends NextFunction {}
+type ControllerAction = (req: RedstoneRequest, res: RedstoneResponse) => Promise<any>;
 
 interface StringIndexInterface {
   [index: string]: any
@@ -55,6 +57,8 @@ declare let sequelize: Sequelize;
 export {
   RedstoneRequest,
   RedstoneResponse,
+  NextFunction,
+  ControllerAction,
   SimplifiedEventInterface,
   EventObj,
   StackObj,
