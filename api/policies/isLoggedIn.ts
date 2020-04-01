@@ -6,10 +6,10 @@
  * @docs        :: http://sailsjs.org/#!/documentation/concepts/Policies
  *
  */
+import { Client } from '@Models';
+import { RedstoneRequest, RedstoneResponse, NextFunction } from '@Types';
 
-const SeqModels = require('../../models');
-
-module.exports = async function(req, res, next) {
+export default async function(req: RedstoneRequest, res: RedstoneResponse, next: NextFunction) {
   if (typeof req.session === 'undefined') {
     return res.status(401).json({
       message: '请在登录后进行该操作',
@@ -34,14 +34,14 @@ module.exports = async function(req, res, next) {
  * @description :: Check if the clientId is undefined or invalid; if valid, return a client instance
  * @returns     :: a client instance(if client's found) or false (if not found)
  */
-async function getClient(req, clientId) {
+async function getClient(req: RedstoneRequest, clientId: number) {
   if (!clientId) {
-    return false;
+    return null;
   }
-  const client = await SeqModels.Client.findByPk(clientId);
+  const client = await Client.findByPk(clientId);
   if (!client) {
     delete req.session.clientId;
-    return false;
+    return null;
   }
   return client;
 }

@@ -3,7 +3,7 @@ import * as path from 'path';
 import * as aws from 'aws-sdk';
 const hbs = require('nodemailer-express-handlebars');
 
-let email: { transporter: nodemailer.Transporter };
+let email: { transporter: nodemailer.Transporter } = { transporter: null };
 
 const {
   SES_HOST,

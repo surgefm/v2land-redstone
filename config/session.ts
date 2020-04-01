@@ -13,7 +13,7 @@
  */
 
 const parseDomain = require('parse-domain');
-const globals = require('./globals').globals;
+import globals from './globals';
 
 const url = parseDomain(globals.api);
 const cookie = {

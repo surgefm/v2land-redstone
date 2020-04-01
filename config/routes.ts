@@ -62,4 +62,4 @@ export default {
 
   'GET /search': 'SearchController.keywordSearch',
 
-}
+} as { [index: string]: string | { view: string } }

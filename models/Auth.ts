@@ -45,7 +45,7 @@ class Auth extends Model<Auth> {
   redirect?: string;
 
   @ForeignKey(() => Client)
-  @Column
+  @Column(DataType.INTEGER)
   owner: number;
 
   @BelongsTo(() => Client, 'owner')
