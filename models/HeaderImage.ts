@@ -30,11 +30,10 @@ class HeaderImage extends Model<HeaderImage> {
   sourceUrl?: string;
 
   @ForeignKey(() => Event)
-  @Column
+  @Column(DataType.INTEGER)
   eventId: number;
 
   @BelongsTo(() => Event, 'eventId')
-  @Column
   event: Event;
 }
 

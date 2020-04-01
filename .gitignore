@@ -128,3 +128,4 @@ package-lock.json
 .env
 
 dist
+.idea

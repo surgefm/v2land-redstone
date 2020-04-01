@@ -92,6 +92,7 @@ class Client extends Model<Client> {
 
   subscriptionCount?: number;
   isAdmin?: boolean;
+  isManager?: boolean;
 }
 
 export default Client;

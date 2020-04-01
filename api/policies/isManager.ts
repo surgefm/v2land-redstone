@@ -6,10 +6,10 @@
  *                 This policy must be applie only AFTER isLoggedIn policy
  *                 which means the client should have a valid req.currentClient instance
  * @returns     :: '403 您没有权限进行该操作' if unauthorized
- * @docs        :: http://sailsjs.org/#!/documentation/concepts/Policies
  *
  */
-module.exports = function(req, res, next) {
+import { RedstoneRequest, RedstoneResponse, NextFunction } from '@Types';
+export default function(req: RedstoneRequest, res: RedstoneResponse, next: NextFunction) {
   if (req.currentClient.isManager) {
     next();
   } else {

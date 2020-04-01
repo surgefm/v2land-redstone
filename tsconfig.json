@@ -17,6 +17,8 @@
       "@Controllers/*": ["./api/controllers/*"],
       "@Services": ["./api/services"],
       "@Services/*": ["./api/services/*"],
+      "@Policies": ["./api/policies"],
+      "@Policies/*": ["./api/policies/*"],
       "@Models": ["./models"],
       "@Models/*": ["./models/*"],
       "@Configs": ["./config"],
@@ -32,7 +34,9 @@
     "*",
     "*/*",
     "**/*",
-    "interfaces.d.ts"
+    "interfaces.d.ts",
+    "types/interfaces.d.ts",
+    "types/NotificationMode.ts"
   ],
   "exclude": [
     "dist",
