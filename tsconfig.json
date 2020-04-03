@@ -35,7 +35,7 @@
     "*/*",
     "**/*",
     "interfaces.d.ts",
-    "types/interfaces.d.ts",
+    "types/interfaces.ts",
     "types/NotificationMode.ts"
   ],
   "exclude": [
