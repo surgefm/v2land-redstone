@@ -86,7 +86,7 @@ class Event extends Model<Event> {
   @Column
   latestAdmittedNewsId: number;
 
-  @BelongsTo(() => News, 'latestAdmittedNewsId')
+  @HasOne(() => News, 'latestAdmittedNewsId')
   latestAdmittedNews: News;
 }
 

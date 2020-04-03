@@ -46,7 +46,7 @@ async function getEventList (req: RedstoneRequest, res: RedstoneResponse) {
     });
   }
 
-  await sequelize.transaction(async transaction => {
+  await global.sequelize.transaction(async transaction => {
     if (where && req.session && req.session.clientId) {
       const client = await Client.findOne({
         where: { id: req.session.clientId },
