@@ -3,32 +3,6 @@
  * The original file was backed up as `config/globals-old.js.txt`
  */
 
-import { Sequelize } from 'sequelize-typescript';
-import { postgresql } from './datastores';
-
-const {
-  host,
-  user,
-  password,
-  database,
-} = postgresql;
-
-const sequelize = new Sequelize(database, user, password, {
-  host,
-  dialect: 'postgres',
-
-  pool: {
-    max: 5,
-    min: 0,
-    acquire: 30000,
-    idle: 10000
-  },
-
-  logging: process.env.NODE_ENV !== 'production' && process.env.SEQUELIZE_LOGGING !== 'false',
-});
-
-global.sequelize = sequelize;
-
 export default {
 
   site: process.env.SITE || 'https://langchao.org',

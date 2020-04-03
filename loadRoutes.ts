@@ -27,32 +27,33 @@ function getControllerAction(controller: string, action: string) {
 function getMethod(app: Express, location: string) {
   switch (location.split(' ')[0].toUpperCase()) {
     case 'GET':
-      return app.get;
+      return app.get.bind(app);
     case 'POST':
-      return app.post;
+      return app.post.bind(app);
     case 'HEAD':
-      return app.head;
+      return app.head.bind(app);
     case 'PUT':
-      return app.put;
+      return app.put.bind(app);
     case 'DELETE':
-      return app.delete;
+      return app.delete.bind(app);
     default:
-      return app.all;
+      return app.all.bind(app);
   }
 }
 
 function getPolicies(controller: string, action: string) {
   if (!(controller in controllers)) wrongConfig(controller, action);
   if (!(controller in policies)) wrongConfig(controller, action);
-  if (!(action in policies[controller])) wrongConfig(controller, action);
-  if (typeof policies[controller] === 'boolean') {
-    return policies[controller] ? [] : [forbiddenRoute];
+  if (!(action in policies[controller]) && !('*' in policies[controller])) wrongConfig(controller, action);
+  const policyRule = policies[controller][action in policies[controller] ? action : '*'];
+  if (typeof policyRule === 'boolean') {
+    return policyRule ? [] : [forbiddenRoute];
   }
   
-  const list = typeof policies[controller] === 'string'
-    ? [policies[controller] as unknown as string]
-    : policies[controller] as unknown as string[];
-  
+  const list = typeof policyRule === 'string'
+    ? [policyRule as unknown as string]
+    : policyRule as unknown as string[];
+
   const middlewares: PolicyMiddleware[] = [];
   for (const policy of list) {
     if (!(policy in policyMiddlewares)) {
