@@ -8,8 +8,8 @@ async function loadSequelize() {
   const { postgresql } = datastores;
   let logging: boolean | ((sql: string, timing?: number) => void) = false;
   if (process.env.NODE_ENV !== 'production' && process.env.SEQUELIZE_LOGGING !== 'false') {
-    logging = (sql: string, timing: number) => {
-      logger.info(`Time elapsed: ${timing}ms`, sql);
+    logging = (sql: string) => {
+      logger.info(sql);
     };
   }
 
