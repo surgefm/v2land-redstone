@@ -1,5 +1,5 @@
 import uuidv4 from 'uuid/v4';
-import * as crypto from 'crypto';
+import crypto from 'crypto';
 
 function tokenGenerator () {
   const token = uuidv4();

@@ -1,9 +1,10 @@
 EXE_PATH=./node_modules/.bin/eslint
 API_PATH=api/**/*.ts
-SCRIPT_PATH=scripts/**/*.ts
 TEST_PATH=tests/**/*.ts
 CONFIG_PATH=config/**/*.ts
 NOTIFICATION_BACKEND_PATH=notifications/**/*.ts
+
+COVERAGE_PATH=./node_modules/.bin/nyc
 
 test: eslint test-without-lint
 	echo "浪潮爱你❤️"
@@ -18,16 +19,20 @@ test-without-lint:
 debug:
 	node ./node_modules/mocha/bin/mocha --inspect-brk tests/bootstrap.test.js tests/integration/**/*.test.js --exit;
 
+clean-covrage:
+	rm -rf ./coverage
+
+coverage: clean-covrage
+	node $(COVERAGE_PATH) make test-without-lint
+
 eslint:
 	$(EXE_PATH) $(API_PATH)
-	# $(EXE_PATH) $(SCRIPT_PATH)
 	$(EXE_PATH) $(TEST_PATH)
 	$(EXE_PATH) $(CONFIG_PATH)
 	$(EXE_PATH) $(NOTIFICATION_BACKEND_PATH)
 
 eslint-fix:
 	$(EXE_PATH) $(API_PATH) --fix
-	# $(EXE_PATH) $(SCRIPT_PATH) --fix
 	$(EXE_PATH) $(TEST_PATH) --fix
 	$(EXE_PATH) $(CONFIG_PATH) --fix
 	$(EXE_PATH) $(NOTIFICATION_BACKEND_PATH) --fix

@@ -129,3 +129,5 @@ package-lock.json
 
 dist
 .idea
+.nyc_output
+coverage
