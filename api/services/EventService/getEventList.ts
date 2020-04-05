@@ -1,5 +1,4 @@
-import { sequelize } from '@Types';
-import { Event } from '@Models';
+import { Event, sequelize } from '@Models';
 import { Transaction } from 'sequelize';
 
 const Mode1Sql = `

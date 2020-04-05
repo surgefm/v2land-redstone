@@ -3,7 +3,7 @@ import { Stack, sequelize } from '@Models';
 import { EventService, RecordService, StackService } from '@Services';
 
 async function createStack (req: RedstoneRequest, res: RedstoneResponse) {
-  const name = req.param('eventName');
+  const name = req.params.eventName;
   const data = req.body;
   const { title, description, order, time } = data;
 

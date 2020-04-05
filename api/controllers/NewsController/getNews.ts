@@ -8,8 +8,8 @@ async function getNews (req: RedstoneRequest, res: RedstoneResponse) {
     id = req.body.news;
   } else if (req.query && req.query.news) {
     id = req.query.news;
-  } else if (req.param('news')) {
-    id = req.param('news');
+  } else if (req.params.news) {
+    id = req.params.news;
   }
 
   if (!id) {
@@ -18,7 +18,7 @@ async function getNews (req: RedstoneRequest, res: RedstoneResponse) {
     });
   }
 
-  let news = await News.findOne({
+  const news = await News.findOne({
     where: { id },
     include: [{
       model: Stack,
@@ -28,7 +28,7 @@ async function getNews (req: RedstoneRequest, res: RedstoneResponse) {
   if (!news) {
     return res.status(404).json({ message: '未找到该新闻' });
   }
-  let newsObj: any = news.get({ plain: true });
+  const newsObj: any = news.get({ plain: true });
 
   if (news.status !== 'admitted') {
     if (req.session.clientId) {

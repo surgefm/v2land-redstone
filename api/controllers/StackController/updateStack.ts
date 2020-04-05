@@ -3,7 +3,7 @@ import { sequelize } from '@Models';
 import { StackService } from '@Services';
 
 async function updateStack (req: RedstoneRequest, res: RedstoneResponse) {
-  const id = +req.param('stackId');
+  const id = +req.params.stackId;
   const data = req.body;
 
   try {

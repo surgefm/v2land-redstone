@@ -1,7 +1,7 @@
 import 'source-map-support/register';
 import 'module-alias/register';
 import dotenv from 'dotenv';
-import express from 'express';
+import express, { Express } from 'express';
 import bodyParser from 'body-parser';
 import pino from 'express-pino-logger';
 import session from 'express-session';
@@ -14,7 +14,7 @@ dotenv.config();
 
 const app = express();
 
-(async () => {
+export async function liftServer(app: Express) {
   await loadSequelize();
   app.use(bodyParser.json());
   app.use(pino());
@@ -25,7 +25,15 @@ const app = express();
 
   loadRoutes(app);
 
-  app.listen(1337, () => {
-    console.log("V2land Redstone started");
-  });
-})();
+  if (process.env.NODE_ENV !== 'test') {
+    app.listen(1337, () => {
+      console.log('V2land Redstone started');
+    });
+  }
+}
+
+if (process.env.NODE_ENV !== 'test') {
+  liftServer(app);
+}
+
+export default app;

@@ -2,7 +2,7 @@ import { RedstoneRequest, RedstoneResponse } from '@Types';
 import { ClientService } from '@Services';
 
 async function findClient (req: RedstoneRequest, res: RedstoneResponse) {
-  const name = req.param('clientName');
+  const name = req.params.clientName;
   const client = await ClientService.findClient(name);
 
   if (!client) {

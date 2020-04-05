@@ -4,10 +4,10 @@ import { globals } from '@Configs';
 import moment from 'moment-timezone';
 import { Op } from 'sequelize';
 
-class ThirtyDaysSinceLatestStackMode extends NotificationMode {
-  name: '30DaysSinceLatestStack';
-  nickname: '三十天未更新进展';
-  keepLatestOnly: true;
+export class ThirtyDaysSinceLatestStackMode extends NotificationMode {
+  name = '30DaysSinceLatestStack';
+  nickname = '三十天未更新进展';
+  keepLatestOnly = true;
 
   async new({ event, stack }: NotificationModeInput) {
     const latestStack = stack || await Stack.findOne({
@@ -47,4 +47,4 @@ class ThirtyDaysSinceLatestStackMode extends NotificationMode {
   }
 }
 
-export default ThirtyDaysSinceLatestStackMode;
+export default new ThirtyDaysSinceLatestStackMode();

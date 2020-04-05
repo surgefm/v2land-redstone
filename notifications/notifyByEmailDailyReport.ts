@@ -1,7 +1,7 @@
 /**
  * 将通知添加到每日邮件简讯中
  */
-import { Notification, Subscription, Report, ReportNotification } from '@Models';
+import { Notification, Subscription, Report, ReportNotification, sequelize } from '@Models';
 import { ModeService } from '@Services';
 
 async function notifyByEmailDailyReport({ subscription, notification }: {
@@ -10,7 +10,7 @@ async function notifyByEmailDailyReport({ subscription, notification }: {
 }) {
   const time = await ModeService.getMode('daily').new();
 
-  await global.sequelize.transaction(async transaction => {
+  await sequelize.transaction(async transaction => {
     const reportData = {
       time: time.getTime(),
       status: 'pending',

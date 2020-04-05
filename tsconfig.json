@@ -28,7 +28,8 @@
       "@Types/*": ["./types/*"],
       "@Utils": ["./utils"],
       "@Utils/*": ["./utils/*"],
-      "@Modes": ["./api/modes"]
+      "@Modes": ["./api/modes"],
+      "@Modes/*": ["./api/modes/*"]
     }
   },
   "include": [

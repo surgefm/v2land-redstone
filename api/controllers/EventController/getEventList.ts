@@ -1,7 +1,7 @@
 import { RedstoneRequest, RedstoneResponse } from '@Types';
 import { Client, Event, HeaderImage, News, sequelize } from '@Models';
 import { UtilService, EventService } from '@Services';
-import * as _ from 'lodash';
+import _ from 'lodash';
 
 async function getEventList (req: RedstoneRequest, res: RedstoneResponse) {
   let page: number;
@@ -46,7 +46,7 @@ async function getEventList (req: RedstoneRequest, res: RedstoneResponse) {
     });
   }
 
-  await global.sequelize.transaction(async transaction => {
+  await sequelize.transaction(async transaction => {
     if (where && req.session && req.session.clientId) {
       const client = await Client.findOne({
         where: { id: req.session.clientId },

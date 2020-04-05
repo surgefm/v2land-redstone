@@ -2,8 +2,8 @@ import { News } from '@Models';
 import ElasticsearchService from '../ElasticsearchService';
 
 async function updateElasticsearchIndex({ news, newsId }: {
-  news?: News,
-  newsId?: number,
+  news?: News;
+  newsId?: number;
 }) {
   if (!news) {
     news = await News.findOne({

@@ -1,4 +1,5 @@
 import { News, Stack } from '@Models';
+import { StackObj } from '@Types';
 import getContribution from './getContribution';
 import { Transaction } from 'sequelize';
 
@@ -17,21 +18,22 @@ async function findStack (id: number, withContributionData = true, { transaction
     transaction,
   });
 
-  if (stack) {
-    stack.newsCount = await News.count({
-      where: {
-        status: 'admitted',
-        stackId: stack.id,
-      },
-    });
+  if (!stack) return;
 
-    if (!stack.time && stack.news && stack.news.length) {
-      stack.time = stack.news[0].time;
-    }
-    stack.contribution = await getContribution(stack, withContributionData);
+  const stackObj: StackObj = stack.get({ plain: true });
+  stackObj.newsCount = await News.count({
+    where: {
+      status: 'admitted',
+      stackId: stack.id,
+    },
+  });
+
+  if (!stack.time && stack.news && stack.news.length) {
+    stackObj.time = stack.news[0].time;
   }
+  stackObj.contribution = await getContribution(stack, withContributionData);
 
-  return stack;
+  return stackObj;
 }
 
 export default findStack;

@@ -1,5 +1,5 @@
-import { RedstoneRequest, RedstoneResponse, sequelize } from '@Types';
-import { Record } from '@Models';
+import { RedstoneRequest, RedstoneResponse } from '@Types';
+import { Record, sequelize } from '@Models';
 import { ClientService } from '@Services';
 
 async function updateSettings (req: RedstoneRequest, res: RedstoneResponse) {
@@ -10,7 +10,7 @@ async function updateSettings (req: RedstoneRequest, res: RedstoneResponse) {
   }
 
   const { settings } = req.body;
-  const name = req.param('clientName');
+  const name = req.params.clientName;
   await ClientService.validateSettings(settings);
   await sequelize.transaction(async transaction => {
     const client = await ClientService.findClient(name, {

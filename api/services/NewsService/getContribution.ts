@@ -2,7 +2,7 @@ import { Op, Transaction } from 'sequelize';
 import { Client, Record } from '@Models';
 
 async function getContribution (
-  news: { id?: number, contribution?: Record[] },
+  news: { id?: number; contribution?: Record[] },
   withData: boolean,
   { transaction }: { transaction?: Transaction} = {},
 ) {

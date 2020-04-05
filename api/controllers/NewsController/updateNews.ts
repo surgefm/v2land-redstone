@@ -1,10 +1,10 @@
 import { RedstoneRequest, RedstoneResponse } from '@Types';
 import { News, Stack, sequelize } from '@Models';
 import { RecordService, EventService, NotificationService, NewsService } from '@Services';
-const urlTrimmer = require('v2land-url-trimmer');
+// import urlTrimmer = require('v2land-url-trimmer');
 
 async function updateNews (req: RedstoneRequest, res: RedstoneResponse) {
-  const id = +req.param('news');
+  const id = +req.params.news;
   const data = req.body;
 
   let news = await News.findByPk(id);
@@ -15,9 +15,9 @@ async function updateNews (req: RedstoneRequest, res: RedstoneResponse) {
     });
   }
 
-  if (data.url) {
-    data.url = (await urlTrimmer.trim(data.url)).toString();
-  }
+  // if (data.url) {
+  //   data.url = (await urlTrimmer.trim(data.url)).toString();
+  // }
 
   const changes: any = {};
   for (const i of ['url', 'source', 'title', 'abstract', 'time', 'status', 'comment', 'stackId', 'isInTemporaryStack']) {

@@ -1,6 +1,6 @@
-import { RedstoneRequest, RedstoneResponse, sequelize } from '@Types';
+import { RedstoneRequest, RedstoneResponse } from '@Types';
 import { ClientService } from '@Services';
-import { Record } from '@Models';
+import { Record, sequelize } from '@Models';
 
 async function updateRole (req: RedstoneRequest, res: RedstoneResponse) {
   // this API is a replacement of role()

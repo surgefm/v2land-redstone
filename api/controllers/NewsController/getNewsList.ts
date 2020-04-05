@@ -1,7 +1,6 @@
 import { RedstoneRequest, RedstoneResponse } from '@Types';
 import { Client, News } from '@Models';
 import { UtilService, NewsService } from '@Services';
-import * as _ from 'lodash';
 
 async function getNewsList (req: RedstoneRequest, res: RedstoneResponse) {
   let page = 1;
@@ -48,7 +47,7 @@ async function getNewsList (req: RedstoneRequest, res: RedstoneResponse) {
     where = UtilService.convertWhereQuery(where);
     const newsList = await News.findAll({
       where,
-      order: 'updatedAt DESC',
+      order: [['updatedAt', 'DESC']],
       offset: (page - 1) * 15,
       limit: 15,
     });

@@ -25,7 +25,7 @@ async function unauthorize (req: RedstoneRequest, res: RedstoneResponse) {
   await sequelize.transaction(async transaction => {
     await Auth.destroy({
       where: { id: auth.id },
-      transaction
+      transaction,
     });
 
     await RecordService.destroy({
