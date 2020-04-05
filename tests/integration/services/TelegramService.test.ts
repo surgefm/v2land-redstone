@@ -1,3 +1,4 @@
+/* eslint-disable no-invalid-this */
 import { TelegramService } from '@Services';
 
 if (process.env.TELE_TOKEN) {
