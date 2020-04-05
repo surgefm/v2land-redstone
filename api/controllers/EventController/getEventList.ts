@@ -66,7 +66,7 @@ async function getEventList (req: RedstoneRequest, res: RedstoneResponse) {
       where = UtilService.convertWhereQuery(where);
     }
 
-    let events = await Event.findAll({
+    const events = await Event.findAll({
       where,
       include: [{
         as: 'headerImage',
@@ -78,14 +78,13 @@ async function getEventList (req: RedstoneRequest, res: RedstoneResponse) {
         required: false,
       }],
       order: [
-        [Event.associations.latestAdmittedNews.target, 'time', 'DESC'],
+        [{ model: News, as: 'latestAdmittedNews' }, 'time', 'DESC'],
         ['updatedAt', 'DESC'],
       ],
       transaction,
     });
 
     const eventObjs = events.map(e => e.toJSON());
-
     await EventService.acquireContributionsByEventList(eventObjs);
 
     res.status(200).json({ eventList: eventObjs });

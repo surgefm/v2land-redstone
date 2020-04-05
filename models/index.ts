@@ -1,4 +1,4 @@
-import Auth from './auth';
+import Auth from './Auth';
 import AuthorizationAccessToken from './AuthorizationAccessToken';
 import AuthorizationClient from './AuthorizationClient';
 import AuthorizationCode from './AuthorizationCode';

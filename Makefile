@@ -19,10 +19,10 @@ debug:
 eslint:
 	$(EXE_PATH) $(API_PATH)
 	# $(EXE_PATH) $(SCRIPT_PATH)
-	# $(EXE_PATH) $(TEST_PATH)
+	$(EXE_PATH) $(TEST_PATH)
 
 eslint-fix:
 	$(EXE_PATH) $(API_PATH) --fix
 	# $(EXE_PATH) $(SCRIPT_PATH) --fix
-	# $(EXE_PATH) $(TEST_PATH) --fix
+	$(EXE_PATH) $(TEST_PATH) --fix
 
