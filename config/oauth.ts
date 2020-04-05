@@ -1,7 +1,7 @@
 import { OAuth, OAuth2 } from 'oauth';
-const globals = require('./globals').globals;
+import globals from './globals';
 
-let env = process.env;
+const env = process.env;
 let twitter: OAuth = null;
 let weibo: OAuth2 = null;
 

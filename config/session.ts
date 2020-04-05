@@ -12,7 +12,7 @@
  * http://sailsjs.org/#!/documentation/reference/sails.config/sails.config.session.html
  */
 
-const parseDomain = require('parse-domain');
+import parseDomain from 'parse-domain';
 import globals from './globals';
 import { sequelize } from '@Models';
 
@@ -43,7 +43,7 @@ const sessionConfig = {
   name: 'redstone.sid',
   proxy: true,
   cookie,
-}
+};
 
 if (process.env.REDIS_HOST) {
   const RedisStore = sessionRedis(expressSession);
@@ -69,4 +69,4 @@ if (process.env.REDIS_HOST) {
 }
 
 export { cookie, sessionConfig, sessionStore };
-export default { cookie, sessionConfig, sessionStore }
+export default { cookie, sessionConfig, sessionStore };

@@ -4,7 +4,7 @@
 import { Report, ReportNotification } from '@Models';
 import { EmailService, RecordService, ModeService } from '@Services';
 import { Transaction } from 'sequelize';
-const getReportData = require('./getReportData');
+import getReportData from './getReportData';
 
 async function sendEmailReport(report: Report, { transaction }: { transaction: Transaction }) {
   const reportData = await getReportData(report, { transaction });
