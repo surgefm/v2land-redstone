@@ -1,4 +1,5 @@
-import { RedstoneRequest, RedstoneResponse, sequelize } from '@Types';
+import { RedstoneRequest, RedstoneResponse } from '@Types';
+import { sequelize } from '@Models';
 import { ClientService, RecordService } from '@Services';
 
 async function updateClient (req: RedstoneRequest, res: RedstoneResponse) {
@@ -8,7 +9,7 @@ async function updateClient (req: RedstoneRequest, res: RedstoneResponse) {
     });
   }
 
-  const name = req.param('clientName');
+  const name = req.params.clientName;
   let client = await ClientService.findClient(name, {
     withAuths: false,
     withSubscriptions: false,
@@ -25,7 +26,7 @@ async function updateClient (req: RedstoneRequest, res: RedstoneResponse) {
     });
   }
 
-  let changes: any = {};
+  const changes: any = {};
   for (const i of ['username']) {
     if (req.body[i] && req.body[i] !== (client as any)[i]) {
       changes[i] = req.body[i];

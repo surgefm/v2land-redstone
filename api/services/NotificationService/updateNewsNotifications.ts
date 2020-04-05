@@ -1,13 +1,12 @@
-import { sequelize } from '@Types';
-import { Record, News, Event, Stack, Notification } from '@Models';
+import { Record, News, Event, Stack, Notification, sequelize } from '@Models';
 import * as ModeService from '../ModeService';
 import { Transaction } from 'sequelize';
 
 async function updateNewsNotifications(
   news: News,
   { transaction, force = false }: {
-    transaction?: Transaction,
-    force?: boolean,
+    transaction?: Transaction;
+    force?: boolean;
   } = {},
 ) {
   const latestNews = await News.findOne({

@@ -1,7 +1,7 @@
 /**
  * 检查有没有需要发出的汇总推送
  */
-import { Report } from '@Models';
+import { Report, sequelize } from '@Models';
 import { Op } from 'sequelize';
 import sendReport from './sendReport';
 import pino from 'pino';
@@ -21,7 +21,7 @@ async function checkReportNotification() {
     if (!report) {
       setTimeout(checkReportNotification, checkInterval);
     } else {
-      await global.sequelize.transaction(async transaction => {
+      await sequelize.transaction(async transaction => {
         await report.update(
           { status: 'ongoing' },
           { transaction });

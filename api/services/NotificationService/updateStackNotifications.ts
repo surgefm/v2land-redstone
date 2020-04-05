@@ -1,13 +1,12 @@
-import { sequelize } from '@Types';
-import { Record, Event, Stack, Notification } from '@Models';
+import { Record, Event, Stack, Notification, sequelize } from '@Models';
 import * as ModeService from '../ModeService';
 import { Transaction, Op } from 'sequelize';
 
 async function updateStackNotifications(
   stack: Stack,
   { transaction, force = false }: {
-    transaction?: Transaction,
-    force?: boolean,
+    transaction?: Transaction;
+    force?: boolean;
   } = {},
 ) {
   const latestStack = await Stack.findOne({

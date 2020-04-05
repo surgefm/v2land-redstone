@@ -3,11 +3,11 @@ import { NotificationMode, NotificationModeInput } from '@Types';
 import { globals } from '@Configs';
 import moment from 'moment-timezone';
 
-class SevenDaysSinceLatestNewsMode extends NotificationMode {
-  name: '7DaysSinceLatestNews';
-  nickname: '七天未更新新闻';
-  needNews: false;
-  keepLatestOnly: true;
+export class SevenDaysSinceLatestNewsMode extends NotificationMode {
+  name = '7DaysSinceLatestNews';
+  nickname = '七天未更新新闻';
+  needNews = false;
+  keepLatestOnly = true;
 
   async new({ event, news }: NotificationModeInput) {
     const latestNews = news || await News.findOne({
@@ -29,7 +29,7 @@ class SevenDaysSinceLatestNewsMode extends NotificationMode {
     }
   }
 
-  async update ({ event, news }: NotificationModeInput) {
+  async update({ event, news }: NotificationModeInput) {
     return this.new({ event, news });
   }
 
@@ -47,4 +47,4 @@ class SevenDaysSinceLatestNewsMode extends NotificationMode {
   }
 }
 
-export default SevenDaysSinceLatestNewsMode;
+export default new SevenDaysSinceLatestNewsMode();

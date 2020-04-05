@@ -4,7 +4,7 @@ import { EventService, RecordService } from '@Services';
 import isURL from '@Utils/urlValidator';
 
 async function updateHeaderImage (req: RedstoneRequest, res: RedstoneResponse) {
-  const name = req.param('eventName');
+  const name = req.params.eventName;
   const event = await EventService.findEvent(name);
 
   if (!event) {

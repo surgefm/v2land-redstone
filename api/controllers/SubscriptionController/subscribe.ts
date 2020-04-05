@@ -39,7 +39,7 @@ async function subscribe (req: RedstoneRequest, res: RedstoneResponse) {
     });
   }
 
-  let auth: Auth | { profileId: string, id?: number };
+  let auth: Auth | { profileId: string; id?: number };
   const type = ContactService.getTypeFromMethod(contact.method);
   if (!['email', 'mobileApp'].includes(type)) {
     for (const item of client.auths) {
@@ -58,7 +58,7 @@ async function subscribe (req: RedstoneRequest, res: RedstoneResponse) {
     auth = { profileId: contact.profileId || client.email };
   }
 
-  const eventName = req.param('eventName');
+  const eventName = req.params.eventName;
   const event = await EventService.findEvent(eventName, { eventOnly: true });
 
   if (!event) {

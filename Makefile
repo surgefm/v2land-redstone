@@ -10,7 +10,8 @@ test-completeness:
 	node ./scripts/completeness.js
 
 test-without-lint:
-	node ./node_modules/mocha/bin/mocha tests/bootstrap.test.js tests/integration/**/*.test.js --exit;
+	node ./node_modules/gulp-cli/bin/gulp.js build
+	NODE_ENV=test node ./node_modules/mocha/bin/mocha dist/tests/bootstrap.test.js dist/tests/integration/**/*.test.js --exit;
 
 debug:
 	node ./node_modules/mocha/bin/mocha --inspect-brk tests/bootstrap.test.js tests/integration/**/*.test.js --exit;

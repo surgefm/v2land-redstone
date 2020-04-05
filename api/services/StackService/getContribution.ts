@@ -3,7 +3,7 @@ import { StackObj } from '@Types';
 import { Op, Transaction } from 'sequelize';
 
 async function getContribution (stack: StackObj, withData = true, { transaction }: {
-  transaction?: Transaction,
+  transaction?: Transaction;
 } = {}) {
   const attributes = ['model', 'target', 'operation', 'owner'];
   if (withData) {
@@ -21,7 +21,7 @@ async function getContribution (stack: StackObj, withData = true, { transaction 
     attributes,
     include: [{
       model: Client,
-      as: 'client',
+      as: 'ownedBy',
       attributes: ['username', 'role', 'id'],
     }],
     transaction,

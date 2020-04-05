@@ -1,11 +1,11 @@
 import { NotificationMode, NotificationModeInput } from '@Types';
 import { globals } from '@Configs';
 
-class EveryNewNewsMode extends NotificationMode {
-  name: 'new';
-  nickname: '新的新闻报道';
-  needNews: true;
-  isInterval: false;
+export class EveryNewNewsMode extends NotificationMode {
+  name = 'new';
+  nickname = '新的新闻报道';
+  needNews = true;
+  isInterval = false;
 
   async new() {
     return new Date('1/1/3000');
@@ -29,4 +29,4 @@ class EveryNewNewsMode extends NotificationMode {
   }
 }
 
-export default EveryNewNewsMode;
+export default new EveryNewNewsMode();

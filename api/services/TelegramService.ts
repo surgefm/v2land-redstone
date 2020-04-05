@@ -9,7 +9,7 @@ import { globals } from '@Configs';
 export async function sendMessage(
   chatId: string,
   text: string,
-  parseMode: string,
+  parseMode = 'Markdown',
   disableWebPagePreview = false,
   disableNotification= false,
   replyToMessageId?: string,
@@ -47,7 +47,7 @@ export async function sendMessage(
   );
 }
 
-export async function sendText(text: string, parseMode: string, disableWebPagePreview?: boolean) {
+export async function sendText(text: string, parseMode?: string, disableWebPagePreview?: boolean) {
   const chatId = globals.telegramReviewChatId;
   if (globals.environment !== 'production') {
     return;

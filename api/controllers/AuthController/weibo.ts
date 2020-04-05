@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/camelcase */
 import { Auth } from '@Models';
 import { oauth, globals } from '@Configs';
 import { RedstoneRequest, RedstoneResponse } from '@Types';

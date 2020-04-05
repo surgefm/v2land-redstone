@@ -34,4 +34,4 @@ export {
   Stack,
   Subscription,
   sequelize,
-}
+};

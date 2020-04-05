@@ -3,7 +3,7 @@ import { Client } from '@Models';
 import { StackService } from '@Services';
 
 async function getStack (req: RedstoneRequest, res: RedstoneResponse) {
-  const id = +req.param('stackId');
+  const id = +req.params.stackId;
   const stack = await StackService.findStack(id);
   if (stack) {
     stack.contribution = await StackService.getContribution({ id }, true);

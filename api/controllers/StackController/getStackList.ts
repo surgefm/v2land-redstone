@@ -44,8 +44,8 @@ async function getStackList (req: RedstoneRequest, res: RedstoneResponse) {
 
   const stackObjs: any[] = stacks.map(() => null);
   const getDetail = async (i: number) => {
-    let stack = stacks[i];
-    let stackObj: any = stack.get({ plain: true });
+    const stack = stacks[i];
+    const stackObj: any = stack.get({ plain: true });
     if (!stack.time && stack.status === 'admitted' && stack.news && stack.news.length) {
       stackObj.time = stack.news[0].time;
     }

@@ -5,11 +5,11 @@ import { MissingParameterError } from '@Utils/errors';
 import { Op } from 'sequelize';
 import moment from 'moment-timezone';
 
-class MonthlyMode extends NotificationMode {
-  name: 'monthly';
-  nickname: '每月一次的定时提醒';
-  needNews: false;
-  isInterval: true;
+export class MonthlyMode extends NotificationMode {
+  name = 'monthly';
+  nickname = '每月一次的定时提醒';
+  needNews = false;
+  isInterval = true;
 
   async new() {
     const date = moment(new Date).tz('Asia/Shanghai');
@@ -66,4 +66,4 @@ class MonthlyMode extends NotificationMode {
   }
 }
 
-export default MonthlyMode;
+export default new MonthlyMode();

@@ -1,22 +1,22 @@
 import { Event, HeaderImage, Stack, News } from '@Models';
-import { EventObj, StackObj } from '@Types';
+import { EventObj } from '@Types';
 import { Op, Transaction } from 'sequelize';
-import * as _ from 'lodash';
+import _ from 'lodash';
 
 async function findEvent (
   eventName: string | number,
   { includes = {}, eventOnly = false, transaction }: {
-    includes?: { stack?: number, news?: number },
-    eventOnly?: boolean,
-    transaction?: Transaction,
+    includes?: { stack?: number; news?: number };
+    eventOnly?: boolean;
+    transaction?: Transaction;
   } = {}) {
   const checkNewsIncluded = includes.stack && includes.news;
   const event = await Event.findOne({
     attributes: { exclude: ['pinyin'] },
     where: {
       [Op.or]: [
-        { id: _.isNumber(eventName) ? +eventName : -1 },
-        { name: eventName },
+        { id: _.isNaN(+eventName) ? -1 : +eventName },
+        { name: _.isNaN(+eventName) ? eventName : '' },
       ],
     },
     include: eventOnly ? [] : [

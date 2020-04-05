@@ -1,11 +1,12 @@
+/* eslint-disable no-empty */
 import { RedstoneRequest, RedstoneResponse } from '@Types';
 import { Client, News, sequelize } from '@Models';
-import { EventService, RecordService, NewsService, NotificationService } from '@Services';
+import { EventService, RecordService, NewsService, NotificationService, StackService } from '@Services';
 import axios from 'axios';
-const urlTrimmer = require('v2land-url-trimmer');
+// const urlTrimmer = require('v2land-url-trimmer');
 
 async function createNews (req: RedstoneRequest, res: RedstoneResponse) {
-  const name = req.param('eventName');
+  const name = req.params.eventName;
   const data = req.body;
 
   let client: Client;
@@ -13,7 +14,7 @@ async function createNews (req: RedstoneRequest, res: RedstoneResponse) {
     client = await Client.findByPk(req.session.clientId);
   }
 
-  for (const attr of ['url', 'source', 'abstract']) {
+  for (const attr of ['url', 'source', 'abstract', 'time']) {
     if (!data[attr]) {
       return res.status(400).json({
         message: `缺少 ${attr} 参数`,
@@ -21,12 +22,22 @@ async function createNews (req: RedstoneRequest, res: RedstoneResponse) {
     }
   }
 
-  data.url = (await urlTrimmer.trim(data.url)).toString();
+  // data.url = (await urlTrimmer.trim(data.url)).toString();
   const event = await EventService.findEvent(name);
   if (!event) {
     return res.status(404).json({
       message: '未找到该事件',
     });
+  }
+
+  if (data.stackId) {
+    const stack = await StackService.findStack(data.stackId, false);
+    if (!stack || stack.eventId != event.id) {
+      return res.status(400).json({
+        message: '未找到该进展或该进展不属于目标事件',
+      });
+    }
+    data.stackId = stack.id;
   }
 
   data.eventId = event.id;
@@ -48,9 +59,20 @@ async function createNews (req: RedstoneRequest, res: RedstoneResponse) {
     }
 
     // Ask the Wayback Machine of Internet Archive to archive the webpage.
-    axios.get(`https://web.archive.org/save/${data.url}`);
+    try {
+      axios.get(`https://web.archive.org/save/${data.url}`);
+    } catch (err) {}
 
-    const news = await News.create(data, {
+    const news = await News.create({
+      url: data.url,
+      eventId: event.id,
+      stackId: data.stackId,
+      abstract: data.abstract,
+      source: data.source,
+      title: data.title,
+      time: data.time,
+      comment: data.comment,
+    }, {
       raw: true,
       transaction,
     });

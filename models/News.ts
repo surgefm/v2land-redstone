@@ -64,6 +64,7 @@ class News extends Model<News> {
   @BelongsTo(() => Event, 'eventId')
   event: Event;
 
+  @AllowNull(true)
   @ForeignKey(() => Stack)
   @Column
   stackId: number;

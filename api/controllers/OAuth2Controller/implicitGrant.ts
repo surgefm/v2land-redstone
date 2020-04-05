@@ -1,7 +1,7 @@
 import { RedstoneRequest, RedstoneResponse } from '@Types';
 import { AuthorizationClient } from '@Models';
 import { OAuth2Service } from '@Services';
-const isLoggedIn = require('../../policies/isLoggedIn');
+import isLoggedIn from '@Policies/isLoggedIn';
 
 async function implicitGrant (req: RedstoneRequest, res: RedstoneResponse) {
   await isLoggedIn(req, res, () => granting(req, res));

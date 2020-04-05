@@ -3,7 +3,7 @@ import { Event, sequelize } from '@Models';
 import { EventService, RecordService, NotificationService } from '@Services';
 
 async function updateEvent (req: RedstoneRequest, res: RedstoneResponse) {
-  const name = req.param('eventName');
+  const name = req.params.eventName;
   const event = await EventService.findEvent(name);
 
   if (!req.body) {
