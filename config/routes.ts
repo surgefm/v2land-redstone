@@ -1,7 +1,7 @@
 export default {
 
   '/': {
-    view: 'homepage'
+    view: 'homepage',
   },
 
   'GET /code': 'ClientController.inviteCode',
@@ -62,4 +62,4 @@ export default {
 
   'GET /search': 'SearchController.keywordSearch',
 
-} as { [index: string]: string | { view: string } }
+} as { [index: string]: string | { view: string } };
