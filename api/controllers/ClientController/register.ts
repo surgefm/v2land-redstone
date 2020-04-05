@@ -8,8 +8,21 @@ async function register (req: RedstoneRequest, res: RedstoneResponse) {
   let salt;
   let hash;
 
+  if (!data.username || !data.email || !data.password) {
+    return res.status(400).json({
+      message: '缺少参数：username，email 或 password。',
+    });
+  }
+
+  ClientService.validatePassword(data.password);
+
   await sequelize.transaction(async transaction => {
     let client = await ClientService.findClient(data.username, {
+      withAuths: false,
+      withSubscriptions: false,
+    });
+
+    client = client || await ClientService.findClient(data.email, {
       withAuths: false,
       withSubscriptions: false,
     });
@@ -23,13 +36,6 @@ async function register (req: RedstoneRequest, res: RedstoneResponse) {
 
     try {
       salt = await bcrypt.genSalt(10);
-    } catch (err) {
-      return res.status(500).json({
-        message: 'Error occurs when generating salt',
-      });
-    }
-
-    try {
       hash = await bcrypt.hash(data.password, salt);
     } catch (err) {
       return res.status(500).json({

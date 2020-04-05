@@ -20,7 +20,7 @@ describe('ClientController', function() {
         .post('/client/register')
         .send({
           username: 'testRegister',
-          password: 'testPassword',
+          password: 'testPassword1',
           email: testEmail,
         })
         .expect(201, done);
@@ -28,7 +28,7 @@ describe('ClientController', function() {
   });
 
   describe('#changePassword()', function() {
-    const password = 'changedPassword';
+    const password = 'changedPassword1';
 
     before(async function() {
       await sequelize.query(`DELETE FROM client`);
@@ -39,7 +39,7 @@ describe('ClientController', function() {
         .post('/client/register')
         .send({
           username: 'testChangePwd',
-          password: 'testChangePassword',
+          password: 'testChangePassword1',
           email: testEmail,
         })
         .expect(201);
@@ -51,7 +51,7 @@ describe('ClientController', function() {
         .post('/client/login')
         .send({
           username: 'testChangePwd',
-          password: 'testChangePassword',
+          password: 'testChangePassword1',
         })
         .expect(200);
 
@@ -91,7 +91,7 @@ describe('ClientController', function() {
         .post('/client/register')
         .send({
           username: 'testAccountLogin',
-          password: 'testPassword',
+          password: 'testPassword1',
           email: testEmail,
         })
         .expect(201);
@@ -102,7 +102,7 @@ describe('ClientController', function() {
         .post('/client/login')
         .send({
           username: 'testAccountLogin',
-          password: 'testPassword',
+          password: 'testPassword1',
         })
         .expect(200);
     });
