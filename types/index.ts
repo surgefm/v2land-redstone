@@ -6,7 +6,6 @@ import { NotificationMode, NotificationModeInput } from './NotificationMode';
 
 interface RedstoneRequest extends Request {
   sessionID?: string;
-  session?: Record<string, any>;
   currentClient?: Client;
   log: Logger;
 }

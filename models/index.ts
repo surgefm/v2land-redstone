@@ -14,6 +14,7 @@ import Report from './Report';
 import ReportNotification from './ReportNotification';
 import Stack from './Stack';
 import Subscription from './Subscription';
+import { sequelize } from '~/loadSequelize';
 
 export {
   Auth,
@@ -32,4 +33,5 @@ export {
   ReportNotification,
   Stack,
   Subscription,
+  sequelize,
 }

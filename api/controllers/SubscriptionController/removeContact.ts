@@ -1,5 +1,5 @@
-import { RedstoneRequest, RedstoneResponse, sequelize } from '@Types';
-import { Contact } from '@Models';
+import { RedstoneRequest, RedstoneResponse } from '@Types';
+import { Contact, sequelize } from '@Models';
 import { RecordService } from '@Services';
 
 async function removeContact (req: RedstoneRequest, res: RedstoneResponse) {

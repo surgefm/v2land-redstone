@@ -1,7 +1,7 @@
-import { Auth, Client } from '@Models';
+import { Auth, Client, sequelize } from '@Models';
 import { oauth, globals } from '@Configs';
 import { RecordService, AuthService } from '@Services';
-import { RedstoneRequest, RedstoneResponse, sequelize } from '@Types';
+import { RedstoneRequest, RedstoneResponse } from '@Types';
 import axios from 'axios';
 
 async function weiboRedirect (req: RedstoneRequest, res: RedstoneResponse) {

@@ -14,6 +14,15 @@
 
 const parseDomain = require('parse-domain');
 import globals from './globals';
+import { sequelize } from '@Models';
+
+import * as Redis from 'ioredis';
+import * as sessionRedis from 'connect-redis';
+
+import * as expressSession from 'express-session';
+import * as sessionSequelize from 'connect-session-sequelize';
+
+let sessionStore: () => expressSession.Store;
 
 const url = parseDomain(globals.api);
 const cookie = {
@@ -23,120 +32,41 @@ const cookie = {
   secure: typeof process.env.SECURE_COOKIE !== 'undefined'
     ? process.env.SECURE_COOKIE === 'true'
     : process.env.NODE_ENV === 'production',
+  maxAge: 86400 * 7,
 };
 
-let connection = {};
+const sessionConfig = {
+  secret: process.env.SESSION_SECRET || '970a14748cf639a4aa3d7b0d60cc9cac',
+  resave: false,
+  saveUninitialized: true,
+  unset: 'destroy' as 'destroy',
+  name: 'redstone.sid',
+  proxy: true,
+  cookie,
+}
 
 if (process.env.REDIS_HOST) {
-  connection = {
-    adapter: 'redis',
-
-    database: process.env.REDIS_DB || 0,
+  const RedisStore = sessionRedis(expressSession);
+  const redis = new Redis({
+    db: +process.env.REDIS_DB || 0,
     host: process.env.REDIS_HOST || '127.0.0.1',
-    port: process.env.REDIS_PORT || 6379,
+    port: +process.env.REDIS_PORT || 6379,
+    password: process.env.REDIS_PWD,
+  });
+
+  sessionStore = () => new RedisStore({
+    client: redis,
     prefix: 'sess:',
-  };
+    ttl: 86400 * 7,
+  });
 
   console.info('Using Redis as session storage.');
 } else {
-  connection = {
-    adapter: 'v2land-sails-pg-session',
-
-    database: process.env.POSTGRES_DB || 'v2land',
-    host: process.env.POSTGRES_HOST || '127.0.0.1',
-    user: process.env.POSTGRES_USER || 'postgres',
-    password: process.env.POSTGRES_PWD,
-    port: process.env.POSTGRES_PORT || 5432,
-  };
+  const SequelizeStore = (sessionSequelize as unknown as typeof sessionSequelize.init)(expressSession.Store);
+  sessionStore = () => new SequelizeStore({ db: sequelize });
 
   console.info('Using PostgreSQL as session storage. One service instance at most.');
 }
 
-export default {
-
-  /***************************************************************************
-  *                                                                          *
-  * Session secret is automatically generated when your new app is created   *
-  * Replace at your own risk in production-- you will invalidate the cookies *
-  * of your users, forcing them to log in again.                             *
-  *                                                                          *
-  ***************************************************************************/
-  secret: process.env.SESSION_SECRET || '970a14748cf639a4aa3d7b0d60cc9cac',
-
-  ...connection,
-
-  cookie,
-
-  /***************************************************************************
-  *                                                                          *
-  * Set the session cookie expire time The maxAge is set by milliseconds,    *
-  * the example below is for 24 hours                                        *
-  *                                                                          *
-  ***************************************************************************/
-
-  // cookie: {
-  //   maxAge: 24 * 60 * 60 * 1000
-  // },
-
-  /***************************************************************************
-  *                                                                          *
-  * Uncomment the following lines to set up a Redis session store that can   *
-  * be shared across multiple Sails.js servers.                              *
-  *                                                                          *
-  * Requires connect-redis (https://www.npmjs.com/package/connect-redis)     *
-  *                                                                          *
-  ***************************************************************************/
-
-  // adapter: 'redis',
-
-  /***************************************************************************
-  *                                                                          *
-  * The following values are optional, if no options are set a redis         *
-  * instance running on localhost is expected. Read more about options at:   *
-  *                                                                          *
-  * https://github.com/visionmedia/connect-redis                             *
-  *                                                                          *
-  ***************************************************************************/
-
-  // host: 'localhost',
-  // port: 6379,
-  // ttl: <redis session TTL in seconds>,
-  // db: 0,
-  // pass: <redis auth password>,
-  // prefix: 'sess:',
-
-  /***************************************************************************
-  *                                                                          *
-  * Uncomment the following lines to set up a MongoDB session store that can *
-  * be shared across multiple Sails.js servers.                              *
-  *                                                                          *
-  * Requires connect-mongo (https://www.npmjs.com/package/connect-mongo)     *
-  * Use version 0.8.2 with Node version <= 0.12                              *
-  * Use the latest version with Node >= 4.0                                  *
-  *                                                                          *
-  ***************************************************************************/
-
-  // adapter: 'mongo',
-  // url: 'mongodb://user:password@localhost:27017/dbname', // user, password and port optional
-
-  /***************************************************************************
-  *                                                                          *
-  * Optional Values:                                                         *
-  *                                                                          *
-  * See https://github.com/kcbanner/connect-mongo for more                   *
-  * information about connect-mongo options.                                 *
-  *                                                                          *
-  * See http://bit.ly/mongooptions for more information about options        *
-  * available in `mongoOptions`                                              *
-  *                                                                          *
-  ***************************************************************************/
-
-  // collection: 'sessions',
-  // stringify: true,
-  // mongoOptions: {
-  //   server: {
-  //     ssl: true
-  //   }
-  // }
-
-}
+export { cookie, sessionConfig, sessionStore };
+export default { cookie, sessionConfig, sessionStore }
