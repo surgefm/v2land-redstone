@@ -1,5 +1,5 @@
-import { RedstoneRequest, RedstoneResponse, sequelize } from '@Types';
-import { Event } from '@Models';
+import { RedstoneRequest, RedstoneResponse } from '@Types';
+import { Event, sequelize } from '@Models';
 import { EventService, RecordService, NotificationService } from '@Services';
 
 async function updateEvent (req: RedstoneRequest, res: RedstoneResponse) {

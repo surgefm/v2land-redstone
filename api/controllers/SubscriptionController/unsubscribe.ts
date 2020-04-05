@@ -1,5 +1,5 @@
-import { RedstoneRequest, RedstoneResponse, sequelize } from '@Types';
-import { Subscription } from '@Models';
+import { RedstoneRequest, RedstoneResponse } from '@Types';
+import { Subscription, sequelize } from '@Models';
 import { RecordService } from '@Services';
 import { Op } from 'sequelize';
 import * as _ from 'lodash';
