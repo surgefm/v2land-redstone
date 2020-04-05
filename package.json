@@ -8,7 +8,8 @@
     "build": "node node_modules/gulp-cli/bin/gulp.js build",
     "prod": "node node_modules/gulp-cli/bin/gulp.js build && NODE_ENV=production node dist/app.js",
     "start": "node node_modules/gulp-cli/bin/gulp.js server",
-    "dev": "node node_modules/gulp-cli/bin/gulp.js watch"
+    "dev": "node node_modules/gulp-cli/bin/gulp.js watch",
+    "coverage": "make coverage"
   },
   "dependencies": {
     "@elastic/elasticsearch": "^7.6.1",
@@ -78,6 +79,7 @@
     "husky": "^4.2.3",
     "mocha": "^7.1.1",
     "module-alias": "^2.2.2",
+    "nyc": "^15.0.1",
     "reflect-metadata": "^0.1.13",
     "source-map-support": "^0.5.16",
     "supertest": "^4.0.2",
