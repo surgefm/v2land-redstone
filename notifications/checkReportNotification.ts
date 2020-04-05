@@ -4,7 +4,7 @@
 import { Report } from '@Models';
 import { Op } from 'sequelize';
 import sendReport from './sendReport';
-import * as pino from 'pino';
+import pino from 'pino';
 const logger = pino();
 const checkInterval = 2000;
 

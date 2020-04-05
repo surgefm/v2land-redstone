@@ -1,6 +1,6 @@
-const axios = require('axios');
-const { SLACK_URL } = process.env;
+import axios from 'axios';
 import { globals } from '@Configs';
+const { SLACK_URL } = process.env;
 
 export async function sendText(text: string) {
   if (globals.environment !== 'production') {
@@ -17,4 +17,4 @@ export async function sendText(text: string) {
       headers: { 'Content-Type': 'application/json' },
     }
   );
-};
+}

@@ -1,6 +1,6 @@
 import { Report } from '@Models';
 import { Transaction } from 'sequelize';
-const sendEmailReport = require('./sendEmailReport');
+import sendEmailReport from './sendEmailReport';
 
 async function sendReport(report: Report, { transaction }: { transaction: Transaction }) {
   switch (report.method) {

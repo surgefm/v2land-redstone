@@ -17,4 +17,4 @@ export default function(req: RedstoneRequest, res: RedstoneResponse, next: NextF
       message: '您没有权限进行该操作',
     });
   }
-};
+}

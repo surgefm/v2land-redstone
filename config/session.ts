@@ -16,11 +16,11 @@ const parseDomain = require('parse-domain');
 import globals from './globals';
 import { sequelize } from '@Models';
 
-import * as Redis from 'ioredis';
-import * as sessionRedis from 'connect-redis';
+import Redis from 'ioredis';
+import sessionRedis from 'connect-redis';
 
-import * as expressSession from 'express-session';
-import * as sessionSequelize from 'connect-session-sequelize';
+import expressSession from 'express-session';
+import sessionSequelize from 'connect-session-sequelize';
 
 let sessionStore: () => expressSession.Store;
 

@@ -7,10 +7,10 @@
  *                 which means the client should have a valid req.currentClient instance
  * @returns     :: '404 该路径并未开放' if route not permitted.
  */
-import { RedstoneRequest, RedstoneResponse, NextFunction } from '@Types';
+import { RedstoneRequest, RedstoneResponse } from '@Types';
 
-export default function(req: RedstoneRequest, res: RedstoneResponse, next: NextFunction) {
+export default function(req: RedstoneRequest, res: RedstoneResponse) {
   return res.status(404).json({
     message: '该路径并未开放',
   });
-};
+}

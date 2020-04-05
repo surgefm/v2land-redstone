@@ -11,7 +11,7 @@ import notifyByTwitterAt from './notifyByTwitterAt';
 import notifyByWeibo from './notifyByWeibo';
 import notifyByWeiboAt from './notifyByWeiboAt';
 import notifyByMobileAppNotification from './notifyByMobileAppNotification';
-import * as pino from 'pino';
+import pino from 'pino';
 const logger = pino();
 
 async function notify(notification: Notification) {

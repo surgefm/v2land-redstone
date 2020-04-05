@@ -4,7 +4,7 @@
 import { Notification, Event } from '@Models';
 import { Op } from 'sequelize';
 import notify from './notify';
-import * as pino from 'pino';
+import pino from 'pino';
 const logger = pino();
 const checkInterval = 1000;
 

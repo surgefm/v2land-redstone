@@ -1,4 +1,5 @@
-const axios = require('axios');
+/* eslint-disable @typescript-eslint/camelcase */
+import axios from 'axios';
 const { TELE_TOKEN } = process.env;
 import { globals } from '@Configs';
 
@@ -9,10 +10,10 @@ export async function sendMessage(
   chatId: string,
   text: string,
   parseMode: string,
-  disableWebPagePreview: boolean,
-  disableNotification: boolean,
-  replyToMessageId: string,
-  replyMarkup: string,
+  disableWebPagePreview = false,
+  disableNotification= false,
+  replyToMessageId?: string,
+  replyMarkup?: string,
   notifyMissingToken = false,
 ) {
   if (!TELE_TOKEN && notifyMissingToken) {
@@ -51,7 +52,7 @@ export async function sendText(text: string, parseMode: string, disableWebPagePr
   if (globals.environment !== 'production') {
     return;
   }
-  return this.sendMessage(
+  return sendMessage(
     chatId,
     text,
     parseMode,

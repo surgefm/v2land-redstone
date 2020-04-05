@@ -5,8 +5,8 @@ import { Notification, Subscription, Report, ReportNotification } from '@Models'
 import { ModeService } from '@Services';
 
 async function notifyByEmailDailyReport({ subscription, notification }: {
-  notification: Notification,
-  subscription: Subscription,
+  notification: Notification;
+  subscription: Subscription;
 }) {
   const time = await ModeService.getMode('daily').new();
 

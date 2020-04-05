@@ -5,13 +5,13 @@ import { Contact, Subscription, Auth } from '@Models';
 import { UtilService, TwitterService } from '@Services';
 import { globals } from '@Configs';
 import disableSubscriptionMethod from './disableSubscriptionMethod';
-import * as pino from 'pino';
+import pino from 'pino';
 const logger = pino();
 
 async function notifyByTwitterAt({ contact, subscription, template }: {
-  contact: Contact,
-  subscription: Subscription,
-  template: any,
+  contact: Contact;
+  subscription: Subscription;
+  template: any;
 }) {
   if (!globals.officialAccount.twitter) {
     return logger.error(new Error('未配置官方 Twitter 账号'));

@@ -1,7 +1,7 @@
 import { Stack } from '@Models';
 import { NotificationMode, NotificationModeInput } from '@Types';
 import { globals } from '@Configs';
-import * as moment from 'moment-timezone';
+import moment from 'moment-timezone';
 import { Op } from 'sequelize';
 
 class ThirtyDaysSinceLatestStackMode extends NotificationMode {
