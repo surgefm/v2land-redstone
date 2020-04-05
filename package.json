@@ -1,7 +1,8 @@
 {
   "name": "v2land-redstone",
   "private": false,
-  "version": "0.0.2",
+  "version": "0.1.0",
+  "license": "MIT",
   "description": "langchao.org backend service",
   "scripts": {
     "build": "node node_modules/gulp-cli/bin/gulp.js build",
