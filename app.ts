@@ -6,6 +6,7 @@ import bodyParser from 'body-parser';
 import pino from 'express-pino-logger';
 import session from 'express-session';
 import { sessionConfig, sessionStore } from '@Configs/session';
+import http from '@Configs/http';
 
 import loadRoutes from './loadRoutes';
 import loadSequelize from './loadSequelize';
@@ -22,6 +23,7 @@ export async function liftServer(app: Express) {
     ...sessionConfig,
     store: sessionStore(),
   }));
+  app.use(http.middleware.bearerAuthentication);
 
   loadRoutes(app);
 

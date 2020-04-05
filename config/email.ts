@@ -1,7 +1,7 @@
 import * as nodemailer from 'nodemailer';
 import * as path from 'path';
 import * as aws from 'aws-sdk';
-const hbs = require('nodemailer-express-handlebars');
+import hbs from 'nodemailer-express-handlebars';
 
 let email: { transporter: nodemailer.Transporter } = { transporter: null };
 

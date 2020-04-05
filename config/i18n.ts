@@ -17,7 +17,7 @@
 
 export default {
 
-  /***************************************************************************
+  /** *************************************************************************
   *                                                                          *
   * Which locales are supported?                                             *
   *                                                                          *
@@ -25,7 +25,7 @@ export default {
 
   // locales: ['en', 'es', 'fr', 'de'],
 
-  /****************************************************************************
+  /** **************************************************************************
   *                                                                           *
   * What is the default locale for the site? Note that this setting will be   *
   * overridden for any request that sends an "Accept-Language" header (i.e.   *
@@ -36,7 +36,7 @@ export default {
 
   // defaultLocale: 'en',
 
-  /****************************************************************************
+  /** **************************************************************************
   *                                                                           *
   * Automatically add new keys to locale (translation) files when they are    *
   * encountered during a request?                                             *
@@ -45,7 +45,7 @@ export default {
 
   // updateFiles: false,
 
-  /****************************************************************************
+  /** **************************************************************************
   *                                                                           *
   * Path (relative to app root) of directory to store locale (translation)    *
   * files in.                                                                 *
@@ -54,4 +54,4 @@ export default {
 
   // localesDirectory: '/config/locales'
 
-}
+};

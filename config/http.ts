@@ -1,9 +1,10 @@
 import { Request, Response, NextFunction } from 'express';
 import { RedstoneRequest } from '@Types';
+import { AuthorizationAccessToken } from '@Models';
 
 export default {
 
-  /****************************************************************************
+  /** **************************************************************************
   *                                                                           *
   * Express middleware to use for every Sails request. To add custom          *
   * middleware to the mix, add a function to the middleware config object and *
@@ -15,7 +16,7 @@ export default {
 
   middleware: {
 
-  /***************************************************************************
+    /** *************************************************************************
   *                                                                          *
   * The order in which middleware should be run for HTTP request. (the Sails *
   * router is invoked by the "router" middleware below.)                     *
@@ -37,11 +38,9 @@ export default {
     ],
 
     noCache: function (req: Request, res: Response, next: NextFunction) {
-      res.header("Cache-Control", "no-cache, no-store");
+      res.header('Cache-Control', 'no-cache, no-store');
       return next();
     },
-
-    bodyParser: require('skipper')({ limit: '4mb' }),
 
     bearerAuthentication: function (req: RedstoneRequest, res: Response, next: NextFunction) {
       if ((req.session && req.session.clientId) || !req.get('Authorization')) {
@@ -54,7 +53,6 @@ export default {
       }
 
       const accessTokenStr = authorization.slice(7);
-      const AuthorizationAccessToken = require('../models/AuthorizationAccessToken');
       AuthorizationAccessToken.findOne({ where: { token: accessTokenStr } }).then((accessToken: any) => {
         if (accessToken == null) {
           return res.status(400).json({
@@ -71,9 +69,9 @@ export default {
       });
     },
 
-  }
+  },
 
-  /***************************************************************************
+  /** *************************************************************************
   *                                                                          *
   * The number of seconds to cache flat files on disk being served by        *
   * Express static middleware (by default, these files are in `.tmp/public`) *
@@ -84,4 +82,4 @@ export default {
   ***************************************************************************/
 
   // cache: 31557600000
-}
+};
