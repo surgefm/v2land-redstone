@@ -1,10 +1,10 @@
 import 'source-map-support/register';
 import 'module-alias/register';
-import * as dotenv from 'dotenv';
-import * as express from 'express';
-import * as bodyParser from 'body-parser';
-import * as pino from 'express-pino-logger';
-import * as session from 'express-session';
+import dotenv from 'dotenv';
+import express from 'express';
+import bodyParser from 'body-parser';
+import pino from 'express-pino-logger';
+import session from 'express-session';
 import { sessionConfig, sessionStore } from '@Configs/session';
 
 import loadRoutes from './loadRoutes';

@@ -18,4 +18,4 @@ export default function(req: RedstoneRequest, res: RedstoneResponse, next: NextF
   // User is not allowed
   // (default res.forbidden() behavior can be overridden in `config/403.js`)
   return res.status(403).json({ message: 'You are not permitted to perform this action.' });
-};
+}

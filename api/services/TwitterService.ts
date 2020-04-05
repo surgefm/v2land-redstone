@@ -14,7 +14,7 @@ export async function tweet (auth: Auth, status: string) {
       auth.accessTokenSecret,
       { status },
       'status',
-      (err: { statusCode: number, data?: any }) => {
+      err => {
         if (err) return reject(err);
         resolve();
       });

@@ -1,5 +1,5 @@
-const request = require('superagent');
-const urlencode = require('urlencode');
+import request from 'superagent';
+import urlencode from 'urlencode';
 
 import { Auth } from '@Models';
 
@@ -11,7 +11,7 @@ export async function post (auth: Auth, status: string) {
         '&status=' + urlencode(status)
       )
       .type('form')
-      .end((err: any) => {
+      .end(err => {
         if (err) return reject(err);
         resolve();
       });

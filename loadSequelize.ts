@@ -1,7 +1,7 @@
 import { Sequelize } from 'sequelize-typescript';
 import { datastores } from '@Configs';
 import * as models from '@Models';
-import * as pino from 'pino';
+import pino from 'pino';
 const logger = pino();
 
 const { postgresql } = datastores;

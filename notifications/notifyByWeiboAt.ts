@@ -4,14 +4,14 @@
 import { Contact, Subscription, Auth } from '@Models';
 import { UtilService, WeiboService } from '@Services';
 import { globals } from '@Configs';
-import * as pino from 'pino';
+import pino from 'pino';
 const logger = pino();
 import disableSubscriptionMethod from './disableSubscriptionMethod';
 
 async function notifyByWeiboAt({ contact, subscription, template }: {
-  contact: Contact,
-  subscription: Subscription,
-  template: any,
+  contact: Contact;
+  subscription: Subscription;
+  template: any;
 }) {
   if (!globals.officialAccount.weibo) {
     return logger.error(new Error('未配置官方微博账号'));

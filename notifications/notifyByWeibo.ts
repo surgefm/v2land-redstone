@@ -4,13 +4,13 @@
 import { Contact, Subscription } from '@Models';
 import { UtilService, WeiboService } from '@Services';
 import disableSubscription from './disableSubscription';
-import * as pino from 'pino';
+import pino from 'pino';
 const logger = pino();
 
 async function notifyByWeibo({ contact, subscription, template }: {
-  contact: Contact,
-  subscription: Subscription,
-  template: any,
+  contact: Contact;
+  subscription: Subscription;
+  template: any;
 }) {
   if (!contact) {
     await disableSubscription(subscription);

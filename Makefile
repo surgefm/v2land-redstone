@@ -1,7 +1,7 @@
 EXE_PATH=./node_modules/.bin/eslint
-API_PATH=api/**/*.js
-SCRIPT_PATH=scripts/**/*.js
-TEST_PATH=tests/**/*.js
+API_PATH=api/**/*.ts
+SCRIPT_PATH=scripts/**/*.ts
+TEST_PATH=tests/**/*.ts
 
 test: eslint test-without-lint
 	echo "浪潮爱你❤️"
@@ -17,11 +17,11 @@ debug:
 
 eslint:
 	$(EXE_PATH) $(API_PATH)
-	$(EXE_PATH) $(SCRIPT_PATH)
-	$(EXE_PATH) $(TEST_PATH)
+	# $(EXE_PATH) $(SCRIPT_PATH)
+	# $(EXE_PATH) $(TEST_PATH)
 
 eslint-fix:
 	$(EXE_PATH) $(API_PATH) --fix
-	$(EXE_PATH) $(SCRIPT_PATH) --fix
-	$(EXE_PATH) $(TEST_PATH) --fix
+	# $(EXE_PATH) $(SCRIPT_PATH) --fix
+	# $(EXE_PATH) $(TEST_PATH) --fix
 

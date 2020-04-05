@@ -1,4 +1,4 @@
-import * as randomString from 'crypto-random-string';
+import randomString from 'crypto-random-string';
 import { AuthorizationAccessToken } from '@Models';
 
 export async function getNewAccessToken (
