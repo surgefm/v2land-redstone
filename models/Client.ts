@@ -77,7 +77,7 @@ class Client extends Model<Client> {
 
   @HasMany(() => Subscription, 'subscriber')
   subscriptions: Subscription[];
-  
+
   @HasMany(() => Contact, 'owner')
   contacts: Contact[];
 

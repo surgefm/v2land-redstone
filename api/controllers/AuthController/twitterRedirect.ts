@@ -20,8 +20,8 @@ async function twitterRedirect (req: RedstoneRequest, res: RedstoneResponse) {
     });
   }
 
-  const getAccessToken = (): Promise<{ accessToken: string, accessTokenSecret: string }> => {
-    return new Promise((resolve, reject) => {
+  const getAccessToken = (): Promise<{ accessToken: string; accessTokenSecret: string }> => {
+    return new Promise((resolve) => {
       oa.getOAuthAccessToken(
         token,
         auth.tokenSecret,
@@ -43,7 +43,7 @@ async function twitterRedirect (req: RedstoneRequest, res: RedstoneResponse) {
   if (!accessToken || !accessTokenSecret) return;
 
   const getResponse = (): Promise<string> => {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       oa.get(
         'https://api.twitter.com/1.1/account/verify_credentials.json',
         accessToken,

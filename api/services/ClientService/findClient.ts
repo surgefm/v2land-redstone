@@ -10,11 +10,11 @@ async function findClient (
     withPassword = false,
     forceUpdate = false,
   }: {
-    transaction?: Transaction,
-    withAuths?: boolean,
-    withSubscriptions?: boolean,
-    withPassword?: boolean,
-    forceUpdate?: boolean,
+    transaction?: Transaction;
+    withAuths?: boolean;
+    withSubscriptions?: boolean;
+    withPassword?: boolean;
+    forceUpdate?: boolean;
   } = {}) {
   if (clientName instanceof Client) {
     if (forceUpdate) {
@@ -25,7 +25,7 @@ async function findClient (
   }
 
   let where;
-  
+
   if (+clientName > 0) {
     where = {
       id: +clientName,

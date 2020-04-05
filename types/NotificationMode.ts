@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Event, News, Stack, Notification } from '@Models';
 
 interface NotificationModeInput {
@@ -16,13 +17,13 @@ abstract class NotificationMode {
   needNews: boolean;
   needStack: boolean;
   isInterval: boolean;
-  keepLatestOnly: boolean = false;
+  keepLatestOnly = false;
 
   abstract async new(input?: NotificationModeInput): Promise<Date>;
 
   async update(input?: NotificationModeInput): Promise<Date> {
     return null;
-  };
+  }
 
   abstract async notified(input?: NotificationModeInput): Promise<Date>;
 

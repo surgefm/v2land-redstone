@@ -4,10 +4,10 @@ import { globals } from '@Configs';
 import { MissingParameterError } from '@Utils/errors';
 import { Op } from 'sequelize';
 
-class EveryNewStackMode extends NotificationMode {
-  name: 'EveryNewStack';
-  nickname: '新的事件进展';
-  needStack: true;
+export class EveryNewStackMode extends NotificationMode {
+  name = 'EveryNewStack';
+  nickname = '新的事件进展';
+  needStack = true;
 
   async new () {
     return new Date('1/1/2000');
@@ -49,4 +49,4 @@ class EveryNewStackMode extends NotificationMode {
   }
 }
 
-export default EveryNewStackMode;
+export default new EveryNewStackMode();

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/member-delimiter-style */
 import { Auth, sequelize } from '@Models';
 import { RecordService } from '@Services';
 import { RedstoneRequest, RedstoneResponse } from '@Types';

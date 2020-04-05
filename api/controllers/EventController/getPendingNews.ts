@@ -3,7 +3,7 @@ import { News } from '@Models';
 import { EventService } from '@Services';
 
 async function getPendingNews (req: RedstoneRequest, res: RedstoneResponse) {
-  const name = req.param('eventName');
+  const name = req.params.eventName;
   const event = await EventService.findEvent(name);
 
   if (!event) {

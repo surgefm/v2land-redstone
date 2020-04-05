@@ -11,9 +11,8 @@ import {
   HasOne,
   HasMany,
   ForeignKey,
-  BelongsTo,
 } from 'sequelize-typescript';
-import * as _ from 'lodash';
+import _ from 'lodash';
 
 import HeaderImage from './HeaderImage';
 import Stack from './Stack';
@@ -72,10 +71,10 @@ class Event extends Model<Event> {
 
   @HasMany(() => News, 'eventId')
   news: News[];
-  
+
   @HasMany(() => Critique, 'eventId')
   critiques: Critique[];
-  
+
   @HasMany(() => Notification, 'eventId')
   notifications: Notification[];
 

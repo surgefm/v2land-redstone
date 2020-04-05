@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/camelcase */
 import { Auth, Client, sequelize } from '@Models';
 import { oauth, globals } from '@Configs';
 import { RecordService, AuthService } from '@Services';
@@ -14,7 +15,7 @@ async function weiboRedirect (req: RedstoneRequest, res: RedstoneResponse) {
   const oa = oauth.weibo;
   const { code, authId } = req.query;
 
-  const getAccessToken = (): Promise<{ accessToken: string, refreshToken?: string}> => {
+  const getAccessToken = (): Promise<{ accessToken: string; refreshToken?: string}> => {
     return new Promise((resolve) => {
       oa.getOAuthAccessToken(
         code,
@@ -43,15 +44,13 @@ async function weiboRedirect (req: RedstoneRequest, res: RedstoneResponse) {
     });
   }
 
-  let response;
-  response = await axios.post(
+  const response = await axios.post(
     'https://api.weibo.com/oauth2/get_token_info?access_token=' + accessToken,
     { access_token: accessToken }
   );
   auth.profileId = response.data.uid + '';
 
-  let data: any;
-  data = (await axios.get(
+  const data = (await axios.get(
     'https://api.weibo.com/2/users/show.json?' +
       `uid=${response.data.uid}&access_token=${accessToken}`
   )).data;

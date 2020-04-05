@@ -11,7 +11,7 @@ async function twitter (req: RedstoneRequest, res: RedstoneResponse) {
     });
   }
 
-  const getToken = (): Promise<{ token: string, tokenSecret: string }> => {
+  const getToken = (): Promise<{ token: string; tokenSecret: string }> => {
     return new Promise((resolve, reject) => {
       oa.getOAuthRequestToken((err: any, token: string, tokenSecret: string) => {
         if (err) return reject(err);

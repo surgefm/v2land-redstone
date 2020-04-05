@@ -1,6 +1,6 @@
 import * as bcrypt from 'bcrypt';
-import { RedstoneRequest, RedstoneResponse, sequelize } from '@Types';
-import { Client } from '@Models';
+import { RedstoneRequest, RedstoneResponse } from '@Types';
+import { Client, sequelize } from '@Models';
 import { RecordService } from '~/api/services';
 
 async function changePassword (req: RedstoneRequest, res: RedstoneResponse) {

@@ -1,4 +1,4 @@
-const uniqueString = require('unique-string');
+import uniqueString from 'unique-string';
 
 function generateFilename (file: { filename: string }) {
   const { filename } = file;

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/camelcase */
 import * as ElasticsearchService from '../ElasticsearchService';
 
 async function keywordQueryUsingElasticsearch (keyword: string) {

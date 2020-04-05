@@ -2,7 +2,6 @@ import { RedstoneRequest, RedstoneResponse } from '@Types';
 import { Subscription, sequelize } from '@Models';
 import { RecordService } from '@Services';
 import { Op } from 'sequelize';
-import * as _ from 'lodash';
 
 async function unsubscribe (req: RedstoneRequest, res: RedstoneResponse) {
   if (!(req.query && req.query.id && req.query.unsubscribeId)) {

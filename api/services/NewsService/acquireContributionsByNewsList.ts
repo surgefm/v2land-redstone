@@ -3,7 +3,7 @@ import getContribution from './getContribution';
 import { News, Record } from '@Models';
 
 async function acquireContributionsByNewsList (
-  newsList: (News | { id: number, contribution?: Record[] })[],
+  newsList: (News | { id: number; contribution?: Record[] })[],
   withData: boolean,
   { transaction }: { transaction?: Transaction } = {},
 ) {

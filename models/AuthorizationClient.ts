@@ -30,7 +30,7 @@ class AuthorizationClient extends Model<AuthorizationClient> {
   @Default(false)
   @Column
   allowAuthorizationByCredentials: boolean;
-  
+
   @HasMany(() => AuthorizationCode, 'authorizationClientId')
   authorizationCodes: AuthorizationCode[];
 

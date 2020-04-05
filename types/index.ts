@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { Logger } from 'pino';
-import { Client, Record as RecordModel, Stack, News } from '@Models';
-import { Sequelize } from 'sequelize-typescript';
+import { Client, Record as RecordModel, News } from '@Models';
 import { NotificationMode, NotificationModeInput } from './NotificationMode';
 
 interface RedstoneRequest extends Request {
@@ -10,12 +9,12 @@ interface RedstoneRequest extends Request {
   log: Logger;
 }
 
-interface RedstoneResponse extends Response {}
-interface RedstoneNextFunction extends NextFunction {}
+type RedstoneResponse = Response
+type RedstoneNextFunction = NextFunction
 type ControllerAction = (req: RedstoneRequest, res: RedstoneResponse) => Promise<any>;
 
 interface StringIndexInterface {
-  [index: string]: any
+  [index: string]: any;
 }
 
 interface SimplifiedEventInterface extends StringIndexInterface {
@@ -51,8 +50,6 @@ interface EventObj extends SimplifiedEventInterface {
   get?: Function;
 }
 
-declare let sequelize: Sequelize;
-
 export {
   RedstoneRequest,
   RedstoneResponse,
@@ -61,7 +58,6 @@ export {
   SimplifiedEventInterface,
   EventObj,
   StackObj,
-  sequelize,
   NotificationMode,
   NotificationModeInput,
 };

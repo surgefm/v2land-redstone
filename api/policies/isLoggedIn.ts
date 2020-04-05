@@ -9,6 +9,24 @@
 import { Client } from '@Models';
 import { RedstoneRequest, RedstoneResponse, NextFunction } from '@Types';
 
+export default async function(req: RedstoneRequest, res: RedstoneResponse, next: NextFunction) {
+  if (typeof req.session === 'undefined') {
+    return res.status(401).json({
+      message: '请在登录后进行该操作',
+    });
+  }
+  req.currentClient = await getClient(req, req.session.clientId);
+  if (req.currentClient) {
+    req.currentClient.isManager = ['manager', 'admin'].includes(req.currentClient.role);
+    req.currentClient.isAdmin = req.currentClient.role === 'admin';
+    return next();
+  } else {
+    return res.status(401).json({
+      message: '请在登录后进行该操作',
+    });
+  }
+}
+
 /**
  * getClient
  *
@@ -26,22 +44,4 @@ async function getClient(req: RedstoneRequest, clientId: number) {
     return null;
   }
   return client;
-}
-
-export default async function(req: RedstoneRequest, res: RedstoneResponse, next: NextFunction) {
-  if (typeof req.session === 'undefined') {
-    return res.status(401).json({
-      message: '请在登录后进行该操作',
-    });
-  }
-  req.currentClient = await getClient(req, req.session.clientId);
-  if (req.currentClient) {
-    req.currentClient.isManager = ['manager', 'admin'].includes(req.currentClient.role);
-    req.currentClient.isAdmin = req.currentClient.role === 'admin';
-    return next();
-  } else {
-    return res.status(401).json({
-      message: '请在登录后进行该操作',
-    });
-  }
 }
