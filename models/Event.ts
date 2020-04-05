@@ -29,8 +29,11 @@ class Event extends Model<Event> {
   @AllowNull(false)
   @Unique(true)
   @Is('EventName', (value) => {
-    if (!_.isString(value) || value.length === 0) return false;
-    if (value.trim() !== value) return false;
+    if (!_.isString(value) || value.length === 0) {
+      throw new Error('事件名不得为空');
+    } else if (value.trim() !== value) {
+      throw new Error('事件名两端不应含有空格');
+    }
 
     let allDigit = true;
     for (const char of value) {
@@ -39,13 +42,17 @@ class Event extends Model<Event> {
         break;
       }
     }
-    if (allDigit) return false;
+    if (allDigit) {
+      throw new Error('事件名不得全为数字');
+    }
 
     const reserved = ['register', 'new', 'setting', 'admin',
       'about', 'subscription', 'index', 'login', 'verify', 'list',
       'pending', 'post'];
 
-    return !reserved.includes(value);
+    if (reserved.includes(value)) {
+      throw new Error(`事件名不得为以下文字：${reserved.join(', ')}`);
+    }
   })
   @Column(DataType.TEXT)
   name: string;

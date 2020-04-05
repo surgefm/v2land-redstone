@@ -20,7 +20,7 @@ async function loadRoutes(app: Express) {
 
 function getControllerAction(controller: string, action: string) {
   return function(req: RedstoneRequest, res: RedstoneResponse, next: NextFunction) {
-    controllers[controller][action](req, res).then(() => next());
+    controllers[controller][action](req, res).catch(next);
   };
 }
 

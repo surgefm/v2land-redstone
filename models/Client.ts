@@ -26,8 +26,11 @@ import AuthorizationAccessToken from './AuthorizationAccessToken';
 } as TableOptions)
 class Client extends Model<Client> {
   @Is('Username', (value) => {
-    if (!_.isString(value) || value.length < 2 || value.length > 16) return false;
-    if (/\r?\n|\r| |@/.test(value)) return false;
+    if (!_.isString(value) || value.length < 2 || value.length > 16) {
+      throw new Error('用户名长度应在 2-16 个字符内');
+    } else if (/\r?\n|\r| |@/.test(value)) {
+      throw new Error('用户名不得含有 @ 或空格。');
+    }
 
     let allDigit = true;
     for (const char of value) {
@@ -36,7 +39,9 @@ class Client extends Model<Client> {
         break;
       }
     }
-    return !allDigit;
+    if (allDigit) {
+      throw new Error('用户名不得全为数字');
+    }
   })
   @AllowNull(false)
   @Unique(true)
@@ -47,9 +52,6 @@ class Client extends Model<Client> {
   @Column(DataType.TEXT)
   email: string;
 
-  @Is('Password', (value) => {
-    return _.isString(value) && value.length >= 6 && value.match(/[A-z]/i) && value.match(/[0-9]/);
-  })
   @AllowNull(false)
   @Column(DataType.TEXT)
   password: string;

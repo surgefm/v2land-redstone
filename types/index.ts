@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { Logger } from 'pino';
 import { Client, Record as RecordModel, News } from '@Models';
 import { NotificationMode, NotificationModeInput } from './NotificationMode';
+import RedstoneError, { RedstoneErrorIdentifier, InvalidInputErrorType } from './RedstoneError';
 
 interface RedstoneRequest extends Request {
   sessionID?: string;
@@ -55,9 +56,15 @@ export {
   RedstoneResponse,
   NextFunction,
   ControllerAction,
+
   SimplifiedEventInterface,
   EventObj,
   StackObj,
+
   NotificationMode,
   NotificationModeInput,
+
+  RedstoneError,
+  RedstoneErrorIdentifier,
+  InvalidInputErrorType,
 };

@@ -1,4 +1,4 @@
-/* eslint-disable no-unused-vars */
+/* eslint-disable */
 import { Sequelize } from 'sequelize-typescript';
 
 declare global {

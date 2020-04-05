@@ -10,6 +10,7 @@ import http from '@Configs/http';
 
 import loadRoutes from './loadRoutes';
 import loadSequelize from './loadSequelize';
+import { errorHandler } from '@Responses';
 
 dotenv.config();
 
@@ -26,6 +27,8 @@ export async function liftServer(app: Express) {
   app.use(http.middleware.bearerAuthentication);
 
   loadRoutes(app);
+
+  app.use(errorHandler);
 
   if (process.env.NODE_ENV !== 'test') {
     app.listen(1337, () => {

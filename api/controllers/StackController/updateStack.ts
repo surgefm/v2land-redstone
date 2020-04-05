@@ -20,7 +20,6 @@ async function updateStack (req: RedstoneRequest, res: RedstoneResponse) {
     if (err.message === '一个进展必须在含有一个已过审新闻的情况下方可开放') {
       return res.status(400).json({ message: err.message });
     }
-    throw err;
   }
 }
 

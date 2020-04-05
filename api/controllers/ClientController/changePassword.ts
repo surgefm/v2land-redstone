@@ -1,7 +1,7 @@
 import * as bcrypt from 'bcrypt';
 import { RedstoneRequest, RedstoneResponse } from '@Types';
 import { Client, sequelize } from '@Models';
-import { RecordService } from '~/api/services';
+import { ClientService, RecordService } from '~/api/services';
 
 async function changePassword (req: RedstoneRequest, res: RedstoneResponse) {
   const data = req.body;
@@ -16,6 +16,8 @@ async function changePassword (req: RedstoneRequest, res: RedstoneResponse) {
       message: '参数错误',
     });
   }
+
+  ClientService.validatePassword(data.password);
 
   const { clientId } = req.session;
   const targetId = data.id;

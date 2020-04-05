@@ -62,7 +62,7 @@ if (process.env.REDIS_HOST) {
 
   console.info('Using Redis as session storage.');
 } else {
-  const SequelizeStore = (sessionSequelize as unknown as typeof sessionSequelize.init)(expressSession.Store);
+  const SequelizeStore = sessionSequelize(expressSession.Store);
   sessionStore = () => new SequelizeStore({ db: sequelize });
 
   console.info('Using PostgreSQL as session storage. One service instance at most.');

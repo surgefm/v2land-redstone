@@ -93,6 +93,7 @@
     "@Controllers": "dist/api/controllers",
     "@Policies": "dist/api/policies",
     "@Services": "dist/api/services",
-    "@Modes": "dist/api/modes"
+    "@Modes": "dist/api/modes",
+    "@Responses": "dist/api/responses"
   }
 }

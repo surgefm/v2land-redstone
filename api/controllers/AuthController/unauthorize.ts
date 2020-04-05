@@ -3,13 +3,13 @@ import { RecordService } from '@Services';
 import { RedstoneRequest, RedstoneResponse } from '@Types';
 
 async function unauthorize (req: RedstoneRequest, res: RedstoneResponse) {
-  if (!req.param('authId')) {
+  if (!req.params.authId) {
     return res.status(400).json({
       message: '缺少参数：authId',
     });
   }
 
-  const auth = await Auth.findByPk(req.param('authId'));
+  const auth = await Auth.findByPk(req.params.authId);
   if (!auth) {
     return res.status(404).json({
       message: '未找到该绑定信息',

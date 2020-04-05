@@ -29,7 +29,9 @@
       "@Utils": ["./utils"],
       "@Utils/*": ["./utils/*"],
       "@Modes": ["./api/modes"],
-      "@Modes/*": ["./api/modes/*"]
+      "@Modes/*": ["./api/modes/*"],
+      "@Responses": ["./api/responses"],
+      "@Responses/*": ["./api/responses/*"]
     }
   },
   "include": [
