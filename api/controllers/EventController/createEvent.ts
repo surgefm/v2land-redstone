@@ -1,6 +1,6 @@
-import { RedstoneRequest, RedstoneResponse, sequelize } from '@Types';
+import { RedstoneRequest, RedstoneResponse } from '@Types';
 import { EventService, RecordService, NotificationService } from '@Services';
-import { Event } from '@Models';
+import { Event, sequelize } from '@Models';
 
 async function createEvent (req: RedstoneRequest, res: RedstoneResponse) {
   if (!(req.body && req.body.name && req.body.description)) {

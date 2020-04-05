@@ -1,7 +1,7 @@
-import { Auth, Client } from '@Models';
+import { Auth, Client, sequelize } from '@Models';
 import { oauth } from '@Configs';
 import { AuthService, RecordService } from '@Services';
-import { RedstoneRequest, RedstoneResponse, sequelize } from '@Types';
+import { RedstoneRequest, RedstoneResponse } from '@Types';
 
 async function twitterRedirect (req: RedstoneRequest, res: RedstoneResponse) {
   if (!(req.query && req.query.token && req.query.verifier)) {

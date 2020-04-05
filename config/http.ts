@@ -66,7 +66,6 @@ export default {
           });
         }
 
-        req.session = req.session || {};
         req.session.clientId = accessToken.owner;
         next();
       });

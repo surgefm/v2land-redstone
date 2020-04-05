@@ -1,5 +1,5 @@
-import { RedstoneRequest, RedstoneResponse, sequelize } from '@Types';
-import { HeaderImage } from '@Models';
+import { RedstoneRequest, RedstoneResponse } from '@Types';
+import { HeaderImage, sequelize } from '@Models';
 import { EventService, RecordService } from '@Services';
 import isURL from '@Utils/urlValidator';
 

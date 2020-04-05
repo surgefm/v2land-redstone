@@ -1,6 +1,6 @@
-import { Auth } from '@Models';
+import { Auth, sequelize } from '@Models';
 import { RecordService } from '@Services';
-import { RedstoneRequest, RedstoneResponse, sequelize } from '@Types';
+import { RedstoneRequest, RedstoneResponse } from '@Types';
 
 async function unauthorize (req: RedstoneRequest, res: RedstoneResponse) {
   if (!req.param('authId')) {

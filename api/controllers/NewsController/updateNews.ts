@@ -1,5 +1,5 @@
-import { RedstoneRequest, RedstoneResponse, sequelize } from '@Types';
-import { News, Stack } from '@Models';
+import { RedstoneRequest, RedstoneResponse } from '@Types';
+import { News, Stack, sequelize } from '@Models';
 import { RecordService, EventService, NotificationService, NewsService } from '@Services';
 const urlTrimmer = require('v2land-url-trimmer');
 

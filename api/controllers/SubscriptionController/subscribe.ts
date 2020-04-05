@@ -1,5 +1,5 @@
-import { RedstoneRequest, RedstoneResponse, sequelize } from '@Types';
-import { Client, Auth, Subscription, Notification, Contact } from '@Models';
+import { RedstoneRequest, RedstoneResponse } from '@Types';
+import { Client, Auth, Subscription, Notification, Contact, sequelize } from '@Models';
 import {
   ModeService, ContactService, EventService,
   NotificationService, SubscriptionService, RecordService,

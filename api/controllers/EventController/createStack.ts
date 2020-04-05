@@ -1,5 +1,5 @@
-import { RedstoneRequest, RedstoneResponse, sequelize } from '@Types';
-import { Stack } from '@Models';
+import { RedstoneRequest, RedstoneResponse } from '@Types';
+import { Stack, sequelize } from '@Models';
 import { EventService, RecordService, StackService } from '@Services';
 
 async function createStack (req: RedstoneRequest, res: RedstoneResponse) {

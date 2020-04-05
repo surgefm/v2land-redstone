@@ -1,5 +1,5 @@
-import { RedstoneRequest, RedstoneResponse, sequelize } from '@Types';
-import { Client, Event, HeaderImage, News } from '@Models';
+import { RedstoneRequest, RedstoneResponse } from '@Types';
+import { Client, Event, HeaderImage, News, sequelize } from '@Models';
 import { UtilService, EventService } from '@Services';
 import * as _ from 'lodash';
 
