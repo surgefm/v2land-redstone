@@ -4,8 +4,8 @@
 import { Event, Report, Client, Stack, News, Record, Notification } from '@Models';
 import { ModeService } from '@Services';
 import { Op, Transaction } from 'sequelize';
-import * as _ from 'lodash';
-import * as moment from 'moment-timezone';
+import _ from 'lodash';
+import moment from 'moment-timezone';
 
 async function getReportData(report: Report, { transaction }: { transaction: Transaction }) {
   const notifications = await report.$get('notifications', {
@@ -70,4 +70,4 @@ function getDate() {
   return { year, month, day, str };
 }
 
-module.exports = getReportData;
+export default getReportData;

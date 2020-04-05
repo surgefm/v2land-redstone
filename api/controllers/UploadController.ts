@@ -28,4 +28,4 @@ export async function upload (req: RedstoneRequest, res: RedstoneResponse) {
       }));
     });
   });
-};
+}

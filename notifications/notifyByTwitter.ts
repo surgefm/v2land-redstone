@@ -3,13 +3,13 @@
  */
 import { Contact, Subscription } from '@Models';
 import { UtilService, TwitterService } from '@Services';
-import * as pino from 'pino';
+import pino from 'pino';
 const logger = pino();
 
 async function notifyByTwitter({ contact, subscription, template }: {
-  contact: Contact,
-  subscription: Subscription,
-  template: any,
+  contact: Contact;
+  subscription: Subscription;
+  template: any;
 }) {
   if (!contact) {
     subscription.status = 'failed';

@@ -3,8 +3,8 @@ import { StackObj } from '@Types';
 import * as ElasticsearchService from '../ElasticsearchService';
 
 async function updateElasticsearchIndex({ stack, stackId }: {
-  stack?: Stack | StackObj,
-  stackId?: number,
+  stack?: Stack | StackObj;
+  stackId?: number;
 }) {
   if (!stack) {
     stack = await Stack.findOne({
@@ -18,7 +18,7 @@ async function updateElasticsearchIndex({ stack, stackId }: {
 
   return ElasticsearchService.update({
     index: 'stacks',
-    id: stack.id,
+    id: stack.id + '',
     body: {
       'doc': stack,
       'doc_as_upsert': true,

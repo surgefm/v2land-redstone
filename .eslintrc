@@ -1,9 +1,11 @@
 {
   "extends": [
     "eslint:recommended",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended",
     "v2land"
   ],
-  "parser": "babel-eslint",
+  "parser": "@typescript-eslint/parser",
   "env": {
     "node": true
   },
@@ -17,6 +19,9 @@
           "ArrowFunctionExpression": false,
           "FunctionExpression": false
       }
-    }]
+    }],
+    "@typescript-eslint/explicit-function-return-type": "off",
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/no-use-before-define": "off"
   }
 }

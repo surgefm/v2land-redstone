@@ -1,7 +1,7 @@
 import { News } from '@Models';
 import { NotificationMode, NotificationModeInput } from '@Types';
 import { globals } from '@Configs';
-import * as moment from 'moment-timezone';
+import moment from 'moment-timezone';
 
 class SevenDaysSinceLatestNewsMode extends NotificationMode {
   name: '7DaysSinceLatestNews';

@@ -12,5 +12,5 @@ export async function keywordSearch (req: RedstoneRequest, res: RedstoneResponse
   const searchResults = await SearchService.keywordQueryUsingElasticsearch(keyword);
   return res.status(200).json({
     results: searchResults,
-  })
+  });
 }
