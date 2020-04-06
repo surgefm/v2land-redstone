@@ -26,10 +26,12 @@ async function login (req: RedstoneRequest, res: RedstoneResponse) {
   }
 
   req.session.clientId = client.id;
+  const clientObj: any = client.get({ plain: true });
+  delete clientObj.password;
 
   res.status(200).json({
     message: '登录成功',
-    client,
+    client: clientObj,
   });
 }
 
