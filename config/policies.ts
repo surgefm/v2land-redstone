@@ -84,7 +84,7 @@ export default {
   },
 
   UploadController: {
-    'upload': ['isLoggedIn', 'isManager'],
+    'upload': ['isLoggedIn', 'isManager', 'uploadFile'],
     '*': false,
   },
 

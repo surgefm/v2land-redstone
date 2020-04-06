@@ -1,15 +1,5 @@
 export default {
   cors: {
-    /** *************************************************************************
-  *                                                                          *
-  * Allow CORS on all routes by default? If not, you must enable CORS on a   *
-  * per-route basis by either adding a "cors" configuration object to the    *
-  * route config, or setting "cors:true" in the route config to use the      *
-  * default settings below.                                                  *
-  *                                                                          *
-  ***************************************************************************/
-
-    allRoutes: true,
 
     /** *************************************************************************
   *                                                                          *
@@ -19,7 +9,7 @@ export default {
   *                                                                          *
   ***************************************************************************/
 
-    allowOrigins: (process.env.CORS || 'http://localhost:3000,https://langchao.org,https://v2land.net').split(','),
+    origin: (process.env.CORS || 'http://localhost:3000,https://langchao.org,https://v2land.net').split(','),
 
     /** *************************************************************************
   *                                                                          *
@@ -27,24 +17,6 @@ export default {
   *                                                                          *
   ***************************************************************************/
 
-    allowCredentials: true,
-
-    /** *************************************************************************
-  *                                                                          *
-  * Which methods should be allowed for CORS requests? This is only used in  *
-  * response to preflight requests (see article linked above for more info)  *
-  *                                                                          *
-  ***************************************************************************/
-
-    // methods: 'GET, POST, PUT, DELETE, OPTIONS, HEAD',
-
-    /** *************************************************************************
-  *                                                                          *
-  * Which headers should be allowed for CORS requests? This is only used in  *
-  * response to preflight requests.                                          *
-  *                                                                          *
-  ***************************************************************************/
-
-  // headers: 'content-type'
+    credentials: true,
   },
 };

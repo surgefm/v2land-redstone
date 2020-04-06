@@ -55,10 +55,10 @@ async function keywordQueryUsingElasticsearch (keyword: string) {
 
   const { body } = await ElasticsearchService.msearch({ body: queryBulk });
   const { responses } = body;
-  const results = {};
+  const results: { [index: string]: any } = {};
   for (let i = 0; i < 4; i++) {
     const type = ['events', 'stacks', 'news', 'clients'][i];
-    (results as any)[type] = responses[i].hits;
+    results[type] = responses[i].hits;
   }
   return results;
 }

@@ -78,6 +78,7 @@ async function register (req: RedstoneRequest, res: RedstoneResponse) {
     }, { transaction });
 
     req.session.clientId = client.id;
+    delete client.password;
     res.status(201).json({
       message: '注册成功，请在三天内至邮箱查收验证邮件',
       client,
