@@ -8,9 +8,9 @@ interface SanitizedClient {
 }
 
 function sanitizeClient (client: Client): SanitizedClient {
-  const temp = {};
+  const temp: { [index: string]: any } = {};
   for (const attr of ['username', 'role', 'id', 'description']) {
-    (temp as any)[attr] = (client as any)[attr];
+    temp[attr] = (client as any)[attr];
   }
 
   return temp as SanitizedClient;
