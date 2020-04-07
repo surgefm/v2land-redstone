@@ -1,4 +1,4 @@
-import { Event, HeaderImage, Stack, News } from '@Models';
+import { Event, HeaderImage, Stack, News, Tag } from '@Models';
 import { EventObj } from '@Types';
 import { Op, Transaction } from 'sequelize';
 import _ from 'lodash';
@@ -41,6 +41,14 @@ async function findEvent (
           limit: 3,
           required: false,
         }],
+      }, {
+        model: News,
+        as: 'latestAdmittedNews',
+        required: false,
+      }, {
+        model: Tag,
+        as: 'tags',
+        required: false,
       },
     ],
     transaction,

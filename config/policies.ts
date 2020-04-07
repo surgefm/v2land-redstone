@@ -29,6 +29,8 @@ export default {
     'createStack': true,
     'createNews': true,
     'updateHeaderImage': ['isLoggedIn', 'isManager'],
+    'addTag': ['isLoggedIn', 'isManager'],
+    'removeTag': ['isLoggedIn', 'isManager'],
     '*': false,
   },
 
@@ -90,6 +92,13 @@ export default {
 
   SearchController: {
     'keywordSearch': true,
+    '*': false,
+  },
+
+  TagController: {
+    'createTag': ['isLoggedIn', 'isManager'],
+    'updateTag': ['isLoggedIn', 'isManager'],
+    'getTag': true,
     '*': false,
   },
 

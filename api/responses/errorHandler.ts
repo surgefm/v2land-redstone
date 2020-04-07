@@ -7,7 +7,7 @@ import { ValidationError } from 'sequelize';
 
 function errorHandler(err: Error, req: RedstoneRequest, res: RedstoneResponse, next: NextFunction) {
   if (!err || err instanceof ServerResponse) return next();
-  console.log(err);
+  req.log.error(err);
 
   if (err.name === 'SequelizeValidationError') {
     res.status(400).json({
