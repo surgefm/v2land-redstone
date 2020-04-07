@@ -1853,15 +1853,6 @@ ALTER TABLE ONLY public.event
 
 
 --
--- TOC entry 3321 (class 2606 OID 38169)
--- Name: headerImage headerimage_event_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: v2land
---
-
-ALTER TABLE ONLY public."headerImage"
-    ADD CONSTRAINT headerimage_event_id_fk FOREIGN KEY ("eventId") REFERENCES public.event(id);
-
-
---
 -- TOC entry 3322 (class 2606 OID 38174)
 -- Name: news news_event_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: v2land
 --

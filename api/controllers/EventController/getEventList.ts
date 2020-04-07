@@ -1,5 +1,5 @@
 import { RedstoneRequest, RedstoneResponse } from '@Types';
-import { Client, Event, HeaderImage, News, sequelize } from '@Models';
+import { Client, Event, HeaderImage, News, Tag, sequelize } from '@Models';
 import { UtilService, EventService } from '@Services';
 import _ from 'lodash';
 
@@ -67,7 +67,7 @@ async function getEventList (req: RedstoneRequest, res: RedstoneResponse) {
     }
 
     const events = await Event.findAll({
-      where,
+      where: where || { status: 'admitted' },
       include: [{
         as: 'headerImage',
         model: HeaderImage,
@@ -75,6 +75,10 @@ async function getEventList (req: RedstoneRequest, res: RedstoneResponse) {
       }, {
         as: 'latestAdmittedNews',
         model: News,
+        required: false,
+      }, {
+        as: 'tags',
+        model: Tag,
         required: false,
       }],
       order: [

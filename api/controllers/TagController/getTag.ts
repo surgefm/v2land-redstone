@@ -1,0 +1,26 @@
+import { Tag, Event, News } from '@Models';
+import { RedstoneRequest, RedstoneResponse } from '@Types';
+
+async function getTag(req: RedstoneRequest, res: RedstoneResponse) {
+  const tag = await Tag.findByPk(req.params.tagId, {
+    include: [{
+      model: Event,
+      as: 'events',
+      where: { status: 'admitted' },
+      include: [{
+        model: News,
+        as: 'latestAdmittedNews',
+        required: false,
+      }],
+      required: false,
+    }],
+  });
+  if (!tag) {
+    return res.status(404).json({
+      message: '无法找到该标签',
+    });
+  }
+  return res.status(200).json({ tag });
+}
+
+export default getTag;

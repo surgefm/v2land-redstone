@@ -27,6 +27,8 @@ export default {
   'GET /event/:eventName/pending': 'EventController.getPendingNews',
   'POST /event/:eventName/stack': 'EventController.createStack',
   'POST /event/:eventName/news': 'EventController.createNews',
+  'POST /event/:eventName/tag': 'EventController.addTag',
+  'DELETE /event/:eventName/tag/:tagId': 'EventController.removeTag',
   'POST /event/:eventName/header_image': 'EventController.updateHeaderImage',
   'PUT /event/:eventName/header_image': 'EventController.updateHeaderImage',
   'GET /event/:eventName': 'EventController.getEvent',
@@ -61,5 +63,9 @@ export default {
   'POST /upload': 'UploadController.upload',
 
   'GET /search': 'SearchController.keywordSearch',
+
+  'POST /tag': 'TagController.createTag',
+  'PUT /tag/:tagId': 'TagController.updateTag',
+  'GET /tag/:tagId': 'TagController.getTag',
 
 } as { [index: string]: string | { view: string } };
