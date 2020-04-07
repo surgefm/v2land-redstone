@@ -99,6 +99,7 @@ export default {
     'createTag': ['isLoggedIn', 'isManager'],
     'updateTag': ['isLoggedIn', 'isManager'],
     'getTag': true,
+    'getTagList': true,
     '*': false,
   },
 

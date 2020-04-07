@@ -79,12 +79,15 @@ async function getEventList (req: RedstoneRequest, res: RedstoneResponse) {
       }, {
         as: 'tags',
         model: Tag,
+        where: { status: 'visible' },
         required: false,
       }],
       order: [
         [{ model: News, as: 'latestAdmittedNews' }, 'time', 'DESC'],
         ['updatedAt', 'DESC'],
       ],
+      limit: 15,
+      offset: 15 * (page - 1),
       transaction,
     });
 

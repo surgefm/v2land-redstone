@@ -48,6 +48,7 @@ async function findEvent (
       }, {
         model: Tag,
         as: 'tags',
+        where: { status: 'visible' },
         required: false,
       },
     ],
