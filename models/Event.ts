@@ -11,6 +11,8 @@ import {
   HasOne,
   HasMany,
   ForeignKey,
+  BelongsTo,
+  BelongsToMany,
 } from 'sequelize-typescript';
 import _ from 'lodash';
 
@@ -20,6 +22,8 @@ import News from './News';
 import Critique from './Critique';
 import Notification from './Notification';
 import Subscription from './Subscription';
+import EventTag from './EventTag';
+import Tag from './Tag';
 
 @Table({
   modelName: 'event',
@@ -92,8 +96,11 @@ class Event extends Model<Event> {
   @Column
   latestAdmittedNewsId: number;
 
-  @HasOne(() => News, 'latestAdmittedNewsId')
+  @BelongsTo(() => News, 'latestAdmittedNewsId')
   latestAdmittedNews: News;
+
+  @BelongsToMany(() => Tag, () => EventTag)
+  tags: Array<Tag & {EventTag: EventTag}>;
 }
 
 export default Event;

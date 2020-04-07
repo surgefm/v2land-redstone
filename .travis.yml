@@ -17,6 +17,7 @@ node_js:
   - "10"
 before_script:
   - psql -c 'create database v2land;' -U postgres
+  - psql -U postgres -d v2land -f ./scripts/db-02.sql
 script: make test
 deploy:
   provider: script

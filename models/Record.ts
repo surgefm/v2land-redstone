@@ -16,8 +16,7 @@ import Client from './Client';
   freezeTableName: true,
 } as TableOptions)
 class Record extends Model<Record> {
-  @AllowNull(false)
-  @Column(DataType.ENUM(
+  /**
     'Event',
     'Stack',
     'News',
@@ -27,8 +26,10 @@ class Record extends Model<Record> {
     'Contact',
     'Auth',
     'Report',
-    'Miscellaneous',
-  ))
+    'Miscellaneous'
+  */
+  @AllowNull(false)
+  @Column(DataType.TEXT)
   model: string;
 
   @Column(DataType.INTEGER)
@@ -41,7 +42,7 @@ class Record extends Model<Record> {
   ))
   operation?: string;
 
-  @Column(DataType.ENUM(
+  /**
     'createEvent',
     'updateEventStatus',
     'updateEventDetail',
@@ -71,8 +72,12 @@ class Record extends Model<Record> {
     'notify',
     'sendEmailDailyReport',
     'sendWeeklyDailyReport',
-    'sendMonthlyDailyReport',
-  ))
+    'sendMonthlyDailyReport'
+    'createTag',
+    'addTagToEvent',
+    'removeTagFromEvent'
+  */
+  @Column(DataType.TEXT)
   action?: string;
 
   @Column(DataType.JSONB)
