@@ -15,7 +15,15 @@ async function getTag(req: RedstoneRequest, res: RedstoneResponse) {
       required: false,
     }],
   });
-  if (!tag) {
+
+  let tagVisible = tag.status !== 'hidden';
+  if (!tagVisible && req.currentClient) {
+    if (['admin', 'manager'].includes(req.currentClient.role)) {
+      tagVisible = true;
+    }
+  }
+
+  if (!tag || !tagVisible) {
     return res.status(404).json({
       message: '无法找到该标签',
     });

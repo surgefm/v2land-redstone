@@ -7,6 +7,7 @@ import {
   AllowNull,
   Unique,
   BelongsToMany,
+  Default,
 } from 'sequelize-typescript';
 import Event from './Event';
 import EventTag from './EventTag';
@@ -23,6 +24,10 @@ class Tag extends Model<Tag> {
   @AllowNull
   @Column(DataType.TEXT)
   description: string;
+
+  @Default('visible')
+  @Column(DataType.ENUM('visible', 'hidden'))
+  status: string;
 
   @BelongsToMany(() => Event, () => EventTag)
   events: Array<Event & {EventTag: EventTag}>;

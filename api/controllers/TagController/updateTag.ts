@@ -27,6 +27,16 @@ async function updateTag(req: RedstoneRequest, res: RedstoneResponse) {
     dataChange.description = req.body.description;
   }
 
+  if (req.body.status && req.body.status !== tag.status) {
+    if (!['visible', 'hidden'].includes(req.body.status)) {
+      return res.status(400).json({
+        message: '标签状态必须为 visible 或 hidden。',
+      });
+    }
+    tag.status = req.body.status;
+    dataChange.status = req.body.status;
+  }
+
   if (Object.keys(dataChange).length === 0) {
     return res.status(200).json({
       message: '没有进行任何改变',

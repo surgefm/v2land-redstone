@@ -32,6 +32,14 @@ CREATE TYPE public.enum_auth_site AS ENUM (
 
 ALTER TYPE public.enum_auth_site OWNER TO v2land;
 
+CREATE TYPE public.enum_tag_status AS ENUM (
+    'visible',
+    'hidden'
+);
+
+
+ALTER TYPE public.enum_tag_status OWNER TO v2land;
+
 --
 -- TOC entry 664 (class 1247 OID 37518)
 -- Name: enum_authorizationAccessToken_status; Type: TYPE; Schema: public; Owner: v2land
@@ -1136,6 +1144,7 @@ CREATE TABLE public.tag (
     id integer NOT NULL,
     name text,
     description text,
+    status public.enum_tag_status,
     "createdAt" timestamp with time zone,
     "updatedAt" timestamp with time zone
 );
