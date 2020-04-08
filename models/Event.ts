@@ -101,7 +101,7 @@ class Event extends Model<Event> {
   tags: Array<Tag & {EventTag: EventTag}>;
 
   @BelongsToMany(() => News, () => EventNews)
-  news: Array<Tag & {EventNews: EventNews}>;
+  news: Array<News & {EventNews: EventNews}>;
 }
 
 export default Event;

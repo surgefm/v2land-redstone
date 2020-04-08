@@ -6,14 +6,14 @@ import { Transaction } from 'sequelize';
 async function findStack (id: number, withContributionData = true, { transaction }: {
   transaction?: Transaction;
 } = {}) {
-  const stack = await Stack.findOne({
-    where: { id },
+  const stack = await Stack.findByPk(id, {
     include: [{
       model: News,
       as: 'news',
       where: { status: 'admitted' },
       order: [['time', 'ASC']],
-      limit: 15,
+      through: { attributes: [] },
+      required: false,
     }],
     transaction,
   });
@@ -21,11 +21,9 @@ async function findStack (id: number, withContributionData = true, { transaction
   if (!stack) return;
 
   const stackObj: StackObj = stack.get({ plain: true });
-  stackObj.newsCount = await News.count({
-    where: {
-      status: 'admitted',
-      stackId: stack.id,
-    },
+  stackObj.newsCount = await stack.$count('news', {
+    where: { status: 'admitted' },
+    transaction,
   });
 
   if (!stack.time && stack.news && stack.news.length) {

@@ -35,6 +35,15 @@ class Record extends Model<Record> {
   @Column(DataType.INTEGER)
   target?: number;
 
+  /**
+   * In the case of a through model, there are two target resources.
+   * The model with higher priority would be `target`, the other `subtarget`.
+   * Priority: Event > Stack > News
+   */
+  @AllowNull
+  @Column(DataType.INTEGER)
+  subtarget?: number;
+
   @Column(DataType.ENUM(
     'create',
     'update',

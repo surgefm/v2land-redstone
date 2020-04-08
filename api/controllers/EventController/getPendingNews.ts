@@ -1,10 +1,10 @@
-import { RedstoneRequest, RedstoneResponse } from '@Types';
-import { News } from '@Models';
+import { RedstoneRequest, RedstoneResponse, EventObj } from '@Types';
+import { Event } from '@Models';
 import { EventService } from '@Services';
 
 async function getPendingNews (req: RedstoneRequest, res: RedstoneResponse) {
   const name = req.params.eventName;
-  const event = await EventService.findEvent(name);
+  let event: EventObj | Event = await EventService.findEvent(name);
 
   if (!event) {
     return res.status(404).json({
@@ -12,11 +12,9 @@ async function getPendingNews (req: RedstoneRequest, res: RedstoneResponse) {
     });
   }
 
-  const newsCollection = await News.findAll({
-    where: {
-      eventId: event.id,
-      status: 'pending',
-    },
+  event = await Event.findByPk(event.id);
+  const newsCollection = await event.$get('news', {
+    where: { status: 'pending' },
   });
 
   return res.status(200).json({ newsCollection });

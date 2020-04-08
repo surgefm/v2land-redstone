@@ -18,7 +18,7 @@ async function getContribution (
     },
     include: [{
       model: Client,
-      as: 'client',
+      as: 'ownedBy',
       required: false,
       attributes: ['username', 'role', 'id'],
     }],
