@@ -1,4 +1,4 @@
-import { Stack, News, Record } from '@Models';
+import { Stack, Record } from '@Models';
 import { StackObj } from '@Types';
 import * as NotificationService from '../NotificationService';
 import updateElasticsearchIndex from './updateElasticsearchIndex';
@@ -45,19 +45,15 @@ async function updateStack ({ id = -1, data = {}, clientId, transaction }: {
   }
 
   const changesCopy = { ...changes };
-  let news;
 
   if (changes.status) {
     if (changes.status === 'admitted') {
-      news = await News.findOne({
-        where: {
-          stackId: stack.id,
-          status: 'admitted',
-        },
+      const newsCount = await stack.$count('news', {
+        where: { status: 'admitted' },
         transaction,
       });
 
-      if (!news) {
+      if (newsCount === 0) {
         throw new Error('一个进展必须在含有一个已过审新闻的情况下方可开放');
       }
     }

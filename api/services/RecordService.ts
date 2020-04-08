@@ -5,6 +5,7 @@ interface RecordData {
   model: string;
   action: string;
   target: number;
+  subtarget?: number;
   owner?: number;
   client?: number;
   data?: any;

@@ -1,28 +1,18 @@
-import { News, Event } from '@Models';
+import { Event } from '@Models';
 import { Transaction } from 'sequelize';
 
 async function updateAdmittedLatestNews(eventId: number, { transaction }: {
   transaction?: Transaction;
 }) {
-  const latestAdmittedNews = await News.findOne({
-    where: {
-      eventId,
-      status: 'admitted',
-    },
-    order: [
-      ['time', 'DESC'],
-    ],
+  const event = await Event.findByPk(eventId);
+  const latestAdmittedNews = await event.$get('news', {
+    where: { status: 'admitted' },
+    order: [['time', 'DESC']],
     transaction,
   });
-  if (!latestAdmittedNews) return;
-  return Event.update({
-    latestAdmittedNewsId: latestAdmittedNews.id,
-  }, {
-    where: {
-      id: eventId,
-    },
-    transaction,
-  });
+  if (latestAdmittedNews.length === 0) return;
+  event.latestAdmittedNewsId = latestAdmittedNews[0].id;
+  await event.save({ transaction });
 }
 
 export default updateAdmittedLatestNews;

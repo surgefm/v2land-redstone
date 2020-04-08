@@ -2,7 +2,7 @@ import { Record, Client } from '@Models';
 import { StackObj } from '@Types';
 import { Op, Transaction } from 'sequelize';
 
-async function getContribution (stack: StackObj, withData = true, { transaction }: {
+async function getContribution(stack: StackObj, withData = true, { transaction }: {
   transaction?: Transaction;
 } = {}) {
   const attributes = ['model', 'target', 'operation', 'owner'];

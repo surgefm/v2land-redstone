@@ -22,7 +22,7 @@ async function getNews (req: RedstoneRequest, res: RedstoneResponse) {
     where: { id },
     include: [{
       model: Stack,
-      as: 'stack',
+      as: 'stacks',
     }],
   });
   if (!news) {

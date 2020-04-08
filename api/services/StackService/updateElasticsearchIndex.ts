@@ -7,9 +7,7 @@ async function updateElasticsearchIndex({ stack, stackId }: {
   stackId?: number;
 }) {
   if (!stack) {
-    stack = await Stack.findOne({
-      where: { id: stackId },
-    });
+    stack = await Stack.findByPk(stackId);
   }
 
   if (stack instanceof Stack) {
