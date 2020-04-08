@@ -9,10 +9,12 @@ import {
   ForeignKey,
   BelongsTo,
   HasMany,
+  BelongsToMany,
 } from 'sequelize-typescript';
 
 import Event from './Event';
 import News from './News';
+import StackNews from './StackNews';
 import Record from './Record';
 
 @Table({
@@ -49,8 +51,11 @@ class Stack extends Model<Stack> {
   @BelongsTo(() => Event, 'eventId')
   event: Event;
 
-  @HasMany(() => News, 'stackId')
-  news: News[];
+  @BelongsToMany(() => News, () => StackNews)
+  news: Array<News & {StackNews: StackNews}>;
+
+  @HasMany(() => StackNews)
+  stackNews: StackNews[];
 
   newsCount?: number;
   contribution?: Record[];

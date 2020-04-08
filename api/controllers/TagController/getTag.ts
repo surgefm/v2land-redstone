@@ -11,12 +11,13 @@ async function getTag(req: RedstoneRequest, res: RedstoneResponse) {
         model: News,
         as: 'latestAdmittedNews',
         required: false,
+        limit: 1,
       }],
       required: false,
     }],
   });
 
-  let tagVisible = tag.status !== 'hidden';
+  let tagVisible = !tag || tag.status !== 'hidden';
   if (!tagVisible && req.currentClient) {
     if (['admin', 'manager'].includes(req.currentClient.role)) {
       tagVisible = true;

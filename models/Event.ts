@@ -22,6 +22,7 @@ import News from './News';
 import Critique from './Critique';
 import Notification from './Notification';
 import Subscription from './Subscription';
+import EventNews from './EventNews';
 import EventTag from './EventTag';
 import Tag from './Tag';
 
@@ -80,9 +81,6 @@ class Event extends Model<Event> {
   @HasMany(() => Stack, 'eventId')
   stacks: Stack[];
 
-  @HasMany(() => News, 'eventId')
-  news: News[];
-
   @HasMany(() => Critique, 'eventId')
   critiques: Critique[];
 
@@ -101,6 +99,9 @@ class Event extends Model<Event> {
 
   @BelongsToMany(() => Tag, () => EventTag)
   tags: Array<Tag & {EventTag: EventTag}>;
+
+  @BelongsToMany(() => News, () => EventNews)
+  news: Array<Tag & {EventNews: EventNews}>;
 }
 
 export default Event;
