@@ -8,13 +8,14 @@ import {
   Default,
   IsUrl,
   Length,
-  ForeignKey,
-  BelongsTo,
+  BelongsToMany,
 } from 'sequelize-typescript';
 
-import Event from './Event';
 import Stack from './Stack';
 import Record from './Record';
+import StackNews from './StackNews';
+import Event from './Event';
+import EventNews from './EventNews';
 
 @Table({
   modelName: 'news',
@@ -57,20 +58,11 @@ class News extends Model<News> {
   @Column(DataType.BOOLEAN)
   isInTemporaryStack: boolean;
 
-  @ForeignKey(() => Event)
-  @Column
-  eventId: number;
+  @BelongsToMany(() => Stack, () => StackNews)
+  stacks: Array<Stack & {StackNews: StackNews}>;
 
-  @BelongsTo(() => Event, 'eventId')
-  event: Event;
-
-  @AllowNull(true)
-  @ForeignKey(() => Stack)
-  @Column
-  stackId: number;
-
-  @BelongsTo(() => Stack, 'stackId')
-  stack: Stack;
+  @BelongsToMany(() => Event, () => EventNews)
+  events: Array<Event & {EventNews: EventNews}>;
 
   contribution?: Record[];
 }

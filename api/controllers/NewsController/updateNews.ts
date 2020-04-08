@@ -1,5 +1,5 @@
 import { RedstoneRequest, RedstoneResponse } from '@Types';
-import { News, Stack, sequelize } from '@Models';
+import { News, sequelize } from '@Models';
 import { RecordService, EventService, NotificationService, NewsService } from '@Services';
 // import urlTrimmer = require('v2land-url-trimmer');
 
@@ -35,17 +35,6 @@ async function updateNews (req: RedstoneRequest, res: RedstoneResponse) {
 
   await sequelize.transaction(async transaction => {
     const changesCopy = { ...changes };
-    const latestNews = await News.findOne({
-      where: { eventId: news.eventId, status: 'admitted' },
-      attributes: ['id'],
-      order: [['time', 'DESC']],
-      transaction,
-    });
-
-    const updateNotification =
-      (latestNews && +latestNews.id === +news.id) ||
-      (changesCopy.status && changesCopy.status !== news.status) ||
-      (changesCopy.time && new Date(changesCopy.time).getTime() !== new Date(news.time).getTime());
 
     let newNews = news;
     if (changes.status) {
@@ -63,20 +52,46 @@ async function updateNews (req: RedstoneRequest, res: RedstoneResponse) {
         owner: req.session.clientId,
       }, { transaction });
 
-      await EventService.updateAdmittedLatestNews(newNews.eventId, { transaction });
+      const events = await news.$get('events', {
+        where: { status: 'admitted' },
+        attributes: ['id'],
+        transaction,
+      });
+
+      for (const event of events) {
+        const latestNews = (await event.$get('news', {
+          where: { status: 'admitted' },
+          attributes: ['id'],
+          order: [['time', 'DESC']],
+          transaction,
+        }))[0];
+
+        const updateNotification =
+          (latestNews && +latestNews.id === +news.id) ||
+          (changesCopy.status && changesCopy.status !== news.status) ||
+          (changesCopy.time && new Date(changesCopy.time).getTime() !== new Date(news.time).getTime());
+
+        await EventService.updateAdmittedLatestNews(event.id, { transaction });
+
+        if (updateNotification) {
+          NotificationService.updateNewsNotifications(news, {
+            force: data.forceUpdate,
+          });
+        }
+      }
 
       NotificationService.notifyWhenNewsStatusChanged(news, newNews, req.session.clientId);
 
-      if (beforeStatus === 'admitted' && changes.status !== 'admitted' && news.stackId) {
-        const newsCount = await News.count({
-          where: { stackId: news.stackId, status: 'admitted' },
+      if (beforeStatus === 'admitted' && changes.status !== 'admitted') {
+        const stacks = await news.$get('stacks', {
+          where: { status: 'admitted' },
         });
-        if (!newsCount) {
-          const stack = await Stack.findOne({
-            where: { id: news.stackId, status: 'admitted' },
+        for (const stack of stacks) {
+          const newsCount = await stack.$count('news', {
+            where: { status: 'admitted' },
             transaction,
           });
-          if (stack) {
+          if (!newsCount) {
             await stack.update({ status: 'invalid' }, { transaction });
             await RecordService.update({
               action: 'invalidateStack',
@@ -107,12 +122,6 @@ async function updateNews (req: RedstoneRequest, res: RedstoneResponse) {
         owner: req.session.clientId,
         model: 'news',
       }, { transaction });
-    }
-
-    if (updateNotification) {
-      NotificationService.updateNewsNotifications(news, {
-        force: data.forceUpdate,
-      });
     }
 
     res.status(201).json({

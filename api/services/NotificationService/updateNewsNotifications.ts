@@ -9,18 +9,6 @@ async function updateNewsNotifications(
     force?: boolean;
   } = {},
 ) {
-  const latestNews = await News.findOne({
-    where: {
-      eventId: news.eventId,
-      status: 'admitted',
-    },
-    order: [['time', 'DESC']],
-    attributes: ['id'],
-    transaction,
-  });
-
-  if (!force && (!latestNews || (+latestNews.id !== +news.id))) return;
-
   const recordCount = await Record.count({
     where: {
       model: 'News',
@@ -32,22 +20,31 @@ async function updateNewsNotifications(
 
   if (!force && recordCount) return;
 
-  let event = news.event;
-  if (typeof event !== 'object') {
-    event = await Event.findByPk(news.eventId, { transaction });
+  let stacks = news.stacks;
+  if (!stacks) {
+    stacks = await news.$get('stacks', { transaction });
   }
 
-  let stack = news.stack;
-  if (typeof stack !== 'object') {
-    stack = await Stack.findByPk(news.stackId, { transaction });
-  }
-
-  if (!transaction) {
-    await sequelize.transaction(async transaction => {
-      return updateNotifications(event, stack, news, transaction);
+  for (const stack of stacks) {
+    const event = await Event.findByPk(stack.eventId, {
+      include: [{
+        model: News,
+        as: 'latestAdmittedNews',
+      }],
+      transaction,
     });
-  } else {
-    return updateNotifications(event, stack, news, transaction);
+
+    const latestNews = event.latestAdmittedNews;
+
+    if (!force && (!latestNews || (+latestNews.id !== +news.id))) return;
+
+    if (!transaction) {
+      await sequelize.transaction(async transaction => {
+        return updateNotifications(event, stack, news, transaction);
+      });
+    } else {
+      return updateNotifications(event, stack, news, transaction);
+    }
   }
 }
 

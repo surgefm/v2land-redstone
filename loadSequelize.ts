@@ -32,7 +32,7 @@ export const sequelize = new Sequelize({
 });
 
 async function loadSequelize() {
-  await sequelize.authenticate();
+  await sequelize.sync();
 }
 
 export default loadSequelize;

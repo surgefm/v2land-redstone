@@ -9,7 +9,10 @@ async function createEvent (req: RedstoneRequest, res: RedstoneResponse) {
     });
   }
 
-  const data = req.body;
+  const data: { [index: string]: any } = {
+    name: req.body.name,
+    description: req.body.description,
+  };
 
   let event = await EventService.findEvent(data.name);
 
