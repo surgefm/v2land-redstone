@@ -2,6 +2,7 @@ import MailMessage from 'nodemailer/lib/mailer/mail-message';
 
 interface NodeMailerHandleBarInput {
   viewEngine: {
+    layoutsDir: string;
     partialsDir: string;
     helpers: { [index: string]: Function };
   };

@@ -80,6 +80,7 @@ async function getEventList (req: RedstoneRequest, res: RedstoneResponse) {
         as: 'tags',
         model: Tag,
         where: { status: 'visible' },
+        through: { attributes: [] },
         required: false,
       }],
       order: [

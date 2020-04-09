@@ -50,7 +50,6 @@ async function getNotificationData(notification: Notification) {
       as: 'news',
       where: { status: 'admitted' },
       order: [['time', 'ASC']],
-      limit: 1,
       required: false,
     }],
   });

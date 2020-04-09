@@ -3,7 +3,7 @@ import { Client, Subscription } from '@Models';
 import { email as emailConfig, globals } from '@Configs';
 
 const transporter = emailConfig.transporter;
-import * as qs from 'qs';
+import qs from 'qs';
 import delay from 'delay';
 
 /**

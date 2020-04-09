@@ -97,7 +97,7 @@ async function createNews (req: RedstoneRequest, res: RedstoneResponse) {
     }, { transaction });
 
     await RecordService.create({
-      model: 'EventNews',
+      model: 'EventStackNews',
       data: eventNews,
       target: event.id,
       subtarget: news.id,

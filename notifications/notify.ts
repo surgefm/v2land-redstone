@@ -1,7 +1,10 @@
 /**
  * 发出推送
  */
-import { Event, Notification, News, Stack, Subscription, Record, Contact, Auth } from '@Models';
+import {
+  Event, Notification, News, Stack, Subscription,
+  Record, Contact, Auth, EventStackNews,
+} from '@Models';
 import { ModeService } from '@Services';
 import { Op } from 'sequelize';
 import notifyByEmail from './notifyByEmail';
@@ -18,17 +21,18 @@ async function notify(notification: Notification) {
   const eventId = notification.eventId;
   const event = notification.event || await Event.findByPk(eventId);
   const mode = ModeService.getMode(notification.mode);
-  let news;
+  let news: News & { EventStackNews: EventStackNews };
   let stack;
   if (mode.needNews) {
-    news = await News.findOne({
+    const newsList = await event.$get('news', {
       where: {
         eventId: notification.eventId,
         status: 'admitted',
       },
       order: [['time', 'DESC']],
     });
-    if (!news) return;
+    if (newsList.length === 0) return;
+    news = newsList[0];
   }
 
   if (mode.needStack) {

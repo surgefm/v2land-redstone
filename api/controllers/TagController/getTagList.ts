@@ -7,8 +7,9 @@ async function getTagList(req: RedstoneRequest, res: RedstoneResponse) {
     include: [{
       model: Event,
       as: 'events',
-      // where: { status: 'admitted' },
+      where: { status: 'admitted' },
       through: { attributes: [] },
+      required: false,
     }],
     limit: 15,
     offset: 15 * (+req.query.page || req.body.page || 1) - 15,
