@@ -6,7 +6,7 @@ const logger = pino();
 
 const { postgresql } = datastores;
 let logging: boolean | ((sql: string, timing?: number) => void) = false;
-if (process.env.NODE_ENV !== 'production' && process.env.SEQUELIZE_LOGGING !== 'false') {
+if (process.env.NODE_ENV === 'production' && process.env.SEQUELIZE_LOGGING !== 'false') {
   logging = (sql: string) => {
     logger.info(sql);
   };
@@ -32,7 +32,7 @@ export const sequelize = new Sequelize({
 });
 
 async function loadSequelize() {
-  await sequelize.sync();
+  await sequelize.authenticate();
 }
 
 export default loadSequelize;

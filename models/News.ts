@@ -13,9 +13,8 @@ import {
 
 import Stack from './Stack';
 import Record from './Record';
-import StackNews from './StackNews';
+import EventStackNews from './EventStackNews';
 import Event from './Event';
-import EventNews from './EventNews';
 
 @Table({
   modelName: 'news',
@@ -58,11 +57,11 @@ class News extends Model<News> {
   @Column(DataType.BOOLEAN)
   isInTemporaryStack: boolean;
 
-  @BelongsToMany(() => Stack, () => StackNews)
-  stacks: Array<Stack & {StackNews: StackNews}>;
+  @BelongsToMany(() => Stack, () => EventStackNews)
+  stacks: (Stack & {EventStackNews: EventStackNews})[];
 
-  @BelongsToMany(() => Event, () => EventNews)
-  events: Array<Event & {EventNews: EventNews}>;
+  @BelongsToMany(() => Event, () => EventStackNews)
+  events: (Event & {EventStackNews: EventStackNews})[];
 
   contribution?: Record[];
 }

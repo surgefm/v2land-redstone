@@ -1,6 +1,6 @@
 /* eslint-disable no-empty */
 import { RedstoneRequest, RedstoneResponse, StackObj } from '@Types';
-import { Client, News, EventNews, StackNews, sequelize } from '@Models';
+import { Client, News, EventStackNews, sequelize } from '@Models';
 import { EventService, RecordService, NewsService, NotificationService, StackService } from '@Services';
 import axios from 'axios';
 // const urlTrimmer = require('v2land-url-trimmer');
@@ -34,24 +34,31 @@ async function createNews (req: RedstoneRequest, res: RedstoneResponse) {
   if (data.stackId) {
     stack = await StackService.findStack(data.stackId, false);
     if (!stack || stack.eventId != event.id) {
-      return res.status(400).json({
+      return res.status(404).json({
         message: '未找到该进展或该进展不属于目标事件',
       });
     }
-    data.stackId = stack.id;
   }
 
   data.status = 'pending';
 
   await sequelize.transaction(async transaction => {
-    const existingNews = await News.findOne({
+    let news = await News.findOne({
       where: { url: data.url },
       transaction,
     });
-    if (existingNews) {
-      return res.status(409).json({
-        message: '审核队列或新闻合辑内已有相同链接的新闻',
+    if (news) {
+      const existingRelation = await EventStackNews.findOne({
+        where: {
+          eventId: event.id,
+          newsId: news.id,
+        },
       });
+      if (existingRelation) {
+        return res.status(409).json({
+          message: '审核队列或新闻合辑内已有相同链接的新闻',
+        });
+      }
     }
 
     // Ask the Wayback Machine of Internet Archive to archive the webpage.
@@ -60,30 +67,32 @@ async function createNews (req: RedstoneRequest, res: RedstoneResponse) {
     } catch (err) {}
 
     const time = new Date();
-    const news = await News.create({
-      url: data.url,
-      abstract: data.abstract,
-      source: data.source,
-      title: data.title,
-      time: data.time,
-      comment: data.comment,
-    }, {
-      raw: true,
-      transaction,
-    });
+    if (!news) {
+      news = await News.create({
+        url: data.url,
+        abstract: data.abstract,
+        source: data.source,
+        title: data.title,
+        time: data.time,
+        comment: data.comment,
+      }, {
+        transaction,
+      });
 
-    await RecordService.create({
-      model: 'News',
-      data: news.get({ plain: true }),
-      target: news.id,
-      action: 'createNews',
-      owner: req.session.clientId,
-      createdAt: time,
-    }, { transaction });
+      await RecordService.create({
+        model: 'News',
+        data: news.get({ plain: true }),
+        target: news.id,
+        action: 'createNews',
+        owner: req.session.clientId,
+        createdAt: time,
+      }, { transaction });
+    }
 
-    // Add news to event
-    const eventNews = await EventNews.create({
+    // Add news to event and stack
+    const eventNews = await EventStackNews.create({
       eventId: event.id,
+      stackId: stack ? stack.id : undefined,
       newsId: news.id,
     }, { transaction });
 
@@ -98,15 +107,10 @@ async function createNews (req: RedstoneRequest, res: RedstoneResponse) {
     }, { transaction });
 
     // Add news to stack
-    if (stack && stack.eventId === event.id) {
-      const stackNews = await StackNews.create({
-        stackId: stack.id,
-        newsId: news.id,
-      }, { transaction });
-
+    if (stack) {
       await RecordService.create({
-        model: 'StackNews',
-        data: stackNews,
+        model: 'EventStackNews',
+        data: eventNews,
         target: stack.id,
         subtarget: news.id,
         action: 'addNewsToStack',

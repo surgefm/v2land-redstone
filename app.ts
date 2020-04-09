@@ -26,7 +26,9 @@ const app = express();
 
 export async function liftServer(app: Express) {
   await loadSequelize();
-  app.use(pino());
+  if (process.env.NODE_ENV === 'production') {
+    app.use(pino());
+  }
   app.use(responseTime());
   app.use(favicon(path.join(__dirname, '../assets/favicon.ico')));
   app.use(cors(securityConfig.cors));

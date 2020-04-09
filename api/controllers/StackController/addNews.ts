@@ -1,5 +1,5 @@
 import { RedstoneRequest, RedstoneResponse } from '@Types';
-import { Stack, News, EventNews, StackNews, sequelize } from '@Models';
+import { Stack, News, EventStackNews, sequelize } from '@Models';
 import { RecordService } from '@Services';
 
 async function addNews(req: RedstoneRequest, res: RedstoneResponse) {
@@ -25,54 +25,68 @@ async function addNews(req: RedstoneRequest, res: RedstoneResponse) {
     });
   }
 
-  let eventNews = await EventNews.findOne({
+  let eventStackNews = await EventStackNews.findOne({
     where: {
       eventId: stack.eventId,
-      newsId: news.id,
-    },
-  });
-  if (eventNews) {
-    return res.status(409).json({
-      message: '该新闻已在进展所属事件中',
-    });
-  }
-
-  let stackNews = await StackNews.findOne({
-    where: {
       stackId: stack.id,
       newsId: news.id,
     },
   });
-  if (stackNews) {
+  if (eventStackNews) {
     return res.status(200).json({
       message: '该新闻已在该进展中',
     });
   }
 
   await sequelize.transaction(async transaction => {
+    const eventNews = await EventStackNews.findOne({
+      where: {
+        eventId: stack.eventId,
+        newsId: news.id,
+      },
+    });
+    const isInEvent = !!eventNews;
+
     const time = new Date();
-    eventNews = await EventNews.create({
-      eventId: stack.eventId,
-      newsId: news.id,
-    }, { transaction });
+    if (!isInEvent) {
+      eventStackNews = await EventStackNews.create({
+        eventId: stack.eventId,
+        newsId: news.id,
+      }, { transaction });
+
+      await RecordService.create({
+        model: 'EventStackNews',
+        data: eventStackNews,
+        target: stack.eventId,
+        subtarget: news.id,
+        owner: req.session.clientId,
+        action: 'addNewsToEvent',
+        createdAt: time,
+      }, { transaction });
+
+      eventStackNews = await EventStackNews.create({
+        stackId: stack.id,
+        newsId: news.id,
+      }, { transaction });
+    } else {
+      if (eventNews.stackId) {
+        await RecordService.destroy({
+          model: 'EventStackNews',
+          data: eventNews,
+          target: eventNews.stackId,
+          subtarget: news.id,
+          owner: req.session.clientId,
+          action: 'removeNewsFromStack',
+        }, { transaction });
+      }
+
+      eventNews.stackId = stack.id;
+      await eventNews.save({ transaction });
+    }
 
     await RecordService.create({
-      model: 'EventNews',
-      data: eventNews,
-      target: eventNews.id,
-      owner: req.session.clientId,
-      action: 'addNewsToEvent',
-      createdAt: time,
-    }, { transaction });
-
-    stackNews = await StackNews.create({
-      stackId: stack.id,
-      newsId: news.id,
-    }, { transaction });
-
-    await RecordService.create({
-      model: 'StackNews',
-      data: stackNews,
+      model: 'EventStackNews',
+      data: eventStackNews,
       target: stack.id,
       subtarget: news.id,
       owner: req.session.clientId,
