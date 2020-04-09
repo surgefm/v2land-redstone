@@ -5,10 +5,14 @@ import pino from 'pino';
 const logger = pino();
 
 const { postgresql } = datastores;
-let logging: boolean | ((sql: string, timing?: number) => void) = false;
-if (process.env.NODE_ENV === 'production' && process.env.SEQUELIZE_LOGGING !== 'false') {
+let logging: boolean | ((sql: string, timing?: number) => void) = process.env.SEQUELIZE_LOGGING !== 'false';
+if (logging && process.env.NODE_ENV === 'production') {
   logging = (sql: string) => {
     logger.info(sql);
+  };
+} else if (logging) {
+  logging = (sql: string) => {
+    console.info(sql);
   };
 }
 

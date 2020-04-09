@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const gulp = require('gulp');
-const { series } = gulp;
+const { series, parallel } = gulp;
 const server = require('gulp-develop-server');
 const ts = require('gulp-typescript');
 const sourcemaps = require('gulp-sourcemaps');
@@ -10,17 +10,24 @@ const tsProjectQuick = ts.createProject('tsconfig.json', {
   isolatedModules: true,
 });
 
-gulp.task('build', function(cb) {
-  tsProject.src()
-    .pipe(sourcemaps.init())
-    .pipe(tsProject())
-    .pipe(sourcemaps.write('.', {
-      includeContent: true,
-      sourceRoot: '../src',
-    }))
-    .pipe(gulp.dest('dist'))
-    .on('end', cb);
-});
+gulp.task('build', parallel(
+  (cb) => {
+    tsProject.src()
+      .pipe(sourcemaps.init())
+      .pipe(tsProject())
+      .pipe(sourcemaps.write('.', {
+        includeContent: true,
+        sourceRoot: '../src',
+      }))
+      .pipe(gulp.dest('dist'))
+      .on('end', cb);
+  },
+  (cb) => {
+    gulp.src('./assets/**/*')
+      .pipe(gulp.dest('./dist/assets'))
+      .on('end', cb);
+  }
+));
 
 gulp.task('quick build', function(cb) {
   tsProject.src()
