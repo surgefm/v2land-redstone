@@ -10,24 +10,25 @@ const tsProjectQuick = ts.createProject('tsconfig.json', {
   isolatedModules: true,
 });
 
-gulp.task('build', parallel(
-  (cb) => {
-    tsProject.src()
-      .pipe(sourcemaps.init())
-      .pipe(tsProject())
-      .pipe(sourcemaps.write('.', {
-        includeContent: true,
-        sourceRoot: '../src',
-      }))
-      .pipe(gulp.dest('dist'))
-      .on('end', cb);
-  },
-  (cb) => {
-    gulp.src('./assets/**/*')
-      .pipe(gulp.dest('./dist/assets'))
-      .on('end', cb);
-  }
-));
+gulp.task('build/compile TypeScript', function(cb) {
+  tsProject.src()
+    .pipe(sourcemaps.init())
+    .pipe(tsProject())
+    .pipe(sourcemaps.write('.', {
+      includeContent: true,
+      sourceRoot: '../src',
+    }))
+    .pipe(gulp.dest('dist'))
+    .on('end', cb);
+});
+
+gulp.task('build/copy static file', function (cb) {
+  gulp.src('./assets/**/*')
+    .pipe(gulp.dest('./dist/assets'))
+    .on('end', cb);
+});
+
+gulp.task('build', parallel('build/compile TypeScript', 'build/copy static file'));
 
 gulp.task('quick build', function(cb) {
   tsProject.src()

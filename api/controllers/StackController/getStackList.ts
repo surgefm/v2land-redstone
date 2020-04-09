@@ -36,8 +36,8 @@ async function getStackList (req: RedstoneRequest, res: RedstoneResponse) {
       as: 'news',
       where: { status: 'admitted' },
       order: [['time', 'ASC']],
+      through: { attributes: [] },
       required: false,
-      limit: 3,
     }],
     order: [['updatedAt', 'DESC']],
   });

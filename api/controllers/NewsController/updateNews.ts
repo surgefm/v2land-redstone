@@ -44,7 +44,7 @@ async function updateNews (req: RedstoneRequest, res: RedstoneResponse) {
         status: changes.status,
       }, { transaction });
       await RecordService.create({
-        model: 'news',
+        model: 'News',
         action: 'updateNewsStatus',
         before: beforeStatus,
         data: changes.status,
@@ -97,7 +97,7 @@ async function updateNews (req: RedstoneRequest, res: RedstoneResponse) {
               action: 'invalidateStack',
               data: { status: 'invalid' },
               before: { status: 'admitted' },
-              model: 'stack',
+              model: 'Stack',
               target: stack.id,
               owner: req.session.clientId,
             }, { transaction });
@@ -120,7 +120,7 @@ async function updateNews (req: RedstoneRequest, res: RedstoneResponse) {
         before,
         target: news.id,
         owner: req.session.clientId,
-        model: 'news',
+        model: 'News',
       }, { transaction });
     }
 

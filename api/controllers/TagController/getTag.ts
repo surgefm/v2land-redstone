@@ -7,11 +7,11 @@ async function getTag(req: RedstoneRequest, res: RedstoneResponse) {
       model: Event,
       as: 'events',
       where: { status: 'admitted' },
+      through: { attributes: [] },
       include: [{
         model: News,
         as: 'latestAdmittedNews',
         required: false,
-        limit: 1,
       }],
       required: false,
     }],

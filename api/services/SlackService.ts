@@ -4,9 +4,7 @@ const { SLACK_URL } = process.env;
 
 export async function sendText(text: string) {
   if (globals.environment !== 'production') {
-    console.log('send slack', {
-      text,
-    });
+    console.log('send slack', { text });
     return;
   }
   return axios.post(
