@@ -14,7 +14,7 @@ import {
 
 import Event from './Event';
 import News from './News';
-import StackNews from './StackNews';
+import EventStackNews from './EventStackNews';
 import Record from './Record';
 
 @Table({
@@ -51,11 +51,11 @@ class Stack extends Model<Stack> {
   @BelongsTo(() => Event, 'eventId')
   event: Event;
 
-  @BelongsToMany(() => News, () => StackNews)
-  news: Array<News & {StackNews: StackNews}>;
+  @BelongsToMany(() => News, () => EventStackNews)
+  news: (News & {EventStackNews: EventStackNews})[];
 
-  @HasMany(() => StackNews)
-  stackNews: StackNews[];
+  @HasMany(() => EventStackNews)
+  eventStackNews: EventStackNews[];
 
   newsCount?: number;
   contribution?: Record[];

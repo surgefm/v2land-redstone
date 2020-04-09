@@ -22,7 +22,7 @@ import News from './News';
 import Critique from './Critique';
 import Notification from './Notification';
 import Subscription from './Subscription';
-import EventNews from './EventNews';
+import EventStackNews from './EventStackNews';
 import EventTag from './EventTag';
 import Tag from './Tag';
 
@@ -98,10 +98,10 @@ class Event extends Model<Event> {
   latestAdmittedNews: News;
 
   @BelongsToMany(() => Tag, () => EventTag)
-  tags: Array<Tag & {EventTag: EventTag}>;
+  tags: (Tag & {EventTag: EventTag})[];
 
-  @BelongsToMany(() => News, () => EventNews)
-  news: Array<News & {EventNews: EventNews}>;
+  @BelongsToMany(() => News, () => EventStackNews)
+  news: (News & {EventStackNews: EventStackNews})[];
 }
 
 export default Event;
