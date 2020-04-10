@@ -22,6 +22,8 @@ async function findEvent (
   eventName: string | number,
   { eventOnly = false, plain = false, transaction }: FindEventOptions = {},
 ) {
+  const where = _.isNaN(+eventName) ? { name: eventName } : { id: eventName };
+
   const event = await Event.findOne({
     attributes: {
       exclude: ['pinyin'],
@@ -35,12 +37,7 @@ async function findEvent (
         'stackCount',
       ]],
     },
-    where: {
-      [Op.or]: [
-        { id: _.isNaN(+eventName) ? -1 : +eventName },
-        { name: _.isNaN(+eventName) ? eventName : '' },
-      ],
-    },
+    where,
     include: eventOnly ? [] : [
       {
         model: HeaderImage,
@@ -106,8 +103,10 @@ async function findEvent (
   });
 
   if (!event) return;
+  event.stackCount = +event.stackCount;
   event.newsCount = 0;
   for (const stack of event.stacks) {
+    stack.newsCount = +stack.newsCount;
     event.newsCount += stack.newsCount;
   }
 

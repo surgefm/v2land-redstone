@@ -31,6 +31,7 @@ export default {
     'updateHeaderImage': ['isLoggedIn', 'isManager'],
     'addTag': ['isLoggedIn', 'isManager'],
     'removeTag': ['isLoggedIn', 'isManager'],
+    'makeCommit': ['isLoggedIn', 'isManager'],
     '*': false,
   },
 

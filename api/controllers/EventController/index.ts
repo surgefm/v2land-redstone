@@ -6,6 +6,7 @@ import getAllPendingEvents from './getAllPendingEvents';
 import getEvent from './getEvent';
 import getEventList from './getEventList';
 import getPendingNews from './getPendingNews';
+import makeCommit from './makeCommit';
 import removeTag from './removeTag';
 import updateEvent from './updateEvent';
 import updateHeaderImage from './updateHeaderImage';
@@ -19,6 +20,7 @@ export {
   getEvent,
   getEventList,
   getPendingNews,
+  makeCommit,
   removeTag,
   updateEvent,
   updateHeaderImage,

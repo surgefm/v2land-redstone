@@ -15,6 +15,7 @@ describe('StackController', function() {
     before(async function() {
       agent = request.agent(app);
 
+      await sequelize.query(`DELETE FROM commit`);
       await sequelize.query(`DELETE FROM stack`);
       await sequelize.query(`DELETE FROM event`);
       await sequelize.query(`DELETE FROM client`);

@@ -15,7 +15,7 @@ describe('EventController', function() {
   describe('createEvent', function() {
     before(async function() {
       agent = request.agent(app);
-
+      await sequelize.query(`DELETE FROM commit`);
       await sequelize.query(`DELETE FROM event`);
       await sequelize.query(`DELETE FROM client`);
 
@@ -73,6 +73,16 @@ describe('EventController', function() {
         .put(`/event/${urlencode('浪潮今天发布啦')}`)
         .send({
           status: 'admitted',
+        })
+        .expect(201)
+        .end(done);
+    });
+
+    it('should make event commit success', function(done) {
+      agent
+        .post(`/event/${urlencode('浪潮今天发布啦')}/commit`)
+        .send({
+          summary: 'yoyo',
         })
         .expect(201)
         .end(done);
@@ -173,6 +183,7 @@ describe('EventController', function() {
 
   describe('Event List', function() {
     before(async function() {
+      await sequelize.query(`DELETE FROM commit`);
       await sequelize.query(`DELETE FROM event`);
       await Event.create({
         name: '浪潮测试1',
