@@ -1,5 +1,6 @@
 export const RedstoneErrorIdentifier = 'REDSTONE_ERROR';
 export const InvalidInputErrorType = 'Invalid input';
+export const ResourceNotFoundErrorType = 'Resource not found';
 
 class RedstoneError extends Error {
   name = RedstoneErrorIdentifier;

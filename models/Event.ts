@@ -25,6 +25,7 @@ import Subscription from './Subscription';
 import EventStackNews from './EventStackNews';
 import EventTag from './EventTag';
 import Tag from './Tag';
+import Record from './Record';
 
 @Table({
   modelName: 'event',
@@ -108,6 +109,8 @@ class Event extends Model<Event> {
 
   stackCount?: number;
   newsCount?: number;
+  commitTime?: Date;
+  contribution?: Record[];
 }
 
 export default Event;
