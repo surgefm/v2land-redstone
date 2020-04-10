@@ -3,9 +3,7 @@ import { EventService } from '@Services';
 
 async function getEvent (req: RedstoneRequest, res: RedstoneResponse) {
   const name = req.params.eventName;
-  const event = await EventService.findEvent(name, {
-    includes: req.query,
-  });
+  const event = await EventService.findEvent(name, { plain: true });
 
   if (event) {
     event.contribution = await EventService.getContribution(event, true);

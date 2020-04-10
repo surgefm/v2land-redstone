@@ -18,6 +18,7 @@ import Stack from './Stack';
 import Subscription from './Subscription';
 import Tag from './Tag';
 import { sequelize } from '~/loadSequelize';
+import Sequelize from 'sequelize';
 
 export {
   Auth,
@@ -40,4 +41,5 @@ export {
   Subscription,
   Tag,
   sequelize,
+  Sequelize,
 };

@@ -1,4 +1,4 @@
-import { RedstoneRequest, RedstoneResponse } from '@Types';
+import { RedstoneRequest, RedstoneResponse, EventObj } from '@Types';
 import { Event, sequelize } from '@Models';
 import { EventService, RecordService, NotificationService } from '@Services';
 
@@ -20,7 +20,7 @@ async function updateEvent (req: RedstoneRequest, res: RedstoneResponse) {
 
   const changes: any = {};
   for (const attribute of ['name', 'description', 'status']) {
-    if (req.body[attribute] && req.body[attribute] !== event[attribute]) {
+    if (req.body[attribute] && req.body[attribute] !== (event as EventObj)[attribute]) {
       changes[attribute] = req.body[attribute];
     }
   }
@@ -43,12 +43,8 @@ async function updateEvent (req: RedstoneRequest, res: RedstoneResponse) {
     };
 
     if (changes.status) {
-      await Event.update({
-        status: changes.status,
-      }, {
-        where: { id: event.id },
-        transaction,
-      });
+      event.status = changes.status;
+      await event.save({ transaction });
 
       await RecordService.update({
         ...query,
@@ -65,7 +61,7 @@ async function updateEvent (req: RedstoneRequest, res: RedstoneResponse) {
     delete changes.status;
     const before: any = {};
     for (const i of Object.keys(changes)) {
-      before[i] = event[i];
+      before[i] = (event as EventObj)[i];
     }
 
     if (Object.keys(changes).length > 0) {
