@@ -633,6 +633,54 @@ ALTER TABLE public."authorizationCode" ALTER COLUMN id ADD GENERATED ALWAYS AS I
     CACHE 1
 );
 
+CREATE SEQUENCE public.commit_id_seq
+    INCREMENT 1
+    START WITH 1
+    MINVALUE 1
+    MAXVALUE 2147483647
+    CACHE 1;
+
+ALTER TABLE public.commit_id_seq OWNER TO v2land;
+
+ALTER SEQUENCE public.commit_id_seq
+    OWNER TO v2land;
+
+-- Table: public.commit
+
+-- DROP TABLE public.commit;
+
+CREATE TABLE public.commit
+(
+    id integer NOT NULL DEFAULT nextval('commit_id_seq'::regclass),
+    summary text COLLATE pg_catalog."default",
+    description text COLLATE pg_catalog."default",
+    data jsonb,
+    diff jsonb,
+    "time" time with time zone,
+    "parentId" integer,
+    "authorId" integer,
+    "eventId" integer,
+    "createdAt" timestamp with time zone NOT NULL,
+    "updatedAt" timestamp with time zone NOT NULL,
+    CONSTRAINT commit_pkey PRIMARY KEY (id),
+    CONSTRAINT "commit_authorId_fkey" FOREIGN KEY ("authorId")
+        REFERENCES public.client (id) MATCH SIMPLE
+        ON UPDATE CASCADE
+        ON DELETE NO ACTION,
+    CONSTRAINT "commit_eventId_fkey" FOREIGN KEY ("eventId")
+        REFERENCES public.event (id) MATCH SIMPLE
+        ON UPDATE CASCADE
+        ON DELETE NO ACTION,
+    CONSTRAINT "commit_parentId_fkey" FOREIGN KEY ("parentId")
+        REFERENCES public.commit (id) MATCH SIMPLE
+        ON UPDATE CASCADE
+        ON DELETE NO ACTION
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE public.commit
+    OWNER to v2land;
 
 --
 -- TOC entry 220 (class 1259 OID 37834)
@@ -665,7 +713,6 @@ CREATE SEQUENCE public.client_id_seq
     NO MINVALUE
     NO MAXVALUE
     CACHE 1;
-
 
 ALTER TABLE public.client_id_seq OWNER TO v2land;
 

@@ -9,6 +9,7 @@ const testEmail = process.env.TEST_EMAIL || 'test@langchao.org';
 describe('ClientController', function() {
   describe('#register()', function() {
     before(async function() {
+      await sequelize.query(`DELETE FROM commit`);
       await sequelize.query(`DELETE FROM client`);
     });
 

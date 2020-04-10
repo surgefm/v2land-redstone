@@ -16,9 +16,10 @@ describe('NewsController', function() {
   before(async function() {
     agent = request.agent(app);
 
-    sequelize.query(`DELETE FROM news`);
-    sequelize.query(`DELETE FROM event`);
-    sequelize.query(`DELETE FROM client`);
+    await sequelize.query(`DELETE FROM commit`);
+    await sequelize.query(`DELETE FROM news`);
+    await sequelize.query(`DELETE FROM event`);
+    await sequelize.query(`DELETE FROM client`);
 
     await Event.create({
       name: testEventName,
