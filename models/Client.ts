@@ -10,7 +10,7 @@ import {
   Default,
   HasMany,
 } from 'sequelize-typescript';
-import * as _ from 'lodash';
+import _ from 'lodash';
 
 import Record from './Record';
 import Auth from './Auth';

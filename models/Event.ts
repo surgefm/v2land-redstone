@@ -102,6 +102,12 @@ class Event extends Model<Event> {
 
   @BelongsToMany(() => News, () => EventStackNews)
   news: (News & {EventStackNews: EventStackNews})[];
+
+  @BelongsToMany(() => News, () => EventStackNews)
+  temporaryStack: (News & {EventStackNews: EventStackNews})[];
+
+  stackCount?: number;
+  newsCount?: number;
 }
 
 export default Event;

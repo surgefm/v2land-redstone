@@ -52,11 +52,6 @@ class News extends Model<News> {
   @Column(DataType.TEXT)
   comment?: string;
 
-  @AllowNull(false)
-  @Default(false)
-  @Column(DataType.BOOLEAN)
-  isInTemporaryStack: boolean;
-
   @BelongsToMany(() => Stack, () => EventStackNews)
   stacks: (Stack & {EventStackNews: EventStackNews})[];
 

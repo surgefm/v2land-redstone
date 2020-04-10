@@ -6,6 +6,9 @@ NOTIFICATION_BACKEND_PATH=notifications/**/*.ts
 
 COVERAGE_PATH=./node_modules/.bin/nyc
 
+build:
+	node node_modules/gulp-cli/bin/gulp.js build
+
 test: eslint test-without-lint
 	echo "浪潮爱你❤️"
 

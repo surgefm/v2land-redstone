@@ -1,17 +1,40 @@
-import { Event, HeaderImage, Stack, News, Tag } from '@Models';
+import { Event, HeaderImage, Stack, News, Tag, Sequelize } from '@Models';
 import { EventObj } from '@Types';
 import { Op, Transaction } from 'sequelize';
 import _ from 'lodash';
 
+interface FindEventOptions {
+  eventOnly?: boolean;
+  transaction?: Transaction;
+  plain?: boolean;
+}
+
 async function findEvent (
   eventName: string | number,
-  { eventOnly = false, transaction }: {
-    includes?: { stack?: number; news?: number };
-    eventOnly?: boolean;
-    transaction?: Transaction;
-  } = {}) {
+  options?: FindEventOptions & { plain?: undefined | false },
+): Promise<Event>;
+async function findEvent (
+  eventName: string | number,
+  options: FindEventOptions & { plain: true },
+): Promise<EventObj>;
+
+async function findEvent (
+  eventName: string | number,
+  { eventOnly = false, plain = false, transaction }: FindEventOptions = {},
+) {
   const event = await Event.findOne({
-    attributes: { exclude: ['pinyin'] },
+    attributes: {
+      exclude: ['pinyin'],
+      include: [[
+        Sequelize.literal(`(
+          SELECT COUNT(esn)
+          FROM "eventStackNews" AS esn
+          LEFT JOIN "stack" AS stack ON stack.id = esn."stackId"
+          WHERE esn."eventId" = event.id AND stack.order >= 0
+        )`),
+        'stackCount',
+      ]],
+    },
     where: {
       [Op.or]: [
         { id: _.isNaN(+eventName) ? -1 : +eventName },
@@ -22,6 +45,22 @@ async function findEvent (
       {
         model: HeaderImage,
         as: 'headerImage',
+        required: false,
+      }, {
+        model: News,
+        as: 'temporaryStack',
+        where: {
+          id: {
+            [Op.in]: Sequelize.literal(`(
+              SELECT esn."newsId"
+              FROM "eventStackNews" AS esn
+              LEFT JOIN news as news ON esn."newsId" = news.id
+              WHERE news.status = 'admitted' AND esn."stackId" IS NULL
+            )`),
+          },
+        },
+        order: [['time', 'DESC']],
+        through: { attributes: [] },
         required: false,
       }, {
         model: Stack,
@@ -40,6 +79,17 @@ async function findEvent (
           through: { attributes: [] },
           required: false,
         }],
+        attributes: {
+          include: [[
+            Sequelize.literal(`(
+              SELECT COUNT(esn)
+              FROM "eventStackNews" AS esn
+              LEFT JOIN "news" AS news ON news.id = esn."newsId"
+              WHERE esn."stackId" = stacks.id AND news.status = 'admitted'
+            )`),
+            'newsCount',
+          ]],
+        },
       }, {
         model: News,
         as: 'latestAdmittedNews',
@@ -56,55 +106,16 @@ async function findEvent (
   });
 
   if (!event) return;
-
-  const eventObj: EventObj = event.get({ plain: true }) as EventObj;
-  eventObj.stacks = eventObj.stacks || [];
-
-  eventObj.newsCount = await event.$count('news', {
-    where: { status: 'admitted' },
-    transaction,
-  });
-
-  eventObj.stackCount = await Stack.count({
-    where: {
-      eventId: event.id,
-      status: 'admitted',
-    },
-    transaction,
-  });
-
-  if (eventObj.newsCount > 0) {
-    eventObj.temporaryStack = await event.$get('news', {
-      where: {
-        status: 'admitted',
-        isInTemporaryStack: true,
-      },
-      order: [['time', 'DESC']],
-      transaction,
-    });
-
-    if (event.latestAdmittedNews) {
-      eventObj.lastUpdate = event.latestAdmittedNews.time;
-    }
+  event.newsCount = 0;
+  for (const stack of event.stacks) {
+    event.newsCount += stack.newsCount;
   }
 
-  const queue = [];
-  const getStackedNews = async (i: number) => {
-    const stack = { ...eventObj.stacks[i] };
-    if (!stack.time && stack.news.length) {
-      stack.time = stack.news[0].time;
-    }
-
-    stack.newsCount = stack.news.length;
-    eventObj.stacks[i] = stack;
-  };
-
-  for (let i = 0; i < eventObj.stacks.length; i++) {
-    queue.push(getStackedNews(i));
+  if (plain) {
+    return event.get({ plain: true }) as EventObj;
+  } else {
+    return event;
   }
-  await Promise.all(queue);
-
-  return eventObj;
 }
 
 export default findEvent;
