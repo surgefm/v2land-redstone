@@ -1,5 +1,6 @@
 import * as AuthService from './AuthService';
 import * as ClientService from './ClientService';
+import * as CommitService from './CommitService';
 import * as ContactService from './ContactService';
 import * as ElasticsearchService from './ElasticsearchService';
 import * as EmailService from './EmailService';
@@ -22,6 +23,7 @@ import * as WeiboService from './WeiboService';
 export {
   AuthService,
   ClientService,
+  CommitService,
   ContactService,
   ElasticsearchService,
   EmailService,

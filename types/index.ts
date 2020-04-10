@@ -2,7 +2,10 @@ import { Request, Response, NextFunction } from 'express';
 import { Logger } from 'pino';
 import { Client, Record as RecordModel, News } from '@Models';
 import { NotificationMode, NotificationModeInput } from './NotificationMode';
-import RedstoneError, { RedstoneErrorIdentifier, InvalidInputErrorType } from './RedstoneError';
+import RedstoneError, {
+  RedstoneErrorIdentifier,
+  InvalidInputErrorType, ResourceNotFoundErrorType,
+} from './RedstoneError';
 
 interface RedstoneRequest extends Request {
   sessionID?: string;
@@ -67,4 +70,5 @@ export {
   RedstoneError,
   RedstoneErrorIdentifier,
   InvalidInputErrorType,
+  ResourceNotFoundErrorType,
 };
