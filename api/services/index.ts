@@ -11,6 +11,7 @@ import * as NewsService from './NewsService';
 import * as NotificationService from './NotificationService';
 import * as OAuth2Service from './OAuth2Service';
 import * as RecordService from './RecordService';
+import * as RedisService from './RedisService';
 import * as SearchService from './SearchService';
 import * as SlackService from './SlackService';
 import * as StackService from './StackService';
@@ -34,6 +35,7 @@ export {
   NotificationService,
   OAuth2Service,
   RecordService,
+  RedisService,
   SearchService,
   SlackService,
   StackService,

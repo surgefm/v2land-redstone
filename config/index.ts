@@ -1,6 +1,3 @@
-import dotenv from 'dotenv';
-dotenv.config();
-
 import datastores from './datastores';
 import email from './email';
 import globals from './globals';

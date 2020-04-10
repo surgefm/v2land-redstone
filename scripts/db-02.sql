@@ -645,43 +645,6 @@ ALTER TABLE public.commit_id_seq OWNER TO v2land;
 ALTER SEQUENCE public.commit_id_seq
     OWNER TO v2land;
 
--- Table: public.commit
-
--- DROP TABLE public.commit;
-
-CREATE TABLE public.commit
-(
-    id integer NOT NULL DEFAULT nextval('commit_id_seq'::regclass),
-    summary text COLLATE pg_catalog."default",
-    description text COLLATE pg_catalog."default",
-    data jsonb,
-    diff jsonb,
-    "time" time with time zone,
-    "parentId" integer,
-    "authorId" integer,
-    "eventId" integer,
-    "createdAt" timestamp with time zone NOT NULL,
-    "updatedAt" timestamp with time zone NOT NULL,
-    CONSTRAINT commit_pkey PRIMARY KEY (id),
-    CONSTRAINT "commit_authorId_fkey" FOREIGN KEY ("authorId")
-        REFERENCES public.client (id) MATCH SIMPLE
-        ON UPDATE CASCADE
-        ON DELETE NO ACTION,
-    CONSTRAINT "commit_eventId_fkey" FOREIGN KEY ("eventId")
-        REFERENCES public.event (id) MATCH SIMPLE
-        ON UPDATE CASCADE
-        ON DELETE NO ACTION,
-    CONSTRAINT "commit_parentId_fkey" FOREIGN KEY ("parentId")
-        REFERENCES public.commit (id) MATCH SIMPLE
-        ON UPDATE CASCADE
-        ON DELETE NO ACTION
-)
-
-TABLESPACE pg_default;
-
-ALTER TABLE public.commit
-    OWNER to v2land;
-
 --
 -- TOC entry 220 (class 1259 OID 37834)
 -- Name: client; Type: TABLE; Schema: public; Owner: v2land
@@ -1218,6 +1181,7 @@ CREATE TABLE public.tag (
 
 
 ALTER TABLE public.tag OWNER TO v2land;
+
 
 --
 -- TOC entry 246 (class 1259 OID 37960)
@@ -2028,7 +1992,40 @@ ALTER TABLE ONLY public.stack
     ADD CONSTRAINT stack_event_id_fk FOREIGN KEY ("eventId") REFERENCES public.event(id) ON DELETE CASCADE;
 
 
--- Completed on 2020-04-08 23:30:58 EDT
+-- Table: public.commit
+
+-- DROP TABLE public.commit;
+
+CREATE TABLE public.commit
+(
+    id integer NOT NULL DEFAULT nextval('public.commit_id_seq'::regclass),
+    summary text COLLATE pg_catalog."default",
+    description text COLLATE pg_catalog."default",
+    data jsonb,
+    diff jsonb,
+    "time" time with time zone,
+    "parentId" integer,
+    "authorId" integer,
+    "eventId" integer,
+    "createdAt" timestamp with time zone NOT NULL,
+    "updatedAt" timestamp with time zone NOT NULL,
+    CONSTRAINT commit_pkey PRIMARY KEY (id),
+    CONSTRAINT "commit_authorId_fkey" FOREIGN KEY ("authorId")
+        REFERENCES public.client (id) MATCH SIMPLE
+        ON UPDATE CASCADE
+        ON DELETE NO ACTION,
+    CONSTRAINT "commit_eventId_fkey" FOREIGN KEY ("eventId")
+        REFERENCES public.event (id) MATCH SIMPLE
+        ON UPDATE CASCADE
+        ON DELETE NO ACTION,
+    CONSTRAINT "commit_parentId_fkey" FOREIGN KEY ("parentId")
+        REFERENCES public.commit (id) MATCH SIMPLE
+        ON UPDATE CASCADE
+        ON DELETE NO ACTION
+);
+
+ALTER TABLE public.commit
+    OWNER to v2land;
 
 --
 -- PostgreSQL database dump complete

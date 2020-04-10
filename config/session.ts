@@ -16,7 +16,7 @@ import parseDomain from 'parse-domain';
 import globals from './globals';
 import { sequelize } from '@Models';
 
-import Redis from 'ioredis';
+import { redis } from '@Services/RedisService';
 import sessionRedis from 'connect-redis';
 
 import expressSession from 'express-session';
@@ -47,13 +47,6 @@ const sessionConfig = {
 
 if (process.env.REDIS_HOST) {
   const RedisStore = sessionRedis(expressSession);
-  const redis = new Redis({
-    db: +process.env.REDIS_DB || 0,
-    host: process.env.REDIS_HOST || '127.0.0.1',
-    port: +process.env.REDIS_PORT || 6379,
-    password: process.env.REDIS_PWD,
-  });
-
   sessionStore = () => new RedisStore({
     client: redis,
     prefix: 'sess:',
