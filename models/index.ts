@@ -3,6 +3,7 @@ import AuthorizationAccessToken from './AuthorizationAccessToken';
 import AuthorizationClient from './AuthorizationClient';
 import AuthorizationCode from './AuthorizationCode';
 import Client from './Client';
+import Commit from './Commit';
 import Contact from './Contact';
 import Critique from './Critique';
 import Event from './Event';
@@ -26,6 +27,7 @@ export {
   AuthorizationClient,
   AuthorizationCode,
   Client,
+  Commit,
   Contact,
   Critique,
   Event,
