@@ -2,6 +2,7 @@ import { Commit, Client, sequelize } from '@Models';
 import getLatestCommit from './getLatestCommit';
 import * as EventService from '../EventService';
 import * as RecordService from '../RecordService';
+import * as RedisService from '../RedisService';
 import { RedstoneError, ResourceNotFoundErrorType } from '@Types';
 import { Transaction } from 'sequelize';
 import _ from 'lodash';
@@ -67,6 +68,7 @@ async function makeCommit(
     }, { transaction });
   }, transaction);
 
+  await RedisService.set(`commit-${eventObj.id}`, commit.get({ plain: true }));
   return commit;
 }
 

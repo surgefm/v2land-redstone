@@ -6,4 +6,12 @@ export const postgresql = {
   port: +process.env.POSTGRES_PORT || 5432,
 };
 
-export default { postgresql };
+export const redis = process.env.REDIS_HOST ? {
+  db: +process.env.REDIS_DB || 0,
+  host: process.env.REDIS_HOST || '127.0.0.1',
+  port: +process.env.REDIS_PORT || 6379,
+  password: process.env.REDIS_PWD,
+  prefix: process.env.REDIS_PREFIX || 'v2land-',
+} : {};
+
+export default { postgresql, redis };

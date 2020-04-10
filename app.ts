@@ -1,6 +1,7 @@
 import 'source-map-support/register';
 import 'module-alias/register';
 import dotenv from 'dotenv';
+dotenv.config();
 
 import express, { Express } from 'express';
 import responseTime from 'response-time';
@@ -19,8 +20,6 @@ import securityConfig from '@Configs/security';
 import loadRoutes from './loadRoutes';
 import loadSequelize from './loadSequelize';
 import { errorHandler } from '@Responses';
-
-dotenv.config();
 
 const app = express();
 
