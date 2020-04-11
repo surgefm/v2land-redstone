@@ -3,7 +3,7 @@ import ElasticsearchService from '../ElasticsearchService';
 import sanitizeClient from './sanitizeClient';
 
 async function updateElasticsearchIndex(
-  { client, clientId }: { client?: Client; clientId?: number },
+  { client, clientId }: { client?: Client; clientId: number } | {client: Client; clientId?: number},
 ) {
   if (!client) {
     client = await Client.findOne({

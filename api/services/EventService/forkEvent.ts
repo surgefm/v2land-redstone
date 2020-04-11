@@ -18,7 +18,7 @@ async function forkEvent(
   const commit = await CommitService.getLatestCommit(eventId);
 
   if (!commit) {
-    throw new RedstoneError(ResourceNotFoundErrorType, `未找到该事件：${eventId}`);
+    throw new RedstoneError(ResourceNotFoundErrorType, `未找到该事件的记录：${eventId}`);
   }
   const event = commit.data;
 
@@ -29,23 +29,14 @@ async function forkEvent(
   if (!user) {
     throw new RedstoneError(ResourceNotFoundErrorType, `未找到该用户：${eventId}`);
   }
-
-  const existingEvent = await Event.findOne({
-    where: {
-      name: event.name,
-      ownerId: user.id,
-    },
-    attributes: ['id'],
-    transaction,
-  });
-
-  if (existingEvent) return null;
   let newEvent: Event;
 
   await UtilService.execWithTransaction(async transaction => {
+    const newEventName = await getNewEventName(event.name, user.id, transaction);
+
     newEvent = await Event.create({
-      name: event.name,
-      pinyin: event.pinyin || await generatePinyin(event.name),
+      name: newEventName,
+      pinyin: await generatePinyin(newEventName),
       description: event.description,
       latestAdmittedNewsId: event.latestAdmittedNewsId,
       status: 'hidden',
@@ -119,6 +110,22 @@ async function forkEvent(
   }, transaction);
 
   return newEvent;
+}
+
+async function getNewEventName(eventName: string, clientId: number, transaction: Transaction, count = 1): Promise<string> {
+  const newEventName = count === 1 ? eventName : `${eventName}(${count})`;
+
+  const existingEvent = await Event.findOne({
+    where: {
+      name: newEventName,
+      ownerId: clientId,
+    },
+    attributes: ['id'],
+    transaction,
+  });
+
+  if (existingEvent) return getNewEventName(eventName, clientId, transaction, count + 1);
+  return newEventName;
 }
 
 export default forkEvent;
