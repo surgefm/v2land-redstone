@@ -6,7 +6,6 @@ import {
   TableOptions,
   AllowNull,
   Default,
-  Unique,
   Is,
   HasOne,
   HasMany,
@@ -26,6 +25,7 @@ import EventStackNews from './EventStackNews';
 import EventTag from './EventTag';
 import Tag from './Tag';
 import Record from './Record';
+import Client from './Client';
 
 @Table({
   modelName: 'event',
@@ -33,7 +33,6 @@ import Record from './Record';
 } as TableOptions)
 class Event extends Model<Event> {
   @AllowNull(false)
-  @Unique(true)
   @Is('EventName', (value) => {
     if (!_.isString(value) || value.length === 0) {
       throw new Error('事件名不得为空');
@@ -97,6 +96,20 @@ class Event extends Model<Event> {
 
   @BelongsTo(() => News, 'latestAdmittedNewsId')
   latestAdmittedNews: News;
+
+  @ForeignKey(() => Client)
+  @Column
+  ownerId: number;
+
+  @BelongsTo(() => Client, 'ownerId')
+  owner: Client;
+
+  @ForeignKey(() => Event)
+  @Column
+  parentId: number;
+
+  @BelongsTo(() => Event, 'parentId')
+  parent: Event;
 
   @BelongsToMany(() => Tag, () => EventTag)
   tags: (Tag & {EventTag: EventTag})[];

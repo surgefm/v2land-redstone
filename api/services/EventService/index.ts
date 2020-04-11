@@ -1,5 +1,6 @@
 import acquireContributionsByEventList from './acquireContributionsByEventList';
 import findEvent from './findEvent';
+import forkEvent from './forkEvent';
 import generatePinyin from './generatePinyin';
 import getContribution from './getContribution';
 import getEventId from './getEventId';
@@ -10,6 +11,7 @@ import updateElasticsearchIndex from './updateElasticsearchIndex';
 export {
   acquireContributionsByEventList,
   findEvent,
+  forkEvent,
   generatePinyin,
   getContribution,
   getEventId,

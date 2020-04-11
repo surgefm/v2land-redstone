@@ -2,6 +2,7 @@ import addTag from './addTag';
 import createEvent from './createEvent';
 import createNews from './createNews';
 import createStack from './createStack';
+import forkEvent from './forkEvent';
 import getAllPendingEvents from './getAllPendingEvents';
 import getEvent from './getEvent';
 import getEventList from './getEventList';
@@ -16,6 +17,7 @@ export {
   createEvent,
   createNews,
   createStack,
+  forkEvent,
   getAllPendingEvents,
   getEvent,
   getEventList,
