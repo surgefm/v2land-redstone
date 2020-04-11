@@ -58,6 +58,15 @@ async function forkEvent(
         eventId: newEvent.id,
       }, { transaction });
 
+      await RecordService.create({
+        model: 'Stack',
+        action: 'copyStackWhenForkingEvent',
+        owner: user.id,
+        target: stack.id,
+        subtarget: newStack.id,
+        data: newStack,
+      }, { transaction });
+
       const esnData = stack.news.map(news => ({
         eventId: newEvent.id,
         stackId: newStack.id,
