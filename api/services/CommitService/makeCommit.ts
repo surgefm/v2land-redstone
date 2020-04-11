@@ -1,8 +1,9 @@
-import { Commit, Client, sequelize } from '@Models';
+import { Commit, Client } from '@Models';
 import getLatestCommit from './getLatestCommit';
 import * as EventService from '../EventService';
 import * as RecordService from '../RecordService';
 import * as RedisService from '../RedisService';
+import * as UtilService from '../UtilService';
 import { RedstoneError, ResourceNotFoundErrorType } from '@Types';
 import { Transaction } from 'sequelize';
 import _ from 'lodash';
@@ -18,7 +19,7 @@ async function makeCommit(
   } = {},
 ) {
   const commitTime = new Date().toISOString().replace('T', ' ').replace('Z', ' +00:00');
-  const eventObj = await EventService.findEvent(eventId as number | string, { transaction, plain: true });
+  const eventObj = await EventService.findEvent(eventId, { transaction, plain: true });
 
   if (!eventObj) {
     throw new RedstoneError(ResourceNotFoundErrorType, `未找到该事件：${eventId}`);
@@ -46,7 +47,7 @@ async function makeCommit(
   }
 
   let commit: Commit;
-  await execWithTransaction(async transaction => {
+  await UtilService.execWithTransaction(async transaction => {
     commit = await Commit.create({
       authorId: author.id,
       eventId: eventObj.id,
@@ -68,17 +69,6 @@ async function makeCommit(
 
   await RedisService.set(`commit-${eventObj.id}`, commit.get({ plain: true }));
   return commit;
-}
-
-async function execWithTransaction(
-  fn: (transaction: Transaction) => Promise<void>,
-  transaction?: Transaction,
-) {
-  if (transaction) {
-    return fn(transaction);
-  } else {
-    await sequelize.transaction(fn);
-  }
 }
 
 function convertDateToString(o: { [index: string]: any }) {

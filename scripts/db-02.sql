@@ -5,7 +5,7 @@
 -- Dumped from database version 12.1
 -- Dumped by pg_dump version 12.2
 
--- Started on 2020-04-08 23:30:58 EDT
+-- Started on 2020-04-11 03:41:07 EDT
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -19,7 +19,7 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
--- TOC entry 587 (class 1247 OID 37511)
+-- TOC entry 607 (class 1247 OID 37511)
 -- Name: enum_auth_site; Type: TYPE; Schema: public; Owner: v2land
 --
 
@@ -33,7 +33,7 @@ CREATE TYPE public.enum_auth_site AS ENUM (
 ALTER TYPE public.enum_auth_site OWNER TO v2land;
 
 --
--- TOC entry 675 (class 1247 OID 37518)
+-- TOC entry 695 (class 1247 OID 37518)
 -- Name: enum_authorizationAccessToken_status; Type: TYPE; Schema: public; Owner: v2land
 --
 
@@ -46,7 +46,7 @@ CREATE TYPE public."enum_authorizationAccessToken_status" AS ENUM (
 ALTER TYPE public."enum_authorizationAccessToken_status" OWNER TO v2land;
 
 --
--- TOC entry 678 (class 1247 OID 37524)
+-- TOC entry 698 (class 1247 OID 37524)
 -- Name: enum_client_role; Type: TYPE; Schema: public; Owner: v2land
 --
 
@@ -60,7 +60,7 @@ CREATE TYPE public.enum_client_role AS ENUM (
 ALTER TYPE public.enum_client_role OWNER TO v2land;
 
 --
--- TOC entry 681 (class 1247 OID 37532)
+-- TOC entry 701 (class 1247 OID 37532)
 -- Name: enum_contact_method; Type: TYPE; Schema: public; Owner: v2land
 --
 
@@ -78,7 +78,7 @@ CREATE TYPE public.enum_contact_method AS ENUM (
 ALTER TYPE public.enum_contact_method OWNER TO v2land;
 
 --
--- TOC entry 684 (class 1247 OID 37548)
+-- TOC entry 704 (class 1247 OID 37548)
 -- Name: enum_contact_status; Type: TYPE; Schema: public; Owner: v2land
 --
 
@@ -92,7 +92,7 @@ CREATE TYPE public.enum_contact_status AS ENUM (
 ALTER TYPE public.enum_contact_status OWNER TO v2land;
 
 --
--- TOC entry 687 (class 1247 OID 37556)
+-- TOC entry 707 (class 1247 OID 37556)
 -- Name: enum_contact_type; Type: TYPE; Schema: public; Owner: v2land
 --
 
@@ -108,7 +108,7 @@ CREATE TYPE public.enum_contact_type AS ENUM (
 ALTER TYPE public.enum_contact_type OWNER TO v2land;
 
 --
--- TOC entry 690 (class 1247 OID 37568)
+-- TOC entry 710 (class 1247 OID 37568)
 -- Name: enum_critique_status; Type: TYPE; Schema: public; Owner: v2land
 --
 
@@ -123,7 +123,7 @@ CREATE TYPE public.enum_critique_status AS ENUM (
 ALTER TYPE public.enum_critique_status OWNER TO v2land;
 
 --
--- TOC entry 693 (class 1247 OID 37578)
+-- TOC entry 713 (class 1247 OID 37578)
 -- Name: enum_event_status; Type: TYPE; Schema: public; Owner: v2land
 --
 
@@ -139,7 +139,7 @@ CREATE TYPE public.enum_event_status AS ENUM (
 ALTER TYPE public.enum_event_status OWNER TO v2land;
 
 --
--- TOC entry 696 (class 1247 OID 37590)
+-- TOC entry 716 (class 1247 OID 37590)
 -- Name: enum_news_status; Type: TYPE; Schema: public; Owner: v2land
 --
 
@@ -154,7 +154,7 @@ CREATE TYPE public.enum_news_status AS ENUM (
 ALTER TYPE public.enum_news_status OWNER TO v2land;
 
 --
--- TOC entry 699 (class 1247 OID 37600)
+-- TOC entry 719 (class 1247 OID 37600)
 -- Name: enum_notification_mode; Type: TYPE; Schema: public; Owner: v2land
 --
 
@@ -173,7 +173,7 @@ CREATE TYPE public.enum_notification_mode AS ENUM (
 ALTER TYPE public.enum_notification_mode OWNER TO v2land;
 
 --
--- TOC entry 702 (class 1247 OID 37618)
+-- TOC entry 722 (class 1247 OID 37618)
 -- Name: enum_notification_status; Type: TYPE; Schema: public; Owner: v2land
 --
 
@@ -188,7 +188,7 @@ CREATE TYPE public.enum_notification_status AS ENUM (
 ALTER TYPE public.enum_notification_status OWNER TO v2land;
 
 --
--- TOC entry 705 (class 1247 OID 37628)
+-- TOC entry 725 (class 1247 OID 37628)
 -- Name: enum_record_action; Type: TYPE; Schema: public; Owner: v2land
 --
 
@@ -230,7 +230,7 @@ CREATE TYPE public.enum_record_action AS ENUM (
 ALTER TYPE public.enum_record_action OWNER TO v2land;
 
 --
--- TOC entry 708 (class 1247 OID 37692)
+-- TOC entry 728 (class 1247 OID 37692)
 -- Name: enum_record_model; Type: TYPE; Schema: public; Owner: v2land
 --
 
@@ -251,7 +251,7 @@ CREATE TYPE public.enum_record_model AS ENUM (
 ALTER TYPE public.enum_record_model OWNER TO v2land;
 
 --
--- TOC entry 711 (class 1247 OID 37714)
+-- TOC entry 731 (class 1247 OID 37714)
 -- Name: enum_record_operation; Type: TYPE; Schema: public; Owner: v2land
 --
 
@@ -265,7 +265,7 @@ CREATE TYPE public.enum_record_operation AS ENUM (
 ALTER TYPE public.enum_record_operation OWNER TO v2land;
 
 --
--- TOC entry 714 (class 1247 OID 37722)
+-- TOC entry 734 (class 1247 OID 37722)
 -- Name: enum_reportNotification_status; Type: TYPE; Schema: public; Owner: v2land
 --
 
@@ -279,7 +279,7 @@ CREATE TYPE public."enum_reportNotification_status" AS ENUM (
 ALTER TYPE public."enum_reportNotification_status" OWNER TO v2land;
 
 --
--- TOC entry 717 (class 1247 OID 37730)
+-- TOC entry 737 (class 1247 OID 37730)
 -- Name: enum_report_method; Type: TYPE; Schema: public; Owner: v2land
 --
 
@@ -292,7 +292,7 @@ CREATE TYPE public.enum_report_method AS ENUM (
 ALTER TYPE public.enum_report_method OWNER TO v2land;
 
 --
--- TOC entry 720 (class 1247 OID 37736)
+-- TOC entry 740 (class 1247 OID 37736)
 -- Name: enum_report_status; Type: TYPE; Schema: public; Owner: v2land
 --
 
@@ -307,7 +307,7 @@ CREATE TYPE public.enum_report_status AS ENUM (
 ALTER TYPE public.enum_report_status OWNER TO v2land;
 
 --
--- TOC entry 723 (class 1247 OID 37746)
+-- TOC entry 743 (class 1247 OID 37746)
 -- Name: enum_report_type; Type: TYPE; Schema: public; Owner: v2land
 --
 
@@ -321,7 +321,7 @@ CREATE TYPE public.enum_report_type AS ENUM (
 ALTER TYPE public.enum_report_type OWNER TO v2land;
 
 --
--- TOC entry 726 (class 1247 OID 37754)
+-- TOC entry 746 (class 1247 OID 37754)
 -- Name: enum_stack_status; Type: TYPE; Schema: public; Owner: v2land
 --
 
@@ -338,7 +338,7 @@ CREATE TYPE public.enum_stack_status AS ENUM (
 ALTER TYPE public.enum_stack_status OWNER TO v2land;
 
 --
--- TOC entry 729 (class 1247 OID 37768)
+-- TOC entry 749 (class 1247 OID 37768)
 -- Name: enum_subscription_mode; Type: TYPE; Schema: public; Owner: v2land
 --
 
@@ -357,7 +357,7 @@ CREATE TYPE public.enum_subscription_mode AS ENUM (
 ALTER TYPE public.enum_subscription_mode OWNER TO v2land;
 
 --
--- TOC entry 732 (class 1247 OID 37786)
+-- TOC entry 752 (class 1247 OID 37786)
 -- Name: enum_subscription_status; Type: TYPE; Schema: public; Owner: v2land
 --
 
@@ -370,7 +370,7 @@ CREATE TYPE public.enum_subscription_status AS ENUM (
 ALTER TYPE public.enum_subscription_status OWNER TO v2land;
 
 --
--- TOC entry 820 (class 1247 OID 38237)
+-- TOC entry 840 (class 1247 OID 38237)
 -- Name: enum_tag_status; Type: TYPE; Schema: public; Owner: zehuali
 --
 
@@ -383,7 +383,7 @@ CREATE TYPE public.enum_tag_status AS ENUM (
 ALTER TYPE public.enum_tag_status OWNER TO zehuali;
 
 --
--- TOC entry 249 (class 1255 OID 37791)
+-- TOC entry 269 (class 1255 OID 37791)
 -- Name: sails_session_store_clear(); Type: FUNCTION; Schema: public; Owner: v2land
 --
 
@@ -399,7 +399,7 @@ $$;
 ALTER FUNCTION public.sails_session_store_clear() OWNER TO v2land;
 
 --
--- TOC entry 250 (class 1255 OID 37792)
+-- TOC entry 270 (class 1255 OID 37792)
 -- Name: sails_session_store_destroy(text); Type: FUNCTION; Schema: public; Owner: v2land
 --
 
@@ -415,7 +415,7 @@ $$;
 ALTER FUNCTION public.sails_session_store_destroy(sid_in text) OWNER TO v2land;
 
 --
--- TOC entry 251 (class 1255 OID 37793)
+-- TOC entry 271 (class 1255 OID 37793)
 -- Name: sails_session_store_get(text); Type: FUNCTION; Schema: public; Owner: v2land
 --
 
@@ -431,7 +431,7 @@ $$;
 ALTER FUNCTION public.sails_session_store_get(sid_in text, OUT data_out json) OWNER TO v2land;
 
 --
--- TOC entry 252 (class 1255 OID 37794)
+-- TOC entry 272 (class 1255 OID 37794)
 -- Name: sails_session_store_length(); Type: FUNCTION; Schema: public; Owner: v2land
 --
 
@@ -447,7 +447,7 @@ $$;
 ALTER FUNCTION public.sails_session_store_length(OUT length integer) OWNER TO v2land;
 
 --
--- TOC entry 253 (class 1255 OID 37795)
+-- TOC entry 273 (class 1255 OID 37795)
 -- Name: sails_session_store_set(text, json); Type: FUNCTION; Schema: public; Owner: v2land
 --
 
@@ -469,7 +469,7 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
--- TOC entry 248 (class 1259 OID 38360)
+-- TOC entry 266 (class 1259 OID 38360)
 -- Name: Session; Type: TABLE; Schema: public; Owner: v2land
 --
 
@@ -485,7 +485,7 @@ CREATE TABLE public."Session" (
 ALTER TABLE public."Session" OWNER TO v2land;
 
 --
--- TOC entry 212 (class 1259 OID 37802)
+-- TOC entry 230 (class 1259 OID 37802)
 -- Name: auth; Type: TABLE; Schema: public; Owner: v2land
 --
 
@@ -509,7 +509,7 @@ CREATE TABLE public.auth (
 ALTER TABLE public.auth OWNER TO v2land;
 
 --
--- TOC entry 213 (class 1259 OID 37808)
+-- TOC entry 231 (class 1259 OID 37808)
 -- Name: auth_id_seq; Type: SEQUENCE; Schema: public; Owner: v2land
 --
 
@@ -524,8 +524,8 @@ CREATE SEQUENCE public.auth_id_seq
 ALTER TABLE public.auth_id_seq OWNER TO v2land;
 
 --
--- TOC entry 3515 (class 0 OID 0)
--- Dependencies: 213
+-- TOC entry 3547 (class 0 OID 0)
+-- Dependencies: 231
 -- Name: auth_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: v2land
 --
 
@@ -533,7 +533,7 @@ ALTER SEQUENCE public.auth_id_seq OWNED BY public.auth.id;
 
 
 --
--- TOC entry 214 (class 1259 OID 37810)
+-- TOC entry 232 (class 1259 OID 37810)
 -- Name: authorizationAccessToken; Type: TABLE; Schema: public; Owner: v2land
 --
 
@@ -553,7 +553,7 @@ CREATE TABLE public."authorizationAccessToken" (
 ALTER TABLE public."authorizationAccessToken" OWNER TO v2land;
 
 --
--- TOC entry 215 (class 1259 OID 37816)
+-- TOC entry 233 (class 1259 OID 37816)
 -- Name: authorizationAccessToken_id_seq; Type: SEQUENCE; Schema: public; Owner: v2land
 --
 
@@ -568,7 +568,7 @@ ALTER TABLE public."authorizationAccessToken" ALTER COLUMN id ADD GENERATED ALWA
 
 
 --
--- TOC entry 216 (class 1259 OID 37818)
+-- TOC entry 234 (class 1259 OID 37818)
 -- Name: authorizationClient; Type: TABLE; Schema: public; Owner: v2land
 --
 
@@ -586,7 +586,7 @@ CREATE TABLE public."authorizationClient" (
 ALTER TABLE public."authorizationClient" OWNER TO v2land;
 
 --
--- TOC entry 217 (class 1259 OID 37824)
+-- TOC entry 235 (class 1259 OID 37824)
 -- Name: authorizationClient_id_seq; Type: SEQUENCE; Schema: public; Owner: v2land
 --
 
@@ -601,7 +601,7 @@ ALTER TABLE public."authorizationClient" ALTER COLUMN id ADD GENERATED ALWAYS AS
 
 
 --
--- TOC entry 218 (class 1259 OID 37826)
+-- TOC entry 236 (class 1259 OID 37826)
 -- Name: authorizationCode; Type: TABLE; Schema: public; Owner: v2land
 --
 
@@ -620,7 +620,7 @@ CREATE TABLE public."authorizationCode" (
 ALTER TABLE public."authorizationCode" OWNER TO v2land;
 
 --
--- TOC entry 219 (class 1259 OID 37832)
+-- TOC entry 237 (class 1259 OID 37832)
 -- Name: authorizationCode_id_seq; Type: SEQUENCE; Schema: public; Owner: v2land
 --
 
@@ -633,20 +633,9 @@ ALTER TABLE public."authorizationCode" ALTER COLUMN id ADD GENERATED ALWAYS AS I
     CACHE 1
 );
 
-CREATE SEQUENCE public.commit_id_seq
-    INCREMENT 1
-    START WITH 1
-    MINVALUE 1
-    MAXVALUE 2147483647
-    CACHE 1;
-
-ALTER TABLE public.commit_id_seq OWNER TO v2land;
-
-ALTER SEQUENCE public.commit_id_seq
-    OWNER TO v2land;
 
 --
--- TOC entry 220 (class 1259 OID 37834)
+-- TOC entry 238 (class 1259 OID 37834)
 -- Name: client; Type: TABLE; Schema: public; Owner: v2land
 --
 
@@ -666,7 +655,7 @@ CREATE TABLE public.client (
 ALTER TABLE public.client OWNER TO v2land;
 
 --
--- TOC entry 221 (class 1259 OID 37846)
+-- TOC entry 239 (class 1259 OID 37846)
 -- Name: client_id_seq; Type: SEQUENCE; Schema: public; Owner: v2land
 --
 
@@ -677,11 +666,12 @@ CREATE SEQUENCE public.client_id_seq
     NO MAXVALUE
     CACHE 1;
 
+
 ALTER TABLE public.client_id_seq OWNER TO v2land;
 
 --
--- TOC entry 3516 (class 0 OID 0)
--- Dependencies: 221
+-- TOC entry 3548 (class 0 OID 0)
+-- Dependencies: 239
 -- Name: client_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: v2land
 --
 
@@ -689,7 +679,55 @@ ALTER SEQUENCE public.client_id_seq OWNED BY public.client.id;
 
 
 --
--- TOC entry 222 (class 1259 OID 37848)
+-- TOC entry 268 (class 1259 OID 38385)
+-- Name: commit; Type: TABLE; Schema: public; Owner: v2land
+--
+
+CREATE TABLE public.commit (
+    id integer NOT NULL,
+    summary text,
+    description text,
+    data jsonb,
+    diff jsonb,
+    "time" time with time zone,
+    "parentId" integer,
+    "authorId" integer,
+    "eventId" integer,
+    "createdAt" timestamp with time zone NOT NULL,
+    "updatedAt" timestamp with time zone NOT NULL,
+    "isForkCommit" boolean
+);
+
+
+ALTER TABLE public.commit OWNER TO v2land;
+
+--
+-- TOC entry 267 (class 1259 OID 38383)
+-- Name: commit_id_seq; Type: SEQUENCE; Schema: public; Owner: v2land
+--
+
+CREATE SEQUENCE public.commit_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.commit_id_seq OWNER TO v2land;
+
+--
+-- TOC entry 3549 (class 0 OID 0)
+-- Dependencies: 267
+-- Name: commit_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: v2land
+--
+
+ALTER SEQUENCE public.commit_id_seq OWNED BY public.commit.id;
+
+
+--
+-- TOC entry 240 (class 1259 OID 37848)
 -- Name: contact_id_seq; Type: SEQUENCE; Schema: public; Owner: v2land
 --
 
@@ -704,7 +742,7 @@ CREATE SEQUENCE public.contact_id_seq
 ALTER TABLE public.contact_id_seq OWNER TO v2land;
 
 --
--- TOC entry 223 (class 1259 OID 37850)
+-- TOC entry 241 (class 1259 OID 37850)
 -- Name: contact; Type: TABLE; Schema: public; Owner: v2land
 --
 
@@ -726,7 +764,7 @@ CREATE TABLE public.contact (
 ALTER TABLE public.contact OWNER TO v2land;
 
 --
--- TOC entry 224 (class 1259 OID 37857)
+-- TOC entry 242 (class 1259 OID 37857)
 -- Name: critique_id_seq; Type: SEQUENCE; Schema: public; Owner: v2land
 --
 
@@ -741,7 +779,7 @@ CREATE SEQUENCE public.critique_id_seq
 ALTER TABLE public.critique_id_seq OWNER TO v2land;
 
 --
--- TOC entry 225 (class 1259 OID 37859)
+-- TOC entry 243 (class 1259 OID 37859)
 -- Name: critique; Type: TABLE; Schema: public; Owner: v2land
 --
 
@@ -762,7 +800,7 @@ CREATE TABLE public.critique (
 ALTER TABLE public.critique OWNER TO v2land;
 
 --
--- TOC entry 226 (class 1259 OID 37867)
+-- TOC entry 244 (class 1259 OID 37867)
 -- Name: event; Type: TABLE; Schema: public; Owner: v2land
 --
 
@@ -774,14 +812,16 @@ CREATE TABLE public.event (
     "createdAt" timestamp with time zone,
     "updatedAt" timestamp with time zone,
     pinyin text,
-    "latestAdmittedNewsId" integer
+    "latestAdmittedNewsId" integer,
+    "ownerId" integer,
+    "parentId" integer
 );
 
 
 ALTER TABLE public.event OWNER TO v2land;
 
 --
--- TOC entry 247 (class 1259 OID 38333)
+-- TOC entry 265 (class 1259 OID 38333)
 -- Name: eventStackNews; Type: TABLE; Schema: public; Owner: v2land
 --
 
@@ -797,7 +837,7 @@ CREATE TABLE public."eventStackNews" (
 ALTER TABLE public."eventStackNews" OWNER TO v2land;
 
 --
--- TOC entry 227 (class 1259 OID 37873)
+-- TOC entry 245 (class 1259 OID 37873)
 -- Name: eventTag; Type: TABLE; Schema: public; Owner: v2land
 --
 
@@ -813,7 +853,7 @@ CREATE TABLE public."eventTag" (
 ALTER TABLE public."eventTag" OWNER TO v2land;
 
 --
--- TOC entry 228 (class 1259 OID 37876)
+-- TOC entry 246 (class 1259 OID 37876)
 -- Name: eventTag_id_seq; Type: SEQUENCE; Schema: public; Owner: v2land
 --
 
@@ -829,8 +869,8 @@ CREATE SEQUENCE public."eventTag_id_seq"
 ALTER TABLE public."eventTag_id_seq" OWNER TO v2land;
 
 --
--- TOC entry 3517 (class 0 OID 0)
--- Dependencies: 228
+-- TOC entry 3550 (class 0 OID 0)
+-- Dependencies: 246
 -- Name: eventTag_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: v2land
 --
 
@@ -838,7 +878,7 @@ ALTER SEQUENCE public."eventTag_id_seq" OWNED BY public."eventTag".id;
 
 
 --
--- TOC entry 229 (class 1259 OID 37878)
+-- TOC entry 247 (class 1259 OID 37878)
 -- Name: event_id_seq; Type: SEQUENCE; Schema: public; Owner: v2land
 --
 
@@ -853,8 +893,8 @@ CREATE SEQUENCE public.event_id_seq
 ALTER TABLE public.event_id_seq OWNER TO v2land;
 
 --
--- TOC entry 3518 (class 0 OID 0)
--- Dependencies: 229
+-- TOC entry 3551 (class 0 OID 0)
+-- Dependencies: 247
 -- Name: event_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: v2land
 --
 
@@ -862,7 +902,7 @@ ALTER SEQUENCE public.event_id_seq OWNED BY public.event.id;
 
 
 --
--- TOC entry 230 (class 1259 OID 37880)
+-- TOC entry 248 (class 1259 OID 37880)
 -- Name: headerImage; Type: TABLE; Schema: public; Owner: v2land
 --
 
@@ -880,7 +920,7 @@ CREATE TABLE public."headerImage" (
 ALTER TABLE public."headerImage" OWNER TO v2land;
 
 --
--- TOC entry 231 (class 1259 OID 37886)
+-- TOC entry 249 (class 1259 OID 37886)
 -- Name: headerimage_id_seq; Type: SEQUENCE; Schema: public; Owner: v2land
 --
 
@@ -895,8 +935,8 @@ CREATE SEQUENCE public.headerimage_id_seq
 ALTER TABLE public.headerimage_id_seq OWNER TO v2land;
 
 --
--- TOC entry 3519 (class 0 OID 0)
--- Dependencies: 231
+-- TOC entry 3552 (class 0 OID 0)
+-- Dependencies: 249
 -- Name: headerimage_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: v2land
 --
 
@@ -904,7 +944,7 @@ ALTER SEQUENCE public.headerimage_id_seq OWNED BY public."headerImage".id;
 
 
 --
--- TOC entry 232 (class 1259 OID 37894)
+-- TOC entry 250 (class 1259 OID 37894)
 -- Name: news; Type: TABLE; Schema: public; Owner: v2land
 --
 
@@ -926,7 +966,7 @@ CREATE TABLE public.news (
 ALTER TABLE public.news OWNER TO v2land;
 
 --
--- TOC entry 233 (class 1259 OID 37900)
+-- TOC entry 251 (class 1259 OID 37900)
 -- Name: news_id_seq; Type: SEQUENCE; Schema: public; Owner: v2land
 --
 
@@ -941,8 +981,8 @@ CREATE SEQUENCE public.news_id_seq
 ALTER TABLE public.news_id_seq OWNER TO v2land;
 
 --
--- TOC entry 3520 (class 0 OID 0)
--- Dependencies: 233
+-- TOC entry 3553 (class 0 OID 0)
+-- Dependencies: 251
 -- Name: news_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: v2land
 --
 
@@ -950,7 +990,7 @@ ALTER SEQUENCE public.news_id_seq OWNED BY public.news.id;
 
 
 --
--- TOC entry 234 (class 1259 OID 37902)
+-- TOC entry 252 (class 1259 OID 37902)
 -- Name: notification; Type: TABLE; Schema: public; Owner: v2land
 --
 
@@ -968,7 +1008,7 @@ CREATE TABLE public.notification (
 ALTER TABLE public.notification OWNER TO v2land;
 
 --
--- TOC entry 235 (class 1259 OID 37905)
+-- TOC entry 253 (class 1259 OID 37905)
 -- Name: notification_id_seq; Type: SEQUENCE; Schema: public; Owner: v2land
 --
 
@@ -983,8 +1023,8 @@ CREATE SEQUENCE public.notification_id_seq
 ALTER TABLE public.notification_id_seq OWNER TO v2land;
 
 --
--- TOC entry 3521 (class 0 OID 0)
--- Dependencies: 235
+-- TOC entry 3554 (class 0 OID 0)
+-- Dependencies: 253
 -- Name: notification_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: v2land
 --
 
@@ -992,7 +1032,7 @@ ALTER SEQUENCE public.notification_id_seq OWNED BY public.notification.id;
 
 
 --
--- TOC entry 236 (class 1259 OID 37907)
+-- TOC entry 254 (class 1259 OID 37907)
 -- Name: record; Type: TABLE; Schema: public; Owner: v2land
 --
 
@@ -1014,7 +1054,7 @@ CREATE TABLE public.record (
 ALTER TABLE public.record OWNER TO v2land;
 
 --
--- TOC entry 237 (class 1259 OID 37913)
+-- TOC entry 255 (class 1259 OID 37913)
 -- Name: record_id_seq; Type: SEQUENCE; Schema: public; Owner: v2land
 --
 
@@ -1029,8 +1069,8 @@ CREATE SEQUENCE public.record_id_seq
 ALTER TABLE public.record_id_seq OWNER TO v2land;
 
 --
--- TOC entry 3522 (class 0 OID 0)
--- Dependencies: 237
+-- TOC entry 3555 (class 0 OID 0)
+-- Dependencies: 255
 -- Name: record_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: v2land
 --
 
@@ -1038,7 +1078,7 @@ ALTER SEQUENCE public.record_id_seq OWNED BY public.record.id;
 
 
 --
--- TOC entry 238 (class 1259 OID 37915)
+-- TOC entry 256 (class 1259 OID 37915)
 -- Name: report_id_seq; Type: SEQUENCE; Schema: public; Owner: v2land
 --
 
@@ -1053,7 +1093,7 @@ CREATE SEQUENCE public.report_id_seq
 ALTER TABLE public.report_id_seq OWNER TO v2land;
 
 --
--- TOC entry 239 (class 1259 OID 37917)
+-- TOC entry 257 (class 1259 OID 37917)
 -- Name: report; Type: TABLE; Schema: public; Owner: v2land
 --
 
@@ -1072,7 +1112,7 @@ CREATE TABLE public.report (
 ALTER TABLE public.report OWNER TO v2land;
 
 --
--- TOC entry 240 (class 1259 OID 37925)
+-- TOC entry 258 (class 1259 OID 37925)
 -- Name: reportNotification; Type: TABLE; Schema: public; Owner: v2land
 --
 
@@ -1088,7 +1128,7 @@ CREATE TABLE public."reportNotification" (
 ALTER TABLE public."reportNotification" OWNER TO v2land;
 
 --
--- TOC entry 241 (class 1259 OID 37936)
+-- TOC entry 259 (class 1259 OID 37936)
 -- Name: stack_id_seq; Type: SEQUENCE; Schema: public; Owner: v2land
 --
 
@@ -1103,7 +1143,7 @@ CREATE SEQUENCE public.stack_id_seq
 ALTER TABLE public.stack_id_seq OWNER TO v2land;
 
 --
--- TOC entry 242 (class 1259 OID 37938)
+-- TOC entry 260 (class 1259 OID 37938)
 -- Name: stack; Type: TABLE; Schema: public; Owner: v2land
 --
 
@@ -1123,7 +1163,7 @@ CREATE TABLE public.stack (
 ALTER TABLE public.stack OWNER TO v2land;
 
 --
--- TOC entry 243 (class 1259 OID 37946)
+-- TOC entry 261 (class 1259 OID 37946)
 -- Name: subscription; Type: TABLE; Schema: public; Owner: v2land
 --
 
@@ -1142,7 +1182,7 @@ CREATE TABLE public.subscription (
 ALTER TABLE public.subscription OWNER TO v2land;
 
 --
--- TOC entry 244 (class 1259 OID 37952)
+-- TOC entry 262 (class 1259 OID 37952)
 -- Name: subscription_id_seq; Type: SEQUENCE; Schema: public; Owner: v2land
 --
 
@@ -1157,8 +1197,8 @@ CREATE SEQUENCE public.subscription_id_seq
 ALTER TABLE public.subscription_id_seq OWNER TO v2land;
 
 --
--- TOC entry 3523 (class 0 OID 0)
--- Dependencies: 244
+-- TOC entry 3556 (class 0 OID 0)
+-- Dependencies: 262
 -- Name: subscription_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: v2land
 --
 
@@ -1166,7 +1206,7 @@ ALTER SEQUENCE public.subscription_id_seq OWNED BY public.subscription.id;
 
 
 --
--- TOC entry 245 (class 1259 OID 37954)
+-- TOC entry 263 (class 1259 OID 37954)
 -- Name: tag; Type: TABLE; Schema: public; Owner: v2land
 --
 
@@ -1182,9 +1222,8 @@ CREATE TABLE public.tag (
 
 ALTER TABLE public.tag OWNER TO v2land;
 
-
 --
--- TOC entry 246 (class 1259 OID 37960)
+-- TOC entry 264 (class 1259 OID 37960)
 -- Name: tag_id_seq; Type: SEQUENCE; Schema: public; Owner: v2land
 --
 
@@ -1200,8 +1239,8 @@ CREATE SEQUENCE public.tag_id_seq
 ALTER TABLE public.tag_id_seq OWNER TO v2land;
 
 --
--- TOC entry 3524 (class 0 OID 0)
--- Dependencies: 246
+-- TOC entry 3557 (class 0 OID 0)
+-- Dependencies: 264
 -- Name: tag_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: v2land
 --
 
@@ -1209,7 +1248,7 @@ ALTER SEQUENCE public.tag_id_seq OWNED BY public.tag.id;
 
 
 --
--- TOC entry 3263 (class 2604 OID 37962)
+-- TOC entry 3288 (class 2604 OID 37962)
 -- Name: auth id; Type: DEFAULT; Schema: public; Owner: v2land
 --
 
@@ -1217,7 +1256,7 @@ ALTER TABLE ONLY public.auth ALTER COLUMN id SET DEFAULT nextval('public.auth_id
 
 
 --
--- TOC entry 3265 (class 2604 OID 37963)
+-- TOC entry 3290 (class 2604 OID 37963)
 -- Name: client id; Type: DEFAULT; Schema: public; Owner: v2land
 --
 
@@ -1225,7 +1264,15 @@ ALTER TABLE ONLY public.client ALTER COLUMN id SET DEFAULT nextval('public.clien
 
 
 --
--- TOC entry 3269 (class 2604 OID 37965)
+-- TOC entry 3310 (class 2604 OID 38388)
+-- Name: commit id; Type: DEFAULT; Schema: public; Owner: v2land
+--
+
+ALTER TABLE ONLY public.commit ALTER COLUMN id SET DEFAULT nextval('public.commit_id_seq'::regclass);
+
+
+--
+-- TOC entry 3294 (class 2604 OID 37965)
 -- Name: event id; Type: DEFAULT; Schema: public; Owner: v2land
 --
 
@@ -1233,7 +1280,7 @@ ALTER TABLE ONLY public.event ALTER COLUMN id SET DEFAULT nextval('public.event_
 
 
 --
--- TOC entry 3270 (class 2604 OID 37966)
+-- TOC entry 3295 (class 2604 OID 37966)
 -- Name: eventTag id; Type: DEFAULT; Schema: public; Owner: v2land
 --
 
@@ -1241,7 +1288,7 @@ ALTER TABLE ONLY public."eventTag" ALTER COLUMN id SET DEFAULT nextval('public."
 
 
 --
--- TOC entry 3271 (class 2604 OID 37967)
+-- TOC entry 3296 (class 2604 OID 37967)
 -- Name: headerImage id; Type: DEFAULT; Schema: public; Owner: v2land
 --
 
@@ -1249,7 +1296,7 @@ ALTER TABLE ONLY public."headerImage" ALTER COLUMN id SET DEFAULT nextval('publi
 
 
 --
--- TOC entry 3272 (class 2604 OID 37968)
+-- TOC entry 3297 (class 2604 OID 37968)
 -- Name: news id; Type: DEFAULT; Schema: public; Owner: v2land
 --
 
@@ -1257,7 +1304,7 @@ ALTER TABLE ONLY public.news ALTER COLUMN id SET DEFAULT nextval('public.news_id
 
 
 --
--- TOC entry 3273 (class 2604 OID 37969)
+-- TOC entry 3298 (class 2604 OID 37969)
 -- Name: notification id; Type: DEFAULT; Schema: public; Owner: v2land
 --
 
@@ -1265,7 +1312,7 @@ ALTER TABLE ONLY public.notification ALTER COLUMN id SET DEFAULT nextval('public
 
 
 --
--- TOC entry 3274 (class 2604 OID 37970)
+-- TOC entry 3299 (class 2604 OID 37970)
 -- Name: record id; Type: DEFAULT; Schema: public; Owner: v2land
 --
 
@@ -1273,7 +1320,7 @@ ALTER TABLE ONLY public.record ALTER COLUMN id SET DEFAULT nextval('public.recor
 
 
 --
--- TOC entry 3283 (class 2604 OID 37971)
+-- TOC entry 3308 (class 2604 OID 37971)
 -- Name: subscription id; Type: DEFAULT; Schema: public; Owner: v2land
 --
 
@@ -1281,7 +1328,7 @@ ALTER TABLE ONLY public.subscription ALTER COLUMN id SET DEFAULT nextval('public
 
 
 --
--- TOC entry 3284 (class 2604 OID 37972)
+-- TOC entry 3309 (class 2604 OID 37972)
 -- Name: tag id; Type: DEFAULT; Schema: public; Owner: v2land
 --
 
@@ -1289,8 +1336,8 @@ ALTER TABLE ONLY public.tag ALTER COLUMN id SET DEFAULT nextval('public.tag_id_s
 
 
 --
--- TOC entry 3509 (class 0 OID 38360)
--- Dependencies: 248
+-- TOC entry 3539 (class 0 OID 38360)
+-- Dependencies: 266
 -- Data for Name: Session; Type: TABLE DATA; Schema: public; Owner: v2land
 --
 
@@ -1299,8 +1346,8 @@ COPY public."Session" (sid, expires, data, "createdAt", "updatedAt") FROM stdin;
 
 
 --
--- TOC entry 3473 (class 0 OID 37802)
--- Dependencies: 212
+-- TOC entry 3503 (class 0 OID 37802)
+-- Dependencies: 230
 -- Data for Name: auth; Type: TABLE DATA; Schema: public; Owner: v2land
 --
 
@@ -1309,8 +1356,8 @@ COPY public.auth (site, "profileId", profile, token, "tokenSecret", "accessToken
 
 
 --
--- TOC entry 3475 (class 0 OID 37810)
--- Dependencies: 214
+-- TOC entry 3505 (class 0 OID 37810)
+-- Dependencies: 232
 -- Data for Name: authorizationAccessToken; Type: TABLE DATA; Schema: public; Owner: v2land
 --
 
@@ -1319,8 +1366,8 @@ COPY public."authorizationAccessToken" (id, token, "refreshToken", expire, "auth
 
 
 --
--- TOC entry 3477 (class 0 OID 37818)
--- Dependencies: 216
+-- TOC entry 3507 (class 0 OID 37818)
+-- Dependencies: 234
 -- Data for Name: authorizationClient; Type: TABLE DATA; Schema: public; Owner: v2land
 --
 
@@ -1329,8 +1376,8 @@ COPY public."authorizationClient" (name, description, "redirectURI", "allowAutho
 
 
 --
--- TOC entry 3479 (class 0 OID 37826)
--- Dependencies: 218
+-- TOC entry 3509 (class 0 OID 37826)
+-- Dependencies: 236
 -- Data for Name: authorizationCode; Type: TABLE DATA; Schema: public; Owner: v2land
 --
 
@@ -1339,8 +1386,8 @@ COPY public."authorizationCode" (id, code, url, expire, owner, "authorizationCli
 
 
 --
--- TOC entry 3481 (class 0 OID 37834)
--- Dependencies: 220
+-- TOC entry 3511 (class 0 OID 37834)
+-- Dependencies: 238
 -- Data for Name: client; Type: TABLE DATA; Schema: public; Owner: v2land
 --
 
@@ -1349,8 +1396,18 @@ COPY public.client (username, email, password, role, id, "createdAt", "updatedAt
 
 
 --
--- TOC entry 3484 (class 0 OID 37850)
--- Dependencies: 223
+-- TOC entry 3541 (class 0 OID 38385)
+-- Dependencies: 268
+-- Data for Name: commit; Type: TABLE DATA; Schema: public; Owner: v2land
+--
+
+COPY public.commit (id, summary, description, data, diff, "time", "parentId", "authorId", "eventId", "createdAt", "updatedAt", "isForkCommit") FROM stdin;
+\.
+
+
+--
+-- TOC entry 3514 (class 0 OID 37850)
+-- Dependencies: 241
 -- Data for Name: contact; Type: TABLE DATA; Schema: public; Owner: v2land
 --
 
@@ -1359,8 +1416,8 @@ COPY public.contact (id, "profileId", type, method, status, "createdAt", "update
 
 
 --
--- TOC entry 3486 (class 0 OID 37859)
--- Dependencies: 225
+-- TOC entry 3516 (class 0 OID 37859)
+-- Dependencies: 243
 -- Data for Name: critique; Type: TABLE DATA; Schema: public; Owner: v2land
 --
 
@@ -1369,18 +1426,18 @@ COPY public.critique (id, url, source, title, abstract, "time", status, "created
 
 
 --
--- TOC entry 3487 (class 0 OID 37867)
--- Dependencies: 226
+-- TOC entry 3517 (class 0 OID 37867)
+-- Dependencies: 244
 -- Data for Name: event; Type: TABLE DATA; Schema: public; Owner: v2land
 --
 
-COPY public.event (name, description, status, id, "createdAt", "updatedAt", pinyin, "latestAdmittedNewsId") FROM stdin;
+COPY public.event (name, description, status, id, "createdAt", "updatedAt", pinyin, "latestAdmittedNewsId", "ownerId", "parentId") FROM stdin;
 \.
 
 
 --
--- TOC entry 3508 (class 0 OID 38333)
--- Dependencies: 247
+-- TOC entry 3538 (class 0 OID 38333)
+-- Dependencies: 265
 -- Data for Name: eventStackNews; Type: TABLE DATA; Schema: public; Owner: v2land
 --
 
@@ -1389,8 +1446,8 @@ COPY public."eventStackNews" ("eventId", "newsId", "stackId", "createdAt", "upda
 
 
 --
--- TOC entry 3488 (class 0 OID 37873)
--- Dependencies: 227
+-- TOC entry 3518 (class 0 OID 37873)
+-- Dependencies: 245
 -- Data for Name: eventTag; Type: TABLE DATA; Schema: public; Owner: v2land
 --
 
@@ -1399,8 +1456,8 @@ COPY public."eventTag" ("eventId", "tagId", id, "updatedAt", "createdAt") FROM s
 
 
 --
--- TOC entry 3491 (class 0 OID 37880)
--- Dependencies: 230
+-- TOC entry 3521 (class 0 OID 37880)
+-- Dependencies: 248
 -- Data for Name: headerImage; Type: TABLE DATA; Schema: public; Owner: v2land
 --
 
@@ -1409,8 +1466,8 @@ COPY public."headerImage" ("imageUrl", source, "sourceUrl", "eventId", id, "crea
 
 
 --
--- TOC entry 3493 (class 0 OID 37894)
--- Dependencies: 232
+-- TOC entry 3523 (class 0 OID 37894)
+-- Dependencies: 250
 -- Data for Name: news; Type: TABLE DATA; Schema: public; Owner: v2land
 --
 
@@ -1419,8 +1476,8 @@ COPY public.news (url, source, title, abstract, "time", status, comment, id, "cr
 
 
 --
--- TOC entry 3495 (class 0 OID 37902)
--- Dependencies: 234
+-- TOC entry 3525 (class 0 OID 37902)
+-- Dependencies: 252
 -- Data for Name: notification; Type: TABLE DATA; Schema: public; Owner: v2land
 --
 
@@ -1429,8 +1486,8 @@ COPY public.notification ("time", mode, "eventId", status, id, "createdAt", "upd
 
 
 --
--- TOC entry 3497 (class 0 OID 37907)
--- Dependencies: 236
+-- TOC entry 3527 (class 0 OID 37907)
+-- Dependencies: 254
 -- Data for Name: record; Type: TABLE DATA; Schema: public; Owner: v2land
 --
 
@@ -1439,8 +1496,8 @@ COPY public.record (model, target, operation, action, data, owner, id, "createdA
 
 
 --
--- TOC entry 3500 (class 0 OID 37917)
--- Dependencies: 239
+-- TOC entry 3530 (class 0 OID 37917)
+-- Dependencies: 257
 -- Data for Name: report; Type: TABLE DATA; Schema: public; Owner: v2land
 --
 
@@ -1449,8 +1506,8 @@ COPY public.report (id, "time", type, method, status, "createdAt", "updatedAt", 
 
 
 --
--- TOC entry 3501 (class 0 OID 37925)
--- Dependencies: 240
+-- TOC entry 3531 (class 0 OID 37925)
+-- Dependencies: 258
 -- Data for Name: reportNotification; Type: TABLE DATA; Schema: public; Owner: v2land
 --
 
@@ -1459,8 +1516,8 @@ COPY public."reportNotification" (status, "createdAt", "updatedAt", "notificatio
 
 
 --
--- TOC entry 3503 (class 0 OID 37938)
--- Dependencies: 242
+-- TOC entry 3533 (class 0 OID 37938)
+-- Dependencies: 260
 -- Data for Name: stack; Type: TABLE DATA; Schema: public; Owner: v2land
 --
 
@@ -1469,8 +1526,8 @@ COPY public.stack (title, description, status, "eventId", "createdAt", "updatedA
 
 
 --
--- TOC entry 3504 (class 0 OID 37946)
--- Dependencies: 243
+-- TOC entry 3534 (class 0 OID 37946)
+-- Dependencies: 261
 -- Data for Name: subscription; Type: TABLE DATA; Schema: public; Owner: v2land
 --
 
@@ -1479,8 +1536,8 @@ COPY public.subscription (mode, status, "unsubscribeId", subscriber, "eventId", 
 
 
 --
--- TOC entry 3506 (class 0 OID 37954)
--- Dependencies: 245
+-- TOC entry 3536 (class 0 OID 37954)
+-- Dependencies: 263
 -- Data for Name: tag; Type: TABLE DATA; Schema: public; Owner: v2land
 --
 
@@ -1489,8 +1546,8 @@ COPY public.tag (id, name, description, "createdAt", "updatedAt", status) FROM s
 
 
 --
--- TOC entry 3525 (class 0 OID 0)
--- Dependencies: 213
+-- TOC entry 3558 (class 0 OID 0)
+-- Dependencies: 231
 -- Name: auth_id_seq; Type: SEQUENCE SET; Schema: public; Owner: v2land
 --
 
@@ -1498,8 +1555,8 @@ SELECT pg_catalog.setval('public.auth_id_seq', 1, true);
 
 
 --
--- TOC entry 3526 (class 0 OID 0)
--- Dependencies: 215
+-- TOC entry 3559 (class 0 OID 0)
+-- Dependencies: 233
 -- Name: authorizationAccessToken_id_seq; Type: SEQUENCE SET; Schema: public; Owner: v2land
 --
 
@@ -1507,8 +1564,8 @@ SELECT pg_catalog.setval('public."authorizationAccessToken_id_seq"', 53, true);
 
 
 --
--- TOC entry 3527 (class 0 OID 0)
--- Dependencies: 217
+-- TOC entry 3560 (class 0 OID 0)
+-- Dependencies: 235
 -- Name: authorizationClient_id_seq; Type: SEQUENCE SET; Schema: public; Owner: v2land
 --
 
@@ -1516,8 +1573,8 @@ SELECT pg_catalog.setval('public."authorizationClient_id_seq"', 4, true);
 
 
 --
--- TOC entry 3528 (class 0 OID 0)
--- Dependencies: 219
+-- TOC entry 3561 (class 0 OID 0)
+-- Dependencies: 237
 -- Name: authorizationCode_id_seq; Type: SEQUENCE SET; Schema: public; Owner: v2land
 --
 
@@ -1525,8 +1582,8 @@ SELECT pg_catalog.setval('public."authorizationCode_id_seq"', 1, false);
 
 
 --
--- TOC entry 3529 (class 0 OID 0)
--- Dependencies: 221
+-- TOC entry 3562 (class 0 OID 0)
+-- Dependencies: 239
 -- Name: client_id_seq; Type: SEQUENCE SET; Schema: public; Owner: v2land
 --
 
@@ -1534,8 +1591,17 @@ SELECT pg_catalog.setval('public.client_id_seq', 1, true);
 
 
 --
--- TOC entry 3530 (class 0 OID 0)
--- Dependencies: 222
+-- TOC entry 3563 (class 0 OID 0)
+-- Dependencies: 267
+-- Name: commit_id_seq; Type: SEQUENCE SET; Schema: public; Owner: v2land
+--
+
+SELECT pg_catalog.setval('public.commit_id_seq', 1, true);
+
+
+--
+-- TOC entry 3564 (class 0 OID 0)
+-- Dependencies: 240
 -- Name: contact_id_seq; Type: SEQUENCE SET; Schema: public; Owner: v2land
 --
 
@@ -1543,8 +1609,8 @@ SELECT pg_catalog.setval('public.contact_id_seq', 1, true);
 
 
 --
--- TOC entry 3531 (class 0 OID 0)
--- Dependencies: 224
+-- TOC entry 3565 (class 0 OID 0)
+-- Dependencies: 242
 -- Name: critique_id_seq; Type: SEQUENCE SET; Schema: public; Owner: v2land
 --
 
@@ -1552,8 +1618,8 @@ SELECT pg_catalog.setval('public.critique_id_seq', 1, true);
 
 
 --
--- TOC entry 3532 (class 0 OID 0)
--- Dependencies: 228
+-- TOC entry 3566 (class 0 OID 0)
+-- Dependencies: 246
 -- Name: eventTag_id_seq; Type: SEQUENCE SET; Schema: public; Owner: v2land
 --
 
@@ -1561,8 +1627,8 @@ SELECT pg_catalog.setval('public."eventTag_id_seq"', 1, true);
 
 
 --
--- TOC entry 3533 (class 0 OID 0)
--- Dependencies: 229
+-- TOC entry 3567 (class 0 OID 0)
+-- Dependencies: 247
 -- Name: event_id_seq; Type: SEQUENCE SET; Schema: public; Owner: v2land
 --
 
@@ -1570,8 +1636,8 @@ SELECT pg_catalog.setval('public.event_id_seq', 1, true);
 
 
 --
--- TOC entry 3534 (class 0 OID 0)
--- Dependencies: 231
+-- TOC entry 3568 (class 0 OID 0)
+-- Dependencies: 249
 -- Name: headerimage_id_seq; Type: SEQUENCE SET; Schema: public; Owner: v2land
 --
 
@@ -1579,8 +1645,8 @@ SELECT pg_catalog.setval('public.headerimage_id_seq', 1, true);
 
 
 --
--- TOC entry 3535 (class 0 OID 0)
--- Dependencies: 233
+-- TOC entry 3569 (class 0 OID 0)
+-- Dependencies: 251
 -- Name: news_id_seq; Type: SEQUENCE SET; Schema: public; Owner: v2land
 --
 
@@ -1588,8 +1654,8 @@ SELECT pg_catalog.setval('public.news_id_seq', 1, true);
 
 
 --
--- TOC entry 3536 (class 0 OID 0)
--- Dependencies: 235
+-- TOC entry 3570 (class 0 OID 0)
+-- Dependencies: 253
 -- Name: notification_id_seq; Type: SEQUENCE SET; Schema: public; Owner: v2land
 --
 
@@ -1597,8 +1663,8 @@ SELECT pg_catalog.setval('public.notification_id_seq', 1, true);
 
 
 --
--- TOC entry 3537 (class 0 OID 0)
--- Dependencies: 237
+-- TOC entry 3571 (class 0 OID 0)
+-- Dependencies: 255
 -- Name: record_id_seq; Type: SEQUENCE SET; Schema: public; Owner: v2land
 --
 
@@ -1606,8 +1672,8 @@ SELECT pg_catalog.setval('public.record_id_seq', 1, true);
 
 
 --
--- TOC entry 3538 (class 0 OID 0)
--- Dependencies: 238
+-- TOC entry 3572 (class 0 OID 0)
+-- Dependencies: 256
 -- Name: report_id_seq; Type: SEQUENCE SET; Schema: public; Owner: v2land
 --
 
@@ -1615,8 +1681,8 @@ SELECT pg_catalog.setval('public.report_id_seq', 1, true);
 
 
 --
--- TOC entry 3539 (class 0 OID 0)
--- Dependencies: 241
+-- TOC entry 3573 (class 0 OID 0)
+-- Dependencies: 259
 -- Name: stack_id_seq; Type: SEQUENCE SET; Schema: public; Owner: v2land
 --
 
@@ -1624,8 +1690,8 @@ SELECT pg_catalog.setval('public.stack_id_seq', 1, true);
 
 
 --
--- TOC entry 3540 (class 0 OID 0)
--- Dependencies: 244
+-- TOC entry 3574 (class 0 OID 0)
+-- Dependencies: 262
 -- Name: subscription_id_seq; Type: SEQUENCE SET; Schema: public; Owner: v2land
 --
 
@@ -1633,8 +1699,8 @@ SELECT pg_catalog.setval('public.subscription_id_seq', 1, true);
 
 
 --
--- TOC entry 3541 (class 0 OID 0)
--- Dependencies: 246
+-- TOC entry 3575 (class 0 OID 0)
+-- Dependencies: 264
 -- Name: tag_id_seq; Type: SEQUENCE SET; Schema: public; Owner: v2land
 --
 
@@ -1642,7 +1708,7 @@ SELECT pg_catalog.setval('public.tag_id_seq', 1, true);
 
 
 --
--- TOC entry 3288 (class 2606 OID 38085)
+-- TOC entry 3314 (class 2606 OID 38085)
 -- Name: authorizationAccessToken AuthorizationAccessToken_pkey; Type: CONSTRAINT; Schema: public; Owner: v2land
 --
 
@@ -1651,7 +1717,7 @@ ALTER TABLE ONLY public."authorizationAccessToken"
 
 
 --
--- TOC entry 3286 (class 2606 OID 38087)
+-- TOC entry 3312 (class 2606 OID 38087)
 -- Name: auth auth_pkey; Type: CONSTRAINT; Schema: public; Owner: v2land
 --
 
@@ -1660,7 +1726,7 @@ ALTER TABLE ONLY public.auth
 
 
 --
--- TOC entry 3290 (class 2606 OID 38089)
+-- TOC entry 3316 (class 2606 OID 38089)
 -- Name: authorizationClient authorizationClient_pkey; Type: CONSTRAINT; Schema: public; Owner: v2land
 --
 
@@ -1669,7 +1735,7 @@ ALTER TABLE ONLY public."authorizationClient"
 
 
 --
--- TOC entry 3292 (class 2606 OID 38091)
+-- TOC entry 3318 (class 2606 OID 38091)
 -- Name: authorizationCode authorizationCode_pkey; Type: CONSTRAINT; Schema: public; Owner: v2land
 --
 
@@ -1678,7 +1744,7 @@ ALTER TABLE ONLY public."authorizationCode"
 
 
 --
--- TOC entry 3294 (class 2606 OID 38093)
+-- TOC entry 3320 (class 2606 OID 38093)
 -- Name: client client_email_key; Type: CONSTRAINT; Schema: public; Owner: v2land
 --
 
@@ -1687,7 +1753,7 @@ ALTER TABLE ONLY public.client
 
 
 --
--- TOC entry 3296 (class 2606 OID 38097)
+-- TOC entry 3322 (class 2606 OID 38097)
 -- Name: client client_pkey; Type: CONSTRAINT; Schema: public; Owner: v2land
 --
 
@@ -1696,7 +1762,7 @@ ALTER TABLE ONLY public.client
 
 
 --
--- TOC entry 3298 (class 2606 OID 38099)
+-- TOC entry 3324 (class 2606 OID 38099)
 -- Name: client client_username_key; Type: CONSTRAINT; Schema: public; Owner: v2land
 --
 
@@ -1705,7 +1771,16 @@ ALTER TABLE ONLY public.client
 
 
 --
--- TOC entry 3300 (class 2606 OID 38101)
+-- TOC entry 3358 (class 2606 OID 38393)
+-- Name: commit commit_pkey; Type: CONSTRAINT; Schema: public; Owner: v2land
+--
+
+ALTER TABLE ONLY public.commit
+    ADD CONSTRAINT commit_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 3326 (class 2606 OID 38101)
 -- Name: contact contact_pkey; Type: CONSTRAINT; Schema: public; Owner: v2land
 --
 
@@ -1714,7 +1789,7 @@ ALTER TABLE ONLY public.contact
 
 
 --
--- TOC entry 3302 (class 2606 OID 38103)
+-- TOC entry 3328 (class 2606 OID 38103)
 -- Name: critique critique_pkey; Type: CONSTRAINT; Schema: public; Owner: v2land
 --
 
@@ -1723,7 +1798,7 @@ ALTER TABLE ONLY public.critique
 
 
 --
--- TOC entry 3330 (class 2606 OID 38337)
+-- TOC entry 3356 (class 2606 OID 38337)
 -- Name: eventStackNews eventStackNews_pkey; Type: CONSTRAINT; Schema: public; Owner: v2land
 --
 
@@ -1732,7 +1807,7 @@ ALTER TABLE ONLY public."eventStackNews"
 
 
 --
--- TOC entry 3308 (class 2606 OID 38105)
+-- TOC entry 3334 (class 2606 OID 38105)
 -- Name: eventTag eventTag_pkey; Type: CONSTRAINT; Schema: public; Owner: v2land
 --
 
@@ -1741,16 +1816,16 @@ ALTER TABLE ONLY public."eventTag"
 
 
 --
--- TOC entry 3304 (class 2606 OID 38107)
--- Name: event event_name_key; Type: CONSTRAINT; Schema: public; Owner: v2land
+-- TOC entry 3330 (class 2606 OID 41455)
+-- Name: event event_name_owner_key; Type: CONSTRAINT; Schema: public; Owner: v2land
 --
 
 ALTER TABLE ONLY public.event
-    ADD CONSTRAINT event_name_key UNIQUE (name);
+    ADD CONSTRAINT event_name_owner_key UNIQUE (name, "ownerId");
 
 
 --
--- TOC entry 3306 (class 2606 OID 38109)
+-- TOC entry 3332 (class 2606 OID 38109)
 -- Name: event event_pkey; Type: CONSTRAINT; Schema: public; Owner: v2land
 --
 
@@ -1759,7 +1834,7 @@ ALTER TABLE ONLY public.event
 
 
 --
--- TOC entry 3310 (class 2606 OID 38111)
+-- TOC entry 3336 (class 2606 OID 38111)
 -- Name: headerImage headerimage_event_key; Type: CONSTRAINT; Schema: public; Owner: v2land
 --
 
@@ -1768,7 +1843,7 @@ ALTER TABLE ONLY public."headerImage"
 
 
 --
--- TOC entry 3312 (class 2606 OID 38113)
+-- TOC entry 3338 (class 2606 OID 38113)
 -- Name: headerImage headerimage_pkey; Type: CONSTRAINT; Schema: public; Owner: v2land
 --
 
@@ -1777,7 +1852,7 @@ ALTER TABLE ONLY public."headerImage"
 
 
 --
--- TOC entry 3314 (class 2606 OID 38117)
+-- TOC entry 3340 (class 2606 OID 38117)
 -- Name: news news_pkey; Type: CONSTRAINT; Schema: public; Owner: v2land
 --
 
@@ -1786,7 +1861,7 @@ ALTER TABLE ONLY public.news
 
 
 --
--- TOC entry 3316 (class 2606 OID 38119)
+-- TOC entry 3342 (class 2606 OID 38119)
 -- Name: notification notification_pkey; Type: CONSTRAINT; Schema: public; Owner: v2land
 --
 
@@ -1795,7 +1870,7 @@ ALTER TABLE ONLY public.notification
 
 
 --
--- TOC entry 3318 (class 2606 OID 38121)
+-- TOC entry 3344 (class 2606 OID 38121)
 -- Name: record record_pkey; Type: CONSTRAINT; Schema: public; Owner: v2land
 --
 
@@ -1804,7 +1879,7 @@ ALTER TABLE ONLY public.record
 
 
 --
--- TOC entry 3322 (class 2606 OID 38123)
+-- TOC entry 3348 (class 2606 OID 38123)
 -- Name: reportNotification reportNotification_pkey; Type: CONSTRAINT; Schema: public; Owner: v2land
 --
 
@@ -1813,7 +1888,7 @@ ALTER TABLE ONLY public."reportNotification"
 
 
 --
--- TOC entry 3320 (class 2606 OID 38125)
+-- TOC entry 3346 (class 2606 OID 38125)
 -- Name: report report_pkey; Type: CONSTRAINT; Schema: public; Owner: v2land
 --
 
@@ -1822,7 +1897,7 @@ ALTER TABLE ONLY public.report
 
 
 --
--- TOC entry 3324 (class 2606 OID 38129)
+-- TOC entry 3350 (class 2606 OID 38129)
 -- Name: stack stack_pkey; Type: CONSTRAINT; Schema: public; Owner: v2land
 --
 
@@ -1831,7 +1906,7 @@ ALTER TABLE ONLY public.stack
 
 
 --
--- TOC entry 3326 (class 2606 OID 38131)
+-- TOC entry 3352 (class 2606 OID 38131)
 -- Name: subscription subscription_pkey; Type: CONSTRAINT; Schema: public; Owner: v2land
 --
 
@@ -1840,7 +1915,7 @@ ALTER TABLE ONLY public.subscription
 
 
 --
--- TOC entry 3328 (class 2606 OID 38133)
+-- TOC entry 3354 (class 2606 OID 38133)
 -- Name: tag tag_pkey; Type: CONSTRAINT; Schema: public; Owner: v2land
 --
 
@@ -1849,7 +1924,7 @@ ALTER TABLE ONLY public.tag
 
 
 --
--- TOC entry 3333 (class 2606 OID 38134)
+-- TOC entry 3361 (class 2606 OID 38134)
 -- Name: authorizationCode authorizationClientId; Type: FK CONSTRAINT; Schema: public; Owner: v2land
 --
 
@@ -1858,7 +1933,7 @@ ALTER TABLE ONLY public."authorizationCode"
 
 
 --
--- TOC entry 3331 (class 2606 OID 38139)
+-- TOC entry 3359 (class 2606 OID 38139)
 -- Name: authorizationAccessToken authorizationClientId; Type: FK CONSTRAINT; Schema: public; Owner: v2land
 --
 
@@ -1867,7 +1942,34 @@ ALTER TABLE ONLY public."authorizationAccessToken"
 
 
 --
--- TOC entry 3335 (class 2606 OID 38144)
+-- TOC entry 3375 (class 2606 OID 38399)
+-- Name: commit commit_authorId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: v2land
+--
+
+ALTER TABLE ONLY public.commit
+    ADD CONSTRAINT "commit_authorId_fkey" FOREIGN KEY ("authorId") REFERENCES public.client(id) ON UPDATE CASCADE;
+
+
+--
+-- TOC entry 3376 (class 2606 OID 38404)
+-- Name: commit commit_eventId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: v2land
+--
+
+ALTER TABLE ONLY public.commit
+    ADD CONSTRAINT "commit_eventId_fkey" FOREIGN KEY ("eventId") REFERENCES public.event(id) ON UPDATE CASCADE;
+
+
+--
+-- TOC entry 3374 (class 2606 OID 38394)
+-- Name: commit commit_parentId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: v2land
+--
+
+ALTER TABLE ONLY public.commit
+    ADD CONSTRAINT "commit_parentId_fkey" FOREIGN KEY ("parentId") REFERENCES public.commit(id) ON UPDATE CASCADE;
+
+
+--
+-- TOC entry 3363 (class 2606 OID 38144)
 -- Name: contact contact_authId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: v2land
 --
 
@@ -1876,7 +1978,7 @@ ALTER TABLE ONLY public.contact
 
 
 --
--- TOC entry 3336 (class 2606 OID 38149)
+-- TOC entry 3364 (class 2606 OID 38149)
 -- Name: contact contact_owner_fkey; Type: FK CONSTRAINT; Schema: public; Owner: v2land
 --
 
@@ -1885,7 +1987,7 @@ ALTER TABLE ONLY public.contact
 
 
 --
--- TOC entry 3337 (class 2606 OID 38154)
+-- TOC entry 3365 (class 2606 OID 38154)
 -- Name: contact contact_subscriptionId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: v2land
 --
 
@@ -1894,7 +1996,7 @@ ALTER TABLE ONLY public.contact
 
 
 --
--- TOC entry 3338 (class 2606 OID 38159)
+-- TOC entry 3366 (class 2606 OID 38159)
 -- Name: critique critique_event_fkey; Type: FK CONSTRAINT; Schema: public; Owner: v2land
 --
 
@@ -1903,7 +2005,7 @@ ALTER TABLE ONLY public.critique
 
 
 --
--- TOC entry 3344 (class 2606 OID 38342)
+-- TOC entry 3371 (class 2606 OID 38342)
 -- Name: eventStackNews eventStackNews_eventId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: v2land
 --
 
@@ -1912,7 +2014,7 @@ ALTER TABLE ONLY public."eventStackNews"
 
 
 --
--- TOC entry 3345 (class 2606 OID 38347)
+-- TOC entry 3372 (class 2606 OID 38347)
 -- Name: eventStackNews eventStackNews_newsId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: v2land
 --
 
@@ -1921,7 +2023,7 @@ ALTER TABLE ONLY public."eventStackNews"
 
 
 --
--- TOC entry 3346 (class 2606 OID 38352)
+-- TOC entry 3373 (class 2606 OID 38352)
 -- Name: eventStackNews eventStackNews_stackId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: v2land
 --
 
@@ -1930,16 +2032,7 @@ ALTER TABLE ONLY public."eventStackNews"
 
 
 --
--- TOC entry 3339 (class 2606 OID 38164)
--- Name: event event_latestadmittednewsid_fk; Type: FK CONSTRAINT; Schema: public; Owner: v2land
---
-
-ALTER TABLE ONLY public.event
-    ADD CONSTRAINT event_latestadmittednewsid_fk FOREIGN KEY ("latestAdmittedNewsId") REFERENCES public.news(id) ON DELETE SET NULL;
-
-
---
--- TOC entry 3334 (class 2606 OID 38179)
+-- TOC entry 3362 (class 2606 OID 38179)
 -- Name: authorizationCode owner; Type: FK CONSTRAINT; Schema: public; Owner: v2land
 --
 
@@ -1948,7 +2041,7 @@ ALTER TABLE ONLY public."authorizationCode"
 
 
 --
--- TOC entry 3332 (class 2606 OID 38184)
+-- TOC entry 3360 (class 2606 OID 38184)
 -- Name: authorizationAccessToken owner; Type: FK CONSTRAINT; Schema: public; Owner: v2land
 --
 
@@ -1957,7 +2050,7 @@ ALTER TABLE ONLY public."authorizationAccessToken"
 
 
 --
--- TOC entry 3341 (class 2606 OID 38189)
+-- TOC entry 3368 (class 2606 OID 38189)
 -- Name: reportNotification reportNotification_notificationId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: v2land
 --
 
@@ -1966,7 +2059,7 @@ ALTER TABLE ONLY public."reportNotification"
 
 
 --
--- TOC entry 3342 (class 2606 OID 38194)
+-- TOC entry 3369 (class 2606 OID 38194)
 -- Name: reportNotification reportNotification_reportId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: v2land
 --
 
@@ -1975,7 +2068,7 @@ ALTER TABLE ONLY public."reportNotification"
 
 
 --
--- TOC entry 3340 (class 2606 OID 38199)
+-- TOC entry 3367 (class 2606 OID 38199)
 -- Name: report report_owner_fkey; Type: FK CONSTRAINT; Schema: public; Owner: v2land
 --
 
@@ -1984,7 +2077,7 @@ ALTER TABLE ONLY public.report
 
 
 --
--- TOC entry 3343 (class 2606 OID 38204)
+-- TOC entry 3370 (class 2606 OID 38204)
 -- Name: stack stack_event_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: v2land
 --
 
@@ -1992,40 +2085,7 @@ ALTER TABLE ONLY public.stack
     ADD CONSTRAINT stack_event_id_fk FOREIGN KEY ("eventId") REFERENCES public.event(id) ON DELETE CASCADE;
 
 
--- Table: public.commit
-
--- DROP TABLE public.commit;
-
-CREATE TABLE public.commit
-(
-    id integer NOT NULL DEFAULT nextval('public.commit_id_seq'::regclass),
-    summary text COLLATE pg_catalog."default",
-    description text COLLATE pg_catalog."default",
-    data jsonb,
-    diff jsonb,
-    "time" time with time zone,
-    "parentId" integer,
-    "authorId" integer,
-    "eventId" integer,
-    "createdAt" timestamp with time zone NOT NULL,
-    "updatedAt" timestamp with time zone NOT NULL,
-    CONSTRAINT commit_pkey PRIMARY KEY (id),
-    CONSTRAINT "commit_authorId_fkey" FOREIGN KEY ("authorId")
-        REFERENCES public.client (id) MATCH SIMPLE
-        ON UPDATE CASCADE
-        ON DELETE NO ACTION,
-    CONSTRAINT "commit_eventId_fkey" FOREIGN KEY ("eventId")
-        REFERENCES public.event (id) MATCH SIMPLE
-        ON UPDATE CASCADE
-        ON DELETE NO ACTION,
-    CONSTRAINT "commit_parentId_fkey" FOREIGN KEY ("parentId")
-        REFERENCES public.commit (id) MATCH SIMPLE
-        ON UPDATE CASCADE
-        ON DELETE NO ACTION
-);
-
-ALTER TABLE public.commit
-    OWNER to v2land;
+-- Completed on 2020-04-11 03:41:07 EDT
 
 --
 -- PostgreSQL database dump complete

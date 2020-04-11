@@ -1,4 +1,4 @@
-import { Event, HeaderImage, Stack, News, Tag, Sequelize } from '@Models';
+import { Event, HeaderImage, Stack, News, Tag, Sequelize, Client } from '@Models';
 import { EventObj } from '@Types';
 import { Op, Transaction } from 'sequelize';
 import _ from 'lodash';
@@ -96,6 +96,11 @@ async function findEvent (
         as: 'tags',
         where: { status: 'visible' },
         through: { attributes: [] },
+        required: false,
+      }, {
+        model: Client,
+        as: 'owner',
+        attributes: ['id', 'role', 'username'],
         required: false,
       },
     ],

@@ -29,6 +29,7 @@ export default {
   'POST /event/:eventName/news': 'EventController.createNews',
   'POST /event/:eventName/tag': 'EventController.addTag',
   'POST /event/:eventName/commit': 'EventController.makeCommit',
+  'GET /event/:eventName/fork': 'EventController.forkEvent',
   'DELETE /event/:eventName/tag/:tagId': 'EventController.removeTag',
   'POST /event/:eventName/header_image': 'EventController.updateHeaderImage',
   'PUT /event/:eventName/header_image': 'EventController.updateHeaderImage',

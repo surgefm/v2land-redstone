@@ -32,6 +32,7 @@ export default {
     'addTag': ['isLoggedIn', 'isManager'],
     'removeTag': ['isLoggedIn', 'isManager'],
     'makeCommit': ['isLoggedIn', 'isManager'],
+    'forkEvent': ['isLoggedIn'],
     '*': false,
   },
 

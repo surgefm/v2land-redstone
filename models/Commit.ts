@@ -7,6 +7,7 @@ import {
   AllowNull,
   ForeignKey,
   BelongsTo,
+  Default,
 } from 'sequelize-typescript';
 
 import Client from './Client';
@@ -26,6 +27,10 @@ class Commit extends Model<Commit> {
 
   @Column(DataType.JSONB)
   data: Event;
+
+  @Default(false)
+  @Column(DataType.BOOLEAN)
+  isForkCommit: boolean;
 
   @Column(DataType.JSONB)
   diff: any;

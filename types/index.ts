@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { Logger } from 'pino';
-import { Client, Record as RecordModel, News } from '@Models';
+import { Client, Record as RecordModel, News, HeaderImage, Tag } from '@Models';
 import { NotificationMode, NotificationModeInput } from './NotificationMode';
 import RedstoneError, {
   RedstoneErrorIdentifier,
@@ -23,7 +23,7 @@ interface StringIndexInterface {
 
 interface SimplifiedEventInterface extends StringIndexInterface {
   id?: number;
-  headerImage?: number | { id?: number };
+  headerImage?: number | { id?: number } | HeaderImage;
   contribution?: RecordModel[];
 }
 
@@ -47,6 +47,7 @@ interface EventObj extends SimplifiedEventInterface {
   description?: string;
   status?: string;
   stacks: StackObj[];
+  tags?: Tag[];
   newsCount?: number;
   stackCount?: number;
   temporaryStack?: News[];
