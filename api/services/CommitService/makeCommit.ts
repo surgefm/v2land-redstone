@@ -24,16 +24,14 @@ async function makeCommit(
     throw new RedstoneError(ResourceNotFoundErrorType, `未找到该事件：${eventId}`);
   }
 
-  const latestCommit = await getLatestCommit(eventObj.id);
-  if (latestCommit) {
-    delete latestCommit.data.commitTime;
-    delete latestCommit.data.contribution;
-    if (_.isEqual(latestCommit.data, convertDateToString(eventObj))) {
+  const parentCommit = parent ? await Commit.findByPk(parent) : await getLatestCommit(eventObj.id);
+  if (parentCommit) {
+    delete parentCommit.data.commitTime;
+    delete parentCommit.data.contribution;
+    if (_.isEqual(parentCommit.data, convertDateToString(eventObj))) {
       // Event data didn't change.
       return;
     }
-
-    console.log(latestCommit.data, convertDateToString(eventObj));
   }
 
   eventObj.contribution = await EventService.getContribution(eventObj, true);
@@ -57,7 +55,7 @@ async function makeCommit(
       time: commitTime,
       data: eventObj,
       diff: [],
-      parentId: parent,
+      parentId: parentCommit ? parentCommit.id : null,
     }, { transaction });
 
     await RecordService.create({
