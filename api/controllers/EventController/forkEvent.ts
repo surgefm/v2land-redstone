@@ -1,3 +1,4 @@
+import { Event } from '@Models';
 import { RedstoneRequest, RedstoneResponse } from '@Types';
 import { EventService } from '@Services';
 
@@ -9,17 +10,12 @@ async function forkEvent(req: RedstoneRequest, res: RedstoneResponse) {
     });
   }
 
+  const origEvent = await Event.findByPk(eventId);
   const event = await EventService.forkEvent(eventId, req.currentClient);
-  if (event) {
-    return res.status(201).json({
-      message: `成功复刻「${event.name}」`,
-      event,
-    });
-  } else {
-    return res.status(200).json({
-      message: '你的账户下已有同名事件',
-    });
-  }
+  return res.status(201).json({
+    message: `成功复制「${origEvent.name}」`,
+    event,
+  });
 }
 
 export default forkEvent;

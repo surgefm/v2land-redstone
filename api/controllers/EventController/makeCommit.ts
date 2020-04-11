@@ -13,7 +13,7 @@ async function makeCommit(req: RedstoneRequest, res: RedstoneResponse) {
   const commit = await CommitService.makeCommit(eventId, clientId, summary);
 
   if (commit) {
-    res.status(201).json(commit);
+    res.status(201).json({ commit });
   } else {
     res.status(200).json({
       message: '事件信息较上次保存没有变化',
