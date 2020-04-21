@@ -1,3 +1,4 @@
+import * as AccessControlService from './AccessControlService';
 import * as AuthService from './AuthService';
 import * as ClientService from './ClientService';
 import * as CommitService from './CommitService';
@@ -22,6 +23,7 @@ import * as UtilService from './UtilService';
 import * as WeiboService from './WeiboService';
 
 export {
+  AccessControlService,
   AuthService,
   ClientService,
   CommitService,

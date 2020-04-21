@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@elastic/elasticsearch": "^7.6.1",
+    "acl": "^0.4.11",
     "aws-sdk": "^2.600.0",
     "axios": "^0.19.1",
     "bcrypt": "^3.0.7",
@@ -50,6 +51,7 @@
     "validator": "^12.1.0"
   },
   "devDependencies": {
+    "@types/acl": "^0.4.37",
     "@types/bcrypt": "^3.0.0",
     "@types/bcryptjs": "^2.4.2",
     "@types/compression": "^1.7.0",
