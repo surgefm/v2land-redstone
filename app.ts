@@ -19,6 +19,7 @@ import securityConfig from '@Configs/security';
 
 import loadRoutes from './loadRoutes';
 import loadSequelize from './loadSequelize';
+import loadAcl from '@Services/AccessControlService/initialize';
 import { errorHandler } from '@Responses';
 
 const app = express();
@@ -41,6 +42,7 @@ export async function liftServer(app: Express) {
   app.use(http.middleware.noCache);
 
   loadRoutes(app);
+  await loadAcl();
 
   app.use(errorHandler);
 

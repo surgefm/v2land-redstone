@@ -1,13 +1,12 @@
 import Acl from 'acl';
-
+import AclSeq from 'acl-sequelize';
 import * as RedisService from '../RedisService';
+import { sequelize } from '@Models';
 
 const storageBackend: Acl.Backend<any> = RedisService.classicRedis
   ? new Acl.redisBackend(RedisService.classicRedis, 'v2land-acl')
-  : new Acl.memoryBackend();
+  : new AclSeq(sequelize, { prefix: 'acl_' });
 
 const acl = new Acl(storageBackend);
-
-acl.allow('guests', 'events', 'view');
 
 export default acl;
