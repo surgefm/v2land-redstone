@@ -1,20 +1,16 @@
 import { Server } from 'socket.io';
+import { isLoggedIn } from '@Sockets/middlewares';
 
-const id = (...args: any[]) => args;
+import loadNewsroom from './newsroom';
 
 export function loadSocket(io: Server) {
-  io.on('connection', (socket) => {
-    const sid = (socket.handshake as any).cookies['redstone.sid'];
-    if (!sid) {
-      return socket.emit('disconnect', 'Please sign in first');
-    }
-    socket.on('login', (a) => {
-      socket.handshake.session.data = a;
-      socket.handshake.session.save(id);
-    });
+  io.on('connection', async (socket) => {
+    io.use(isLoggedIn);
 
-    socket.on('hey', (input, cb) => {
-      cb(socket.handshake.sessionID);
+    socket.on('hey', (cb) => {
+      cb('🌊');
     });
   });
+
+  loadNewsroom(io);
 }
