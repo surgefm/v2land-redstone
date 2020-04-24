@@ -7,6 +7,7 @@ import getEventId from './getEventId';
 import getEventList from './getEventList';
 import updateAdmittedLatestNews from './updateAdmittedLatestNews';
 import updateElasticsearchIndex from './updateElasticsearchIndex';
+import updateEvent from './updateEvent';
 
 export {
   acquireContributionsByEventList,
@@ -18,4 +19,5 @@ export {
   getEventList,
   updateAdmittedLatestNews,
   updateElasticsearchIndex,
+  updateEvent,
 };

@@ -1,9 +1,8 @@
 import { Server } from 'socket.io';
 import { isLoggedIn } from '@Sockets/middlewares';
 
-export function getRoomName(eventId: number) {
-  return `newsroom-${eventId}`;
-}
+import getRoomName from './getRoomName';
+import updateEvent from './updateEvent';
 
 export default function loadNewsroom(io: Server) {
   const newsroom = io.of('/newsroom');
@@ -18,5 +17,7 @@ export default function loadNewsroom(io: Server) {
     socket.on('leave newsroom', (eventId: number) => {
       socket.leave(getRoomName(eventId));
     });
+
+    updateEvent(socket);
   });
 }
