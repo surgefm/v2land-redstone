@@ -14,7 +14,6 @@ interface RedstoneRequest extends Request {
 }
 
 type RedstoneResponse = Response
-type RedstoneNextFunction = NextFunction
 type ControllerAction = (req: RedstoneRequest, res: RedstoneResponse) => Promise<any>;
 
 interface StringIndexInterface {

@@ -1,4 +1,5 @@
 import acquireContributionsByEventList from './acquireContributionsByEventList';
+import addNews from './addNews';
 import findEvent from './findEvent';
 import forkEvent from './forkEvent';
 import generatePinyin from './generatePinyin';
@@ -11,6 +12,7 @@ import updateEvent from './updateEvent';
 
 export {
   acquireContributionsByEventList,
+  addNews,
   findEvent,
   forkEvent,
   generatePinyin,

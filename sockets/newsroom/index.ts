@@ -2,7 +2,13 @@ import { Server } from 'socket.io';
 import { isLoggedIn } from '@Sockets/middlewares';
 
 import getRoomName from './getRoomName';
+
+import addNewsToEvent from './addNewsToEvent';
+import addNewsToStack from './addNewsToStack';
+import createStack from './createStack';
 import updateEvent from './updateEvent';
+import updateStack from './updateStack';
+import updateStackOrders from './updateStackOrders';
 
 export default function loadNewsroom(io: Server) {
   const newsroom = io.of('/newsroom');
@@ -18,6 +24,11 @@ export default function loadNewsroom(io: Server) {
       socket.leave(getRoomName(eventId));
     });
 
+    addNewsToEvent(socket);
+    addNewsToStack(socket);
+    createStack(socket);
     updateEvent(socket);
+    updateStack(socket);
+    updateStackOrders(socket);
   });
 }

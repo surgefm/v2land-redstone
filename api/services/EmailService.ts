@@ -19,7 +19,7 @@ async function sendEmail(email: SendMailOptions) {
   });
 }
 
-export async function send (email: SendMailOptions): Promise<any> {
+export async function send(email: SendMailOptions): Promise<any> {
   if (!transporter) return;
   if (transporter.isIdle()) {
     return sendEmail(email);
@@ -29,7 +29,7 @@ export async function send (email: SendMailOptions): Promise<any> {
   }
 }
 
-export async function register (client: Client, token: string) {
+export async function register(client: Client, token: string) {
   const email = {
     to: client.email,
     from: {
@@ -51,7 +51,7 @@ export async function register (client: Client, token: string) {
   return send(email);
 }
 
-export async function notify (address: string, subscription: Subscription, template: any) {
+export async function notify(address: string, subscription: Subscription, template: any) {
   template.unsubscribe = `${globals.api}/subscription/unsubscribe?` +
     `id=${ subscription.id }` +
     `&unsubscribeId=${ subscription.unsubscribeId }`;

@@ -1,4 +1,4 @@
-export function getTypeFromMethod (method: string) {
+export function getTypeFromMethod(method: string) {
   switch (method) {
   case 'emailDailyReport':
     return 'email';

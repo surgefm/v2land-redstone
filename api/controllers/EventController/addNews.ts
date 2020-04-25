@@ -1,5 +1,5 @@
 import { RedstoneRequest, RedstoneResponse } from '@Types';
-import { StackService } from '@Services';
+import { EventService } from '@Services';
 
 async function addNews(req: RedstoneRequest, res: RedstoneResponse) {
   if (!req.body || !req.body.newsId) {
@@ -8,8 +8,8 @@ async function addNews(req: RedstoneRequest, res: RedstoneResponse) {
     });
   }
 
-  const id = +req.params.stackId;
-  const esn = await StackService.addNews(id, req.body.newsId, req.currentClient.id);
+  const id = req.params.eventName;
+  const esn = await EventService.addNews(id, req.body.newsId, req.currentClient.id);
 
   if (!esn) {
     return res.status(200).json({

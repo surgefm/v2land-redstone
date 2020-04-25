@@ -9,15 +9,15 @@ export class EveryNewStackMode extends NotificationMode {
   nickname = '新的事件进展';
   needStack = true;
 
-  async new () {
+  async new() {
     return new Date('1/1/2000');
   }
 
-  async notified () {
+  async notified() {
     return new Date('1/1/3000');
   }
 
-  async getTemplate ({ notification, event, eventId, stack }: NotificationModeInput) {
+  async getTemplate({ notification, event, eventId, stack }: NotificationModeInput) {
     if (!event && !eventId) {
       if (!notification) {
         throw new MissingParameterError('notification');

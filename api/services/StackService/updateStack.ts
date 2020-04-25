@@ -6,7 +6,7 @@ import { Transaction } from 'sequelize/types';
 
 async function updateStack ({ id = -1, data = {}, clientId, transaction }: {
   id?: number;
-  data?: { enableNotification?: boolean; forceUpdate?: boolean };
+  data?: { enableNotification?: boolean; forceUpdate?: boolean } & StackObj;
   clientId?: number;
   transaction?: Transaction;
 }) {
