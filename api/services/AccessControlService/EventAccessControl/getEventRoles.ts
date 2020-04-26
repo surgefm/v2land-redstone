@@ -1,4 +1,4 @@
-import { allow, areAnyRolesAllowed, addRoleParents } from './operations';
+import { allow, areAnyRolesAllowed, addRoleParents } from '../operations';
 
 function getEventResourceId(eventId: number) {
   return `event-${eventId}`;
