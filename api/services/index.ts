@@ -12,7 +12,7 @@ export * as NotificationService from './NotificationService';
 export * as OAuth2Service from './OAuth2Service';
 export * as RecordService from './RecordService';
 export * as RedisService from './RedisService';
-// export * as ResourceLockService from './ResourceLockService';
+export * as ResourceLockService from './ResourceLockService';
 export * as SearchService from './SearchService';
 export * as SlackService from './SlackService';
 export * as StackService from './StackService';

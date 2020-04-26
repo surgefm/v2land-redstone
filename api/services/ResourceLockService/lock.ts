@@ -7,20 +7,18 @@ import getRedisEventResourceLockKey from './getRedisEventResourceLockKey';
 
 const ttl = globals.resourceLockTTL;
 
-export default async function lock(model: string, resourceId: number, clientId: number, eventId: number) {
+async function lock(model: string, resourceId: number, clientId: number, eventId: number) {
   if (RedisService.redis) {
     const key = getRedisResourceLockKey(model, resourceId);
     const lock = await RedisService.get(key);
-    if (lock && lock.locker !== clientId) return;
-    if (!lock) {
-      await RedisService.set(key, {
-        clientId,
-        eventId,
-      });
-      await RedisService.hset(getRedisEventResourceLockKey(eventId), key, true);
-    }
+    if (lock && lock.locker !== clientId) return false;
+    await RedisService.set(key, {
+      clientId,
+      eventId,
+    });
+    await RedisService.hset(getRedisEventResourceLockKey(eventId), key, true);
     await RedisService.redis.expire(key, ttl);
-    return;
+    return true;
   } else {
     const lock = await ResourceLock.findOne({
       where: {
@@ -32,10 +30,10 @@ export default async function lock(model: string, resourceId: number, clientId: 
       attributes: ['locker', 'expires'],
     });
     if (lock) {
-      if (lock.locker !== clientId) return;
+      if (lock.locker !== clientId) return false;
       lock.expires = new Date(Date.now() + ttl * 1000);
       await lock.save();
-      return;
+      return true;
     }
 
     await ResourceLock.create({
@@ -46,5 +44,8 @@ export default async function lock(model: string, resourceId: number, clientId: 
       eventId,
       locker: clientId,
     });
+    return true;
   }
 }
+
+export default lock;

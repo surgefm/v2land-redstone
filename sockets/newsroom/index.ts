@@ -6,6 +6,8 @@ import getRoomName from './getRoomName';
 import addNewsToEvent from './addNewsToEvent';
 import addNewsToStack from './addNewsToStack';
 import createStack from './createStack';
+import lockResource from './lockResource';
+import unlockResource from './unlockResource';
 import updateEvent from './updateEvent';
 import updateStack from './updateStack';
 import updateStackOrders from './updateStackOrders';
@@ -27,6 +29,8 @@ export default function loadNewsroom(io: Server) {
     addNewsToEvent(socket);
     addNewsToStack(socket);
     createStack(socket);
+    lockResource(socket);
+    unlockResource(socket);
     updateEvent(socket);
     updateStack(socket);
     updateStackOrders(socket);
