@@ -1,4 +1,4 @@
-import { removeUserRoles } from '../operations';
+import { removeUserRoles } from '@Services/AccessControlService/operations';
 import { getNewsEditRolePlain } from './getNewsRoles';
 
 export default async function allowClientToEditNews(clientId: number, newsId: number) {

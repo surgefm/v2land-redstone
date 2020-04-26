@@ -1,4 +1,4 @@
-import { allow, areAnyRolesAllowed } from '../operations';
+import { allow, areAnyRolesAllowed } from '@Services/AccessControlService/operations';
 
 function getNewsResourceId(newsId: number) {
   return `news-${newsId}`;

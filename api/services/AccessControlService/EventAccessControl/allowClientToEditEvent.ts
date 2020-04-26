@@ -1,4 +1,4 @@
-import { addUserRoles } from '../operations';
+import { addUserRoles } from '@Services/AccessControlService/operations';
 import { getEventEditRole } from './getEventRoles';
 
 export default async function allowClientToEditEvent(clientId: number, eventId: number) {
