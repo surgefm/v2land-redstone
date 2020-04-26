@@ -6,6 +6,7 @@ import generatePinyin from './generatePinyin';
 import getContribution from './getContribution';
 import getEventId from './getEventId';
 import getEventList from './getEventList';
+import removeNews from './removeNews';
 import updateAdmittedLatestNews from './updateAdmittedLatestNews';
 import updateElasticsearchIndex from './updateElasticsearchIndex';
 import updateEvent from './updateEvent';
@@ -19,6 +20,7 @@ export {
   getContribution,
   getEventId,
   getEventList,
+  removeNews,
   updateAdmittedLatestNews,
   updateElasticsearchIndex,
   updateEvent,

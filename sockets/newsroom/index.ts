@@ -1,4 +1,5 @@
 import { Server } from 'socket.io';
+import { ResourceLockService } from '@Services';
 import { isLoggedIn } from '@Sockets/middlewares';
 
 import getRoomName from './getRoomName';
@@ -7,6 +8,8 @@ import addNewsToEvent from './addNewsToEvent';
 import addNewsToStack from './addNewsToStack';
 import createStack from './createStack';
 import lockResource from './lockResource';
+import removeNewsFromEvent from './removeNewsFromEvent';
+import removeNewsFromStack from './removeNewsFromStack';
 import unlockResource from './unlockResource';
 import updateEvent from './updateEvent';
 import updateStack from './updateStack';
@@ -17,19 +20,32 @@ export default function loadNewsroom(io: Server) {
   newsroom.on('connection', (socket) => {
     newsroom.use(isLoggedIn);
 
-    socket.on('join newsroom', (eventId: number) => {
-      // TODO: Check user permission.
-      socket.join(getRoomName(eventId));
+    socket.on('join newsroom', async (eventId: number, cb: Function) => {
+      // TODO: Check user permission
+      const roomName = getRoomName(eventId);
+      socket.join(roomName);
+      const resourceLockList = await ResourceLockService.getEventLockedResourceList(eventId);
+      const roommates = newsroom.in(roomName).sockets;
+
+      cb({
+        lockedResourced: resourceLockList,
+        clients: Object.keys(roommates).map(name => roommates[name].handshake.session.clientId),
+      });
+
+      socket.in(roomName).emit('join room', socket.handshake.session.clientId);
     });
 
     socket.on('leave newsroom', (eventId: number) => {
       socket.leave(getRoomName(eventId));
+      socket.in(getRoomName(eventId)).emit('leave room', socket.handshake.session.clientId);
     });
 
     addNewsToEvent(socket);
     addNewsToStack(socket);
     createStack(socket);
     lockResource(socket);
+    removeNewsFromEvent(socket);
+    removeNewsFromStack(socket);
     unlockResource(socket);
     updateEvent(socket);
     updateStack(socket);
