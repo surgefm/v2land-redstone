@@ -1,4 +1,4 @@
-import { removeUserRoles } from './operations';
+import { removeUserRoles } from '../operations';
 import { getEventViewRolePlain } from './getEventRoles';
 
 export default async function disallowClientToViewEvent(clientId: number, eventId: number) {
