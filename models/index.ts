@@ -15,6 +15,7 @@ import Notification from './Notification';
 import Record from './Record';
 import Report from './Report';
 import ReportNotification from './ReportNotification';
+import ResourceLock from './ResourceLock';
 import Stack from './Stack';
 import Subscription from './Subscription';
 import Tag from './Tag';
@@ -39,6 +40,7 @@ export {
   Record,
   Report,
   ReportNotification,
+  ResourceLock,
   Stack,
   Subscription,
   Tag,

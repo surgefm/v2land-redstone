@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { Logger } from 'pino';
 import { Client, Record as RecordModel, News, HeaderImage, Tag } from '@Models';
+import { ResourceLockStatus } from '@Models/ResourceLock';
 import { NotificationMode, NotificationModeInput } from './NotificationMode';
 import RedstoneError, {
   RedstoneErrorIdentifier,
@@ -54,6 +55,13 @@ interface EventObj extends SimplifiedEventInterface {
   get?: Function;
 }
 
+interface ResourceLockObj {
+  locker: number;
+  eventId: number;
+  model?: string;
+  resourceId?: number;
+}
+
 export {
   RedstoneRequest,
   RedstoneResponse,
@@ -66,6 +74,9 @@ export {
 
   NotificationMode,
   NotificationModeInput,
+
+  ResourceLockObj,
+  ResourceLockStatus,
 
   RedstoneError,
   RedstoneErrorIdentifier,

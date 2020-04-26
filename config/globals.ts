@@ -21,4 +21,6 @@ export default {
 
   environment: process.env.NODE_ENV || 'development',
 
+  resourceLockTTL: 60 * 60 * 1, // in seconds
+
 };
