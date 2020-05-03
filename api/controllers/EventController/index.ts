@@ -1,3 +1,4 @@
+import addNews from './addNews';
 import addTag from './addTag';
 import createEvent from './createEvent';
 import createNews from './createNews';
@@ -13,6 +14,7 @@ import updateEvent from './updateEvent';
 import updateHeaderImage from './updateHeaderImage';
 
 export {
+  addNews,
   addTag,
   createEvent,
   createNews,

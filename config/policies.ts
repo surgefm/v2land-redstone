@@ -19,6 +19,7 @@ export default {
   },
 
   EventController: {
+    'addNews': ['isLoggedIn', 'isManager'],
     'findEvent': true,
     'getEvent': true,
     'createEvent': true,

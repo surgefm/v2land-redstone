@@ -27,6 +27,7 @@ export default {
   'GET /event/:eventName/pending': 'EventController.getPendingNews',
   'POST /event/:eventName/stack': 'EventController.createStack',
   'POST /event/:eventName/news': 'EventController.createNews',
+  'PUT /event/:eventName/news': 'EventController.addNews',
   'POST /event/:eventName/tag': 'EventController.addTag',
   'POST /event/:eventName/commit': 'EventController.makeCommit',
   'GET /event/:eventName/fork': 'EventController.forkEvent',

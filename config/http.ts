@@ -37,12 +37,12 @@ export default {
       'favicon',
     ],
 
-    noCache: function (req: Request, res: Response, next: NextFunction) {
+    noCache: function(req: Request, res: Response, next: NextFunction) {
       res.header('Cache-Control', 'no-cache, no-store');
       return next();
     },
 
-    bearerAuthentication: function (req: RedstoneRequest, res: Response, next: NextFunction) {
+    bearerAuthentication: function(req: RedstoneRequest, res: Response, next: NextFunction) {
       if ((req.session && req.session.clientId) || !req.get('Authorization')) {
         return next();
       }

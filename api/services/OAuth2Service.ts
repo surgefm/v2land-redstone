@@ -1,7 +1,7 @@
 import randomString from 'crypto-random-string';
 import { AuthorizationAccessToken } from '@Models';
 
-export async function getNewAccessToken (
+export async function getNewAccessToken(
   clientId: number,
   authorizationClientId: number,
   refreshable: boolean,

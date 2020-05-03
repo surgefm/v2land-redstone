@@ -27,7 +27,7 @@ export class MonthlyMode extends NotificationMode {
     return this.new();
   }
 
-  async getTemplate ({ notification, event, stack }: NotificationModeInput) {
+  async getTemplate({ notification, event, stack }: NotificationModeInput) {
     if (!event) {
       if (!notification) {
         throw new MissingParameterError('notification');

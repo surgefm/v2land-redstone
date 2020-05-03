@@ -32,6 +32,15 @@ CREATE TYPE public.enum_auth_site AS ENUM (
 
 ALTER TYPE public.enum_auth_site OWNER TO v2land;
 
+CREATE TYPE public."enum_resourceLock_status" AS ENUM (
+    'active',
+    'unlocked',
+    'expired'
+);
+
+
+ALTER TYPE public."enum_resourceLock_status" OWNER TO v2land;
+
 --
 -- TOC entry 695 (class 1247 OID 37518)
 -- Name: enum_authorizationAccessToken_status; Type: TYPE; Schema: public; Owner: v2land
@@ -1127,6 +1136,36 @@ CREATE TABLE public."reportNotification" (
 
 ALTER TABLE public."reportNotification" OWNER TO v2land;
 
+CREATE SEQUENCE public."resourceLock_id_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public."resourceLock_id_seq" OWNER TO v2land;
+
+--
+-- TOC entry 257 (class 1259 OID 37917)
+-- Name: report; Type: TABLE; Schema: public; Owner: v2land
+--
+
+CREATE TABLE public."resourceLock" (
+    id integer DEFAULT nextval('public."resourceLock_id_seq"'::regclass) NOT NULL,
+    "expires" timestamp with time zone DEFAULT '2018-10-27 02:08:13.457+08'::timestamp with time zone NOT NULL,
+    status public."enum_resourceLock_status" DEFAULT 'active'::public."enum_resourceLock_status",
+    "createdAt" timestamp with time zone NOT NULL,
+    "updatedAt" timestamp with time zone NOT NULL,
+    locker integer NOT NULL,
+    "eventId" integer,
+    model text NOT NULL,
+    "resourceId" integer NOT NULL
+);
+
+
+ALTER TABLE public.report OWNER TO v2land;
+
 --
 -- TOC entry 259 (class 1259 OID 37936)
 -- Name: stack_id_seq; Type: SEQUENCE; Schema: public; Owner: v2land
@@ -1552,6 +1591,8 @@ COPY public.tag (id, name, description, "createdAt", "updatedAt", status) FROM s
 --
 
 SELECT pg_catalog.setval('public.auth_id_seq', 1, true);
+
+SELECT pg_catalog.setval('public."resourceLock_id_seq"', 1, true);
 
 
 --

@@ -4,6 +4,8 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 import express, { Express } from 'express';
+import Http from 'http';
+import socketIO from 'socket.io';
 import responseTime from 'response-time';
 import bodyParser from 'body-parser';
 import compression from 'compression';
@@ -13,6 +15,7 @@ import path from 'path';
 
 import session from 'express-session';
 import { sessionConfig, sessionStore } from '@Configs/session';
+import socketSession from 'express-socket.io-session';
 import http from '@Configs/http';
 import cors from 'cors';
 import securityConfig from '@Configs/security';
@@ -20,9 +23,12 @@ import securityConfig from '@Configs/security';
 import loadRoutes from './loadRoutes';
 import loadSequelize from './loadSequelize';
 import loadAcl from '@Services/AccessControlService/initialize';
+import { loadSocket } from './sockets';
 import { errorHandler } from '@Responses';
 
 const app = express();
+const server = Http.createServer(app);
+const socket = socketIO(server);
 
 export async function liftServer(app: Express) {
   await loadSequelize();
@@ -34,10 +40,11 @@ export async function liftServer(app: Express) {
   app.use(cors(securityConfig.cors));
   app.use(bodyParser.json());
   app.use(compression());
-  app.use(session({
+  const sess = session({
     ...sessionConfig,
     store: sessionStore(),
-  }));
+  });
+  app.use(sess);
   app.use(http.middleware.bearerAuthentication);
   app.use(http.middleware.noCache);
 
@@ -46,8 +53,11 @@ export async function liftServer(app: Express) {
 
   app.use(errorHandler);
 
+  socket.use(socketSession(sess, { autoSave: true }));
+  loadSocket(socket);
+
   if (process.env.NODE_ENV !== 'test') {
-    app.listen(1337, () => {
+    server.listen(1337, () => {
       console.log('V2land Redstone started');
     });
   }
@@ -57,4 +67,5 @@ if (process.env.NODE_ENV !== 'test') {
   liftServer(app);
 }
 
+export { app, socket };
 export default app;
