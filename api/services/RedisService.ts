@@ -1,9 +1,12 @@
 import Redis from 'ioredis';
+import ClassicRedis from 'redis';
 import { datastores } from '@Configs';
 
 let redis: Redis.Redis;
+let classicRedis: ClassicRedis.RedisClient;
 if (process.env.REDIS_HOST) {
   redis = new Redis(datastores.redis);
+  classicRedis = ClassicRedis.createClient(datastores.redis);
 }
 
 export async function get(key: string) {
@@ -30,4 +33,4 @@ export async function hset(key: string, field: string, value: any) {
   return redis.hset(datastores.redis.prefix + key, field, JSON.stringify(value));
 }
 
-export { redis };
+export { redis, classicRedis };
