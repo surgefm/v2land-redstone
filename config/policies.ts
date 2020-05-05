@@ -9,7 +9,7 @@
  * below by its filename, minus the extension, (e.g. "authenticated")
  */
 
-import { hasPermission } from '@Policies';
+import { hasPermission, hasEventPermission } from '@Policies';
 
 export default {
   NewsController: {
@@ -29,7 +29,7 @@ export default {
     'getEventList': true,
     'getAllPendingEvents': ['isLoggedIn', 'isManager'],
     'getPendingNews': ['isLoggedIn', 'isManager'],
-    'createStack': true,
+    'createStack': ['isLoggedIn', hasEventPermission('edit', '用户没有编辑事件的权限')],
     'createNews': true,
     'updateHeaderImage': ['isLoggedIn', 'isManager'],
     'addTag': ['isLoggedIn', hasPermission('tags', 'add', '用户没有添加标签的权限')],
