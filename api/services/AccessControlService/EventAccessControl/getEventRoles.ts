@@ -7,6 +7,7 @@ function getEventResourceId(eventId: number) {
 export const getEventViewRolePlain = (eventId: number) => `${getEventResourceId(eventId)}-view-role`;
 export const getEventEditRolePlain = (eventId: number) => `${getEventResourceId(eventId)}-edit-role`;
 export const getEventManageRolePlain = (eventId: number) => `${getEventResourceId(eventId)}-manage-role`;
+export const getEventOwnerRolePlain = (eventId: number) => `${getEventResourceId(eventId)}-owner-role`;
 
 export async function getEventViewRole(eventId: number, forceUpdate = false) {
   const resource = getEventResourceId(eventId);
@@ -33,7 +34,7 @@ export async function getEventEditRole(eventId: number, forceUpdate = false) {
   return editRole;
 }
 
-export async function getEventManageRole(eventId: number | number, forceUpdate = false) {
+export async function getEventManageRole(eventId: number, forceUpdate = false) {
   const resource = getEventResourceId(eventId);
   const manageRole = getEventManageRolePlain(eventId);
 
@@ -45,4 +46,11 @@ export async function getEventManageRole(eventId: number | number, forceUpdate =
     await addRoleParents(manageRole, editRole);
   }
   return manageRole;
+}
+
+export async function getEventOwnerRole(eventId: number) {
+  const ownerRole = getEventOwnerRolePlain(eventId);
+  const manageRole = await getEventManageRole(eventId);
+  await addRoleParents(ownerRole, manageRole);
+  return ownerRole;
 }
