@@ -3,6 +3,7 @@ import request from 'supertest';
 import urlencode from 'urlencode';
 import assert from 'assert';
 import { Client, Event, HeaderImage, sequelize } from '@Models';
+import { AccessControlService } from '@Services';
 import app from '~/app';
 
 let agent: request.SuperTest<request.Test>;
@@ -19,12 +20,14 @@ describe('EventController', function() {
       await sequelize.query(`DELETE FROM event`);
       await sequelize.query(`DELETE FROM client`);
 
-      await Client.create({
+      const client = await Client.create({
         username: testUsername,
         password: '$2b$10$8njIkPFgDouZsKXYrkYF4.xqShsOPMK9WHEU7aou4FAeuvzb4WRmi',
         email: testEmail,
         role: 'admin',
       });
+
+      await AccessControlService.addUserRoles(client.id, 'admins');
 
       await agent
         .post('/client/login')

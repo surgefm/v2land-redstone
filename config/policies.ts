@@ -10,6 +10,7 @@
  */
 
 import { hasRole } from '@Policies';
+import { roles } from '@Services/AccessControlService';
 
 export default {
   NewsController: {
@@ -24,7 +25,7 @@ export default {
     'addNews': ['isLoggedIn', 'isManager'],
     'findEvent': true,
     'getEvent': true,
-    'createEvent': true,
+    'createEvent': ['isLoggedIn', hasRole(roles.contributors, '用户没有创建事件的权限')],
     'updateEvent': ['isLoggedIn', 'isManager'],
     'getEventList': true,
     'getAllPendingEvents': ['isLoggedIn', 'isManager'],
@@ -32,8 +33,8 @@ export default {
     'createStack': true,
     'createNews': true,
     'updateHeaderImage': ['isLoggedIn', 'isManager'],
-    'addTag': ['isLoggedIn', hasRole('editor', '用户没有添加标签的权限')],
-    'removeTag': ['isLoggedIn', hasRole('editor', '用户没有移除标签的权限')],
+    'addTag': ['isLoggedIn', hasRole(roles.editors, '用户没有添加标签的权限')],
+    'removeTag': ['isLoggedIn', hasRole(roles.editors, '用户没有移除标签的权限')],
     'makeCommit': ['isLoggedIn', 'isManager'],
     'forkEvent': ['isLoggedIn'],
     '*': false,
@@ -108,4 +109,4 @@ export default {
     '*': false,
   },
 
-} as { [index: string]: { [index: string]: boolean | string | string[] }};
+} as { [index: string]: { [index: string]: boolean | string | string[] } };
