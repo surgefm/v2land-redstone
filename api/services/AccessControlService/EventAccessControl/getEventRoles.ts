@@ -1,8 +1,6 @@
 import { allow, areAnyRolesAllowed, addRoleParents } from '@Services/AccessControlService/operations';
 
-function getEventResourceId(eventId: number) {
-  return `event-${eventId}`;
-}
+export const getEventResourceId = (eventId: number) => `event-${eventId}`;
 
 export const getEventViewRolePlain = (eventId: number) => `${getEventResourceId(eventId)}-view-role`;
 export const getEventEditRolePlain = (eventId: number) => `${getEventResourceId(eventId)}-edit-role`;
