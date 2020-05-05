@@ -1,5 +1,6 @@
 import forbiddenRoute from './forbiddenRoute';
 import hasPermission from './hasPermission';
+import hasEventPermission from './hasEventPermission';
 import hasRole from './hasRole';
 import isAdmin from './isAdmin';
 import isLoggedIn from './isLoggedIn';
@@ -7,13 +8,14 @@ import isManager from './isManager';
 import sessionAuth from './sessionAuth';
 import uploadFile from './uploadFile';
 
-export type PolicyMiddleware = typeof forbiddenRoute | typeof hasPermission |
+export type PolicyMiddleware = typeof forbiddenRoute | typeof hasPermission | typeof hasEventPermission |
   typeof hasRole | typeof isAdmin | typeof isLoggedIn | typeof isManager |
   typeof sessionAuth | typeof uploadFile;
 
 export {
   forbiddenRoute,
   hasPermission,
+  hasEventPermission,
   hasRole,
   isAdmin,
   isLoggedIn,
@@ -25,6 +27,7 @@ export {
 export default {
   forbiddenRoute,
   hasPermission,
+  hasEventPermission,
   hasRole,
   isAdmin,
   isLoggedIn,
