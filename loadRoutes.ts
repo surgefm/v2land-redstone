@@ -4,6 +4,8 @@ import policyMiddlewares, { PolicyMiddleware, forbiddenRoute } from '@Policies';
 import { RedstoneRequest, RedstoneResponse, NextFunction } from '@Types';
 import { Express } from 'express';
 
+type PolicyRule = string | PolicyMiddleware;
+
 async function loadRoutes(app: Express) {
   for (const key in routes) {
     if (typeof routes[key] === 'string') {
@@ -50,17 +52,21 @@ function getPolicies(controller: string, action: string) {
     return policyRule ? [] : [forbiddenRoute];
   }
 
-  const list = typeof policyRule === 'string'
-    ? [policyRule as unknown as string]
-    : policyRule as unknown as string[];
+  const list = (typeof policyRule === 'string' || typeof policyRule === 'function')
+    ? [policyRule as unknown as PolicyRule]
+    : policyRule as unknown as PolicyRule[];
 
   const middlewares: PolicyMiddleware[] = [];
   for (const policy of list) {
-    if (!(policy in policyMiddlewares)) {
-      wrongConfig(controller, action);
-      return [forbiddenRoute];
+    if (typeof policy === 'function') {
+      middlewares.push(policy);
+    } else {
+      if (!(policy in policyMiddlewares)) {
+        wrongConfig(controller, action);
+        return [forbiddenRoute];
+      }
+      middlewares.push(policyMiddlewares[policy]);
     }
-    middlewares.push(policyMiddlewares[policy]);
   }
   return middlewares;
 }

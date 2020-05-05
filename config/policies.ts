@@ -9,6 +9,8 @@
  * below by its filename, minus the extension, (e.g. "authenticated")
  */
 
+import { hasRole } from '@Policies';
+
 export default {
   NewsController: {
     'getNews': true,
@@ -30,8 +32,8 @@ export default {
     'createStack': true,
     'createNews': true,
     'updateHeaderImage': ['isLoggedIn', 'isManager'],
-    'addTag': ['isLoggedIn', 'isManager'],
-    'removeTag': ['isLoggedIn', 'isManager'],
+    'addTag': ['isLoggedIn', hasRole('editor', '用户没有添加标签的权限')],
+    'removeTag': ['isLoggedIn', hasRole('editor', '用户没有移除标签的权限')],
     'makeCommit': ['isLoggedIn', 'isManager'],
     'forkEvent': ['isLoggedIn'],
     '*': false,
