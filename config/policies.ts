@@ -9,8 +9,7 @@
  * below by its filename, minus the extension, (e.g. "authenticated")
  */
 
-import { hasRole } from '@Policies';
-import { roles } from '@Services/AccessControlService';
+import { hasPermission } from '@Policies';
 
 export default {
   NewsController: {
@@ -25,7 +24,7 @@ export default {
     'addNews': ['isLoggedIn', 'isManager'],
     'findEvent': true,
     'getEvent': true,
-    'createEvent': ['isLoggedIn', hasRole(roles.contributors, '用户没有创建事件的权限')],
+    'createEvent': ['isLoggedIn', hasPermission('events', 'create', '用户没有创建事件的权限')],
     'updateEvent': ['isLoggedIn', 'isManager'],
     'getEventList': true,
     'getAllPendingEvents': ['isLoggedIn', 'isManager'],
@@ -33,8 +32,8 @@ export default {
     'createStack': true,
     'createNews': true,
     'updateHeaderImage': ['isLoggedIn', 'isManager'],
-    'addTag': ['isLoggedIn', hasRole(roles.editors, '用户没有添加标签的权限')],
-    'removeTag': ['isLoggedIn', hasRole(roles.editors, '用户没有移除标签的权限')],
+    'addTag': ['isLoggedIn', hasPermission('tags', 'add', '用户没有添加标签的权限')],
+    'removeTag': ['isLoggedIn', hasPermission('tags', 'remove', '用户没有移除标签的权限')],
     'makeCommit': ['isLoggedIn', 'isManager'],
     'forkEvent': ['isLoggedIn'],
     '*': false,
