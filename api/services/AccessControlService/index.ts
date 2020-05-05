@@ -4,6 +4,7 @@ import roles from './roles';
 
 export * from './EventAccessControl';
 export * from './NewsAccessControl';
+export * from './operations';
 
 export {
   acl,

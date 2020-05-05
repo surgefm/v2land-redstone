@@ -1,11 +1,19 @@
 import { RedstoneRequest, RedstoneResponse } from '@Types';
 import { EventTag, Tag, sequelize } from '@Models';
 import { EventService, RecordService } from '@Services';
+import { hasRole } from '@Services/AccessControlService';
 
 async function addTag(req: RedstoneRequest, res: RedstoneResponse) {
   if (!req.body.tag) {
     return res.status(400).json({
       message: '缺少参数：tag',
+    });
+  }
+
+  const haveAccess = await hasRole(req.session.clientId, 'editor');
+  if (!haveAccess) {
+    return res.status(403).json({
+      message: '用户没有添加标签的权限',
     });
   }
 
