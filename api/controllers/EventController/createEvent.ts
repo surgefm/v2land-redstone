@@ -1,6 +1,7 @@
 import { RedstoneRequest, RedstoneResponse } from '@Types';
 import { EventService, RecordService, NotificationService, CommitService } from '@Services';
 import { Event, sequelize } from '@Models';
+import { setClientEventOwner } from '@Services/AccessControlService';
 
 async function createEvent (req: RedstoneRequest, res: RedstoneResponse) {
   if (!(req.body && req.body.name && req.body.description)) {
@@ -38,6 +39,8 @@ async function createEvent (req: RedstoneRequest, res: RedstoneResponse) {
 
     await CommitService.makeCommit(event.id, req.session.clientId, 'Hello!', { transaction });
   });
+
+  await setClientEventOwner(req.session.clientId, event.id);
 
   res.status(201).json({
     message: '提交成功，该事件在社区管理员审核通过后将很快开放',

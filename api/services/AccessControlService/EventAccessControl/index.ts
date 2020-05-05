@@ -4,7 +4,7 @@ import allowClientToManageEvent from './allowClientToManageEvent';
 import disallowClientToViewEvent from './disallowClientToViewEvent';
 import disallowClientToEditEvent from './disallowClientToEditEvent';
 import disallowClientToManageEvent from './disallowClientToManageEvent';
-
+import setClientEventOwner from './setClientEventOwner';
 export * from './getEventRoles';
 export {
   allowClientToViewEvent,
@@ -13,4 +13,5 @@ export {
   disallowClientToViewEvent,
   disallowClientToEditEvent,
   disallowClientToManageEvent,
+  setClientEventOwner,
 };
