@@ -1,5 +1,5 @@
 import { Sequelize } from 'sequelize-typescript';
-import { datastores } from '@Configs';
+import datastores from '@Configs/datastores';
 import * as models from '@Models';
 import pino from 'pino';
 const logger = pino();
