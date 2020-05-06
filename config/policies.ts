@@ -30,7 +30,7 @@ export default {
     'getAllPendingEvents': ['isLoggedIn', 'isManager'],
     'getPendingNews': ['isLoggedIn', 'isManager'],
     'createStack': ['isLoggedIn', hasEventPermission('edit', '用户没有编辑事件的权限')],
-    'createNews': true,
+    'createNews': ['isLoggedIn', hasPermission('news', 'create', '用户没有创建新闻的权限')],
     'updateHeaderImage': ['isLoggedIn', 'isManager'],
     'addTag': ['isLoggedIn', hasPermission('tags', 'add', '用户没有添加标签的权限')],
     'removeTag': ['isLoggedIn', hasPermission('tags', 'remove', '用户没有移除标签的权限')],
