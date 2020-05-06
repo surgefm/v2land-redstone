@@ -7,8 +7,9 @@ export default async function initialize(): Promise<any> {
 
   // Define contributors’ permission
   await addRoleParents(contributors, guests);
-  await allow(contributors, 'events', ['create', 'edit', 'publish']);
-  await allow(contributors, 'stacks', ['create', 'edit']);
+  await allow(contributors, 'events', ['create', 'edit', 'publish', 'delete']);
+  await allow(contributors, 'stacks', ['create', 'edit', 'delete']);
+  await allow(contributors, 'news', ['create', 'edit', 'delete']);
 
   // Define editors’ permission
   await addRoleParents(editors, contributors);

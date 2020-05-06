@@ -28,6 +28,8 @@ describe('StackController', function() {
         role: 'admin',
       });
 
+      await AccessControlService.addUserRoles(client.id, 'editors');
+
       await agent
         .post('/client/login')
         .send({
