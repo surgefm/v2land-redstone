@@ -35,7 +35,7 @@ export default {
     'addTag': ['isLoggedIn', hasPermission('tags', 'add', '用户没有添加标签的权限')],
     'removeTag': ['isLoggedIn', hasPermission('tags', 'remove', '用户没有移除标签的权限')],
     'makeCommit': ['isLoggedIn', 'isManager'],
-    'forkEvent': ['isLoggedIn'],
+    'forkEvent': ['isLoggedIn', hasPermission('events', 'create', '用户没有复制事件的权限')],
     '*': false,
   },
 
