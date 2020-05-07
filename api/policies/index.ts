@@ -1,6 +1,7 @@
 import forbiddenRoute from './forbiddenRoute';
 import hasPermission from './hasPermission';
 import hasEventPermission from './hasEventPermission';
+import hasEventPermissionForSomeStatus from './hasEventPermissionForSomeStatus';
 import hasRole from './hasRole';
 import isAdmin from './isAdmin';
 import isLoggedIn from './isLoggedIn';
@@ -16,6 +17,7 @@ export {
   forbiddenRoute,
   hasPermission,
   hasEventPermission,
+  hasEventPermissionForSomeStatus,
   hasRole,
   isAdmin,
   isLoggedIn,
@@ -28,6 +30,7 @@ export default {
   forbiddenRoute,
   hasPermission,
   hasEventPermission,
+  hasEventPermissionForSomeStatus,
   hasRole,
   isAdmin,
   isLoggedIn,

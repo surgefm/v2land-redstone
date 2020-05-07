@@ -9,12 +9,13 @@ export default async function initialize(): Promise<any> {
   await addRoleParents(contributors, guests);
   await allow(contributors, 'events', ['create', 'edit', 'publish', 'delete']);
   await allow(contributors, 'stacks', ['create', 'edit', 'delete']);
-  await allow(contributors, 'news', ['create', 'edit', 'delete']);
+  await allow(contributors, 'news', ['create', 'delete']);
 
   // Define editors’ permission
   await addRoleParents(editors, contributors);
   await allow(editors, 'tags', '*');
   await allow(editors, 'headlines', '*');
+  await allow(editors, 'news', ['edit']);
 
   // Define admins’ permission
   await addRoleParents(admins, editors);
