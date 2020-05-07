@@ -7,7 +7,7 @@ import { AccessControlService } from '@Services';
 import app from '~/app';
 
 let agent: request.SuperTest<request.Test>;
-
+let clientId = 0;
 const testEmail = process.env.TEST_EMAIL ? process.env.TEST_EMAIL : 'vincent@langchao.org';
 const testUsername = '计量经济学家的AI';
 
@@ -28,7 +28,7 @@ describe('EventController', function() {
       });
 
       await AccessControlService.addUserRoles(client.id, 'admins');
-
+      clientId = client.id;
       await agent
         .post('/client/login')
         .send({
@@ -130,10 +130,11 @@ describe('EventController', function() {
         },
       });
 
-      await Event.create({
+      const event = await Event.create({
         name: '浪潮今天发布了吗？',
         description: '浪潮今天发布了吗？',
       });
+      await AccessControlService.setClientEventOwner(clientId, event.id);
     });
 
     after(async function() {
