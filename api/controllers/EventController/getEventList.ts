@@ -1,13 +1,13 @@
 import { RedstoneRequest, RedstoneResponse } from '@Types';
-import { Client, Event, HeaderImage, News, Tag, sequelize } from '@Models';
-import { UtilService, EventService } from '@Services';
+import { Event, HeaderImage, News, Tag, sequelize } from '@Models';
+import { UtilService, EventService, AccessControlService } from '@Services';
 import _ from 'lodash';
 
 async function getEventList (req: RedstoneRequest, res: RedstoneResponse) {
   let page: number;
   let where: any;
   let mode; // 0: latest updated; 1:
-  let isManager = false;
+  let isEditors = false;
 
   switch (req.method) {
   case 'GET':
@@ -48,17 +48,10 @@ async function getEventList (req: RedstoneRequest, res: RedstoneResponse) {
 
   await sequelize.transaction(async transaction => {
     if (where && req.session && req.session.clientId) {
-      const client = await Client.findOne({
-        where: { id: req.session.clientId },
-        transaction,
-      });
-
-      if (client && ['manager', 'admin'].includes(client.role)) {
-        isManager = true;
-      }
+      isEditors = await AccessControlService.hasRole(req.session.clientId, AccessControlService.roles.editors);
     }
 
-    if (where && !isManager) {
+    if (where && !isEditors) {
       where.status = 'admitted';
     }
 

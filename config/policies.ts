@@ -23,7 +23,7 @@ export default {
   EventController: {
     'addNews': ['isLoggedIn', 'isManager'],
     'findEvent': true,
-    'getEvent': ['isLoggedIn', hasEventPermissionForSomeStatus('用户没有查看事件的权限')],
+    'getEvent': hasEventPermissionForSomeStatus('用户没有查看事件的权限'),
     'createEvent': ['isLoggedIn', hasPermission('events', 'create', '用户没有创建事件的权限')],
     'updateEvent': ['isLoggedIn', hasEventPermission('edit', '用户没有编辑事件的权限')],
     'getEventList': true,
@@ -108,4 +108,4 @@ export default {
     '*': false,
   },
 
-} as { [index: string]: { [index: string]: boolean | string | string[] } };
+} as { [index: string]: { [index: string]: boolean | string | string[] | object } };

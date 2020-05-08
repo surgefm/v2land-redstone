@@ -9,7 +9,7 @@ import sessionAuth from './sessionAuth';
 import uploadFile from './uploadFile';
 
 export type PolicyMiddleware = typeof forbiddenRoute | typeof hasPermission | typeof hasEventPermission |
-  typeof isAdmin | typeof isLoggedIn | typeof isManager |
+  typeof hasEventPermissionForSomeStatus | typeof isAdmin | typeof isLoggedIn | typeof isManager |
   typeof sessionAuth | typeof uploadFile;
 
 export {
