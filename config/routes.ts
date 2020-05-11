@@ -72,4 +72,8 @@ export default {
   'PUT /tag/:tagId': 'TagController.updateTag',
   'GET /tag/:tagId': 'TagController.getTag',
 
+  'GET /role/:clientId': 'RoleController.getClientRoles',
+  'GET /role/:clientId/:resourceId/:action': 'RoleController.checkPermissionOnResource',
+
+
 } as { [index: string]: string | { view: string } };

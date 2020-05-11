@@ -1,9 +1,9 @@
 import * as bcrypt from 'bcrypt';
 import { Client, Record, sequelize } from '@Models';
-import { ClientService, EmailService } from '@Services';
+import { ClientService, EmailService, AccessControlService } from '@Services';
 import { RedstoneRequest, RedstoneResponse } from '@Types';
 
-async function register (req: RedstoneRequest, res: RedstoneResponse) {
+async function register(req: RedstoneRequest, res: RedstoneResponse) {
   const data = req.body;
   let salt;
   let hash;
@@ -53,6 +53,7 @@ async function register (req: RedstoneRequest, res: RedstoneResponse) {
       transaction,
     });
 
+    await AccessControlService.allowClientToEditRole(client.id, client.id);
     const verificationToken = ClientService.tokenGenerator();
 
     await Record.create({
