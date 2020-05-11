@@ -9,7 +9,7 @@
  * below by its filename, minus the extension, (e.g. "authenticated")
  */
 
-import { hasPermission, hasEventPermission, hasEventPermissionForSomeStatus } from '@Policies';
+import { hasPermission, hasEventPermission, hasEventPermissionForSomeStatus, hasRolePermission } from '@Policies';
 
 export default {
   NewsController: {
@@ -106,6 +106,11 @@ export default {
     'getTag': true,
     'getTagList': true,
     '*': false,
+  },
+
+  RoleController: {
+    'getClientRoles': ['isLoggedIn', hasRolePermission('用户没有查看请求的用户信息的权限')],
+    'checkPermissionOnResource': ['isLoggedIn', hasRolePermission('用户没有查看请求的用户信息的权限')],
   },
 
 } as { [index: string]: { [index: string]: boolean | string | string[] | object } };

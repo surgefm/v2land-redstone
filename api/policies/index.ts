@@ -7,10 +7,11 @@ import isLoggedIn from './isLoggedIn';
 import isManager from './isManager';
 import sessionAuth from './sessionAuth';
 import uploadFile from './uploadFile';
+import hasRolePermission from './hasRolePermission';
 
 export type PolicyMiddleware = typeof forbiddenRoute | typeof hasPermission | typeof hasEventPermission |
   typeof hasEventPermissionForSomeStatus | typeof isAdmin | typeof isLoggedIn | typeof isManager |
-  typeof sessionAuth | typeof uploadFile;
+  typeof sessionAuth | typeof uploadFile | typeof hasRolePermission;
 
 export {
   forbiddenRoute,
@@ -22,6 +23,7 @@ export {
   isManager,
   sessionAuth,
   uploadFile,
+  hasRolePermission,
 };
 
 export default {
@@ -34,4 +36,5 @@ export default {
   isManager,
   sessionAuth,
   uploadFile,
+  hasRolePermission,
 } as { [index: string]: PolicyMiddleware };
