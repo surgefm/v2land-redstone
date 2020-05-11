@@ -1,4 +1,4 @@
-import allowClientToEditNews from './allowClientToEditNews'
+import allowClientToEditNews from './allowClientToEditNews';
 import disallowClientToEditNews from './disallowClientToEditNews';
 
 export * from './getNewsRoles';
