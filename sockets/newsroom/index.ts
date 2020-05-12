@@ -23,20 +23,12 @@ import updateStackOrders from './updateStackOrders';
 
 export default function loadNewsroom(io: Server) {
   const newsroom = io.of('/newsroom');
+  newsroom.use(isLoggedIn);
   newsroom.on('connection', (socket) => {
-    newsroom.use(isLoggedIn);
-
-    socket.on('join newsroom', async (eventId: number, cb: Function) => {
+    socket.on('join newsroom', async (eventId: number) => {
       // TODO: Check user permission
       const roomName = getRoomName(eventId);
       socket.join(roomName);
-      const resourceLockList = await ResourceLockService.getEventLockedResourceList(eventId);
-      const roommates = newsroom.in(roomName).sockets;
-
-      cb({
-        lockedResourced: resourceLockList,
-        clients: Object.keys(roommates).map(name => roommates[name].handshake.session.clientId),
-      });
 
       socket.in(roomName).emit('join room', socket.handshake.session.clientId);
     });

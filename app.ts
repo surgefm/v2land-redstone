@@ -15,7 +15,6 @@ import path from 'path';
 
 import session from 'express-session';
 import { sessionConfig, sessionStore } from '@Configs/session';
-import socketSession from 'express-socket.io-session';
 import http from '@Configs/http';
 import cors from 'cors';
 import securityConfig from '@Configs/security';
@@ -53,7 +52,6 @@ export async function liftServer(app: Express) {
 
   app.use(errorHandler);
 
-  socket.use(socketSession(sess, { autoSave: true }));
   loadSocket(socket);
 
   if (process.env.NODE_ENV !== 'test') {
