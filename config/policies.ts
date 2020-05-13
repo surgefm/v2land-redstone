@@ -109,8 +109,10 @@ export default {
   },
 
   RoleController: {
-    'getClientRoles': ['isLoggedIn', hasRolePermission('用户没有查看请求的用户信息的权限')],
-    'checkPermissionOnResource': ['isLoggedIn', hasRolePermission('用户没有查看请求的用户信息的权限')],
+    'getClientRoles': ['isLoggedIn', hasRolePermission('view', '用户没有查看请求的用户信息的权限')],
+    'checkPermissionOnResource': ['isLoggedIn', hasRolePermission('view', '用户没有查看请求的用户信息的权限')],
+    'updateClientRole': ['isLoggedIn', hasRolePermission('edit', '用户没有更改请求的用户信息的权限')],
+    'updateClientPermission': ['isLoggedIn', hasRolePermission('edit', '用户没有更改请求的用户信息的权限')],
   },
 
 } as { [index: string]: { [index: string]: boolean | string | string[] | object } };
