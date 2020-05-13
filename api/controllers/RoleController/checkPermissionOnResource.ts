@@ -6,7 +6,5 @@ export default async function checkPermissionOnResource(req: RedstoneRequest, re
   const resourceId = req.params.resourceId;
   const action = req.params.action;
   const haveAccess = await AccessControlService.isAllowed(clientId, resourceId, action);
-  return res.status(200).json({
-    haveAccess: haveAccess,
-  });
+  return res.status(200).json({ haveAccess });
 }
