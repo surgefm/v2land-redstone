@@ -25,7 +25,7 @@ export default async function updateClientRole(req: RedstoneRequest, res: Redsto
       await AccessControlService.removeUserRoles(data.clientId, data.roleName, (err) => {
         if (err) {
           return res.status(404).json({
-            message: `客户端 ${data.clientId} 的角色 ${data.roleName} 不存在，删除失败`,
+            message: `用户 ${data.clientId} 的角色 ${data.roleName} 不存在，删除失败`,
           });
         }
       });
@@ -33,7 +33,7 @@ export default async function updateClientRole(req: RedstoneRequest, res: Redsto
       await AccessControlService.addUserRoles(data.clientId, data.roleName, (err) => {
         if (err) {
           return res.status(403).json({
-            message: `客户端 ${data.clientId} 的角色 ${data.roleName} 已经存在`,
+            message: `用户 ${data.clientId} 的角色 ${data.roleName} 已经存在`,
           });
         }
       });
@@ -49,9 +49,9 @@ export default async function updateClientRole(req: RedstoneRequest, res: Redsto
     }, { transaction });
     let message;
     if (req.method === 'POST') {
-      message = `客户端 ${data.clientId} 的角色 ${data.roleName} 更新成功`;
+      message = `用户 ${data.clientId} 的角色 ${data.roleName} 更新成功`;
     } else if (req.method === 'DELETE') {
-      message = `客户端 ${data.clientId} 的角色 ${data.roleName} 删除成功`;
+      message = `用户 ${data.clientId} 的角色 ${data.roleName} 删除成功`;
     }
     res.status(200).json({
       message: message,
