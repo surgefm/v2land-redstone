@@ -74,6 +74,9 @@ export default {
 
   'GET /role/:clientId': 'RoleController.getClientRoles',
   'GET /role/:clientId/:resourceId/:action': 'RoleController.checkPermissionOnResource',
-
+  'POST /role/role/edit': 'RoleController.updateClientRole',
+  'DELETE /role/role/edit': 'RoleController.updateClientRole',
+  'POST /role/permission/edit': 'RoleController.updateClientPermission',
+  'DELETE /role/permission/edit': 'RoleController.updateClientPermission',
 
 } as { [index: string]: string | { view: string } };
