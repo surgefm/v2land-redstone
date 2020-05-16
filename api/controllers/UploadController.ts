@@ -4,7 +4,7 @@ import { UtilService } from '@Services';
 import { S3 } from 'aws-sdk';
 const s3 = new S3({ apiVersion: '2006-03-01' });
 
-export async function upload (req: RedstoneRequest, res: RedstoneResponse) {
+export async function upload(req: RedstoneRequest, res: RedstoneResponse) {
   const { S3_ID, S3_KEY, S3_BUCKET } = process.env;
   if (!(S3_ID && S3_KEY && S3_BUCKET)) {
     return res.status(503).json({

@@ -27,6 +27,7 @@ export default {
   'GET /event/:eventName/pending': 'EventController.getPendingNews',
   'POST /event/:eventName/stack': 'EventController.createStack',
   'POST /event/:eventName/news': 'EventController.createNews',
+  'PUT /event/:eventName/news': 'EventController.addNews',
   'POST /event/:eventName/tag': 'EventController.addTag',
   'POST /event/:eventName/commit': 'EventController.makeCommit',
   'GET /event/:eventName/fork': 'EventController.forkEvent',
@@ -70,5 +71,12 @@ export default {
   'POST /tag': 'TagController.createTag',
   'PUT /tag/:tagId': 'TagController.updateTag',
   'GET /tag/:tagId': 'TagController.getTag',
+
+  'GET /role/:clientId': 'RoleController.getClientRoles',
+  'GET /role/:clientId/:resourceId/:action': 'RoleController.checkPermissionOnResource',
+  'POST /role/role/edit': 'RoleController.updateClientRole',
+  'DELETE /role/role/edit': 'RoleController.updateClientRole',
+  'POST /role/permission/edit': 'RoleController.updateClientPermission',
+  'DELETE /role/permission/edit': 'RoleController.updateClientPermission',
 
 } as { [index: string]: string | { view: string } };

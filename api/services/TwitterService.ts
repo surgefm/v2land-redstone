@@ -1,7 +1,7 @@
 import { Auth } from '@Models';
 import { oauth } from '@Configs';
 
-export async function tweet (auth: Auth, status: string) {
+export async function tweet(auth: Auth, status: string) {
   return new Promise((resolve, reject) => {
     const oa = oauth.twitter;
     if (!oa) {

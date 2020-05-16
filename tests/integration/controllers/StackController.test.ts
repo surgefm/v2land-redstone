@@ -3,6 +3,7 @@ import urlencode from 'urlencode';
 import assert from 'assert';
 import { Client, Event, sequelize } from '@Models';
 import app from '~/app';
+import { AccessControlService } from '@Services';
 
 let agent: request.SuperTest<request.Test>;
 
@@ -20,12 +21,14 @@ describe('StackController', function() {
       await sequelize.query(`DELETE FROM event`);
       await sequelize.query(`DELETE FROM client`);
 
-      await Client.create({
+      const client = await Client.create({
         username: testUsername,
         password: '$2b$10$8njIkPFgDouZsKXYrkYF4.xqShsOPMK9WHEU7aou4FAeuvzb4WRmi',
         email: testEmail,
         role: 'admin',
       });
+
+      await AccessControlService.addUserRoles(client.id, 'editors');
 
       await agent
         .post('/client/login')
@@ -34,11 +37,12 @@ describe('StackController', function() {
           password: '666',
         });
 
-      await Event.create({
+      const event = await Event.create({
         name: '小熊维尼',
         description: '吃蜂蜜',
         status: 'admitted',
       });
+      await AccessControlService.setClientEventOwner(client.id, event.id);
     });
 
     it('should create stack successfully', async function() {

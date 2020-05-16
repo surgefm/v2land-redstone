@@ -1,6 +1,10 @@
 export const RedstoneErrorIdentifier = 'REDSTONE_ERROR';
 export const InvalidInputErrorType = 'Invalid input';
 export const ResourceNotFoundErrorType = 'Resource not found';
+export const ErrorStatusCode: { [index: string]: number } = {
+  [InvalidInputErrorType]: 400,
+  [ResourceNotFoundErrorType]: 404,
+};
 
 class RedstoneError extends Error {
   name = RedstoneErrorIdentifier;
@@ -12,7 +16,7 @@ class RedstoneError extends Error {
     super(message);
     this.errorType = errorType;
     this.message = message;
-    this.statusCode = statusCode;
+    this.statusCode = ErrorStatusCode[errorType] || statusCode;
   }
 }
 

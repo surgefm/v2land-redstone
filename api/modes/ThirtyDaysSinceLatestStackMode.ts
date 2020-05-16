@@ -33,11 +33,11 @@ export class ThirtyDaysSinceLatestStackMode extends NotificationMode {
     }
   }
 
-  async notified () {
+  async notified() {
     return new Date('1/1/3000');
   }
 
-  async getTemplate ({ event }: NotificationModeInput) {
+  async getTemplate({ event }: NotificationModeInput) {
     return {
       subject: `${event.name} 已有七天没有消息`,
       message: `${event.name} 已有七天没有消息，快去看看有什么新的进展。`,

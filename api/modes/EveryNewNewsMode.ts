@@ -19,7 +19,7 @@ export class EveryNewNewsMode extends NotificationMode {
     return new Date('1/1/3000');
   }
 
-  async getTemplate ({ event, news }: NotificationModeInput) {
+  async getTemplate({ event, news }: NotificationModeInput) {
     return {
       subject: `${event.name} 有了新的消息`,
       message: `${news.source} 发布了关于 ${event.name} 的新消息：「${news.abstract}」`,

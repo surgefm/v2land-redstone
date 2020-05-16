@@ -26,7 +26,7 @@ export class EveryFridayMode extends NotificationMode {
     return this.new();
   }
 
-  async getTemplate ({ notification, event, eventId, stack }: NotificationModeInput) {
+  async getTemplate({ notification, event, eventId, stack }: NotificationModeInput) {
     if (!event && !eventId) {
       if (!notification) {
         throw new MissingParameterError('notification');

@@ -3,10 +3,11 @@ import request from 'supertest';
 import urlencode from 'urlencode';
 import assert from 'assert';
 import { Client, Event, HeaderImage, sequelize } from '@Models';
+import { AccessControlService } from '@Services';
 import app from '~/app';
 
 let agent: request.SuperTest<request.Test>;
-
+let clientId = 0;
 const testEmail = process.env.TEST_EMAIL ? process.env.TEST_EMAIL : 'vincent@langchao.org';
 const testUsername = '计量经济学家的AI';
 
@@ -19,13 +20,15 @@ describe('EventController', function() {
       await sequelize.query(`DELETE FROM event`);
       await sequelize.query(`DELETE FROM client`);
 
-      await Client.create({
+      const client = await Client.create({
         username: testUsername,
         password: '$2b$10$8njIkPFgDouZsKXYrkYF4.xqShsOPMK9WHEU7aou4FAeuvzb4WRmi',
         email: testEmail,
         role: 'admin',
       });
 
+      await AccessControlService.addUserRoles(client.id, 'admins');
+      clientId = client.id;
       await agent
         .post('/client/login')
         .send({
@@ -127,10 +130,11 @@ describe('EventController', function() {
         },
       });
 
-      await Event.create({
+      const event = await Event.create({
         name: '浪潮今天发布了吗？',
         description: '浪潮今天发布了吗？',
       });
+      await AccessControlService.setClientEventOwner(clientId, event.id);
     });
 
     after(async function() {

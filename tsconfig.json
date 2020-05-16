@@ -31,7 +31,9 @@
       "@Modes": ["./api/modes"],
       "@Modes/*": ["./api/modes/*"],
       "@Responses": ["./api/responses"],
-      "@Responses/*": ["./api/responses/*"]
+      "@Responses/*": ["./api/responses/*"],
+      "@Sockets": ["./sockets"],
+      "@Sockets/*": ["./sockets/*"]
     }
   },
   "include": [

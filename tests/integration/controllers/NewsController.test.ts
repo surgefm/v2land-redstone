@@ -3,6 +3,7 @@ import request from 'supertest';
 import urlencode from 'urlencode';
 import bcrypt from 'bcryptjs';
 import { Client, Event, sequelize } from '@Models';
+import { AccessControlService } from '@Services';
 import app from '~/app';
 
 let agent: request.SuperTest<request.Test>;
@@ -30,7 +31,7 @@ describe('NewsController', function() {
     const salt = await bcrypt.genSalt(10);
     const hash = await bcrypt.hash('testPassword', salt);
 
-    await Client.create({
+    const client = await Client.create({
       username: testUsername,
       password: hash,
       email: testEmail,
@@ -38,6 +39,8 @@ describe('NewsController', function() {
     }, {
       raw: true,
     });
+
+    await AccessControlService.addUserRoles(client.id, 'admins');
 
     await agent
       .post('/client/login')

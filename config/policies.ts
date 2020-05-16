@@ -9,6 +9,8 @@
  * below by its filename, minus the extension, (e.g. "authenticated")
  */
 
+import { hasPermission, hasEventPermission, hasEventPermissionForSomeStatus, hasRolePermission } from '@Policies';
+
 export default {
   NewsController: {
     'getNews': true,
@@ -19,20 +21,21 @@ export default {
   },
 
   EventController: {
+    'addNews': ['isLoggedIn', 'isManager'],
     'findEvent': true,
-    'getEvent': true,
-    'createEvent': true,
-    'updateEvent': ['isLoggedIn', 'isManager'],
+    'getEvent': hasEventPermissionForSomeStatus('用户没有查看事件的权限'),
+    'createEvent': ['isLoggedIn', hasPermission('events', 'create', '用户没有创建事件的权限')],
+    'updateEvent': ['isLoggedIn', hasEventPermission('edit', '用户没有编辑事件的权限')],
     'getEventList': true,
     'getAllPendingEvents': ['isLoggedIn', 'isManager'],
-    'getPendingNews': ['isLoggedIn', 'isManager'],
-    'createStack': true,
-    'createNews': true,
-    'updateHeaderImage': ['isLoggedIn', 'isManager'],
-    'addTag': ['isLoggedIn', 'isManager'],
-    'removeTag': ['isLoggedIn', 'isManager'],
-    'makeCommit': ['isLoggedIn', 'isManager'],
-    'forkEvent': ['isLoggedIn'],
+    'getPendingNews': ['isLoggedIn', hasPermission('news', 'edit', '用户没有编辑新闻的权限')],
+    'createStack': ['isLoggedIn', hasEventPermission('edit', '用户没有编辑事件的权限')],
+    'createNews': ['isLoggedIn', hasPermission('news', 'create', '用户没有创建新闻的权限')],
+    'updateHeaderImage': ['isLoggedIn', hasEventPermission('edit', '用户没有编辑事件的权限')],
+    'addTag': ['isLoggedIn', hasPermission('tags', 'add', '用户没有添加标签的权限')],
+    'removeTag': ['isLoggedIn', hasPermission('tags', 'remove', '用户没有移除标签的权限')],
+    'makeCommit': ['isLoggedIn', hasEventPermission('edit', '用户没有编辑事件的权限')],
+    'forkEvent': ['isLoggedIn', hasPermission('events', 'create', '用户没有复制事件的权限')],
     '*': false,
   },
 
@@ -105,4 +108,11 @@ export default {
     '*': false,
   },
 
-} as { [index: string]: { [index: string]: boolean | string | string[] }};
+  RoleController: {
+    'getClientRoles': ['isLoggedIn', hasRolePermission('view', '用户没有查看请求的用户信息的权限')],
+    'checkPermissionOnResource': ['isLoggedIn', hasRolePermission('view', '用户没有查看请求的用户信息的权限')],
+    'updateClientRole': ['isLoggedIn', hasRolePermission('edit', '用户没有更改请求的用户信息的权限')],
+    'updateClientPermission': ['isLoggedIn', hasRolePermission('edit', '用户没有更改请求的用户信息的权限')],
+  },
+
+} as { [index: string]: { [index: string]: boolean | string | string[] | object } };

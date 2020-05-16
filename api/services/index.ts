@@ -1,47 +1,24 @@
-import * as AuthService from './AuthService';
-import * as ClientService from './ClientService';
-import * as CommitService from './CommitService';
-import * as ContactService from './ContactService';
-import * as ElasticsearchService from './ElasticsearchService';
-import * as EmailService from './EmailService';
-import * as EventService from './EventService';
-import * as LeanCloudService from './LeanCloudService';
-import * as ModeService from './ModeService';
-import * as NewsService from './NewsService';
-import * as NotificationService from './NotificationService';
-import * as OAuth2Service from './OAuth2Service';
-import * as RecordService from './RecordService';
-import * as RedisService from './RedisService';
-import * as SearchService from './SearchService';
-import * as SlackService from './SlackService';
-import * as StackService from './StackService';
-import * as SubscriptionService from './SubscriptionService';
-import * as TelegramService from './TelegramService';
-import * as TwitterService from './TwitterService';
-import * as UtilService from './UtilService';
-import * as WeiboService from './WeiboService';
-
-export {
-  AuthService,
-  ClientService,
-  CommitService,
-  ContactService,
-  ElasticsearchService,
-  EmailService,
-  EventService,
-  LeanCloudService,
-  ModeService,
-  NewsService,
-  NotificationService,
-  OAuth2Service,
-  RecordService,
-  RedisService,
-  SearchService,
-  SlackService,
-  StackService,
-  SubscriptionService,
-  TelegramService,
-  TwitterService,
-  UtilService,
-  WeiboService,
-};
+export * as AccessControlService from './AccessControlService';
+export * as AuthService from './AuthService';
+export * as ClientService from './ClientService';
+export * as CommitService from './CommitService';
+export * as ContactService from './ContactService';
+export * as ElasticsearchService from './ElasticsearchService';
+export * as EmailService from './EmailService';
+export * as EventService from './EventService';
+export * as LeanCloudService from './LeanCloudService';
+export * as ModeService from './ModeService';
+export * as NewsService from './NewsService';
+export * as NotificationService from './NotificationService';
+export * as OAuth2Service from './OAuth2Service';
+export * as RecordService from './RecordService';
+export * as RedisService from './RedisService';
+export * as ResourceLockService from './ResourceLockService';
+export * as SearchService from './SearchService';
+export * as SlackService from './SlackService';
+export * as StackService from './StackService';
+export * as SubscriptionService from './SubscriptionService';
+export * as TelegramService from './TelegramService';
+export * as TwitterService from './TwitterService';
+export * as UtilService from './UtilService';
+export * as WeiboService from './WeiboService';
