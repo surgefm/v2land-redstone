@@ -1,17 +1,22 @@
 import { Socket } from 'socket.io';
-import { StackService } from '@Services';
+import { StackService, AccessControlService } from '@Services';
+import { Stack } from '@Models';
 import { StackObj } from '@Types';
 import getRoomName from './getRoomName';
 
 export default function updateStack(socket: Socket) {
-  socket.on('update stack', async (stackId: number, data: StackObj, cb: Function) => {
-    // TODO: Check user’s permission
+  socket.on('update stack', async (stackId: number, data: StackObj, cb: Function = () => {}) => {
+    const { clientId } = socket.handshake.session;
+    const stack = await Stack.findByPk(stackId);
+    if (!stack) return cb('Stack not found');
+    const haveAccess = await AccessControlService.isAllowedToEditEvent(clientId, stack.eventId);
+    if (!haveAccess) return cb('You are not allowed to edit this event.');
 
     try {
       const returnValue = await StackService.updateStack({
         id: stackId,
         data,
-        clientId: socket.handshake.session.clientId,
+        clientId,
       });
 
       if (returnValue.status === 201) {

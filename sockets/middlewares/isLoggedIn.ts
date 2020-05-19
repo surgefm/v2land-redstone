@@ -18,7 +18,7 @@ export default async function isLoggedIn(socket: Socket, next: ( err?: any ) => 
   }
 
   if (!socket.handshake.session || !socket.handshake.session.clientId) {
-    return next(new Error('Please sign in first'));
+    return next('Please sign in first');
   }
 
   const { clientId } = socket.handshake.session;

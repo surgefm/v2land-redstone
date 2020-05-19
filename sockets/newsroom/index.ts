@@ -1,5 +1,5 @@
 import { Server } from 'socket.io';
-import { ResourceLockService } from '@Services';
+import { ResourceLockService, AccessControlService } from '@Services';
 import { isLoggedIn } from '@Sockets/middlewares';
 
 import getRoomName from './getRoomName';
@@ -25,12 +25,20 @@ export default function loadNewsroom(io: Server) {
   const newsroom = io.of('/newsroom');
   newsroom.use(isLoggedIn);
   newsroom.on('connection', (socket) => {
-    socket.on('join newsroom', async (eventId: number) => {
-      // TODO: Check user permission
+    socket.on('join newsroom', async (eventId: number, cb: Function = () => {}) => {
+      const { clientId } = socket.handshake.session;
+      const hasAccess = await AccessControlService.isAllowedToViewEvent(clientId, eventId);
+      if (!hasAccess) {
+        return cb('You have no access to the event');
+      }
       const roomName = getRoomName(eventId);
       socket.join(roomName);
 
       socket.in(roomName).emit('join room', socket.handshake.session.clientId);
+      if (cb) {
+        const resourceLocks = await ResourceLockService.getEventLockedResourceList(eventId);
+        cb(null, { resourceLocks });
+      }
     });
 
     socket.on('leave newsroom', (eventId: number) => {

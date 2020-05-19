@@ -9,6 +9,7 @@ export default async function getEventLockedResourceList(eventId: number) {
     const eventKey = getRedisEventResourceLockKey(eventId);
     const fields = await redis.hgetall(eventKey);
     const keys = Object.keys(fields);
+    if (keys.length === 0) return [];
     const values = await redis.mget(...keys);
     const results: ResourceLockObj[] = [];
     await Promise.all(values.map((valueStr, index) => {

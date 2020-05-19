@@ -4,7 +4,10 @@ import { AccessControlService } from '@Services';
 import getRoomName from './getRoomName';
 
 export default function removeEditor(socket: Socket) {
-  socket.on('remove editor', async (eventId: number, clientId: number, cb: Function) => {
+  socket.on('remove editor', async (eventId: number, clientId: number, cb: Function = () => {}) => {
+    const managerId = socket.handshake.session.clientId;
+    const haveAccess = await AccessControlService.isAllowedToManageEvent(managerId, eventId);
+    if (!haveAccess) return cb('You are not allowed to manage this event.');
     const event = await Event.findByPk(eventId);
     if (!event) return cb('Event not found');
     const client = await Client.findByPk(clientId);
