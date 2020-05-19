@@ -5,6 +5,7 @@ import * as HeaderImageController from './HeaderImageController';
 import * as NewsController from './NewsController';
 import * as NotificationController from './NotificationController';
 import * as OAuth2Controller from './OAuth2Controller';
+import * as RoleController from './RoleController';
 import * as SearchController from './SearchController';
 import * as StackController from './StackController';
 import * as SubscriptionController from './SubscriptionController';
@@ -16,7 +17,7 @@ export type ControllerType = typeof AuthController | typeof ClientController |
   typeof EventController | typeof HeaderImageController | typeof NewsController |
   typeof NotificationController | typeof OAuth2Controller | typeof SearchController |
   typeof StackController | typeof SubscriptionController | typeof TagController |
-  typeof UploadController;
+  typeof UploadController | typeof RoleController;
 
 export {
   AuthController,
@@ -26,6 +27,7 @@ export {
   NewsController,
   NotificationController,
   OAuth2Controller,
+  RoleController,
   SearchController,
   StackController,
   SubscriptionController,
@@ -41,6 +43,7 @@ export default {
   NewsController,
   NotificationController,
   OAuth2Controller,
+  RoleController,
   SearchController,
   StackController,
   SubscriptionController,

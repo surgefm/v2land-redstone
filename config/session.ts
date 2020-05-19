@@ -16,7 +16,7 @@ import parseDomain from 'parse-domain';
 import globals from './globals';
 import { sequelize } from '@Models';
 
-import { redis } from '@Services/RedisService';
+import { classicRedis } from '@Services/RedisService';
 import sessionRedis from 'connect-redis';
 
 import expressSession from 'express-session';
@@ -32,7 +32,7 @@ const cookie = {
   secure: typeof process.env.SECURE_COOKIE !== 'undefined'
     ? process.env.SECURE_COOKIE === 'true'
     : process.env.NODE_ENV === 'production',
-  maxAge: 86400 * 7,
+  maxAge: 7 * 24 * 60 * 60 * 1000,
 };
 
 const sessionConfig = {
@@ -48,7 +48,7 @@ const sessionConfig = {
 if (process.env.REDIS_HOST) {
   const RedisStore = sessionRedis(expressSession);
   sessionStore = () => new RedisStore({
-    client: redis,
+    client: classicRedis,
     prefix: 'sess:',
     ttl: 86400 * 7,
   });

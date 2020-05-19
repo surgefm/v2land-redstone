@@ -68,6 +68,7 @@ async function addNews(stackId: number, newsId: number, clientId: number) {
 
       eventNews.stackId = stack.id;
       await eventNews.save({ transaction });
+      eventStackNews = eventNews;
     }
 
     await RecordService.create({

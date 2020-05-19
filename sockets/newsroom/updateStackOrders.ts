@@ -1,15 +1,19 @@
 import { Socket } from 'socket.io';
 import { sequelize, Stack } from '@Models';
-import * as _ from 'lodash';
-import { StackService } from '@Services';
+import _ from 'lodash';
+import { StackService, AccessControlService } from '@Services';
 
 import getRoomName from './getRoomName';
 
 export default function updateStackOrders(socket: Socket) {
-  socket.on('update stack orders', async (eventId: number, stackIdList: number[], cb: Function) => {
+  socket.on('update stack orders', async (eventId: number, stackIdList: number[], cb: Function = () => {}) => {
     if (!_.isArray(stackIdList)) {
       return cb('Invalid input：stackList');
     }
+
+    const { clientId } = socket.handshake.session;
+    const haveAccess = await AccessControlService.isAllowedToEditEvent(clientId, eventId);
+    if (!haveAccess) return cb('You are not allowed to edit this event.');
 
     // TODO: Check user permission.
     for (const stackId of stackIdList) {
@@ -23,7 +27,7 @@ export default function updateStackOrders(socket: Socket) {
       const queue = stackIdList.map((stackId, index) => StackService.updateStack({
         id: stackId,
         data: { order: index },
-        clientId: socket.handshake.session.clientId,
+        clientId,
         transaction,
       }));
       await Promise.all(queue);
