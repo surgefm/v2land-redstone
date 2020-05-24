@@ -10,7 +10,8 @@ export default function createStack(socket: Socket) {
     if (!haveAccess) return cb('You are not allowed to edit this event.');
     try {
       const stack = await StackService.createStack(eventId, data, clientId);
-      socket.in(getRoomName(eventId)).emit('create stack', stack);
+      socket.in(getRoomName(eventId)).emit('create stack', { stack });
+      cb(null, { stack });
     } catch (err) {
       cb(err.message);
     }

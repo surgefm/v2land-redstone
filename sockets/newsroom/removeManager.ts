@@ -15,5 +15,6 @@ export default function removeManager(socket: Socket) {
     if (!client) return cb('Client not found');
     await AccessControlService.allowClientToViewEvent(clientId, eventId);
     socket.in(getRoomName(eventId)).emit('remove manager', clientId);
+    cb();
   });
 }

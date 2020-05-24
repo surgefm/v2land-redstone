@@ -6,21 +6,22 @@ import _ from 'lodash';
 interface FindEventOptions {
   eventOnly?: boolean;
   transaction?: Transaction;
+  getNewsroomContent?: boolean;
   plain?: boolean;
 }
 
-async function findEvent (
+async function findEvent(
   eventName: string | number,
   options?: FindEventOptions & { plain?: undefined | false },
 ): Promise<Event>;
-async function findEvent (
+async function findEvent(
   eventName: string | number,
   options: FindEventOptions & { plain: true },
 ): Promise<EventObj>;
 
-async function findEvent (
+async function findEvent(
   eventName: string | number,
-  { eventOnly = false, plain = false, transaction }: FindEventOptions = {},
+  { eventOnly = false, plain = false, getNewsroomContent = false, transaction }: FindEventOptions = {},
 ) {
   const where = _.isNaN(+eventName) ? { name: eventName } : { id: eventName };
 
@@ -64,7 +65,7 @@ async function findEvent (
         as: 'stacks',
         where: {
           status: 'admitted',
-          order: { [Op.gte]: 0 },
+          ...(getNewsroomContent ? {} : { order: { [Op.gte]: 0 } }),
         },
         order: [['order', 'DESC']],
         required: false,
@@ -108,11 +109,13 @@ async function findEvent (
   });
 
   if (!event) return;
-  event.stackCount = +event.stackCount;
-  event.newsCount = 0;
-  for (const stack of event.stacks) {
-    stack.newsCount = +stack.newsCount;
-    event.newsCount += stack.newsCount;
+  if (!eventOnly) {
+    event.stackCount = +event.stackCount;
+    event.newsCount = 0;
+    for (const stack of event.stacks) {
+      stack.newsCount = +stack.newsCount;
+      event.newsCount += stack.newsCount;
+    }
   }
 
   if (plain) {

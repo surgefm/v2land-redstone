@@ -1,6 +1,7 @@
 import { Server } from 'socket.io';
-import { ResourceLockService, AccessControlService } from '@Services';
+import { ResourceLockService, AccessControlService, RedisService } from '@Services';
 import { isLoggedIn } from '@Sockets/middlewares';
+import _ from 'lodash';
 
 import getRoomName from './getRoomName';
 
@@ -11,6 +12,7 @@ import inviteEditor from './inviteEditor';
 import inviteManager from './inviteManager';
 import inviteViewer from './inviteViewer';
 import lockResource from './lockResource';
+import makeCommit from './makeCommit';
 import removeEditor from './removeEditor';
 import removeManager from './removeManager';
 import removeViewer from './removeViewer';
@@ -34,17 +36,58 @@ export default function loadNewsroom(io: Server) {
       const roomName = getRoomName(eventId);
       socket.join(roomName);
 
-      socket.in(roomName).emit('join room', socket.handshake.session.clientId);
-      if (cb) {
-        const resourceLocks = await ResourceLockService.getEventLockedResourceList(eventId);
-        cb(null, { resourceLocks });
+      const newsroomClient = {
+        id: clientId,
+        role: await AccessControlService.getClientEventRole(clientId, eventId),
+      };
+
+      socket.in(roomName).emit('join newsroom', {
+        eventId,
+        client: newsroomClient,
+      });
+      const resourceLocks = await ResourceLockService.getEventLockedResourceList(eventId);
+      if (RedisService.redis) {
+        newsroom.in(roomName).clients(async (err: Error, clients: string[]) => {
+          if (err) throw err;
+          clients = clients.map(client => `socket:${client}`);
+          const clientIds = clients.length === 0 ? [] : _.uniq(await RedisService.mget(...clients));
+          const newsroomClients = await Promise.all(clientIds.map(async clientId => ({
+            id: clientId,
+            role: await AccessControlService.getClientEventRole(clientId, eventId),
+          })));
+          cb(null, {
+            resourceLocks,
+            clients: newsroomClients,
+          });
+        });
+      } else {
+        cb(null, {
+          resourceLocks,
+          clients: [newsroomClient],
+        });
       }
     });
 
-    socket.on('leave newsroom', (eventId: number) => {
-      socket.leave(getRoomName(eventId));
-      socket.in(getRoomName(eventId)).emit('leave room', socket.handshake.session.clientId);
-    });
+    const leaveNewsroom = (eventId: number, cb: Function = () => {}) => {
+      const { clientId } = socket.handshake.session;
+      const rooms = typeof eventId === 'number'
+        ? [getRoomName(eventId)]
+        : Object.keys(socket.rooms).map(key => socket.rooms[key]);
+
+      for (let i = 0; i < rooms.length; i++) {
+        const split = rooms[i].split('-');
+        socket.in(rooms[i]).emit('leave newsroom', {
+          eventId: split[split.length - 1],
+          client: { id: clientId },
+        });
+        socket.leave(rooms[i]);
+      }
+
+      cb();
+    };
+
+    socket.on('leave newsroom', leaveNewsroom);
+    socket.on('disconnect', leaveNewsroom);
 
     addNewsToEvent(socket);
     addNewsToStack(socket);
@@ -53,6 +96,7 @@ export default function loadNewsroom(io: Server) {
     inviteManager(socket);
     inviteViewer(socket);
     lockResource(socket);
+    makeCommit(socket);
     removeEditor(socket);
     removeManager(socket);
     removeViewer(socket);

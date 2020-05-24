@@ -21,5 +21,6 @@ export default function addNewsToStack(socket: Socket) {
         client: socket.handshake.session.currentClient,
       });
     }
+    cb();
   });
 }

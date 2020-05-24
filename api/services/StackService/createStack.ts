@@ -22,8 +22,16 @@ async function createStack(eventId: number | string, data: StackObj, clientId: n
 
   let stack: Stack = null;
   await UtilService.execWithTransaction(async transaction => {
+    stack = await Stack.findOne({
+      where: { eventId, title },
+      transaction,
+    });
+    if (stack) {
+      throw new RedstoneError(InvalidInputErrorType, '该事件下已存在同名进展');
+    }
+
     const data = {
-      status: 'pending',
+      status: 'admitted',
       title,
       description,
       order: order || -1,

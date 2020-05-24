@@ -4,7 +4,7 @@ import * as EventService from '../EventService';
 import * as RecordService from '../RecordService';
 import * as RedisService from '../RedisService';
 import * as UtilService from '../UtilService';
-import { RedstoneError, ResourceNotFoundErrorType } from '@Types';
+import { RedstoneError, ResourceNotFoundErrorType, InvalidInputErrorType } from '@Types';
 import { Transaction } from 'sequelize';
 import _ from 'lodash';
 
@@ -23,6 +23,12 @@ async function makeCommit(
 
   if (!eventObj) {
     throw new RedstoneError(ResourceNotFoundErrorType, `未找到该事件：${eventId}`);
+  }
+
+  for (const stack of eventObj.stacks || []) {
+    if (stack.news.length === 0) {
+      throw new RedstoneError(InvalidInputErrorType, `进展「${stack.title}」必须有至少一个过审新闻`);
+    }
   }
 
   const parentCommit = parent ? await Commit.findByPk(parent) : await getLatestCommit(eventObj.id);

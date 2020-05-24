@@ -10,7 +10,14 @@ export default function makeCommit(socket: Socket) {
     const event = await EventService.findEvent(eventId, { eventOnly: true });
     if (!event) return cb('Event not found');
 
-    const commit = await CommitService.makeCommit(eventId, clientId, summary, { description });
-    socket.in(getRoomName(eventId)).emit('make commit', { commit });
+    try {
+      const commit = await CommitService.makeCommit(eventId, clientId, summary, { description });
+      if (commit) {
+        socket.in(getRoomName(eventId)).emit('make commit', { commit });
+      }
+      cb(null, { commit });
+    } catch (err) {
+      cb(err.message);
+    }
   });
 }

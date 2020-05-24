@@ -23,14 +23,12 @@ async function getEvent(req: RedstoneRequest, res: RedstoneResponse) {
     const commit = await CommitService.getLatestCommit(eventId);
 
     if (commit) {
-      return res.status(200).json({
-        event: commit.data,
-      });
+      return res.status(200).json(commit.data);
     }
   }
 
   // If there is no commit or client wants the latest version.
-  const event = await EventService.findEvent(eventId, { plain: true });
+  const event = await EventService.findEvent(eventId, { plain: true, getNewsroomContent: true });
   event.contribution = await EventService.getContribution(event, true);
   res.status(200).json(event);
 }

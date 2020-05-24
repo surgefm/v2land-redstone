@@ -20,5 +20,6 @@ export default function unlockResource(socket: Socket) {
       resourceId,
       locker: clientId,
     });
+    cb();
   });
 }

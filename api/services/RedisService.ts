@@ -21,6 +21,14 @@ export async function set(key: string, value: any) {
   return redis.set(datastores.redis.prefix + key, JSON.stringify(value));
 }
 
+export async function mget(...keys: string[]) {
+  if (!redis) return;
+  if (keys.length === 0) return [];
+  keys = keys.map(key => (datastores.redis.prefix + key));
+  const data = await redis.mget(...keys);
+  return data.map(d => d ? JSON.parse(d) : null);
+}
+
 export async function hget(key: string, field: string) {
   if (!redis) return;
   const data = await redis.hget(datastores.redis.prefix + key, field);

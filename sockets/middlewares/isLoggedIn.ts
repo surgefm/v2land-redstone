@@ -1,5 +1,6 @@
 import { Socket } from 'socket.io';
 import session from 'express-session';
+import { RedisService } from '@Services';
 import { sessionConfig, sessionStore } from '@Configs/session';
 import { Client } from '@Models';
 
@@ -24,5 +25,8 @@ export default async function isLoggedIn(socket: Socket, next: ( err?: any ) => 
   const { clientId } = socket.handshake.session;
   const client = await Client.findByPk(clientId);
   socket.handshake.session.currentClient = client;
+  if (RedisService.redis) {
+    await RedisService.set(`socket:${socket.id}`, clientId);
+  }
   next();
 }

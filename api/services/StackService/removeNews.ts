@@ -42,7 +42,7 @@ async function removeNews(stackId: number, newsId: number, clientId: number, { t
       updatedAt: time,
     }, { transaction });
 
-    eventStackNews.stackId = undefined;
+    eventStackNews.stackId = null;
     await eventStackNews.save({ transaction });
   }, transaction);
 

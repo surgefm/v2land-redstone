@@ -15,5 +15,6 @@ export default function removeViewer(socket: Socket) {
 
     await AccessControlService.allowClientToViewEvent(clientId, eventId);
     socket.in(getRoomName(eventId)).emit('remove viewer', clientId);
+    cb();
   });
 }

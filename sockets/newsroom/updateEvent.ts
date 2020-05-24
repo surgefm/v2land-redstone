@@ -13,10 +13,11 @@ export default function updateEvent(socket: Socket) {
     const event = await EventService.findEvent(eventId, { eventOnly: true });
     if (!event) return cb('Event not found');
 
-    // TODO: check user’s permission
     const e = await EventService.updateEvent(event, data, socket.handshake.session.currentClient);
+    const { id, name, description } = e;
     if (e !== null) {
-      socket.to(getRoomName(eventId)).emit('update event information', e);
+      socket.to(getRoomName(eventId)).emit('update event information', { event: { id, name, description } });
     }
+    cb();
   });
 }

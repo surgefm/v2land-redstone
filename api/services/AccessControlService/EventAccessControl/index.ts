@@ -4,6 +4,7 @@ import allowClientToManageEvent from './allowClientToManageEvent';
 import disallowClientToViewEvent from './disallowClientToViewEvent';
 import disallowClientToEditEvent from './disallowClientToEditEvent';
 import disallowClientToManageEvent from './disallowClientToManageEvent';
+import getClientEventRole from './getClientEventRole';
 import isAllowedToEditEvent from './isAllowedToEditEvent';
 import isAllowedToManageEvent from './isAllowedToManageEvent';
 import isAllowedToViewEvent from './isAllowedToViewEvent';
@@ -17,6 +18,7 @@ export {
   disallowClientToViewEvent,
   disallowClientToEditEvent,
   disallowClientToManageEvent,
+  getClientEventRole,
   isAllowedToEditEvent,
   isAllowedToManageEvent,
   isAllowedToViewEvent,

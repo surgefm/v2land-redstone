@@ -14,5 +14,6 @@ export default function inviteEditor(socket: Socket) {
     if (!client) return cb('Client not found');
     await AccessControlService.allowClientToViewEvent(clientId, eventId);
     socket.in(getRoomName(eventId)).emit('add editor', clientId);
+    cb();
   });
 }

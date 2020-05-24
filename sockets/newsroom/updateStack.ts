@@ -22,6 +22,7 @@ export default function updateStack(socket: Socket) {
       if (returnValue.status === 201) {
         socket.to(getRoomName(returnValue.message.stack.eventId)).emit('update stack', returnValue.message.stack);
       }
+      cb();
     } catch (err) {
       cb(err.message);
     }

@@ -25,9 +25,9 @@ async function removeNews(eventName: number | string, newsId: number, clientId: 
   if (!eventStackNews) return;
 
   await sequelize.transaction(async transaction => {
-    const time = new Date();
+    const t = time || new Date();
     if (eventStackNews.stackId) {
-      await StackService.removeNews(eventStackNews.stackId, news.id, clientId, { transaction, time });
+      await StackService.removeNews(eventStackNews.stackId, news.id, clientId, { transaction, time: t });
     }
 
     await RecordService.destroy({
@@ -37,8 +37,8 @@ async function removeNews(eventName: number | string, newsId: number, clientId: 
       subtarget: news.id,
       owner: clientId,
       action: 'removeNewsFromEvent',
-      createdAt: time,
-      updatedAt: time,
+      createdAt: t,
+      updatedAt: t,
     }, { transaction });
   });
 

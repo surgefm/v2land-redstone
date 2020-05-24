@@ -11,5 +11,6 @@ export default function removeNewsFromEvent(socket: Socket) {
     if (esn) {
       socket.in(getRoomName(eventId)).emit('remove news from event', esn);
     }
+    cb();
   });
 }

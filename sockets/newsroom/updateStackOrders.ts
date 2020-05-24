@@ -5,18 +5,22 @@ import { StackService, AccessControlService } from '@Services';
 
 import getRoomName from './getRoomName';
 
+type data = {
+  stackId: number;
+  order: number;
+}
+
 export default function updateStackOrders(socket: Socket) {
-  socket.on('update stack orders', async (eventId: number, stackIdList: number[], cb: Function = () => {}) => {
-    if (!_.isArray(stackIdList)) {
-      return cb('Invalid input：stackList');
+  socket.on('update stack orders', async (eventId: number, stacks: data[], cb: Function = () => {}) => {
+    if (!_.isArray(stacks)) {
+      return cb('Invalid input：stacks');
     }
 
     const { clientId } = socket.handshake.session;
     const haveAccess = await AccessControlService.isAllowedToEditEvent(clientId, eventId);
     if (!haveAccess) return cb('You are not allowed to edit this event.');
 
-    // TODO: Check user permission.
-    for (const stackId of stackIdList) {
+    for (const { stackId } of stacks) {
       const stack = await Stack.findByPk(stackId, { attributes: ['eventId'] });
       if (stack.eventId !== eventId) {
         return cb('The stacks need to belong to the same event');
@@ -24,17 +28,18 @@ export default function updateStackOrders(socket: Socket) {
     }
 
     await sequelize.transaction(async transaction => {
-      const queue = stackIdList.map((stackId, index) => StackService.updateStack({
+      const queue = stacks.map(({ stackId, order }) => StackService.updateStack({
         id: stackId,
-        data: { order: index },
+        data: { order },
         clientId,
         transaction,
       }));
       await Promise.all(queue);
       socket.in(getRoomName(eventId)).emit('update stack orders', {
         eventId,
-        stackIdList,
+        stacks,
       });
+      cb();
     });
   });
 }
