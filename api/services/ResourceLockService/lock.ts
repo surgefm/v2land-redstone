@@ -13,10 +13,10 @@ async function lock(model: string, resourceId: number, clientId: number, eventId
     const lock = await RedisService.get(key);
     if (lock && lock.locker !== clientId) return false;
     await RedisService.set(key, {
-      clientId,
+      locker: clientId,
       eventId,
     });
-    await RedisService.hset(getRedisEventResourceLockKey(eventId), key, true);
+    await RedisService.hset(getRedisEventResourceLockKey(eventId), key, clientId);
     await RedisService.redis.expire(key, ttl);
     return true;
   } else {

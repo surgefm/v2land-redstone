@@ -20,7 +20,7 @@ export default function updateStack(socket: Socket) {
       });
 
       if (returnValue.status === 201) {
-        socket.to(getRoomName(returnValue.message.stack.eventId)).emit('update stack', returnValue.message.stack);
+        socket.to(getRoomName(returnValue.message.stack.eventId)).emit('update stack', returnValue.message);
       }
       cb();
     } catch (err) {

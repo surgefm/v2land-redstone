@@ -5,28 +5,19 @@ import getRedisEventResourceLockKey from './getRedisEventResourceLockKey';
 
 export default async function getEventLockedResourceList(eventId: number) {
   if (RedisService.redis) {
-    const { redis } = RedisService;
     const eventKey = getRedisEventResourceLockKey(eventId);
-    const fields = await redis.hgetall(eventKey);
+    const fields = await RedisService.hgetall(eventKey);
     const keys = Object.keys(fields);
     if (keys.length === 0) return [];
-    const values = await redis.mget(...keys);
-    const results: ResourceLockObj[] = [];
-    await Promise.all(values.map((valueStr, index) => {
-      return new Promise<void>(resolve => {
-        if (!valueStr) {
-          redis.hdel(eventKey, keys[index]).then(() => resolve());
-        } else {
-          const strings = keys[index].split('-');
-          const value: ResourceLockObj = JSON.parse(valueStr);
-          results.push({
-            model: strings[strings.length - 2],
-            resourceId: +strings[strings.length - 1],
-            ...value,
-          });
-        }
-      });
-    }));
+    const values: ResourceLockObj[] = await RedisService.mget(...keys);
+    const results: ResourceLockObj[] = values.map((value, index) => {
+      const strings = keys[index].split('-');
+      return {
+        model: strings[strings.length - 2],
+        resourceId: +strings[strings.length - 1],
+        ...value,
+      };
+    });
     return results;
   } else {
     const resourceLocks: ResourceLockObj[] = await ResourceLock.findAll({

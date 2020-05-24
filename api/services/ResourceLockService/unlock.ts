@@ -9,8 +9,8 @@ export default async function unlock(model: string, resourceId: number, clientId
     const key = getRedisResourceLockKey(model, resourceId);
     const value: ResourceLockObj = await RedisService.get(key);
     if (!value || value.locker !== clientId) return false;
-    await RedisService.redis.del(key);
-    await RedisService.redis.hdel(getRedisEventResourceLockKey(eventId), key);
+    await RedisService.del(key);
+    await RedisService.hdel(getRedisEventResourceLockKey(eventId), key);
     return true;
   } else {
     const lock = await ResourceLock.findOne({
@@ -21,7 +21,7 @@ export default async function unlock(model: string, resourceId: number, clientId
         expires: { [Sequelize.Op.lt]: Date.now() },
       },
     });
-    if (!lock || lock.locker !== clientId) return false
+    if (!lock || lock.locker !== clientId) return false;
     lock.status = ResourceLockStatus.UNLOCKED;
     await lock.save();
     return true;

@@ -13,11 +13,15 @@ export default function updateEvent(socket: Socket) {
     const event = await EventService.findEvent(eventId, { eventOnly: true });
     if (!event) return cb('Event not found');
 
-    const e = await EventService.updateEvent(event, data, socket.handshake.session.currentClient);
-    const { id, name, description } = e;
-    if (e !== null) {
-      socket.to(getRoomName(eventId)).emit('update event information', { event: { id, name, description } });
+    try {
+      const e = await EventService.updateEvent(event, data, socket.handshake.session.currentClient);
+      const { id, name, description } = e;
+      if (e !== null) {
+        socket.to(getRoomName(eventId)).emit('update event information', { event: { id, name, description } });
+      }
+      cb();
+    } catch (err) {
+      cb(err.message);
     }
-    cb();
   });
 }
