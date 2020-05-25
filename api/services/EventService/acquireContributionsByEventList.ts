@@ -1,7 +1,7 @@
 import getContribution from './getContribution';
 import { SimplifiedEventInterface } from '@Types';
 
-async function acquireContributionsByEventList (eventList: SimplifiedEventInterface[]) {
+async function acquireContributionsByEventList(eventList: SimplifiedEventInterface[]) {
   const queue = [];
 
   const getCon = async (event: SimplifiedEventInterface) => {

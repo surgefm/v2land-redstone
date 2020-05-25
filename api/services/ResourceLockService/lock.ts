@@ -17,7 +17,7 @@ async function lock(model: string, resourceId: number, clientId: number, eventId
       eventId,
     });
     await RedisService.hset(getRedisEventResourceLockKey(eventId), key, clientId);
-    await RedisService.redis.expire(key, ttl);
+    await RedisService.expire(key, ttl);
     return true;
   } else {
     const lock = await ResourceLock.findOne({

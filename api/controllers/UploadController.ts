@@ -16,8 +16,8 @@ export async function upload(req: RedstoneRequest, res: RedstoneResponse) {
   return new Promise((resolve, reject) => {
     s3.upload({
       Bucket: S3_BUCKET,
-      Key: S3_ID,
-      Body: req.file,
+      Key: filename,
+      Body: req.file.buffer,
       ACL: 'public-read',
       StorageClass: 'INTELLIGENT_TIERING',
     }, async (err) => {

@@ -10,6 +10,7 @@ import removeNews from './removeNews';
 import updateAdmittedLatestNews from './updateAdmittedLatestNews';
 import updateElasticsearchIndex from './updateElasticsearchIndex';
 import updateEvent from './updateEvent';
+import updateHeaderImage from './updateHeaderImage';
 
 export {
   acquireContributionsByEventList,
@@ -24,4 +25,5 @@ export {
   updateAdmittedLatestNews,
   updateElasticsearchIndex,
   updateEvent,
+  updateHeaderImage,
 };

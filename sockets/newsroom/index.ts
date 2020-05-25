@@ -20,6 +20,7 @@ import removeNewsFromEvent from './removeNewsFromEvent';
 import removeNewsFromStack from './removeNewsFromStack';
 import unlockResource from './unlockResource';
 import updateEvent from './updateEvent';
+import updateHeaderImage from './updateHeaderImage';
 import updateStack from './updateStack';
 import updateStackOrders from './updateStackOrders';
 
@@ -104,6 +105,7 @@ export default function loadNewsroom(io: Server) {
     removeNewsFromStack(socket);
     unlockResource(socket);
     updateEvent(socket);
+    updateHeaderImage(socket);
     updateStack(socket);
     updateStackOrders(socket);
   });

@@ -26,6 +26,11 @@ export async function del(key: string) {
   return redis.del(datastores.redis.prefix + key);
 }
 
+export async function expire(key: string, seconds: number) {
+  if (!redis) return;
+  return redis.expire(datastores.redis.prefix + key, seconds);
+}
+
 export async function mget(...keys: string[]) {
   if (!redis) return;
   if (keys.length === 0) return [];

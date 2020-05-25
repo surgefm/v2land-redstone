@@ -12,6 +12,9 @@ export default async function getEventLockedResourceList(eventId: number) {
     const values: ResourceLockObj[] = await RedisService.mget(...keys);
     const results: ResourceLockObj[] = values.map((value, index) => {
       const strings = keys[index].split('-');
+      if (!value) {
+        RedisService.hdel(eventKey, keys[index]);
+      }
       return {
         model: strings[strings.length - 2],
         resourceId: +strings[strings.length - 1],

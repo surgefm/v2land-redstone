@@ -1,7 +1,7 @@
 import { RedstoneRequest, RedstoneResponse } from '@Types';
 import { EventService } from '@Services';
 
-async function updateEvent (req: RedstoneRequest, res: RedstoneResponse) {
+async function updateEvent(req: RedstoneRequest, res: RedstoneResponse) {
   const name = req.params.eventName;
   const event = await EventService.findEvent(name);
 
