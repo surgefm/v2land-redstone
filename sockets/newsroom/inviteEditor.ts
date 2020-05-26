@@ -12,8 +12,8 @@ export default function inviteEditor(socket: Socket) {
     if (!event) return cb('Event not found');
     const client = await Client.findByPk(clientId);
     if (!client) return cb('Client not found');
-    await AccessControlService.allowClientToViewEvent(clientId, eventId);
-    socket.in(getRoomName(eventId)).emit('add editor', clientId);
+    await AccessControlService.allowClientToEditEvent(clientId, eventId);
+    socket.in(getRoomName(eventId)).emit('add editor', { eventId, clientId });
     cb();
   });
 }

@@ -68,4 +68,33 @@ export async function hdel(key: string, field: string) {
   return redis.hdel(datastores.redis.prefix + key, field);
 }
 
+export async function lpush(key: string, ...values: any[]) {
+  if (!redis) return;
+  return redis.lpush(datastores.redis.prefix + key, ...values.map(value => JSON.stringify(value)));
+}
+
+export async function rpush(key: string, ...values: any[]) {
+  if (!redis) return;
+  return redis.rpush(datastores.redis.prefix + key, ...values.map(value => JSON.stringify(value)));
+}
+
+export async function lrange(key: string, start = 0, end = -1) {
+  if (!redis) return [];
+  return redis.lrange(datastores.redis.prefix + key, start, end);
+}
+
+export async function lpop(key: string) {
+  if (!redis) return;
+  const result = await redis.lpop(datastores.redis.prefix + key);
+  if (!result) return result;
+  return JSON.parse(result);
+}
+
+export async function rpop(key: string) {
+  if (!redis) return;
+  const result = await redis.rpop(datastores.redis.prefix + key);
+  if (!result) return result;
+  return JSON.parse(result);
+}
+
 export { redis, classicRedis };

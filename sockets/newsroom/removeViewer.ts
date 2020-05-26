@@ -2,6 +2,7 @@ import { Socket } from 'socket.io';
 import { Event, Client } from '@Models';
 import { AccessControlService } from '@Services';
 import getRoomName from './getRoomName';
+import removeClientFromNewsroom from './removeClientFromNewsroom';
 
 export default function removeViewer(socket: Socket) {
   socket.on('remove viewer', async (eventId: number, clientId: number, cb: Function = () => {}) => {
@@ -13,8 +14,9 @@ export default function removeViewer(socket: Socket) {
     const client = await Client.findByPk(clientId);
     if (!client) return cb('Client not found');
 
-    await AccessControlService.allowClientToViewEvent(clientId, eventId);
-    socket.in(getRoomName(eventId)).emit('remove viewer', clientId);
+    await AccessControlService.disallowClientToViewEvent(clientId, eventId);
+    socket.in(getRoomName(eventId)).emit('remove viewer', { eventId, clientId });
     cb();
+    await removeClientFromNewsroom(socket, eventId, clientId);
   });
 }

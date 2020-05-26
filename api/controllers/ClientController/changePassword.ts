@@ -3,7 +3,7 @@ import { RedstoneRequest, RedstoneResponse } from '@Types';
 import { Client, sequelize } from '@Models';
 import { ClientService, RecordService } from '~/api/services';
 
-async function changePassword (req: RedstoneRequest, res: RedstoneResponse) {
+async function changePassword(req: RedstoneRequest, res: RedstoneResponse) {
   const data = req.body;
   let salt;
   let hash;

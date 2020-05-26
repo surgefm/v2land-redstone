@@ -1,10 +1,10 @@
-import { Client, Subscription } from '@Models';
+import { Client } from '@Models';
 import { RedstoneRequest, RedstoneResponse } from '@Types';
 import { UtilService } from '@Services';
 
-async function getClientList (req: RedstoneRequest, res: RedstoneResponse) {
+async function getClientList(req: RedstoneRequest, res: RedstoneResponse) {
   let page = 1;
-  let whereStr = {};
+  let whereStr;
 
   if (req.body && req.body.page) {
     page = req.body.page;
@@ -21,27 +21,13 @@ async function getClientList (req: RedstoneRequest, res: RedstoneResponse) {
   let where: any;
   if (whereStr) {
     try {
-      where = JSON.parse(where);
+      where = typeof whereStr === 'string' ? JSON.parse(whereStr) : whereStr;
     } catch (err) {/* happy */}
 
     where = UtilService.convertWhereQuery(where);
   }
 
-  const fetchDetail = async (clients: Client[]) => {
-    const promises = [];
-    for (const client of clients) {
-      const fetch = async () => {
-        client.subscriptionCount = await Subscription.count({
-          where: { subscriber: client.id },
-        });
-      };
-      promises.push(fetch());
-    }
-
-    await Promise.all(promises);
-  };
-
-  const attributes = ['id', 'email', 'username', 'role'];
+  const attributes = ['id', 'username'];
   const clients = await Client.findAll({
     where: where || {},
     order: [['updatedAt', 'DESC']],
@@ -49,8 +35,6 @@ async function getClientList (req: RedstoneRequest, res: RedstoneResponse) {
     offset: (page - 1) * 10,
     limit: 10,
   });
-
-  await fetchDetail(clients);
 
   res.status(200).json({ clientList: clients });
 }

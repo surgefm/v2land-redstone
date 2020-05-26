@@ -36,40 +36,32 @@ export default function loadNewsroom(io: Server) {
       }
       const roomName = getRoomName(eventId);
       socket.join(roomName);
+      await RedisService.hset(`socket:client-${clientId}-${eventId}`, socket.id, true);
 
-      const newsroomClient = {
-        id: clientId,
-        role: await AccessControlService.getClientEventRole(clientId, eventId),
-      };
-
-      socket.in(roomName).emit('join newsroom', {
-        eventId,
-        client: newsroomClient,
-      });
+      socket.in(roomName).emit('join newsroom', { eventId, clientId });
       const resourceLocks = await ResourceLockService.getEventLockedResourceList(eventId);
+      const roles = await AccessControlService.getEventClients(eventId);
       if (RedisService.redis) {
         newsroom.in(roomName).clients(async (err: Error, clients: string[]) => {
           if (err) throw err;
           clients = clients.map(client => `socket:${client}`);
           const clientIds = clients.length === 0 ? [] : _.uniq(await RedisService.mget(...clients));
-          const newsroomClients = await Promise.all(clientIds.map(async clientId => ({
-            id: clientId,
-            role: await AccessControlService.getClientEventRole(clientId, eventId),
-          })));
           cb(null, {
             resourceLocks,
-            clients: newsroomClients,
+            clients: clientIds,
+            roles,
           });
         });
       } else {
         cb(null, {
           resourceLocks,
-          clients: [newsroomClient],
+          clients: [clientId],
+          roles,
         });
       }
     });
 
-    const leaveNewsroom = (eventId: number, cb: Function = () => {}) => {
+    const leaveNewsroom = async (eventId: number, cb: Function = () => {}) => {
       const { clientId } = socket.handshake.session;
       const rooms = typeof eventId === 'number'
         ? [getRoomName(eventId)]
@@ -77,11 +69,10 @@ export default function loadNewsroom(io: Server) {
 
       for (let i = 0; i < rooms.length; i++) {
         const split = rooms[i].split('-');
-        socket.in(rooms[i]).emit('leave newsroom', {
-          eventId: split[split.length - 1],
-          client: { id: clientId },
-        });
+        const eventId = +split[split.length - 1];
+        socket.in(rooms[i]).emit('leave newsroom', { eventId, clientId });
         socket.leave(rooms[i]);
+        await RedisService.hdel(`socket:client-${clientId}-${eventId}`, socket.id);
       }
 
       cb();

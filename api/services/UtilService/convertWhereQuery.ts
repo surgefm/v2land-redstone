@@ -1,11 +1,17 @@
 import { Op } from 'sequelize';
-import * as _ from 'lodash';
+import _ from 'lodash';
 
-function convertWhereQuery (where: any) {
+function convertWhereQuery(where: any) {
   if (!where) return {};
 
   for (const key of Object.keys(where)) {
-    if (key === 'contains') {
+    if (key === 'startsWith') {
+      where[Op.like] = `${where[key]}%`;
+      delete where.startsWith;
+    } else if (key === 'endsWith') {
+      where[Op.like] = `%${where[key]}`;
+      delete where.endsWith;
+    } else if (key === 'contains') {
       where[Op.like] = `%${where[key]}%`;
       delete where.contains;
     } else if (key === 'or' && _.isArray(where[key])) {

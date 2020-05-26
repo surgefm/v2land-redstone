@@ -4,6 +4,7 @@ import getRedisResourceLockKey from './getRedisResourceLockKey';
 import isLocked from './isLocked';
 import lock from './lock';
 import unlock from './unlock';
+import unlockEventResourcesLockedByClient from './unlockEventResourcesLockedByClient';
 
 export {
   getEventLockedResourceList,
@@ -12,4 +13,5 @@ export {
   isLocked,
   lock,
   unlock,
+  unlockEventResourcesLockedByClient,
 };

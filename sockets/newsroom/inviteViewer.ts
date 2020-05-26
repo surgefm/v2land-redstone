@@ -1,6 +1,6 @@
 import { Socket } from 'socket.io';
 import { Event, Client } from '@Models';
-import { AccessControlService } from '@Services';
+import { AccessControlService, ResourceLockService } from '@Services';
 import getRoomName from './getRoomName';
 
 export default function inviteViewer(socket: Socket) {
@@ -13,7 +13,12 @@ export default function inviteViewer(socket: Socket) {
     const client = await Client.findByPk(clientId);
     if (!client) return cb('Client not found');
     await AccessControlService.allowClientToViewEvent(clientId, eventId);
-    socket.in(getRoomName(eventId)).emit('add viewer', clientId);
-    cb();
+    socket.in(getRoomName(eventId)).emit('add viewer', { eventId, clientId });
+
+    const resourceLocks = await ResourceLockService.unlockEventResourcesLockedByClient(eventId, clientId);
+    if (resourceLocks.length > 0) {
+      socket.in(getRoomName(eventId)).emit('unlock resources', { eventId, resourceLocks });
+    }
+    cb(null, { resourceLocks });
   });
 }

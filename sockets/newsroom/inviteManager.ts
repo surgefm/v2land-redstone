@@ -13,8 +13,8 @@ export default function inviteManager(socket: Socket) {
     if (!event) return cb('Event not found');
     const client = await Client.findByPk(clientId);
     if (!client) return cb('Client not found');
-    await AccessControlService.allowClientToViewEvent(clientId, eventId);
-    socket.in(getRoomName(eventId)).emit('add manager', clientId);
+    await AccessControlService.allowClientToManageEvent(clientId, eventId);
+    socket.in(getRoomName(eventId)).emit('add manager', { eventId, clientId });
     cb();
   });
 }

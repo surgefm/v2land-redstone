@@ -1,7 +1,8 @@
 import { Socket } from 'socket.io';
 import { Event, Client } from '@Models';
-import { AccessControlService } from '@Services';
+import { AccessControlService, ResourceLockService } from '@Services';
 import getRoomName from './getRoomName';
+import removeClientFromNewsroom from './removeClientFromNewsroom';
 
 export default function removeEditor(socket: Socket) {
   socket.on('remove editor', async (eventId: number, clientId: number, cb: Function = () => {}) => {
@@ -12,8 +13,14 @@ export default function removeEditor(socket: Socket) {
     if (!event) return cb('Event not found');
     const client = await Client.findByPk(clientId);
     if (!client) return cb('Client not found');
-    await AccessControlService.allowClientToViewEvent(clientId, eventId);
-    socket.in(getRoomName(eventId)).emit('remove editor', clientId);
-    cb();
+    await AccessControlService.disallowClientToEditEvent(clientId, eventId);
+    socket.in(getRoomName(eventId)).emit('remove editor', { eventId, clientId });
+
+    const resourceLocks = await ResourceLockService.unlockEventResourcesLockedByClient(eventId, clientId);
+    if (resourceLocks.length > 0) {
+      socket.in(getRoomName(eventId)).emit('unlock resources', { eventId, resourceLocks });
+    }
+    cb(null, { resourceLocks });
+    await removeClientFromNewsroom(socket, eventId, clientId);
   });
 }

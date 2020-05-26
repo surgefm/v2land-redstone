@@ -56,7 +56,7 @@ export default {
     'verifyToken': true,
     'changePassword': 'isLoggedIn',
     'updateRole': ['isLoggedIn', 'isAdmin'],
-    'getClientList': ['isLoggedIn', 'isAdmin'],
+    'getClientList': 'isLoggedIn',
     'getClientDetail': 'isLoggedIn',
     'logout': 'isLoggedIn',
     '*': false,
