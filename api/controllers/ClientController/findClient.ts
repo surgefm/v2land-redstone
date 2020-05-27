@@ -1,9 +1,10 @@
 import { RedstoneRequest, RedstoneResponse } from '@Types';
 import { ClientService } from '@Services';
 
-async function findClient (req: RedstoneRequest, res: RedstoneResponse) {
+async function findClient(req: RedstoneRequest, res: RedstoneResponse) {
   const name = req.params.clientName;
-  const client = await ClientService.findClient(name);
+  const clientId = await ClientService.getClientId(name);
+  const client = await ClientService.findClient(clientId);
 
   if (!client) {
     return res.status(404).json({

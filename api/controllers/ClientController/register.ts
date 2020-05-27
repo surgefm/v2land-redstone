@@ -1,6 +1,6 @@
 import * as bcrypt from 'bcrypt';
 import { Client, Record, sequelize } from '@Models';
-import { ClientService, EmailService, AccessControlService } from '@Services';
+import { ClientService, EmailService, AccessControlService, RedisService } from '@Services';
 import { RedstoneRequest, RedstoneResponse } from '@Types';
 
 async function register(req: RedstoneRequest, res: RedstoneResponse) {
@@ -77,6 +77,8 @@ async function register(req: RedstoneRequest, res: RedstoneResponse) {
       action: 'createClientVerificationToken',
       client: req.session.clientId,
     }, { transaction });
+
+    await RedisService.set(RedisService.getClientIdKey(client.username), client.id);
 
     req.session.clientId = client.id;
     const clientObj: any = client.get({ plain: true });

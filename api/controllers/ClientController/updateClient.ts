@@ -1,8 +1,8 @@
 import { RedstoneRequest, RedstoneResponse } from '@Types';
 import { sequelize } from '@Models';
-import { ClientService, RecordService } from '@Services';
+import { ClientService, RecordService, RedisService } from '@Services';
 
-async function updateClient (req: RedstoneRequest, res: RedstoneResponse) {
+async function updateClient(req: RedstoneRequest, res: RedstoneResponse) {
   if (!req.body) {
     return res.status(400).json({
       message: '缺少修改信息',
@@ -47,6 +47,7 @@ async function updateClient (req: RedstoneRequest, res: RedstoneResponse) {
   });
 
   client = req.currentClient = await ClientService.findClient(client.id);
+  await RedisService.set(RedisService.getClientIdKey(client.username), client.id);
 
   res.status(201).json({
     message: '修改成功',

@@ -1,6 +1,6 @@
 import pinyin from 'pinyin';
 
-async function generatePinyin (name: string) {
+async function generatePinyin(name: string) {
   const array = pinyin(name, {
     segment: false,
     style: 0,

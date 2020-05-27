@@ -1,6 +1,7 @@
 import { Event, Client, sequelize } from '@Models';
 import { EventObj } from '@Types';
 import * as RecordService from '@Services/RecordService';
+import * as RedisService from '@Services/RedisService';
 import * as NotificationService from '@Services/NotificationService';
 import generatePinyin from './generatePinyin';
 import updateElasticsearchIndex from './updateElasticsearchIndex';
@@ -62,6 +63,11 @@ async function updateEvent(event: Event, data: EventObj, client: Client) {
     }
   });
 
+  if (event.ownerId) {
+    await RedisService.set(RedisService.getEventIdKey(event.name, event.ownerId), event.id);
+    const client = await Client.findByPk(event.ownerId, { attributes: ['id'] });
+    await RedisService.set(RedisService.getEventIdKey(event.name, client.username), event.id);
+  }
   updateElasticsearchIndex({ eventId: event.id });
 
   return event;

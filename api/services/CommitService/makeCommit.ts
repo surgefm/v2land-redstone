@@ -27,7 +27,7 @@ async function makeCommit(
 
   for (const stack of eventObj.stacks || []) {
     if (stack.news.length === 0) {
-      throw new RedstoneError(InvalidInputErrorType, `进展「${stack.title}」必须有至少一个过审新闻`);
+      throw new RedstoneError(InvalidInputErrorType, `时间线上的进展必须有至少一条过审新闻`);
     }
   }
 

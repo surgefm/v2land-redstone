@@ -1,5 +1,6 @@
 import { Event, HeaderImage, Stack, News, Tag, Sequelize, Client } from '@Models';
 import { EventObj } from '@Types';
+import * as AccessControlService from '@Services/AccessControlService';
 import { Op, Transaction } from 'sequelize';
 import _ from 'lodash';
 
@@ -27,7 +28,6 @@ async function findEvent(
 
   const event = await Event.findOne({
     attributes: {
-      exclude: ['pinyin'],
       include: [[
         Sequelize.literal(`(
           SELECT COUNT(esn)
@@ -101,7 +101,7 @@ async function findEvent(
       }, {
         model: Client,
         as: 'owner',
-        attributes: ['id', 'role', 'username'],
+        attributes: ['id', 'username', 'nickname'],
         required: false,
       },
     ],
@@ -110,6 +110,7 @@ async function findEvent(
 
   if (!event) return;
   if (!eventOnly) {
+    event.roles = await AccessControlService.getEventClients(event.id);
     event.stackCount = +event.stackCount;
     event.newsCount = 0;
     for (const stack of event.stacks) {

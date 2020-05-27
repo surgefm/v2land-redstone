@@ -9,6 +9,14 @@ if (process.env.REDIS_HOST) {
   classicRedis = ClassicRedis.createClient(datastores.redis);
 }
 
+export function getClientIdKey(clientName: string) {
+  return `client-name-mem-${clientName}`;
+}
+
+export function getEventIdKey(eventName: string, clientName: string | number) {
+  return `event-name-mem-${eventName}@${clientName}`;
+}
+
 export async function get(key: string) {
   if (!redis) return;
   const data = await redis.get(datastores.redis.prefix + key);

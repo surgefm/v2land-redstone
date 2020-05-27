@@ -1,9 +1,9 @@
 import { RedstoneRequest, RedstoneResponse } from '@Types';
-import { EventService, RecordService, NotificationService, CommitService } from '@Services';
+import { EventService, RecordService, NotificationService, CommitService, RedisService } from '@Services';
 import { Event, sequelize } from '@Models';
 import { setClientEventOwner } from '@Services/AccessControlService';
 
-async function createEvent (req: RedstoneRequest, res: RedstoneResponse) {
+async function createEvent(req: RedstoneRequest, res: RedstoneResponse) {
   if (!(req.body && req.body.name && req.body.description)) {
     return res.status(400).json({
       message: '缺少参数 name 或 description',
@@ -13,6 +13,7 @@ async function createEvent (req: RedstoneRequest, res: RedstoneResponse) {
   const data: { [index: string]: any } = {
     name: req.body.name,
     description: req.body.description,
+    ownerId: req.session.clientId,
   };
 
   let event = await EventService.findEvent(data.name);
@@ -41,6 +42,9 @@ async function createEvent (req: RedstoneRequest, res: RedstoneResponse) {
   });
 
   await setClientEventOwner(req.session.clientId, event.id);
+
+  await RedisService.set(RedisService.getEventIdKey(event.name, event.ownerId), event.id);
+  await RedisService.set(RedisService.getEventIdKey(event.name, req.currentClient.username), event.id);
 
   res.status(201).json({
     message: '提交成功，该事件在社区管理员审核通过后将很快开放',

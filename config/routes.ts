@@ -34,6 +34,7 @@ export default {
   'DELETE /event/:eventName/tag/:tagId': 'EventController.removeTag',
   'POST /event/:eventName/header_image': 'EventController.updateHeaderImage',
   'PUT /event/:eventName/header_image': 'EventController.updateHeaderImage',
+  'GET /event/@:username/:eventName': 'EventController.getEvent',
   'GET /event/:eventName': 'EventController.getEvent',
 
   'GET /stack/:stackId': 'StackController.getStack',

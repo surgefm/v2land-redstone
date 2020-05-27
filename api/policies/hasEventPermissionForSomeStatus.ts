@@ -3,9 +3,8 @@ import { AccessControlService, EventService } from '@Services';
 import _ from 'lodash';
 
 const hasEventPermissionForSomeStatus = (errorMessage?: string) => async (req: RedstoneRequest, res: RedstoneResponse, next: NextFunction) => {
-  const name = req.params.eventName;
-  const event = await EventService.findEvent(name);
-  const eventId = await EventService.getEventId(name);
+  const eventId = await EventService.getEventId(req.params);
+  const event = await EventService.findEvent(eventId);
   let haveAccess = false;
   if (_.isUndefined(event)) {
     return res.status(404).json({

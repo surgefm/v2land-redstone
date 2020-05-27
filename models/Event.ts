@@ -124,6 +124,12 @@ class Event extends Model<Event> {
   newsCount?: number;
   commitTime?: Date;
   contribution?: Record[];
+  roles?: {
+    owners: number[];
+    managers: number[];
+    editors: number[];
+    viewers: number[];
+  }
 }
 
 export default Event;

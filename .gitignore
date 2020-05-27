@@ -126,6 +126,7 @@ package-lock.json
 !.elasticbeanstalk/*.global.yml
 
 .env
+.env.local
 
 dist
 .idea
