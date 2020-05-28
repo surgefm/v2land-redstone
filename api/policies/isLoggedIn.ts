@@ -7,6 +7,7 @@
  *
  */
 import { Client } from '@Models';
+import { AccessControlService } from '@Services';
 import { RedstoneRequest, RedstoneResponse, NextFunction } from '@Types';
 
 export default async function(req: RedstoneRequest, res: RedstoneResponse, next: NextFunction) {
@@ -17,8 +18,8 @@ export default async function(req: RedstoneRequest, res: RedstoneResponse, next:
   }
   req.currentClient = await getClient(req, req.session.clientId);
   if (req.currentClient) {
-    req.currentClient.isManager = ['manager', 'admin'].includes(req.currentClient.role);
-    req.currentClient.isAdmin = req.currentClient.role === 'admin';
+    req.currentClient.isEditor = await AccessControlService.isClientEditor(req.session.clientId);
+    req.currentClient.isAdmin = await AccessControlService.isClientAdmin(req.session.clientId);
     return next();
   } else {
     return res.status(401).json({

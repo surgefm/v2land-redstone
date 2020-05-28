@@ -82,10 +82,9 @@ class Client extends Model<Client> {
   @Column(DataType.TEXT)
   password: string;
 
-  @AllowNull(false)
-  @Default('contributor')
+  @AllowNull(true)
   @Column(DataType.TEXT)
-  role: string;
+  avatar: string;
 
   @AllowNull(false)
   @Default(false)
@@ -120,7 +119,7 @@ class Client extends Model<Client> {
 
   subscriptionCount?: number;
   isAdmin?: boolean;
-  isManager?: boolean;
+  isEditor?: boolean;
 }
 
 export default Client;

@@ -15,19 +15,19 @@ export default {
   NewsController: {
     'getNews': true,
     'getNewsList': true,
-    'updateNews': ['isLoggedIn', 'isManager'],
-    'getAllPendingNews': ['isLoggedIn', 'isManager'],
+    'updateNews': ['isLoggedIn', 'isEditor'],
+    'getAllPendingNews': ['isLoggedIn', 'isEditor'],
     '*': false,
   },
 
   EventController: {
-    'addNews': ['isLoggedIn', 'isManager'],
+    'addNews': ['isLoggedIn', 'isEditor'],
     'findEvent': true,
     'getEvent': hasEventPermissionForSomeStatus('用户没有查看事件的权限'),
     'createEvent': ['isLoggedIn', hasPermission('events', 'create', '用户没有创建事件的权限')],
     'updateEvent': ['isLoggedIn', hasEventPermission('edit', '用户没有编辑事件的权限')],
     'getEventList': true,
-    'getAllPendingEvents': ['isLoggedIn', 'isManager'],
+    'getAllPendingEvents': ['isLoggedIn', 'isEditor'],
     'getPendingNews': ['isLoggedIn', hasPermission('news', 'edit', '用户没有编辑新闻的权限')],
     'createStack': ['isLoggedIn', hasEventPermission('edit', '用户没有编辑事件的权限')],
     'createNews': ['isLoggedIn', hasPermission('news', 'create', '用户没有创建新闻的权限')],
@@ -42,8 +42,8 @@ export default {
   StackController: {
     'getStack': true,
     'getStackList': true,
-    'updateStack': ['isLoggedIn', 'isManager'],
-    'updateMultipleStacks': ['isLoggedIn', 'isManager'],
+    'updateStack': ['isLoggedIn', 'isEditor'],
+    'updateMultipleStacks': ['isLoggedIn', 'isEditor'],
     '*': false,
   },
 
@@ -91,7 +91,7 @@ export default {
   },
 
   UploadController: {
-    'upload': ['isLoggedIn', 'isManager', 'uploadFile'],
+    'upload': ['isLoggedIn', 'uploadFile'],
     '*': false,
   },
 
@@ -101,8 +101,8 @@ export default {
   },
 
   TagController: {
-    'createTag': ['isLoggedIn', 'isManager'],
-    'updateTag': ['isLoggedIn', 'isManager'],
+    'createTag': ['isLoggedIn', 'isEditor'],
+    'updateTag': ['isLoggedIn', 'isEditor'],
     'getTag': true,
     'getTagList': true,
     '*': false,

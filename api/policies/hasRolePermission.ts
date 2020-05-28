@@ -12,7 +12,7 @@ const hasRolePermission = (action: string, errorMessage?: string) => async (req:
   let haveAccess = await AccessControlService.isAllowed(clientId, resource, action);
   if (haveAccess) return next();
 
-  const isRequestingAdmin = await AccessControlService.hasRole(clientId, AccessControlService.roles.admins);
+  const isRequestingAdmin = await AccessControlService.isClientAdmin(clientId);
   haveAccess = isRequestingAdmin
     ? await AccessControlService.isAllowed(clientId, 'admin-roles', action)
     : await AccessControlService.isAllowed(clientId, 'non-admin-roles', action);

@@ -1,7 +1,7 @@
 import { Auth, Subscription, Contact, Client } from '@Models';
 import { Transaction, Op, Includeable } from 'sequelize';
 
-async function findClient (
+async function findClient(
   clientName: string | number | Client,
   {
     transaction,

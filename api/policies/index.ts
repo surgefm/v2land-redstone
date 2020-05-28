@@ -4,13 +4,13 @@ import hasEventPermission from './hasEventPermission';
 import hasEventPermissionForSomeStatus from './hasEventPermissionForSomeStatus';
 import isAdmin from './isAdmin';
 import isLoggedIn from './isLoggedIn';
-import isManager from './isManager';
+import isEditor from './isEditor';
 import sessionAuth from './sessionAuth';
 import uploadFile from './uploadFile';
 import hasRolePermission from './hasRolePermission';
 
 export type PolicyMiddleware = typeof forbiddenRoute | typeof hasPermission | typeof hasEventPermission |
-  typeof hasEventPermissionForSomeStatus | typeof isAdmin | typeof isLoggedIn | typeof isManager |
+  typeof hasEventPermissionForSomeStatus | typeof isAdmin | typeof isLoggedIn | typeof isEditor |
   typeof sessionAuth | typeof uploadFile | typeof hasRolePermission;
 
 export {
@@ -20,7 +20,7 @@ export {
   hasEventPermissionForSomeStatus,
   isAdmin,
   isLoggedIn,
-  isManager,
+  isEditor,
   sessionAuth,
   uploadFile,
   hasRolePermission,
@@ -33,7 +33,7 @@ export default {
   hasEventPermissionForSomeStatus,
   isAdmin,
   isLoggedIn,
-  isManager,
+  isEditor,
   sessionAuth,
   uploadFile,
   hasRolePermission,
