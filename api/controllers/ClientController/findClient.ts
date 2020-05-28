@@ -1,5 +1,5 @@
 import { RedstoneRequest, RedstoneResponse } from '@Types';
-import { ClientService } from '@Services';
+import { ClientService, AccessControlService } from '@Services';
 
 async function findClient(req: RedstoneRequest, res: RedstoneResponse) {
   const name = req.params.clientName;
@@ -15,8 +15,7 @@ async function findClient(req: RedstoneRequest, res: RedstoneResponse) {
   if (req.session.clientId === client.id) {
     return res.status(200).json({ client });
   } else if (req.session.clientId) {
-    const currentClient = await ClientService.findClient(req.session.clientId);
-    if (currentClient.role === 'admin') {
+    if (await AccessControlService.isClientAdmin(req.session.clientId)) {
       return res.status(200).json({ client });
     }
   }

@@ -1,18 +1,14 @@
 import { RedstoneRequest, RedstoneResponse } from '@Types';
-import { Client } from '@Models';
-import { StackService } from '@Services';
+import { StackService, AccessControlService } from '@Services';
 
-async function getStack (req: RedstoneRequest, res: RedstoneResponse) {
+async function getStack(req: RedstoneRequest, res: RedstoneResponse) {
   const id = +req.params.stackId;
   const stack = await StackService.findStack(id);
   if (stack) {
     stack.contribution = await StackService.getContribution({ id }, true);
     if (stack.status !== 'admitted') {
       if (req.session.clientId) {
-        const client = await Client.findOne({
-          where: { id: req.session.clientId },
-        });
-        if (client && ['manager', 'admin'].includes(client.role)) {
+        if (await AccessControlService.isClientEditor(req.session.clientId)) {
           return res.status(200).json({ stack });
         }
       }

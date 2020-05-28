@@ -4,12 +4,12 @@ import { Client } from '@Models';
 import * as TelegramService from '../TelegramService';
 import * as SlackService from '../SlackService';
 import * as ClientService from '../ClientService';
-import * as UtilService from '../UtilService';
+import * as AccessControlService from '../AccessControlService';
 
 async function notifyWhenEventCreated(event: EventObj, handler: number | string | Client) {
   const client = await ClientService.findClient(handler);
   const username = (client && client.username) || '游客';
-  const isAdmin = await UtilService.isAdmin(client);
+  const isAdmin = await AccessControlService.isClientAdmin(client.id);
 
   const sendSlackMessage = async () => {
     let content = `*${username}* 提交了事件 *${event.name}* ` +

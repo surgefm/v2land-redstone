@@ -7,7 +7,6 @@ import login from './login';
 import logout from './logout';
 import register from './register';
 import updateClient from './updateClient';
-import updateRole from './updateRole';
 import updateSettings from './updateSettings';
 import verifyToken from './verifyToken';
 
@@ -21,7 +20,6 @@ export {
   logout,
   register,
   updateClient,
-  updateRole,
   updateSettings,
   verifyToken,
 };

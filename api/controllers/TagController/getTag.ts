@@ -19,7 +19,7 @@ async function getTag(req: RedstoneRequest, res: RedstoneResponse) {
 
   let tagVisible = !tag || tag.status !== 'hidden';
   if (!tagVisible && req.currentClient) {
-    if (['admin', 'manager'].includes(req.currentClient.role)) {
+    if (req.currentClient.isEditor) {
       tagVisible = true;
     }
   }

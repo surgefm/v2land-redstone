@@ -11,7 +11,6 @@ export default {
   'POST /client/register': 'ClientController.register',
   'GET /client/me': 'ClientController.getClientDetail',
   'POST /client/login': 'ClientController.login',
-  'PUT /client/role': 'ClientController.updateRole',
   'PUT /client/password': 'ClientController.changePassword',
   '/client/logout': 'ClientController.logout',
   'GET /client/verify': 'ClientController.verifyToken',

@@ -38,7 +38,7 @@ async function changePassword(req: RedstoneRequest, res: RedstoneResponse) {
       });
     }
 
-    if (targetId !== clientId && selfClient.role !== 'admin') {
+    if (targetId !== clientId && selfClient.isAdmin) {
       return res.status(500).json({
         message: '您没有修改此用户密码的权限',
       });
