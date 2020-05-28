@@ -2,12 +2,8 @@ import Redis from 'ioredis';
 import ClassicRedis from 'redis';
 import { datastores } from '@Configs';
 
-let redis: Redis.Redis;
-let classicRedis: ClassicRedis.RedisClient;
-if (process.env.REDIS_HOST) {
-  redis = new Redis(datastores.redis);
-  classicRedis = ClassicRedis.createClient(datastores.redis);
-}
+export const redis: Redis.Redis = process.env.REDIS_HOST ? new Redis(datastores.redis) : null;
+export const classicRedis: ClassicRedis.RedisClient = process.env.REDIS_HOST ? ClassicRedis.createClient(datastores.redis) : null;
 
 export function getClientIdKey(clientName: string) {
   return `client-name-mem-${clientName}`;
@@ -104,5 +100,3 @@ export async function rpop(key: string) {
   if (!result) return result;
   return JSON.parse(result);
 }
-
-export { redis, classicRedis };

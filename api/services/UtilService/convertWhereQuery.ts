@@ -6,13 +6,13 @@ function convertWhereQuery(where: any) {
 
   for (const key of Object.keys(where)) {
     if (key === 'startsWith') {
-      where[Op.like] = `${where[key]}%`;
+      where[Op.iLike] = `${where[key]}%`;
       delete where.startsWith;
     } else if (key === 'endsWith') {
-      where[Op.like] = `%${where[key]}`;
+      where[Op.iLike] = `%${where[key]}`;
       delete where.endsWith;
     } else if (key === 'contains') {
-      where[Op.like] = `%${where[key]}%`;
+      where[Op.iLike] = `%${where[key]}%`;
       delete where.contains;
     } else if (key === 'or' && _.isArray(where[key])) {
       const or = where[key].map((w: any) => convertWhereQuery(w));

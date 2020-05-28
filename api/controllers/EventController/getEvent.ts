@@ -39,6 +39,7 @@ async function getEvent(req: RedstoneRequest, res: RedstoneResponse) {
   // If there is no commit or client wants the latest version.
   const event = await EventService.findEvent(eventId, { plain: true, getNewsroomContent: true });
   event.contribution = await EventService.getContribution(event, true);
+  event.roles = roles;
   if (deniedAccess) return noAccess(event);
   res.status(200).json(event);
 }

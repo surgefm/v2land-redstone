@@ -4,6 +4,7 @@ import { isLoggedIn } from '@Sockets/middlewares';
 import _ from 'lodash';
 
 import getRoomName from './getRoomName';
+import newsroomPath from './newsroomPath';
 
 import addNewsToEvent from './addNewsToEvent';
 import addNewsToStack from './addNewsToStack';
@@ -25,7 +26,7 @@ import updateStack from './updateStack';
 import updateStackOrders from './updateStackOrders';
 
 export default function loadNewsroom(io: Server) {
-  const newsroom = io.of('/newsroom');
+  const newsroom = io.of(newsroomPath);
   newsroom.use(isLoggedIn);
   newsroom.on('connection', (socket) => {
     socket.on('join newsroom', async (eventId: number, cb: Function = () => {}) => {

@@ -22,7 +22,7 @@ gulp.task('build/compile TypeScript', function(cb) {
     .on('end', cb);
 });
 
-gulp.task('build/copy static file', function (cb) {
+gulp.task('build/copy static file', function(cb) {
   gulp.src('./assets/**/*')
     .pipe(gulp.dest('./dist/assets'))
     .on('end', cb);

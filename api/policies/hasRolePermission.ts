@@ -9,13 +9,13 @@ const hasRolePermission = (action: string, errorMessage?: string) => async (req:
     });
   }
   const resource = AccessControlService.getRoleEditRolePlain(clientId);
-  let haveAccess = await AccessControlService.isAllowed(req.session.id, resource, action);
+  let haveAccess = await AccessControlService.isAllowed(clientId, resource, action);
   if (haveAccess) return next();
 
   const isRequestingAdmin = await AccessControlService.hasRole(clientId, AccessControlService.roles.admins);
   haveAccess = isRequestingAdmin
-    ? await AccessControlService.isAllowed(req.session.id, 'admin-roles', action)
-    : await AccessControlService.isAllowed(req.session.id, 'non-admin-roles', action);
+    ? await AccessControlService.isAllowed(clientId, 'admin-roles', action)
+    : await AccessControlService.isAllowed(clientId, 'non-admin-roles', action);
   if (haveAccess) return next();
   return res.status(403).json({
     message: errorMessage || '用户没有该权限',

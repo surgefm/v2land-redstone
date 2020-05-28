@@ -1,10 +1,14 @@
+import dotenv from 'dotenv';
+dotenv.config();
+
 import Acl from 'acl';
 import AclSeq from 'acl-sequelize';
-import * as RedisService from '../RedisService';
+import ClassicRedis from 'redis';
 import { sequelize, Sequelize } from '@Models';
+import { datastores } from '@Configs';
 
-const storageBackend: Acl.Backend<any> = RedisService.classicRedis
-  ? new Acl.redisBackend(RedisService.classicRedis, 'v2land-acl')
+const storageBackend: Acl.Backend<any> = process.env.HOST
+  ? new Acl.redisBackend(ClassicRedis.createClient(datastores.redis), 'v2land-acl')
   : new AclSeq(sequelize, {
     prefix: 'acl_',
     defaultSchema: {
