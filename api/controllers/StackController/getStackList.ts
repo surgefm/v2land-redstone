@@ -1,8 +1,8 @@
 import { RedstoneRequest, RedstoneResponse } from '@Types';
-import { News, Stack, Client } from '@Models';
-import { UtilService, StackService } from '@Services';
+import { News, Stack } from '@Models';
+import { UtilService, StackService, AccessControlService } from '@Services';
 
-async function getStackList (req: RedstoneRequest, res: RedstoneResponse) {
+async function getStackList(req: RedstoneRequest, res: RedstoneResponse) {
   let where;
   let isManager = false;
 
@@ -11,10 +11,7 @@ async function getStackList (req: RedstoneRequest, res: RedstoneResponse) {
   }
 
   if (where && req.session.clientId) {
-    const client = await Client.findOne({
-      where: { id: req.session.clientId },
-    });
-    if (client && ['manager', 'admin'].includes(client.role)) {
+    if (await AccessControlService.isClientEditor(req.session.clientId)) {
       isManager = true;
     }
   }

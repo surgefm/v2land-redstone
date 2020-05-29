@@ -1,8 +1,8 @@
 import { RedstoneRequest, RedstoneResponse } from '@Types';
-import { Client, News } from '@Models';
-import { UtilService, NewsService } from '@Services';
+import { News } from '@Models';
+import { UtilService, NewsService, AccessControlService } from '@Services';
 
-async function getNewsList (req: RedstoneRequest, res: RedstoneResponse) {
+async function getNewsList(req: RedstoneRequest, res: RedstoneResponse) {
   let page = 1;
   let where;
   let withContributionData;
@@ -33,8 +33,7 @@ async function getNewsList (req: RedstoneRequest, res: RedstoneResponse) {
   }
 
   if (where && req.session.clientId) {
-    const client = await Client.findByPk(req.session.clientId);
-    if (client && ['manager', 'admin'].includes(client.role)) {
+    if (await AccessControlService.isClientEditor(req.session.clientId)) {
       isManager = true;
     }
   }

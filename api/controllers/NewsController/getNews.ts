@@ -1,8 +1,8 @@
-import { News, Stack, Client } from '@Models';
+import { News, Stack } from '@Models';
 import { RedstoneRequest, RedstoneResponse } from '@Types';
-import { NewsService } from '@Services';
+import { NewsService, AccessControlService } from '@Services';
 
-async function getNews (req: RedstoneRequest, res: RedstoneResponse) {
+async function getNews(req: RedstoneRequest, res: RedstoneResponse) {
   let id;
   if (req.body && req.body.news) {
     id = req.body.news;
@@ -31,12 +31,7 @@ async function getNews (req: RedstoneRequest, res: RedstoneResponse) {
   const newsObj: any = news.get({ plain: true });
 
   if (news.status !== 'admitted') {
-    if (req.session.clientId) {
-      const client = await Client.findByPk(req.session.clientId);
-      if (!client || !['manager', 'admin'].includes(client.role)) {
-        return res.status(404).json({ message: '该新闻尚未通过审核' });
-      }
-    } else {
+    if (!req.session.clientId || !await AccessControlService.isClientEditor(req.session.clientId)) {
       return res.status(404).json({ message: '该新闻尚未通过审核' });
     }
   }

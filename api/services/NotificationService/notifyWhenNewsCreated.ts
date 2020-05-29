@@ -3,12 +3,12 @@ import { News, Client, Event, Stack } from '@Models';
 import * as TelegramService from '../TelegramService';
 import * as SlackService from '../SlackService';
 import * as ClientService from '../ClientService';
-import * as UtilService from '../UtilService';
+import * as AccessControlService from '../AccessControlService';
 
 async function notifyWhenNewsCreated(news: News, handler: number | string | Client) {
   const client = await ClientService.findClient(handler);
   const username = (client && client.username) || '游客';
-  const isAdmin = await UtilService.isAdmin(client);
+  const isAdmin = await AccessControlService.isClientAdmin(client.id);
 
   const stacks = news.stacks || await news.$get('stacks');
   const promises = [];
