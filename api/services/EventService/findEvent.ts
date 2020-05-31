@@ -1,4 +1,4 @@
-import { Event, HeaderImage, Stack, News, Tag, Sequelize, Client } from '@Models';
+import { Event, HeaderImage, Stack, News, Tag, Sequelize, Client, Record } from '@Models';
 import { EventObj } from '@Types';
 import * as AccessControlService from '@Services/AccessControlService';
 import { Op, Transaction } from 'sequelize';
@@ -26,14 +26,13 @@ async function findEvent(
 ) {
   const where = _.isNaN(+eventName) ? { name: eventName } : { id: eventName };
 
-  const event = await Event.findOne({
+  let event: Event | EventObj = await Event.findOne({
     attributes: {
       include: [[
         Sequelize.literal(`(
-          SELECT COUNT(esn)
-          FROM "eventStackNews" AS esn
-          LEFT JOIN "stack" AS stack ON stack.id = esn."stackId"
-          WHERE esn."eventId" = event.id AND stack.order >= 0
+          SELECT COUNT(stack)
+          FROM "stack" AS stack
+          WHERE stack."eventId" = event.id AND stack.order >= 0 AND stack.status = 'admitted'
         )`),
         'stackCount',
       ]],
@@ -43,22 +42,6 @@ async function findEvent(
       {
         model: HeaderImage,
         as: 'headerImage',
-        required: false,
-      }, {
-        model: News,
-        as: 'temporaryStack',
-        where: {
-          id: {
-            [Op.in]: Sequelize.literal(`(
-              SELECT esn."newsId"
-              FROM "eventStackNews" AS esn
-              LEFT JOIN news as news ON esn."newsId" = news.id
-              WHERE news.status = 'admitted' AND esn."stackId" IS NULL
-            )`),
-          },
-        },
-        order: [['time', 'DESC']],
-        through: { attributes: [] },
         required: false,
       }, {
         model: Stack,
@@ -101,7 +84,7 @@ async function findEvent(
       }, {
         model: Client,
         as: 'owner',
-        attributes: ['id', 'username', 'nickname'],
+        attributes: ['id', 'username', 'nickname', 'avatar', 'description'],
         required: false,
       },
     ],
@@ -109,21 +92,49 @@ async function findEvent(
   });
 
   if (!event) return;
+
+  if (plain) event = event.get({ plain }) as EventObj;
+
   if (!eventOnly) {
     event.roles = await AccessControlService.getEventClients(event.id);
     event.stackCount = +event.stackCount;
     event.newsCount = 0;
+
     for (const stack of event.stacks) {
       stack.newsCount = +stack.newsCount;
       event.newsCount += stack.newsCount;
     }
+
+    const contributionCount: { [index: number]: number } = {};
+    const records = await Record.findAll({
+      where: {
+        model: { [Op.or]: ['Event', 'EventStackNews'] },
+        target: event.id,
+      },
+      transaction,
+    });
+    for (const record of records) {
+      contributionCount[record.owner] = (contributionCount[record.owner] || 0) + 1;
+    }
+    ((event.stacks || []) as Stack[]).map(async stack => {
+      const stackRecords = await Record.findAll({
+        where: {
+          model: { [Op.or]: ['Stack', 'EventStackNews'] },
+          target: stack.id,
+        },
+        transaction,
+      });
+      for (const record of stackRecords) {
+        contributionCount[record.owner] = (contributionCount[record.owner] || 0) + 1;
+      }
+    });
+
+    const contributorIdList = Object.keys(contributionCount).filter(id => id !== 'null');
+    contributorIdList.sort((a, b) => contributionCount[+a] - contributionCount[+b]);
+    event.contributorIdList = contributorIdList.map(id => +id);
   }
 
-  if (plain) {
-    return event.get({ plain: true }) as EventObj;
-  } else {
-    return event;
-  }
+  return event;
 }
 
 export default findEvent;

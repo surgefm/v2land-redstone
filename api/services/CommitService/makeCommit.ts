@@ -70,6 +70,7 @@ async function makeCommit(
       target: eventObj.id,
       subtarget: commit.id,
       action: 'makeCommitForEvent',
+      owner: author.id,
     }, { transaction });
   }, transaction);
 

@@ -2,14 +2,14 @@ import { Client } from '@Models';
 
 interface SanitizedClient {
   username: string;
-  role: string;
+  avatar: string;
   id: number;
   description: string;
 }
 
-function sanitizeClient (client: Client): SanitizedClient {
+function sanitizeClient(client: Client): SanitizedClient {
   const temp: { [index: string]: any } = {};
-  for (const attr of ['username', 'role', 'id', 'description']) {
+  for (const attr of ['username', 'nickname', 'id', 'description', 'avatar']) {
     temp[attr] = (client as any)[attr];
   }
 
