@@ -74,6 +74,10 @@ class Client extends Model<Client> {
   @Column(DataType.TEXT)
   nickname: string;
 
+  @AllowNull(true)
+  @Column(DataType.TEXT)
+  description: string;
+
   @AllowNull(false)
   @Column(DataType.TEXT)
   email: string;

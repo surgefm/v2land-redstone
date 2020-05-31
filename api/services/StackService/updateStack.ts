@@ -1,10 +1,11 @@
-import { Stack, Record } from '@Models';
+import { Stack } from '@Models';
 import { StackObj } from '@Types';
 import * as NotificationService from '../NotificationService';
+import * as RecordService from '../RecordService';
 import updateElasticsearchIndex from './updateElasticsearchIndex';
 import { Transaction } from 'sequelize/types';
 
-async function updateStack ({ id = -1, data = {}, clientId, transaction }: {
+async function updateStack({ id = -1, data = {}, clientId, transaction }: {
   id?: number;
   data?: { enableNotification?: boolean; forceUpdate?: boolean } & StackObj;
   clientId?: number;
@@ -62,7 +63,7 @@ async function updateStack ({ id = -1, data = {}, clientId, transaction }: {
     stackObj.status = changes.status;
     await stack.save({ transaction });
 
-    await Record.create({
+    await RecordService.create({
       action: 'updateStackStatus',
       data: { status: changes.status },
       before: { status: stackObj.status },
@@ -82,7 +83,7 @@ async function updateStack ({ id = -1, data = {}, clientId, transaction }: {
     }
     await stack.save({ transaction });
 
-    await Record.create({
+    await RecordService.create({
       action: 'updateStackDetail',
       target: id,
       owner: clientId,

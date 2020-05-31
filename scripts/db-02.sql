@@ -653,6 +653,7 @@ CREATE TABLE public.client (
     email text,
     password text,
     nickname text,
+    description text,
     avatar text,
     id integer NOT NULL,
     "createdAt" timestamp with time zone,

@@ -27,7 +27,7 @@ async function updateClient(req: RedstoneRequest, res: RedstoneResponse) {
   }
 
   const changes: any = {};
-  for (const i of ['nickname', 'avatar']) {
+  for (const i of ['nickname', 'avatar', 'description']) {
     if (req.body[i] && req.body[i] !== (client as any)[i]) {
       changes[i] = req.body[i];
     }
