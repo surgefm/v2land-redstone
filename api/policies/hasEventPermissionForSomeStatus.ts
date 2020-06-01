@@ -14,7 +14,7 @@ const hasEventPermissionForSomeStatus = (errorMessage?: string) => async (req: R
   if (event.status === 'admitted') {
     haveAccess = true;
   } else {
-    if (typeof req.session === 'undefined') {
+    if (!req.session.clientId) {
       return res.status(401).json({
         message: '请在登录后进行该操作',
       });
