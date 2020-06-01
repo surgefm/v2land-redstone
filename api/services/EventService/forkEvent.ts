@@ -76,12 +76,6 @@ async function forkEvent(
     });
     await Promise.all(stackQueue);
 
-    const temporaryStackData = event.temporaryStack.map(news => ({
-      eventId: newEvent.id,
-      newsId: news.id,
-    }));
-    await EventStackNews.bulkCreate(temporaryStackData, { transaction });
-
     const tagData = event.tags.map(tag => ({
       eventId: newEvent.id,
       tagId: tag.id,

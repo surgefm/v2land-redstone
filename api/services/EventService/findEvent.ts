@@ -44,6 +44,22 @@ async function findEvent(
         as: 'headerImage',
         required: false,
       }, {
+        model: News,
+        as: 'offshelfNews',
+        where: {
+          id: {
+            [Op.in]: Sequelize.literal(`(
+              SELECT esn."newsId"
+              FROM "eventStackNews" AS esn
+              LEFT JOIN news as news ON esn."newsId" = news.id
+              WHERE news.status = 'admitted' AND esn."stackId" IS NULL
+            )`),
+          },
+        },
+        order: [['time', 'DESC']],
+        through: { attributes: [] },
+        required: false,
+      }, {
         model: Stack,
         as: 'stacks',
         where: {
