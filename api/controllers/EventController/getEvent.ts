@@ -40,7 +40,7 @@ async function getEvent(req: RedstoneRequest, res: RedstoneResponse) {
   const event = await EventService.findEvent(eventId, { plain: true, getNewsroomContent: true });
   event.contribution = await EventService.getContribution(event, true);
   event.roles = roles;
-  if (deniedAccess) return noAccess(event);
+  if (deniedAccess) return noAccess(commit ? commit.data : null);
   res.status(200).json(event);
 }
 

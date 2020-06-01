@@ -7,7 +7,7 @@ import ClassicRedis from 'redis';
 import { sequelize, Sequelize } from '@Models';
 import { datastores } from '@Configs';
 
-const storageBackend: Acl.Backend<any> = process.env.HOST
+const storageBackend: Acl.Backend<any> = process.env.REDIS_HOST
   ? new Acl.redisBackend(ClassicRedis.createClient(datastores.redis), 'v2land-acl')
   : new AclSeq(sequelize, {
     prefix: 'acl_',
