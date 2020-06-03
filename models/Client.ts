@@ -54,8 +54,8 @@ class Client extends Model<Client> {
   @Is('Nickname', (value) => {
     if (!_.isString(value) || value.length < 2 || value.length > 16) {
       throw new Error('昵称长度应在 2-16 个字符内');
-    } else if (/\r?\n|\r| |@|%/.test(value)) {
-      throw new Error('昵称不得含有 @、% 或空格。');
+    } else if (/\r?\n|\r|@|%/.test(value)) {
+      throw new Error('昵称不得含有 @ 或 %。');
     }
 
     let allDigit = true;

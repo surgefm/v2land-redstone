@@ -8,9 +8,9 @@ async function register(req: RedstoneRequest, res: RedstoneResponse) {
   let salt;
   let hash;
 
-  if (!data.username || !data.email || !data.password) {
+  if (!data.username || !data.email || !data.password || !data.nickname) {
     return res.status(400).json({
-      message: '缺少参数：username，email 或 password。',
+      message: '缺少参数：username，email，nickname 或 password。',
     });
   }
 
@@ -45,6 +45,7 @@ async function register(req: RedstoneRequest, res: RedstoneResponse) {
 
     client = await Client.create({
       username: data.username,
+      nickname: data.nickname,
       password: hash,
       email: data.email,
       role: 'contributor',

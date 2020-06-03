@@ -115,7 +115,7 @@ async function findEvent(
     event.roles = await AccessControlService.getEventClients(event.id);
     event.stackCount = +event.stackCount;
     event.newsCount = 0;
-    (event.offshelfNews as News[]).sort((a, b) => (new Date(b.time).getTime() - new Date(a.time).getTime()));
+    (event.offshelfNews as News[]).sort((a, b) => (new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()));
 
     for (const stack of event.stacks) {
       stack.newsCount = +stack.newsCount;
