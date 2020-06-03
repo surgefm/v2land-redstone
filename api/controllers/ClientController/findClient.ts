@@ -4,7 +4,7 @@ import { ClientService, AccessControlService } from '@Services';
 async function findClient(req: RedstoneRequest, res: RedstoneResponse) {
   const name = req.params.clientName;
   const clientId = await ClientService.getClientId(name);
-  const client = await ClientService.findClient(clientId);
+  const client = clientId ? await ClientService.findClient(clientId) : null;
 
   if (!client) {
     return res.status(404).json({
