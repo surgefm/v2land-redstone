@@ -6,7 +6,7 @@ export const redis: Redis.Redis = process.env.REDIS_HOST ? new Redis(datastores.
 export const classicRedis: ClassicRedis.RedisClient = process.env.REDIS_HOST ? ClassicRedis.createClient(datastores.redis) : null;
 
 export function getClientIdKey(clientName: string) {
-  return `client-name-mem-${clientName.toLowerCase()}`;
+  return `client-name-mem-${(clientName || '').toLowerCase()}`;
 }
 
 export function getEventIdKey(eventName: string, clientName: string | number) {

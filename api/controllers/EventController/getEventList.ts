@@ -107,6 +107,7 @@ async function getEventList(req: RedstoneRequest, res: RedstoneResponse) {
             DISTINCT ON ("eventId") "eventId",
             *
           FROM public.commit
+          ORDER BY "eventId", "time" DESC
           ${whereClause}
         ) as commit
         ORDER BY "time" DESC
