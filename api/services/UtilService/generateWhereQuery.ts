@@ -1,7 +1,11 @@
 /**
  * 生成 WHERE 语句
  */
-function generateWhereQuery (query: any, model = '', values: any[] = [], parents: any[] = []) {
+import { Op } from 'sequelize';
+
+const { iLike } = Op;
+
+function generateWhereQuery(query: any, model = '', values: any[] = [], parents: any[] = []) {
   let string = '';
   const properties = Object.getOwnPropertyNames(query);
   for (let i = 0; i < properties.length; i++) {
@@ -21,7 +25,8 @@ function generateWhereQuery (query: any, model = '', values: any[] = [], parents
       continue;
     } else if (
       typeof query[property] !== 'object' ||
-      query[property] instanceof Date
+      query[property] instanceof Date ||
+      query[property][iLike]
     ) {
       if (string.length) {
         string += ' AND ';
@@ -34,8 +39,14 @@ function generateWhereQuery (query: any, model = '', values: any[] = [], parents
       } else {
         string += (model ? (model + '.') : '') + property;
       }
-      values.push(query[property]);
-      string += ' = $' + values.length;
+
+      if (typeof query[property] !== 'object' || query[property] instanceof Date) {
+        values.push(query[property]);
+        string += ' = $' + values.length;
+      } else if (query[property][iLike]) {
+        values.push(query[property][iLike]);
+        string += ' ILIKE $' + values.length;
+      }
     } else {
       parents.push(property);
       const child = generateWhereQuery(query[property], model, values, parents);

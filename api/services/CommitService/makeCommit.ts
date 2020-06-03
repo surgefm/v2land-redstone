@@ -31,10 +31,12 @@ async function makeCommit(
     }
   }
 
+  delete eventObj.owner;
   const parentCommit = parent ? await Commit.findByPk(parent) : await getLatestCommit(eventObj.id);
   if (parentCommit) {
     delete parentCommit.data.commitTime;
     delete parentCommit.data.contribution;
+    delete parentCommit.data.owner;
     if (_.isEqual(parentCommit.data, convertDateToString(eventObj))) {
       // Event data didn't change.
       return;

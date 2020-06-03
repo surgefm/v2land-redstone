@@ -1,13 +1,14 @@
 import { RedstoneRequest, RedstoneResponse } from '@Types';
-import { Event, HeaderImage, News, Tag, sequelize } from '@Models';
+import { Event, HeaderImage, News, Tag, sequelize, Commit, Sequelize } from '@Models';
 import { UtilService, EventService, AccessControlService } from '@Services';
 import _ from 'lodash';
 
-async function getEventList (req: RedstoneRequest, res: RedstoneResponse) {
+async function getEventList(req: RedstoneRequest, res: RedstoneResponse) {
   let page: number;
   let where: any;
   let mode; // 0: latest updated; 1:
   let isEditors = false;
+  let getLatest = req.query.latest === '1';
 
   switch (req.method) {
   case 'GET':
@@ -47,48 +48,79 @@ async function getEventList (req: RedstoneRequest, res: RedstoneResponse) {
   }
 
   await sequelize.transaction(async transaction => {
-    if (where && req.session && req.session.clientId) {
-      isEditors = await AccessControlService.hasRole(req.session.clientId, AccessControlService.roles.editors);
+    if ((where || getLatest) && req.session && req.session.clientId) {
+      isEditors = await AccessControlService.hasRole(req.session.clientId, AccessControlService.roles.editors)
+        || await AccessControlService.hasRole(req.session.clientId, AccessControlService.roles.admins);
     }
 
     if (where && !isEditors) {
       where.status = 'admitted';
     }
 
+    if (getLatest) {
+      getLatest = isEditors;
+    }
+
     if (where) {
       where = UtilService.convertWhereQuery(where);
     }
 
-    const events = await Event.findAll({
-      where: where || { status: 'admitted' },
-      include: [{
-        as: 'headerImage',
-        model: HeaderImage,
-        required: false,
-      }, {
-        as: 'latestAdmittedNews',
-        model: News,
-        required: false,
-      }, {
-        as: 'tags',
-        model: Tag,
-        where: { status: 'visible' },
-        through: { attributes: [] },
-        required: false,
-      }],
-      order: [
-        [{ model: News, as: 'latestAdmittedNews' }, 'time', 'DESC'],
-        ['updatedAt', 'DESC'],
-      ],
-      limit: 15,
-      offset: 15 * (page - 1),
-      transaction,
-    });
+    if (getLatest) {
+      const events = await Event.findAll({
+        where: where || { status: 'admitted' },
+        include: [{
+          as: 'headerImage',
+          model: HeaderImage,
+          required: false,
+        }, {
+          as: 'latestAdmittedNews',
+          model: News,
+          required: false,
+        }, {
+          as: 'tags',
+          model: Tag,
+          where: { status: 'visible' },
+          through: { attributes: [] },
+          required: false,
+        }],
+        order: [
+          [{ model: News, as: 'latestAdmittedNews' }, 'time', 'DESC'],
+          ['updatedAt', 'DESC'],
+        ],
+        limit: 15,
+        offset: 15 * (page - 1),
+        transaction,
+      });
 
-    const eventObjs = events.map(e => e.toJSON());
-    await EventService.acquireContributionsByEventList(eventObjs);
+      const eventObjs = events.map(e => e.toJSON());
+      await EventService.acquireContributionsByEventList(eventObjs);
 
-    res.status(200).json({ eventList: eventObjs });
+      res.status(200).json({ eventList: eventObjs });
+    } else {
+      const whereQuery = where ? UtilService.generateWhereQuery({ data: where }) : null;
+      const whereClause = where ? `WHERE ${whereQuery.query}` : '';
+
+      const query = `
+        SELECT *
+        FROM (
+          SELECT
+            DISTINCT ON ("eventId") "eventId",
+            *
+          FROM public.commit
+          ${whereClause}
+        ) as commit
+        ORDER BY "time" DESC
+        LIMIT 15
+        OFFSET ${15 * (page - 1)}
+      `;
+
+      const commits = await sequelize.query<Commit>(query, {
+        transaction,
+        type: Sequelize.QueryTypes.SELECT,
+        bind: where ? whereQuery.values : [],
+      });
+      res.status(200).json({ eventList: commits.map(c => c.data) });
+    }
   });
 }
 
