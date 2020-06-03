@@ -116,6 +116,7 @@ async function findEvent(
     event.stackCount = +event.stackCount;
     event.newsCount = 0;
     (event.offshelfNews as News[]).sort((a, b) => (new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()));
+    (event.stacks as Stack[]).sort((a, b) => b.order - a.order);
 
     for (const stack of event.stacks) {
       stack.newsCount = +stack.newsCount;

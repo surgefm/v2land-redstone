@@ -1,6 +1,6 @@
 import { RedstoneRequest, RedstoneResponse } from '@Types';
 import { Event, HeaderImage, News, Tag, sequelize, Commit, Sequelize } from '@Models';
-import { UtilService, EventService, AccessControlService } from '@Services';
+import { UtilService, EventService, AccessControlService, RedisService } from '@Services';
 import _ from 'lodash';
 
 async function getEventList(req: RedstoneRequest, res: RedstoneResponse) {
@@ -65,9 +65,11 @@ async function getEventList(req: RedstoneRequest, res: RedstoneResponse) {
       where = UtilService.convertWhereQuery(where);
     }
 
+    where = where || { status: 'admitted' };
+
     if (getLatest) {
       const events = await Event.findAll({
-        where: where || { status: 'admitted' },
+        where,
         include: [{
           as: 'headerImage',
           model: HeaderImage,
@@ -97,20 +99,35 @@ async function getEventList(req: RedstoneRequest, res: RedstoneResponse) {
 
       res.status(200).json({ eventList: eventObjs });
     } else {
-      const whereQuery = where ? UtilService.generateWhereQuery({ data: where }) : null;
-      const whereClause = where ? `WHERE ${whereQuery.query}` : '';
+      const key = `event-list-query-${JSON.stringify(where)}`;
+      const redisData = await RedisService.get(key);
+      if (redisData) {
+        return res.status(200).json({ eventList: redisData });
+      }
+
+      const whereQuery = UtilService.generateWhereQuery({ data: where });
+      const whereClause = `WHERE ${whereQuery.query}`;
 
       const query = `
         SELECT *
         FROM (
           SELECT
             DISTINCT ON ("eventId") "eventId",
+            (CASE WHEN "data"::json#>>'{stacks,0,time}' NOTNULL
+              THEN "data"::json#>>'{stacks,0,time}'
+            WHEN "data"::json#>>'{stacks,0,news,0}' NOTNULL
+              THEN "data"::json#>>'{stacks,0,news,0,time}'
+            WHEN "data"::json#>>'{latestAdmittedNews}' NOTNULL
+              THEN "data"::json#>>'{latestAdmittedNews,time}'
+              ELSE NULL
+            END) as t,
             *
           FROM public.commit
-          ORDER BY "eventId", "time" DESC
           ${whereClause}
+          ORDER BY "eventId", "time" DESC
         ) as commit
-        ORDER BY "time" DESC
+        WHERE t NOTNULL
+        ORDER BY t DESC
         LIMIT 15
         OFFSET ${15 * (page - 1)}
       `;
@@ -118,9 +135,16 @@ async function getEventList(req: RedstoneRequest, res: RedstoneResponse) {
       const commits = await sequelize.query<Commit>(query, {
         transaction,
         type: Sequelize.QueryTypes.SELECT,
-        bind: where ? whereQuery.values : [],
+        bind: whereQuery.values,
       });
+      for (const commit of commits) {
+        delete commit.data.contribution;
+        delete commit.data.stacks;
+      }
+      const data = commits.map(c => c.data);
       res.status(200).json({ eventList: commits.map(c => c.data) });
+      await RedisService.set(key, data);
+      await RedisService.expire(key, 15);
     }
   });
 }
