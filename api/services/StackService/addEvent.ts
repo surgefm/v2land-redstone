@@ -1,6 +1,5 @@
-import { Op } from 'sequelize';
-import { EventStackNews, Event, sequelize, Stack } from '@Models';
-import { RedstoneError, ResourceNotFoundErrorType, InvalidInputErrorType } from '@Types';
+import { Event, sequelize, Stack } from '@Models';
+import { RedstoneError, ResourceNotFoundErrorType } from '@Types';
 import * as RecordService from '@Services/RecordService';
 
 async function addEvent(stackId: number, eventId: number, clientId: number) {
@@ -15,16 +14,6 @@ async function addEvent(stackId: number, eventId: number, clientId: number) {
   }
 
   if (stack.eventId === event.id) return null;
-
-  const news = await EventStackNews.findOne({
-    where: {
-      stackId: stack.id,
-      newsId: { [Op.ne]: null },
-    },
-  });
-  if (news) {
-    throw new RedstoneError(InvalidInputErrorType, '进展只能拥有新闻或事件');
-  }
 
   await sequelize.transaction(async transaction => {
     const time = new Date();

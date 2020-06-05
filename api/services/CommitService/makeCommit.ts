@@ -22,12 +22,12 @@ async function makeCommit(
   const eventObj = await EventService.findEvent(eventId, { transaction, plain: true });
 
   if (!eventObj) {
-    throw new RedstoneError(ResourceNotFoundErrorType, `未找到该事件：${eventId}`);
+    throw new RedstoneError(ResourceNotFoundErrorType, `未找到该时间线：${eventId}`);
   }
 
   for (const stack of eventObj.stacks || []) {
-    if (stack.news.length === 0) {
-      throw new RedstoneError(InvalidInputErrorType, `时间线上的进展必须有至少一条过审新闻`);
+    if (stack.news.length === 0 && !stack.stackEventId) {
+      throw new RedstoneError(InvalidInputErrorType, `时间线上的进展必须有至少一条过审新闻或时间线`);
     }
   }
 

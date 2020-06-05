@@ -1,15 +1,11 @@
 import { EventStackNews, News, sequelize, Stack } from '@Models';
-import { RedstoneError, ResourceNotFoundErrorType, InvalidInputErrorType } from '@Types';
+import { RedstoneError, ResourceNotFoundErrorType } from '@Types';
 import * as RecordService from '@Services/RecordService';
 
 async function addNews(stackId: number, newsId: number, clientId: number) {
   const stack = await Stack.findByPk(stackId);
   if (!stack) {
     throw new RedstoneError(ResourceNotFoundErrorType, '无法找到该进展');
-  }
-
-  if (stack.stackEventId) {
-    throw new RedstoneError(InvalidInputErrorType, '进展只能拥有新闻或事件');
   }
 
   const news = await News.findByPk(newsId);

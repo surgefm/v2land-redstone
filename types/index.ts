@@ -40,6 +40,8 @@ interface StackObj {
   enableNotification?: boolean;
   eventId?: number;
   event?: EventObj;
+  stackEventId?: number;
+  stackEvent?: EventObj;
 }
 
 interface EventObj extends SimplifiedEventInterface {

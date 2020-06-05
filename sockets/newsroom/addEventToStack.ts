@@ -12,14 +12,18 @@ export default function addEventToStack(socket: Socket) {
     if (!haveAccess) return cb('You are not allowed to edit this event.');
     const event = await Event.findByPk(eventId);
     if (!event) return cb('Event not found');
-    const s = await StackService.addEvent(stackId, eventId, clientId);
-    if (s) {
-      socket.in(getRoomName(stack.eventId)).emit('add event to stack', {
-        eventId,
-        stackId,
-        client: socket.handshake.session.currentClient,
-      });
+    try {
+      const s = await StackService.addEvent(stackId, eventId, clientId);
+      if (s) {
+        socket.in(getRoomName(stack.eventId)).emit('add event to stack', {
+          eventId,
+          stackId,
+          client: socket.handshake.session.currentClient,
+        });
+      }
+      cb();
+    } catch (err) {
+      cb(err.message);
     }
-    cb();
   });
 }

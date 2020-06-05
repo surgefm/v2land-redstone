@@ -11,10 +11,14 @@ export default function removeEventFromStack(socket: Socket) {
     const haveAccess = await AccessControlService.isAllowedToEditEvent(clientId, stack.eventId);
     if (!haveAccess) return cb('You are not allowed to edit this event.');
 
-    const s = await StackService.removeEvent(stackId, clientId);
-    if (s) {
-      socket.in(getRoomName(stack.eventId)).emit('remove event from stack', { stackId });
+    try {
+      const s = await StackService.removeEvent(stackId, clientId);
+      if (s) {
+        socket.in(getRoomName(stack.eventId)).emit('remove event from stack', { stackId });
+      }
+      cb();
+    } catch (err) {
+      cb(err.message);
     }
-    cb();
   });
 }
