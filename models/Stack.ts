@@ -51,6 +51,13 @@ class Stack extends Model<Stack> {
   @BelongsTo(() => Event, 'eventId')
   event: Event;
 
+  @ForeignKey(() => Event)
+  @Column
+  stackEventId: number;
+
+  @BelongsTo(() => Event, 'stackEventId')
+  stackEvent: Event;
+
   @BelongsToMany(() => News, () => EventStackNews)
   news: (News & {EventStackNews: EventStackNews})[];
 

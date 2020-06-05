@@ -40,6 +40,8 @@ export default {
   'POST /stack/list': 'StackController.getStackList',
   'PUT /stack/list': 'StackController.updateMultipleStacks',
   'PUT /stack/:stackId': 'StackController.updateStack',
+  'POST /stack/:stackId/event': 'StackController.addEvent',
+  'DELETE /stack/:stackId/event': 'StackController.removeEvent',
 
   'GET /news/pending': 'NewsController.getAllPendingNews',
   'GET /news/:news': 'NewsController.getNews',

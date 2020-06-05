@@ -1,9 +1,9 @@
-import { News, Stack } from '@Models';
+import { News, Stack, Event } from '@Models';
 import { StackObj } from '@Types';
 import getContribution from './getContribution';
 import { Transaction } from 'sequelize';
 
-async function findStack (id: number, withContributionData = true, { transaction }: {
+async function findStack(id: number, withContributionData = true, { transaction }: {
   transaction?: Transaction;
 } = {}) {
   const stack = await Stack.findByPk(id, {
@@ -13,6 +13,11 @@ async function findStack (id: number, withContributionData = true, { transaction
       where: { status: 'admitted' },
       order: [['time', 'ASC']],
       through: { attributes: [] },
+      required: false,
+    }, {
+      model: Event,
+      as: 'stackEvent',
+      where: { status: 'admitted' },
       required: false,
     }],
     transaction,

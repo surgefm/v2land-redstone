@@ -9,7 +9,7 @@
  * below by its filename, minus the extension, (e.g. "authenticated")
  */
 
-import { hasPermission, hasEventPermission, hasEventPermissionForSomeStatus, hasRolePermission } from '@Policies';
+import { hasPermission, hasEventPermission, hasStackPermission, hasEventPermissionForSomeStatus, hasRolePermission } from '@Policies';
 
 export default {
   NewsController: {
@@ -42,8 +42,10 @@ export default {
   StackController: {
     'getStack': true,
     'getStackList': true,
-    'updateStack': ['isLoggedIn', 'isEditor'],
-    'updateMultipleStacks': ['isLoggedIn', 'isEditor'],
+    'updateStack': ['isLoggedIn', hasStackPermission('edit', '用户没有编辑事件的权限')],
+    'updateMultipleStacks': ['isLoggedIn', hasStackPermission('edit', '用户没有编辑事件的权限')],
+    'addEvent': ['isLoggedIn', hasStackPermission('edit', '用户没有编辑事件的权限')],
+    'removeEvent': ['isLoggedIn', hasStackPermission('edit', '用户没有编辑事件的权限')],
     '*': false,
   },
 

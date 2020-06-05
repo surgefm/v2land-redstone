@@ -75,6 +75,11 @@ async function findEvent(
           order: [['time', 'ASC']],
           through: { attributes: [] },
           required: false,
+        }, {
+          model: Event,
+          as: 'stackEvent',
+          where: { status: 'admitted' },
+          required: false,
         }],
         attributes: {
           include: [[

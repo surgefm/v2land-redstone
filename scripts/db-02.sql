@@ -1193,6 +1193,7 @@ CREATE TABLE public.stack (
     description text,
     status public.enum_stack_status,
     "eventId" integer,
+    "stackEventId" integer,
     "createdAt" timestamp with time zone,
     "updatedAt" timestamp with time zone,
     id integer DEFAULT nextval('public.stack_id_seq'::regclass) NOT NULL,
