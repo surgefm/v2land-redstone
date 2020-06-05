@@ -2,6 +2,7 @@ import { Stack } from '@Models';
 import { StackObj } from '@Types';
 import * as NotificationService from '../NotificationService';
 import * as RecordService from '../RecordService';
+import addEvent from './addEvent';
 import updateElasticsearchIndex from './updateElasticsearchIndex';
 import { Transaction } from 'sequelize/types';
 
@@ -29,7 +30,7 @@ async function updateStack({ id = -1, data = {}, clientId, transaction }: {
   const oldStack = stackObj;
 
   const changes: StackObj = {};
-  for (const i of ['title', 'description', 'status', 'order', 'time']) {
+  for (const i of ['title', 'description', 'status', 'order', 'time', 'stackEventId']) {
     if (typeof (data as any)[i] !== 'undefined' && (data as any)[i] !== (stackObj as any)[i]) {
       (changes as any)[i] = (data as any)[i];
     }
@@ -74,6 +75,11 @@ async function updateStack({ id = -1, data = {}, clientId, transaction }: {
   }
 
   delete changes.status;
+
+  if (changes.stackEventId) {
+    await addEvent(stack.id, changes.stackEventId, clientId);
+    delete changes.stackEventId;
+  }
 
   if (Object.keys(changes).length) {
     for (const i of ['title', 'description', 'status', 'order', 'time']) {
