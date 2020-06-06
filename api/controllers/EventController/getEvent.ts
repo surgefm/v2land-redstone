@@ -30,7 +30,7 @@ async function getEvent(req: RedstoneRequest, res: RedstoneResponse) {
 
   const commit = await CommitService.getLatestCommit(eventId);
 
-  if (commit && !showLatest) {
+  if (commit && !showLatest || (showLatest && deniedAccess)) {
     commit.data.roles = roles;
     if (deniedAccess) return noAccess(commit.data);
     return res.status(200).json(commit.data);

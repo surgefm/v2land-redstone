@@ -78,6 +78,7 @@ async function updateStack({ id = -1, data = {}, clientId, transaction }: {
 
   if (changes.stackEventId) {
     await addEvent(stack.id, changes.stackEventId, clientId);
+    stack.stackEventId = changes.stackEventId;
     delete changes.stackEventId;
   }
 

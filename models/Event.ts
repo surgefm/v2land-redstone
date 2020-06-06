@@ -132,6 +132,7 @@ class Event extends Model<Event> {
   };
   contributors?: Client[];
   contributorIdList?: number[];
+  time?: Date;
 }
 
 export default Event;

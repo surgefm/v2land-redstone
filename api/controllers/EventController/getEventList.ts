@@ -47,6 +47,8 @@ async function getEventList(req: RedstoneRequest, res: RedstoneResponse) {
     });
   }
 
+  const key = `event-list-query-${JSON.stringify(where)}`;
+
   await sequelize.transaction(async transaction => {
     if ((where || getLatest) && req.session && req.session.clientId) {
       isEditors = await AccessControlService.hasRole(req.session.clientId, AccessControlService.roles.editors)
@@ -99,7 +101,6 @@ async function getEventList(req: RedstoneRequest, res: RedstoneResponse) {
 
       res.status(200).json({ eventList: eventObjs });
     } else {
-      const key = `event-list-query-${JSON.stringify(where)}`;
       const redisData = await RedisService.get(key);
       if (redisData) {
         return res.status(200).json({ eventList: redisData });
@@ -140,6 +141,7 @@ async function getEventList(req: RedstoneRequest, res: RedstoneResponse) {
       for (const commit of commits) {
         delete commit.data.contribution;
         delete commit.data.stacks;
+        commit.data.time = (commit as any).t;
       }
       const data = commits.map(c => c.data);
       res.status(200).json({ eventList: commits.map(c => c.data) });

@@ -7,7 +7,7 @@ const { iLike } = Op;
 
 function generateWhereQuery(query: any, model = '', values: any[] = [], parents: any[] = []) {
   let string = '';
-  const properties = Object.getOwnPropertyNames(query);
+  const properties = [...Object.getOwnPropertyNames(query), ...Object.getOwnPropertySymbols(query)];
   for (let i = 0; i < properties.length; i++) {
     const property = properties[i];
     let temp = parents.slice();
@@ -20,7 +20,7 @@ function generateWhereQuery(query: any, model = '', values: any[] = [], parents:
         'inspect',
         'add',
         'remove',
-      ].includes(property)
+      ].includes(property as string)
     ) {
       continue;
     } else if (
@@ -37,7 +37,7 @@ function generateWhereQuery(query: any, model = '', values: any[] = [], parents:
         temp.push(property);
         string += `${temp.join(',')}}'`;
       } else {
-        string += (model ? (model + '.') : '') + property;
+        string += (model ? (model + '.') : '') + (property as string);
       }
 
       if (typeof query[property] !== 'object' || query[property] instanceof Date) {
@@ -47,21 +47,35 @@ function generateWhereQuery(query: any, model = '', values: any[] = [], parents:
         values.push(query[property][iLike]);
         string += ' ILIKE $' + values.length;
       }
+    } else if (property === Op.or) {
+      if (string.length) {
+        string += ' AND ';
+      }
+      string += '(';
+      const options = query[Op.or];
+      for (let j = 0; j < options.length; j++) {
+        string += '('
+        const child = generateWhereQuery(query[Op.or][j], model, values, parents);
+        string += child.query;
+        string += ')';
+        values = child.values;
+        if (j !== options.length - 1) string += ' OR ';
+      }
+      string += ')'
     } else {
-      parents.push(property);
-      const child = generateWhereQuery(query[property], model, values, parents);
+      const child = generateWhereQuery(query[property], model, values, [...parents, property]);
       if (string.length) {
         string += ' AND ';
       }
       string += child.query;
       values = child.values;
     }
-
-    return {
-      query: string,
-      values,
-    };
   }
+
+  return {
+    query: string,
+    values,
+  };
 }
 
 export default generateWhereQuery;
