@@ -12,7 +12,7 @@ function generateWhereQuery(query: any, model = '', values: any[] = [], parents:
     const property = properties[i];
     let temp = parents.slice();
     if (
-      !query[property] ||
+      typeof query[property] === 'undefined' ||
       [
         '_properties',
         'associations',
