@@ -3,13 +3,15 @@ import { RedstoneRequest, RedstoneResponse } from '@Types';
 import { RecordService } from '@Services';
 
 async function createTag(req: RedstoneRequest, res: RedstoneResponse) {
-  if (!req.body.name || !req.body.description) {
+  if (!req.body.name) {
     return res.status(400).json({
-      message: '缺少参数：name 或 description。',
+      message: '缺少参数：name。',
     });
   }
 
-  const { name, description } = req.body;
+  let { name, description } = req.body;
+  name = name.trim();
+  description = (description || '').trim();
 
   let tag = await Tag.findOne({ where: { name } });
   if (tag) {

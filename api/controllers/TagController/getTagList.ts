@@ -1,9 +1,22 @@
 import { Tag, Event } from '@Models';
 import { RedstoneRequest, RedstoneResponse } from '@Types';
+import { UtilService, AccessControlService } from '@Services';
 
 async function getTagList(req: RedstoneRequest, res: RedstoneResponse) {
+  const where = req.body.where || { status: 'visible' };
+  if (where.status !== 'visible') {
+    if (!req.session.clientId) {
+      where.status = 'visible';
+    } else {
+      const isEditor = await AccessControlService.isClientEditor(req.session.clientId);
+      if (!isEditor) {
+        where.status = 'visible';
+      }
+    }
+  }
+
   const tags = await Tag.findAll({
-    where: { status: 'visible' },
+    where: UtilService.convertWhereQuery(where),
     include: [{
       model: Event,
       as: 'events',

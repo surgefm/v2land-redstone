@@ -69,7 +69,7 @@ export default {
 
   'GET /search': 'SearchController.keywordSearch',
 
-  'GET /tag': 'TagController.getTagList',
+  'POST /tag/list': 'TagController.getTagList',
   'POST /tag': 'TagController.createTag',
   'PUT /tag/:tagId': 'TagController.updateTag',
   'GET /tag/:tagId': 'TagController.getTag',

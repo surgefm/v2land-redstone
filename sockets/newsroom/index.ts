@@ -7,6 +7,7 @@ import getRoomName from './getRoomName';
 import newsroomPath from './newsroomPath';
 
 import addEventToStack from './addEventToStack';
+import addEventToTag from './addEventToTag';
 import addNewsToEvent from './addNewsToEvent';
 import addNewsToStack from './addNewsToStack';
 import createStack from './createStack';
@@ -19,6 +20,7 @@ import removeEditor from './removeEditor';
 import removeManager from './removeManager';
 import removeViewer from './removeViewer';
 import removeEventFromStack from './removeEventFromStack';
+import removeEventFromTag from './removeEventFromTag';
 import removeNewsFromEvent from './removeNewsFromEvent';
 import removeNewsFromStack from './removeNewsFromStack';
 import unlockResource from './unlockResource';
@@ -85,6 +87,7 @@ export default function loadNewsroom(io: Server) {
     socket.on('disconnect', leaveNewsroom);
 
     addEventToStack(socket);
+    addEventToTag(socket);
     addNewsToEvent(socket);
     addNewsToStack(socket);
     createStack(socket);
@@ -97,6 +100,7 @@ export default function loadNewsroom(io: Server) {
     removeManager(socket);
     removeViewer(socket);
     removeEventFromStack(socket);
+    removeEventFromTag(socket);
     removeNewsFromEvent(socket);
     removeNewsFromStack(socket);
     unlockResource(socket);

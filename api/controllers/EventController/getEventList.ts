@@ -67,7 +67,7 @@ async function getEventList(req: RedstoneRequest, res: RedstoneResponse) {
       where = UtilService.convertWhereQuery(where);
     }
 
-    where = where || { status: 'admitted' };
+    where = (where && Object.keys(where).length > 0) ? where : { status: 'admitted' };
 
     if (getLatest) {
       const events = await Event.findAll({
@@ -124,7 +124,7 @@ async function getEventList(req: RedstoneRequest, res: RedstoneResponse) {
             END) as t,
             *
           FROM public.commit
-          ${whereClause}
+          ${whereClause} AND time NOTNULL
           ORDER BY "eventId", "time" DESC
         ) as commit
         WHERE t NOTNULL
