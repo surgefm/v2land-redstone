@@ -18,6 +18,15 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
+CREATE TABLE "eventContributor" (
+	"eventId" integer NOT NULL,
+	"contributorId" integer NOT NULL,
+	"points" integer NOT NULL,
+	"createdAt" timestamp without time zone,
+	"updatedAt" timestamp without time zone,
+	PRIMARY KEY ("eventId", "contributorId")
+)
+
 --
 -- TOC entry 607 (class 1247 OID 37511)
 -- Name: enum_auth_site; Type: TYPE; Schema: public; Owner: v2land

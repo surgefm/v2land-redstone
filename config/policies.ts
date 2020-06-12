@@ -103,7 +103,7 @@ export default {
   },
 
   TagController: {
-    'createTag': ['isLoggedIn', 'isEditor'],
+    'createTag': ['isLoggedIn'],
     'updateTag': ['isLoggedIn', 'isEditor'],
     'getTag': true,
     'getTagList': true,

@@ -7,6 +7,7 @@ import Commit from './Commit';
 import Contact from './Contact';
 import Critique from './Critique';
 import Event from './Event';
+import EventContributor from './EventContributor';
 import EventStackNews from './EventStackNews';
 import EventTag from './EventTag';
 import HeaderImage from './HeaderImage';
@@ -32,6 +33,7 @@ export {
   Contact,
   Critique,
   Event,
+  EventContributor,
   EventStackNews,
   EventTag,
   HeaderImage,
