@@ -1,7 +1,7 @@
 import { RedstoneRequest, RedstoneResponse } from '@Types';
 import { StackService } from '@Services';
 
-async function createStack (req: RedstoneRequest, res: RedstoneResponse) {
+async function createStack(req: RedstoneRequest, res: RedstoneResponse) {
   const name = req.params.eventName;
   const data = req.body;
 

@@ -26,6 +26,7 @@ import EventTag from './EventTag';
 import Tag from './Tag';
 import Record from './Record';
 import Client from './Client';
+import EventContributor from './EventContributor';
 
 @Table({
   modelName: 'event',
@@ -130,7 +131,7 @@ class Event extends Model<Event> {
     editors: number[];
     viewers: number[];
   };
-  contributors?: Client[];
+  contributors?: EventContributor[];
   contributorIdList?: number[];
   time?: Date;
 }

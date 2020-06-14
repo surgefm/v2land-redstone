@@ -5,6 +5,7 @@ import findEvent from './findEvent';
 import forkEvent from './forkEvent';
 import generatePinyin from './generatePinyin';
 import getContribution from './getContribution';
+import getContributors from './getContributors';
 import getEventId from './getEventId';
 import getEventList from './getEventList';
 import removeNews from './removeNews';
@@ -22,6 +23,7 @@ export {
   forkEvent,
   generatePinyin,
   getContribution,
+  getContributors,
   getEventId,
   getEventList,
   removeNews,

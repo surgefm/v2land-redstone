@@ -4,6 +4,7 @@ import * as EventService from '../EventService';
 import * as RecordService from '../RecordService';
 import * as RedisService from '../RedisService';
 import * as UtilService from '../UtilService';
+import * as ContributionService from '../ContributionService';
 import { RedstoneError, ResourceNotFoundErrorType, InvalidInputErrorType } from '@Types';
 import { Transaction } from 'sequelize';
 import _ from 'lodash';
@@ -66,6 +67,13 @@ async function makeCommit(
       diff: [],
       parentId: parentCommit ? parentCommit.id : null,
     }, { transaction });
+
+    await ContributionService.generateCommitContributionData(commit, { transaction });
+    commit.data = {
+      ...commit.data,
+      contributors: await EventService.getContributors(eventObj.id),
+    };
+    await commit.save({ transaction });
 
     await RecordService.create({
       model: 'Event',

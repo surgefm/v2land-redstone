@@ -21,11 +21,13 @@ SET row_security = off;
 CREATE TABLE "eventContributor" (
 	"eventId" integer NOT NULL,
 	"contributorId" integer NOT NULL,
-	"points" integer NOT NULL,
+    "commitId" integer NOT NULL,
+    "parentId" integer,
+	"points" double precision NOT NULL,
 	"createdAt" timestamp without time zone,
 	"updatedAt" timestamp without time zone,
-	PRIMARY KEY ("eventId", "contributorId")
-)
+	PRIMARY KEY ("eventId", "commitId", "contributorId")
+);
 
 --
 -- TOC entry 607 (class 1247 OID 37511)
