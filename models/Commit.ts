@@ -10,6 +10,7 @@ import {
   Default,
 } from 'sequelize-typescript';
 
+import { EventObj } from '@Types';
 import Client from './Client';
 import Event from './Event';
 
@@ -26,7 +27,7 @@ class Commit extends Model<Commit> {
   description?: string;
 
   @Column(DataType.JSONB)
-  data: Event;
+  data: EventObj;
 
   @Default(false)
   @Column(DataType.BOOLEAN)

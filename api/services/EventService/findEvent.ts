@@ -1,8 +1,9 @@
-import { Event, HeaderImage, Stack, News, Tag, Sequelize, Client, Record } from '@Models';
+import { Event, HeaderImage, Stack, News, Tag, Sequelize, Client } from '@Models';
 import { EventObj } from '@Types';
 import * as AccessControlService from '@Services/AccessControlService';
 import { Op, Transaction } from 'sequelize';
 import _ from 'lodash';
+import getContributors from './getContributors';
 
 interface FindEventOptions {
   eventOnly?: boolean;
@@ -148,33 +149,7 @@ async function findEvent(
     (stack.news as News[]).sort((a, b) => (new Date(a.time).getTime() - new Date(b.time).getTime()));
   }
 
-  const contributionCount: { [index: number]: number } = {};
-  const records = await Record.findAll({
-    where: {
-      model: { [Op.or]: ['Event', 'EventStackNews'] },
-      target: event.id,
-    },
-    transaction,
-  });
-  for (const record of records) {
-    contributionCount[record.owner] = (contributionCount[record.owner] || 0) + 1;
-  }
-  ((event.stacks || []) as Stack[]).map(async stack => {
-    const stackRecords = await Record.findAll({
-      where: {
-        model: { [Op.or]: ['Stack', 'EventStackNews'] },
-        target: stack.id,
-      },
-      transaction,
-    });
-    for (const record of stackRecords) {
-      contributionCount[record.owner] = (contributionCount[record.owner] || 0) + 1;
-    }
-  });
-
-  const contributorIdList = Object.keys(contributionCount).filter(id => id !== 'null');
-  contributorIdList.sort((a, b) => contributionCount[+a] - contributionCount[+b]);
-  event.contributorIdList = contributorIdList.map(id => +id);
+  event.contributors = await getContributors(event.id, { transaction });
 
   return event;
 }

@@ -1,7 +1,7 @@
 import { Socket } from 'socket.io';
 import { sequelize, Stack } from '@Models';
 import _ from 'lodash';
-import { StackService, AccessControlService } from '@Services';
+import { StackService, AccessControlService, RecordService } from '@Services';
 
 import getRoomName from './getRoomName';
 
@@ -35,6 +35,13 @@ export default function updateStackOrders(socket: Socket) {
         transaction,
       }));
       await Promise.all(queue);
+      await RecordService.update({
+        model: 'Event',
+        target: eventId,
+        owner: clientId,
+        action: 'updateStackOrders',
+      }, { transaction });
+
       socket.in(getRoomName(eventId)).emit('update stack orders', {
         eventId,
         stacks,

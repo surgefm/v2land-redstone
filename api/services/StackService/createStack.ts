@@ -43,6 +43,7 @@ async function createStack(eventId: number | string, data: StackObj, clientId: n
       model: 'stack',
       data,
       target: stack.id,
+      subtarget: stack.eventId,
       owner: clientId,
       action: 'createStack',
     }, { transaction });

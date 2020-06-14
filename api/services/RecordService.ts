@@ -30,21 +30,21 @@ const refineData = (data: RecordData) => {
 /**
  * model, action, target, owner, data, before
  */
-export async function create(data: RecordData, options: CreateOptions) {
+export async function create(data: RecordData, options?: CreateOptions) {
   return Record.create({
     ...refineData(data),
     operation: 'create',
   }, options);
 }
 
-export async function update(data: RecordData, options: CreateOptions) {
+export async function update(data: RecordData, options?: CreateOptions) {
   return Record.create({
     ...refineData(data),
     operation: 'update',
   }, options);
 }
 
-export async function destroy(data: RecordData, options: CreateOptions) {
+export async function destroy(data: RecordData, options?: CreateOptions) {
   return Record.create({
     ...refineData(data),
     operation: 'destroy',
