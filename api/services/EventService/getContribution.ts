@@ -1,8 +1,9 @@
 import { Client, Record } from '@Models';
 import { SimplifiedEventInterface } from '@Types';
+import * as ClientService from '@Services/ClientService';
 import { Op } from 'sequelize';
 
-async function getContribution (event: SimplifiedEventInterface, withData = true) {
+async function getContribution(event: SimplifiedEventInterface, withData = true) {
   const attributes = ['model', 'target', 'operation', 'owner'];
   if (withData) {
     attributes.push('before');
@@ -29,7 +30,7 @@ async function getContribution (event: SimplifiedEventInterface, withData = true
     },
     include: [{
       model: Client,
-      attributes: ['username', 'role', 'id'],
+      attributes: ClientService.sanitizedFields,
     }],
     order: [['updatedAt', 'DESC']],
   });

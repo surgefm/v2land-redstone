@@ -19,6 +19,7 @@ export default async function initialize(): Promise<any> {
 
   // Define admins’ permission
   await addRoleParents(admins, editors);
+  await allow(contributors, 'all-events', ['view', 'edit']);
   await allow(admins, 'no-admin-roles', ['view', 'create', 'edit', 'delete']);
   await allow(admins, 'admin-roles', 'view');
 }

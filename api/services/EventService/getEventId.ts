@@ -6,6 +6,7 @@ import _ from 'lodash';
 async function getEventId(eventName: string | number | { [key: string]: string }, clientName?: string | number): Promise<number> {
   let name = eventName as string;
   let username = clientName;
+
   if (typeof eventName === 'object') {
     name = eventName.eventName;
     username = eventName.username;

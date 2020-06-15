@@ -1,5 +1,6 @@
 import { Record, Client } from '@Models';
 import { StackObj } from '@Types';
+import * as ClientService from '@Services/ClientService';
 import { Op, Transaction } from 'sequelize';
 
 async function getContribution(stack: StackObj, withData = true, { transaction }: {
@@ -22,7 +23,7 @@ async function getContribution(stack: StackObj, withData = true, { transaction }
     include: [{
       model: Client,
       as: 'ownedBy',
-      attributes: ['username', 'role', 'id'],
+      attributes: ClientService.sanitizedFields,
     }],
     transaction,
   });

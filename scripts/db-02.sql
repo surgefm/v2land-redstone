@@ -707,7 +707,7 @@ CREATE TABLE public.commit (
     description text,
     data jsonb,
     diff jsonb,
-    "time" time with time zone,
+    "time" timestamp with time zone,
     "parentId" integer,
     "authorId" integer,
     "eventId" integer,
