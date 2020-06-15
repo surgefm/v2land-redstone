@@ -24,6 +24,8 @@ import loadSequelize from './loadSequelize';
 import loadAcl from '@Services/AccessControlService/initialize';
 import { loadSocket } from './sockets';
 import { errorHandler } from '@Responses';
+import { Event } from '@Models';
+import { ContributionService } from '@Services';
 
 const app = express();
 const server = Http.createServer(app);
@@ -53,6 +55,11 @@ export async function liftServer(app: Express) {
   app.use(errorHandler);
 
   loadSocket(socket);
+
+  const events = await Event.findAll();
+  for (const event of events) {
+    await ContributionService.generateAllCommitContributionData(event.id);
+  }
 
   if (process.env.NODE_ENV !== 'test') {
     server.listen(1337, () => {

@@ -83,7 +83,7 @@ async function generateCommitContributionData(commit: Commit, { transaction }: {
       }
       return a.action > b.action ? 1 : -1;
     });
-    const clientIds = _.uniq(records.map(r => r.owner));
+    const clientIds = _.uniq(records.map(r => r.owner).filter(i => i));
     const clients: { [index: number]: Partial<EventContributor> } = {};
     for (const clientId of clientIds) {
       const data = {
@@ -94,17 +94,23 @@ async function generateCommitContributionData(commit: Commit, { transaction }: {
         parentId: undefined as number,
       };
       if (commit.parentId) {
-        const previousCount = await EventContributor.findOne({
-          where: {
-            eventId: commit.eventId,
-            contributorId: clientId,
-          },
-          order: [['createdAt', 'DESC']],
-          transaction,
-        });
-        if (previousCount) {
-          data.parentId = previousCount.id;
-          data.points = previousCount.points;
+        let { parentId } = commit;
+        while (parentId) {
+          const previousCount = await EventContributor.findOne({
+            where: {
+              eventId: commit.eventId,
+              contributorId: clientId,
+              commitId: parentId,
+            },
+            transaction,
+          });
+          if (previousCount) {
+            data.parentId = previousCount.id;
+            data.points = previousCount.points;
+            break;
+          }
+          const parentCommit = await Commit.findByPk(parentId, { transaction });
+          parentId = parentCommit.parentId;
         }
       }
       clients[clientId] = data;
@@ -112,6 +118,7 @@ async function generateCommitContributionData(commit: Commit, { transaction }: {
 
     for (let i = 0; i < records.length; i++) {
       const record = records[i];
+      if (!record.owner) continue;
       const nextRecord = records[i + 1] || {} as Record;
       if (record.action === 'updateStackOrders' && nextRecord.action === 'updateStackOrders' && record.owner === nextRecord.owner) {
         continue;
@@ -142,7 +149,7 @@ async function generateCommitContributionData(commit: Commit, { transaction }: {
         where: {
           eventId: commit.eventId,
           commitId: commit.id,
-          clientId,
+          contributorId: clientId,
         },
         transaction,
       });
