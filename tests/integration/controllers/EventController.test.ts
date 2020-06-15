@@ -2,16 +2,17 @@
 import request from 'supertest';
 import urlencode from 'urlencode';
 import assert from 'assert';
-import { Client, Event, HeaderImage, sequelize } from '@Models';
-import { AccessControlService } from '@Services';
+import { Client, Event, Stack, News, EventStackNews, HeaderImage, sequelize } from '@Models';
+import { AccessControlService, CommitService } from '@Services';
 import app from '~/app';
 
 let agent: request.SuperTest<request.Test>;
 let clientId = 0;
 const testEmail = process.env.TEST_EMAIL ? process.env.TEST_EMAIL : 'vincent@langchao.org';
-const testUsername = '计量经济学家的AI';
+const testUsername = 'VincentAI';
 
 describe('EventController', function() {
+  let event: Event;
   this.timeout(10000);
   describe('createEvent', function() {
     before(async function() {
@@ -22,12 +23,12 @@ describe('EventController', function() {
 
       const client = await Client.create({
         username: testUsername,
+        nickname: testUsername,
         password: '$2b$10$8njIkPFgDouZsKXYrkYF4.xqShsOPMK9WHEU7aou4FAeuvzb4WRmi',
         email: testEmail,
-        role: 'admin',
       });
 
-      await AccessControlService.addUserRoles(client.id, 'admins');
+      await AccessControlService.addUserRoles(client.id, AccessControlService.roles.admins);
       clientId = client.id;
       await agent
         .post('/client/login')
@@ -44,8 +45,10 @@ describe('EventController', function() {
           name: '浪潮今天发布啦',
           description: '浪潮今天发布啦',
         })
-        .expect(201)
-        .end(done);
+        .expect(201, undefined, (err, res) => {
+          event = res.body.event;
+          done();
+        });
     });
 
     it('event name cannot be duplicate', function(done) {
@@ -63,7 +66,7 @@ describe('EventController', function() {
 
     it('should update event rejected', function(done) {
       agent
-        .put(`/event/${urlencode('浪潮今天发布啦')}`)
+        .put(`/event/${event.id}`)
         .send({
           status: 'rejected',
         })
@@ -73,7 +76,7 @@ describe('EventController', function() {
 
     it('should update event admitted success', function(done) {
       agent
-        .put(`/event/${urlencode('浪潮今天发布啦')}`)
+        .put(`/event/${event.id}`)
         .send({
           status: 'admitted',
         })
@@ -83,7 +86,7 @@ describe('EventController', function() {
 
     it('should make event commit success', function(done) {
       agent
-        .post(`/event/${urlencode('浪潮今天发布啦')}/commit`)
+        .post(`/event/${event.id}/commit`)
         .send({
           summary: 'yoyo',
         })
@@ -103,14 +106,14 @@ describe('EventController', function() {
 
     it('should return success after getting the event', function(done) {
       agent
-        .get(`/event/${urlencode('浪潮今天发布啦')}`)
+        .get(`/event/@${testUsername}/${urlencode('浪潮今天发布啦')}`)
         .expect(200)
         .end(done);
     });
 
     it('should return 404 when there is no such event', function(done) {
       agent
-        .get(`/event/${urlencode('浪潮今天没有发布')}`)
+        .get(`/event/@${testUsername}/${urlencode('浪潮今天没有发布')}`)
         .expect(404)
         .end(done);
     });
@@ -130,7 +133,7 @@ describe('EventController', function() {
         },
       });
 
-      const event = await Event.create({
+      event = await Event.create({
         name: '浪潮今天发布了吗？',
         description: '浪潮今天发布了吗？',
       });
@@ -153,7 +156,7 @@ describe('EventController', function() {
 
     it('should return success after creating header image', function(done) {
       agent
-        .post(`/event/${urlencode('浪潮今天发布了吗？')}/header_image`)
+        .post(`/event/${event.id}/header_image`)
         .send({
           imageUrl: 'https://assets.v2land.net/750x200/default.jpg',
           source: '浪潮',
@@ -164,7 +167,7 @@ describe('EventController', function() {
 
     it('should return success after updating header image', function(done) {
       agent
-        .put(`/event/${urlencode('浪潮今天发布了吗？')}/header_image`)
+        .put(`/event/${event.id}/header_image`)
         .send({
           imageUrl: 'https://assets.v2land.net/750x300/default.jpg',
           source: '浪潮',
@@ -175,7 +178,7 @@ describe('EventController', function() {
 
     it('should not return success when updating header image with wrong format', function(done) {
       agent
-        .put(`/event/${urlencode('浪潮今天发布了吗？')}/header_image`)
+        .put(`/event/${event.id}/header_image`)
         .send({
           imageUrl: 'hfdshjk.jpg',
           source: '浪潮',
@@ -189,21 +192,34 @@ describe('EventController', function() {
     before(async function() {
       await sequelize.query(`DELETE FROM commit`);
       await sequelize.query(`DELETE FROM event`);
-      await Event.create({
-        name: '浪潮测试1',
-        status: 'admitted',
-        description: '浪潮测试1',
-      });
-      await Event.create({
-        name: '浪潮测试2',
-        status: 'admitted',
-        description: '浪潮测试2',
-      });
-      await Event.create({
-        name: '浪潮测试3',
-        status: 'admitted',
-        description: '浪潮测试3',
-      });
+      for (let i = 0; i < 3; i++) {
+        event = await Event.create({
+          name: '浪潮测试' + (i + 1),
+          status: 'admitted',
+          description: '浪潮测试1',
+        });
+        const stack = await Stack.create({
+          eventId: event.id,
+          title: 'yoyo',
+          status: 'admitted',
+          order: 1,
+          time: new Date(),
+        });
+        const news = await News.create({
+          title: 'abc',
+          source: 'Surge',
+          abstract: 'S U R G E',
+          time: new Date(),
+          url: 'https://surge.fm/' + event.id,
+          status: 'admitted',
+        });
+        await EventStackNews.create({
+          eventId: event.id,
+          stackId: stack.id,
+          newsId: news.id,
+        });
+        await CommitService.makeCommit(event.id, clientId, 'hey');
+      }
     });
 
     it('should have list', async function() {

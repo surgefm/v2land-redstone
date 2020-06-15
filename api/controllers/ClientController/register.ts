@@ -48,13 +48,13 @@ async function register(req: RedstoneRequest, res: RedstoneResponse) {
       nickname: data.nickname,
       password: hash,
       email: data.email,
-      role: 'contributor',
     }, {
       raw: true,
       transaction,
     });
 
     await AccessControlService.allowClientToEditRole(client.id, client.id);
+    await AccessControlService.addUserRoles(client.id, AccessControlService.roles.contributors);
     const verificationToken = ClientService.tokenGenerator();
 
     await Record.create({

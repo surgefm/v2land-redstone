@@ -1,5 +1,4 @@
 import request from 'supertest';
-import urlencode from 'urlencode';
 import assert from 'assert';
 import { Client, Event, sequelize } from '@Models';
 import app from '~/app';
@@ -8,10 +7,11 @@ import { AccessControlService } from '@Services';
 let agent: request.SuperTest<request.Test>;
 
 const testEmail = process.env.TEST_EMAIL ? process.env.TEST_EMAIL : 'vincent@langchao.org';
-const testUsername = '计量经济学家的AI';
+const testUsername = 'CCAVAI';
 
 describe('StackController', function() {
   const stacks: ({ id: number })[] = [];
+  let event: Event;
   describe('createEvent', function() {
     before(async function() {
       agent = request.agent(app);
@@ -23,9 +23,9 @@ describe('StackController', function() {
 
       const client = await Client.create({
         username: testUsername,
+        nickname: testUsername,
         password: '$2b$10$8njIkPFgDouZsKXYrkYF4.xqShsOPMK9WHEU7aou4FAeuvzb4WRmi',
         email: testEmail,
-        role: 'admin',
       });
 
       await AccessControlService.addUserRoles(client.id, 'editors');
@@ -37,7 +37,7 @@ describe('StackController', function() {
           password: '666',
         });
 
-      const event = await Event.create({
+      event = await Event.create({
         name: '小熊维尼',
         description: '吃蜂蜜',
         status: 'admitted',
@@ -47,7 +47,7 @@ describe('StackController', function() {
 
     it('should create stack successfully', async function() {
       const resp1 = await agent
-        .post(`/event/${urlencode('小熊维尼')}/stack`)
+        .post(`/event/${event.id}/stack`)
         .send({
           title: '111',
           description: '111',
@@ -59,7 +59,7 @@ describe('StackController', function() {
       stacks.push(resp1.body.stack);
 
       const resp2 = await agent
-        .post(`/event/${urlencode('小熊维尼')}/stack`)
+        .post(`/event/${event.id}/stack`)
         .send({
           title: '222',
           description: '222',
@@ -74,7 +74,7 @@ describe('StackController', function() {
     it('should update stack successfully', async function() {
       for (const stack of stacks) {
         const res = await agent
-          .post(`/event/${urlencode('小熊维尼')}/news`)
+          .post(`/event/${event.id}/news`)
           .send({
             url: `https://langchao.org/${Date.now()}`,
             source: 'source',
@@ -102,7 +102,7 @@ describe('StackController', function() {
 
     it('should get stacks successfully', async function() {
       const { body } = await agent
-        .get(`/event/${urlencode('小熊维尼')}`)
+        .get(`/event/${event.id}`)
         .expect(200);
 
       const { stacks } = body;

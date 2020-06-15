@@ -21,6 +21,7 @@ describe('ClientController', function() {
         .post('/client/register')
         .send({
           username: 'testRegister',
+          nickname: 'testRegister',
           password: 'testPassword1',
           email: testEmail,
         })
@@ -40,6 +41,7 @@ describe('ClientController', function() {
         .post('/client/register')
         .send({
           username: 'testChangePwd',
+          nickname: 'testChangePwd',
           password: 'testChangePassword1',
           email: testEmail,
         })
@@ -92,6 +94,7 @@ describe('ClientController', function() {
         .post('/client/register')
         .send({
           username: 'testAccountLogin',
+          nickname: 'testAccountLogin',
           password: 'testPassword1',
           email: testEmail,
         })
