@@ -56,11 +56,6 @@ export async function liftServer(app: Express) {
 
   loadSocket(socket);
 
-  const events = await Event.findAll();
-  for (const event of events) {
-    await ContributionService.generateAllCommitContributionData(event.id);
-  }
-
   if (process.env.NODE_ENV !== 'test') {
     server.listen(1337, () => {
       console.log('V2land Redstone started');
