@@ -20,10 +20,18 @@ async function generateCommitContributionData(commit: Commit, { transaction }: {
     const eventContributionRecords = await Record.findAll({
       where: {
         ...timeConstraint,
-        id: commit.eventId,
-        action: {
-          [Op.or]: ['createEvent', 'addNewsToEvent', 'updateStackOrders'],
-        },
+        [Op.or]: [
+          {
+            target: commit.eventId,
+            action: {
+              [Op.or]: ['createEvent', 'addNewsToEvent', 'updateStackOrders'],
+            },
+          },
+          {
+            subtarget: commit.eventId,
+            action: 'forkEvent',
+          },
+        ],
       },
       transaction,
     });
@@ -110,20 +118,15 @@ async function generateCommitContributionData(commit: Commit, { transaction }: {
       }
       switch (record.action) {
       case 'createEvent':
+      case 'forkEvent':
         clients[record.owner].points += 5;
         break;
       case 'addNewsToEvent':
         clients[record.owner].points += 2;
-        break;
-      case 'createStack':
         clients[record.owner].points += 2;
         break;
       case 'addNewsToStack':
-        clients[record.owner].points += 1;
-        break;
       case 'updateStackOrders':
-        clients[record.owner].points += 1;
-        break;
       case 'inviteClientToNewsroom':
         clients[record.owner].points += 1;
         break;

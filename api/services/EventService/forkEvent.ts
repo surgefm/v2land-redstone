@@ -1,10 +1,12 @@
 import { Event, EventStackNews, HeaderImage, Stack, EventTag, Client, Commit } from '@Models';
 import findEvent from './findEvent';
 import generatePinyin from './generatePinyin';
+import getContributors from './getContributors';
 import * as UtilService from '../UtilService';
 import * as RecordService from '../RecordService';
 import * as RedisService from '../RedisService';
 import * as CommitService from '../CommitService';
+import * as ContributionService from '../ContributionService';
 import { RedstoneError, ResourceNotFoundErrorType } from '@Types';
 import { Transaction } from 'sequelize';
 import _ from 'lodash';
@@ -92,14 +94,12 @@ async function forkEvent(
       summary,
       data: newEventData,
       description: `${commit.summary}\n\n${commit.description}`,
-      parentId: commit.id,
       authorId: user.id,
       eventId: newEvent.id,
       isForkCommit: true,
       diff: [],
       time: forkTime.toISOString().replace('T', ' ').replace('Z', ' +00:00'),
     }, { transaction });
-    await RedisService.set(`commit-${newEvent.id}`, newCommit.get({ plain: true }));
 
     await RecordService.create({
       model: 'Event',
@@ -110,6 +110,12 @@ async function forkEvent(
       createdAt: forkTime,
       updatedAt: forkTime,
     }, { transaction });
+
+    await ContributionService.generateCommitContributionData(newCommit, { transaction });
+    newCommit.data.contributors = await getContributors(newEvent.id, { transaction });
+    newCommit.parentId = commit.id;
+    await newCommit.save({ transaction });
+    await RedisService.set(`commit-${newEvent.id}`, newCommit.get({ plain: true }));
   }, transaction);
 
   return newEvent;
