@@ -18,17 +18,6 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
-CREATE TABLE "eventContributor" (
-	"eventId" integer NOT NULL,
-	"contributorId" integer NOT NULL,
-    "commitId" integer NOT NULL,
-    "parentId" integer,
-	"points" double precision NOT NULL,
-	"createdAt" timestamp without time zone,
-	"updatedAt" timestamp without time zone,
-	PRIMARY KEY ("eventId", "commitId", "contributorId")
-);
-
 --
 -- TOC entry 607 (class 1247 OID 37511)
 -- Name: enum_auth_site; Type: TYPE; Schema: public; Owner: v2land
@@ -543,6 +532,13 @@ CREATE SEQUENCE public.auth_id_seq
 
 ALTER TABLE public.auth_id_seq OWNER TO v2land;
 
+CREATE SEQUENCE public."eventContributor_id_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
 --
 -- TOC entry 3547 (class 0 OID 0)
 -- Dependencies: 231
@@ -841,6 +837,20 @@ CREATE TABLE public.event (
 
 
 ALTER TABLE public.event OWNER TO v2land;
+
+CREATE TABLE public."eventContributor" (
+    "id" integer NOT NULL,
+	"eventId" integer NOT NULL,
+	"contributorId" integer NOT NULL,
+    "commitId" integer,
+    "parentId" integer,
+	"points" double precision NOT NULL,
+	"createdAt" timestamp without time zone,
+	"updatedAt" timestamp without time zone,
+	PRIMARY KEY ("id")
+);
+
+ALTER TABLE public."eventContributor" OWNER TO v2land;
 
 --
 -- TOC entry 265 (class 1259 OID 38333)
@@ -1330,6 +1340,8 @@ ALTER TABLE ONLY public.commit ALTER COLUMN id SET DEFAULT nextval('public.commi
 --
 
 ALTER TABLE ONLY public.event ALTER COLUMN id SET DEFAULT nextval('public.event_id_seq'::regclass);
+
+ALTER TABLE ONLY public."eventContributor" ALTER COLUMN id SET DEFAULT nextval('public."eventContributor_id_seq"'::regclass);
 
 
 --
