@@ -1,4 +1,4 @@
-import { Event, HeaderImage, Stack, News, Tag, Sequelize, Client } from '@Models';
+import { Event, HeaderImage, Stack, News, Tag, Sequelize, Client, Site, SiteAccount } from '@Models';
 import { EventObj } from '@Types';
 import * as AccessControlService from '@Services/AccessControlService';
 import { Op, Transaction } from 'sequelize';
@@ -91,6 +91,16 @@ async function findEvent(
           order: [['time', 'ASC']],
           through: { attributes: [] },
           required: false,
+          include: [{
+            model: Site,
+            as: 'site',
+            required: false,
+            include: [{
+              model: SiteAccount,
+              as: 'siteAccount',
+              required: false,
+            }],
+          }],
         }, {
           model: Event,
           as: 'stackEvent',

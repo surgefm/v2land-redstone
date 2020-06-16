@@ -17,6 +17,8 @@ import Record from './Record';
 import Report from './Report';
 import ReportNotification from './ReportNotification';
 import ResourceLock from './ResourceLock';
+import Site from './Site';
+import SiteAccount from './SiteAccount';
 import Stack from './Stack';
 import Subscription from './Subscription';
 import Tag from './Tag';
@@ -43,6 +45,8 @@ export {
   Report,
   ReportNotification,
   ResourceLock,
+  Site,
+  SiteAccount,
   Stack,
   Subscription,
   Tag,

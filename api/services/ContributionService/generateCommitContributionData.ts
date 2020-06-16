@@ -119,8 +119,8 @@ async function generateCommitContributionData(commit: Commit, { transaction }: {
     for (let i = 0; i < records.length; i++) {
       const record = records[i];
       if (!record.owner) continue;
-      const nextRecord = records[i + 1] || {} as Record;
-      if (record.action === 'updateStackOrders' && nextRecord.action === 'updateStackOrders' && record.owner === nextRecord.owner) {
+      const nextRecord = records[i + 1];
+      if (nextRecord && record.action === 'updateStackOrders' && nextRecord.action === 'updateStackOrders' && record.owner === nextRecord.owner) {
         continue;
       }
       switch (record.action) {
@@ -154,7 +154,8 @@ async function generateCommitContributionData(commit: Commit, { transaction }: {
         transaction,
       });
       if (eventContributor) {
-        await eventContributor.update(clients[clientId], { transaction });
+        eventContributor.points = clients[clientId].points;
+        await eventContributor.save({ transaction });
       } else {
         await EventContributor.create(clients[clientId], { transaction });
       }

@@ -517,6 +517,53 @@ CREATE TABLE public.auth (
 
 ALTER TABLE public.auth OWNER TO v2land;
 
+CREATE SEQUENCE public."site_id_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+CREATE TABLE public.site
+(
+    id integer NOT NULL DEFAULT nextval('public."site_id_seq"'::regclass),
+    name character varying COLLATE pg_catalog."default" NOT NULL,
+    domains text[] COLLATE pg_catalog."default" NOT NULL,
+    "shouldParseFulltext" boolean NOT NULL DEFAULT true,
+    "dynamicLoading" boolean NOT NULL DEFAULT false,
+    "rssUrls" text[] COLLATE pg_catalog."default",
+    "rssUrl" text COLLATE pg_catalog."default",
+    "updatedAt" timestamp without time zone,
+    "createdAt" timestamp without time zone,
+    homepage text COLLATE pg_catalog."default",
+    icon text COLLATE pg_catalog."default",
+    description text COLLATE pg_catalog."default",
+    PRIMARY KEY (id)
+);
+
+ALTER TABLE public.site OWNER to v2land;
+
+CREATE SEQUENCE public."siteAccount_id_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+CREATE TABLE public."siteAccount"
+(
+    id integer NOT NULL DEFAULT nextval('public."siteAccount_id_seq"'::regclass),
+    "siteId" integer,
+    avatar text,
+    username text NOT NULL,
+    homepage text,
+    "createdAt" timestamp with time zone,
+    "updatedAt" timestamp with time zone,
+    PRIMARY KEY (id)
+);
+
+ALTER TABLE public."siteAccount" OWNER to v2land;
+
 --
 -- TOC entry 231 (class 1259 OID 37808)
 -- Name: auth_id_seq; Type: SEQUENCE; Schema: public; Owner: v2land

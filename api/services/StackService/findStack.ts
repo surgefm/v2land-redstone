@@ -1,4 +1,4 @@
-import { News, Stack, Event } from '@Models';
+import { News, Stack, Event, Site, SiteAccount } from '@Models';
 import { StackObj } from '@Types';
 import getContribution from './getContribution';
 import { Transaction } from 'sequelize';
@@ -14,6 +14,16 @@ async function findStack(id: number, withContributionData = true, { transaction 
       order: [['time', 'ASC']],
       through: { attributes: [] },
       required: false,
+      include: [{
+        model: Site,
+        as: 'site',
+        required: false,
+        include: [{
+          model: SiteAccount,
+          as: 'siteAccount',
+          required: false,
+        }],
+      }],
     }, {
       model: Event,
       as: 'stackEvent',
