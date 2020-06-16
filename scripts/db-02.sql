@@ -1036,6 +1036,8 @@ CREATE TABLE public.news (
     status public.enum_news_status,
     comment text,
     id integer NOT NULL,
+    "siteId" integer,
+    "siteAccountId" integer,
     "createdAt" timestamp with time zone,
     "updatedAt" timestamp with time zone,
     "isInTemporaryStack" boolean

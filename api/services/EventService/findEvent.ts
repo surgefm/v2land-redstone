@@ -95,11 +95,10 @@ async function findEvent(
             model: Site,
             as: 'site',
             required: false,
-            include: [{
-              model: SiteAccount,
-              as: 'siteAccount',
-              required: false,
-            }],
+          }, {
+            model: SiteAccount,
+            as: 'siteAccount',
+            required: false,
           }],
         }, {
           model: Event,

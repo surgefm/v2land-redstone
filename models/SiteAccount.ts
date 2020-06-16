@@ -8,8 +8,10 @@ import {
   IsUrl,
   BelongsTo,
   ForeignKey,
+  HasMany,
 } from 'sequelize-typescript';
 import Site from './Site';
+import News from './News';
 
 @Table({
   modelName: 'siteAccount',
@@ -34,6 +36,9 @@ class SiteAccount extends Model<SiteAccount> {
 
   @BelongsTo(() => Site, 'siteId')
   site: Site;
+
+  @HasMany(() => News, 'siteAccountId')
+  news: News[];
 }
 
 export default SiteAccount;

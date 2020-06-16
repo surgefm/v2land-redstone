@@ -9,12 +9,16 @@ import {
   IsUrl,
   Length,
   BelongsToMany,
+  BelongsTo,
+  ForeignKey,
 } from 'sequelize-typescript';
 
 import Stack from './Stack';
 import Record from './Record';
 import EventStackNews from './EventStackNews';
 import Event from './Event';
+import Site from './Site';
+import SiteAccount from './SiteAccount';
 
 @Table({
   modelName: 'news',
@@ -57,6 +61,20 @@ class News extends Model<News> {
 
   @BelongsToMany(() => Event, () => EventStackNews)
   events: (Event & {EventStackNews: EventStackNews})[];
+
+  @ForeignKey(() => Site)
+  @Column(DataType.INTEGER)
+  siteId: number;
+
+  @BelongsTo(() => Site, 'siteId')
+  site: Site;
+
+  @ForeignKey(() => SiteAccount)
+  @Column(DataType.INTEGER)
+  siteAccountId: number;
+
+  @BelongsTo(() => SiteAccount, 'siteAccountId')
+  siteAccount: SiteAccount;
 
   contribution?: Record[];
 }
