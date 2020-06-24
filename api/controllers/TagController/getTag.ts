@@ -1,5 +1,6 @@
-import { Tag, Event, News } from '@Models';
+import { Tag, Event, News, Client } from '@Models';
 import { RedstoneRequest, RedstoneResponse } from '@Types';
+import { ClientService } from '@Services';
 
 async function getTag(req: RedstoneRequest, res: RedstoneResponse) {
   const tag = await Tag.findByPk(req.params.tagId, {
@@ -14,6 +15,12 @@ async function getTag(req: RedstoneRequest, res: RedstoneResponse) {
         required: false,
       }],
       required: false,
+    }, {
+      model: Client,
+      as: 'curators',
+      through: { attributes: [] },
+      required: false,
+      attributes: ClientService.sanitizedFields,
     }],
   });
 

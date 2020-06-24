@@ -9,6 +9,7 @@ import {
   Unique,
   Default,
   HasMany,
+  BelongsToMany,
 } from 'sequelize-typescript';
 import _ from 'lodash';
 
@@ -19,6 +20,8 @@ import Contact from './Contact';
 import Report from './Report';
 import AuthorizationCode from './AuthorizationCode';
 import AuthorizationAccessToken from './AuthorizationAccessToken';
+import Tag from './Tag';
+import TagCurator from './TagCurator';
 
 @Table({
   modelName: 'client',
@@ -120,6 +123,9 @@ class Client extends Model<Client> {
 
   @HasMany(() => AuthorizationAccessToken, 'owner')
   authorizationAccessTokens: AuthorizationAccessToken[];
+
+  @BelongsToMany(() => Tag, () => TagCurator)
+  tags: Array<Tag & {tagCurator: TagCurator}>;
 
   subscriptionCount?: number;
   isAdmin?: boolean;

@@ -24,7 +24,7 @@ async function createEvent(req: RedstoneRequest, res: RedstoneResponse) {
     });
   }
 
-  data.status = 'pending';
+  data.status = 'hidden';
 
   data.pinyin = await EventService.generatePinyin(data.name);
 

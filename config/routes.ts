@@ -73,6 +73,8 @@ export default {
   'POST /tag': 'TagController.createTag',
   'PUT /tag/:tagId': 'TagController.updateTag',
   'GET /tag/:tagId': 'TagController.getTag',
+  'POST /tag/:tagId/curator': 'TagController.addCurator',
+  'DELETE /tag/:tagId/curator/:curatorId': 'TagController.removeCurator',
 
   'GET /role/:clientId': 'RoleController.getClientRoles',
   'GET /role/:clientId/:resourceId/:action': 'RoleController.checkPermissionOnResource',

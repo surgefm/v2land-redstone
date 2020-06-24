@@ -5,7 +5,6 @@ import {
   TableOptions,
   ForeignKey,
   DataType,
-  PrimaryKey
 } from 'sequelize-typescript';
 import Event from './Event';
 import Client from './Client';

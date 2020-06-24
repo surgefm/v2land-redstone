@@ -1,6 +1,6 @@
 import { Tag, sequelize } from '@Models';
 import { RedstoneRequest, RedstoneResponse } from '@Types';
-import { RecordService } from '@Services';
+import { RecordService, EventService } from '@Services';
 
 async function createTag(req: RedstoneRequest, res: RedstoneResponse) {
   if (!req.body.name) {
@@ -20,9 +20,10 @@ async function createTag(req: RedstoneRequest, res: RedstoneResponse) {
       tag,
     });
   }
+  const slug = await EventService.generatePinyin(name);
 
   await sequelize.transaction(async transaction => {
-    tag = await Tag.create({ name, description }, { transaction });
+    tag = await Tag.create({ name, description, slug }, { transaction });
 
     await RecordService.create({
       data: tag,

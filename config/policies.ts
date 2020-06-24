@@ -9,7 +9,7 @@
  * below by its filename, minus the extension, (e.g. "authenticated")
  */
 
-import { hasPermission, hasEventPermission, hasStackPermission, hasEventPermissionForSomeStatus, hasRolePermission } from '@Policies';
+import { hasPermission, hasEventPermission, hasStackPermission, hasEventPermissionForSomeStatus, hasRolePermission, hasTagPermission } from '@Policies';
 
 export default {
   NewsController: {
@@ -104,9 +104,11 @@ export default {
 
   TagController: {
     'createTag': ['isLoggedIn'],
-    'updateTag': ['isLoggedIn', 'isEditor'],
+    'updateTag': ['isLoggedIn', hasTagPermission('edit', '用户没有更改该话题的权限')],
     'getTag': true,
     'getTagList': true,
+    'addCurator': ['isLoggedIn', 'isEditor'],
+    'removeCurator': ['isLoggedIn', 'isEditor'],
     '*': false,
   },
 
