@@ -1,4 +1,4 @@
-import { Commit, Client } from '@Models';
+import { Commit, Client, Event } from '@Models';
 import getLatestCommit from './getLatestCommit';
 import * as EventService from '../EventService';
 import * as RecordService from '../RecordService';
@@ -57,6 +57,13 @@ async function makeCommit(
 
   let commit: Commit;
   await UtilService.execWithTransaction(async transaction => {
+    if (eventObj.status === 'hidden' && !parentCommit) {
+      eventObj.status = 'admitted';
+      const e = await Event.findByPk(eventObj.id, { transaction });
+      e.status = 'admitted';
+      e.save({ transaction });
+    }
+
     commit = await Commit.create({
       authorId: author.id,
       eventId: eventObj.id,

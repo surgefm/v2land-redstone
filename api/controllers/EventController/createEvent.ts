@@ -1,5 +1,5 @@
 import { RedstoneRequest, RedstoneResponse } from '@Types';
-import { EventService, RecordService, NotificationService, CommitService, RedisService } from '@Services';
+import { EventService, RecordService, NotificationService, RedisService } from '@Services';
 import { Event, sequelize } from '@Models';
 import { setClientEventOwner } from '@Services/AccessControlService';
 
@@ -37,8 +37,6 @@ async function createEvent(req: RedstoneRequest, res: RedstoneResponse) {
       owner: req.session.clientId,
       target: event.id,
     }, { transaction });
-
-    await CommitService.makeCommit(event.id, req.session.clientId, 'Hello!', { transaction });
   });
 
   await setClientEventOwner(req.session.clientId, event.id);
