@@ -11,6 +11,12 @@ async function updateEvent(req: RedstoneRequest, res: RedstoneResponse) {
     });
   }
 
+  if (req.body.status && !req.currentClient.isEditor) {
+    return res.status(403).json({
+      message: '你没有修改事件状态的权限',
+    });
+  }
+
   if (!event) {
     return res.status(404).json({
       message: '未找到该事件',
