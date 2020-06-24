@@ -1324,8 +1324,10 @@ ALTER SEQUENCE public.subscription_id_seq OWNED BY public.subscription.id;
 
 CREATE TABLE public.tag (
     id integer NOT NULL,
-    name text,
+    name text NOT NULL,
+    slug text,
     description text,
+    "redirectToId" integer,
     "createdAt" timestamp with time zone,
     "updatedAt" timestamp with time zone,
     status public.enum_tag_status
@@ -1333,6 +1335,27 @@ CREATE TABLE public.tag (
 
 
 ALTER TABLE public.tag OWNER TO v2land;
+
+CREATE SEQUENCE public."tagCurator_id_seq"
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public."tagCurator_id_seq" OWNER TO v2land;
+
+CREATE TABLE public."tagCurator" (
+    id integer NOT NULL DEFAULT nextval('public."tagCurator_id_seq"'::regclass),
+    "tagId" integer NOT NULL,
+    "curatorId" integer NOT NULL,
+    primary key ("id")
+);
+
+
+ALTER TABLE public."tagCurator" OWNER TO v2land;
 
 --
 -- TOC entry 264 (class 1259 OID 37960)

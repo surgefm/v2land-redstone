@@ -5,6 +5,7 @@ import roles from './roles';
 export * from './EventAccessControl';
 export * from './NewsAccessControl';
 export * from './RoleAccessControl';
+export * from './TagAccessControl';
 export * from './operations';
 
 export {

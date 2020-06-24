@@ -6,11 +6,16 @@ import {
   TableOptions,
   AllowNull,
   Unique,
+  BelongsTo,
   BelongsToMany,
   Default,
+  ForeignKey,
 } from 'sequelize-typescript';
+
+import Client from './Client';
 import Event from './Event';
 import EventTag from './EventTag';
+import TagCurator from './TagCurator';
 
 @Table({
   modelName: 'tag',
@@ -23,14 +28,29 @@ class Tag extends Model<Tag> {
 
   @AllowNull
   @Column(DataType.TEXT)
+  slug: string;
+
+  @AllowNull
+  @Column(DataType.TEXT)
   description: string;
+
+  @AllowNull
+  @ForeignKey(() => Tag)
+  @Column(DataType.INTEGER)
+  redirectToId: number;
+
+  @BelongsTo(() => Tag)
+  redirectTo: Tag;
 
   @Default('visible')
   @Column(DataType.ENUM('visible', 'hidden'))
   status: string;
 
   @BelongsToMany(() => Event, () => EventTag)
-  events: Array<Event & {EventTag: EventTag}>;
+  events: Array<Event & {eventTag: EventTag}>;
+
+  @BelongsToMany(() => Client, () => TagCurator)
+  curators: Array<Client & {tagCurator: TagCurator}>;
 }
 
 export default Tag;

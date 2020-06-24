@@ -19,6 +19,7 @@ export * as SearchService from './SearchService';
 export * as SlackService from './SlackService';
 export * as StackService from './StackService';
 export * as SubscriptionService from './SubscriptionService';
+export * as TagService from './TagService';
 export * as TelegramService from './TelegramService';
 export * as TwitterService from './TwitterService';
 export * as UtilService from './UtilService';

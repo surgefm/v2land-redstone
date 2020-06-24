@@ -24,8 +24,6 @@ import loadSequelize from './loadSequelize';
 import loadAcl from '@Services/AccessControlService/initialize';
 import { loadSocket } from './sockets';
 import { errorHandler } from '@Responses';
-import { Event } from '@Models';
-import { ContributionService } from '@Services';
 
 const app = express();
 const server = Http.createServer(app);

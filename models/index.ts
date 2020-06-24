@@ -22,6 +22,7 @@ import SiteAccount from './SiteAccount';
 import Stack from './Stack';
 import Subscription from './Subscription';
 import Tag from './Tag';
+import TagCurator from './TagCurator';
 import { sequelize } from '~/loadSequelize';
 import Sequelize from 'sequelize';
 
@@ -50,6 +51,7 @@ export {
   Stack,
   Subscription,
   Tag,
+  TagCurator,
   sequelize,
   Sequelize,
 };
