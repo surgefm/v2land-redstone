@@ -35,14 +35,22 @@ async function updateTag(req: RedstoneRequest, res: RedstoneResponse) {
         message: '只有社区编辑或管理员可以更改话题重定向',
       });
     }
-    const redirectTo = await Tag.findByPk(req.body.redirectToId);
+    let redirectTo = await Tag.findByPk(req.body.redirectToId);
+    while (redirectTo.redirectToId) {
+      if (redirectTo.redirectToId === tag.id) {
+        return res.status(400).json({
+          message: '不可以设置循环重定向',
+        });
+      }
+      redirectTo = await Tag.findByPk(redirectTo.redirectToId);
+    }
     if (!redirectTo) {
       return res.status(404).json({
         message: '无法找到重定向话题',
       });
     }
-    tag.redirectToId = req.body.redirectToId;
-    dataChange.redirectToId = req.body.redirectToId;
+    tag.redirectToId = redirectTo.id;
+    dataChange.redirectToId = redirectTo.id;
   }
 
   if (req.body.status && req.body.status !== tag.status) {
@@ -75,6 +83,17 @@ async function updateTag(req: RedstoneRequest, res: RedstoneResponse) {
       action: 'updateTag',
       owner: req.session.clientId,
     }, { transaction });
+
+    if (dataChange.redirectToId) {
+      const redirectedFrom = await Tag.findAll({
+        where: { redirectToId: tag.id },
+        transaction,
+      });
+      await Promise.all(redirectedFrom.map(t => new Promise(resolve => {
+        t.redirectToId = tag.redirectToId;
+        t.save({ transaction }).then(resolve);
+      })));
+    }
 
     return res.status(201).json({
       message: '成功修改话题',
