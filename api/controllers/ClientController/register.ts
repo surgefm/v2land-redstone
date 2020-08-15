@@ -10,11 +10,11 @@ async function register(req: RedstoneRequest, res: RedstoneResponse) {
 
   if (!data.username || !data.email || !data.password || !data.nickname) {
     return res.status(400).json({
-      message: '缺少参数：username，email，nickname 或 password。',
+      message: res.__('Lack_arguments') + '： ' + 'username，email，nickname, password.',
     });
   }
 
-  ClientService.validatePassword(data.password);
+  ClientService.validatePassword(data.password, res);
 
   await sequelize.transaction(async transaction => {
     let client = await ClientService.findClient(data.username, {
@@ -29,8 +29,8 @@ async function register(req: RedstoneRequest, res: RedstoneResponse) {
 
     if (client) {
       const message = client.username === data.username
-        ? '该用户名已被占用'
-        : '该邮箱已被占用';
+        ? res.__('Username_used')
+        : res.__('Mail_address_used');
       return res.status(406).json({ message });
     }
 
@@ -85,7 +85,7 @@ async function register(req: RedstoneRequest, res: RedstoneResponse) {
     const clientObj: any = client.get({ plain: true });
     delete clientObj.password;
     res.status(201).json({
-      message: '注册成功，请在三天内至邮箱查收验证邮件',
+      message: res.__('Register_success'),
       client: clientObj,
     });
 

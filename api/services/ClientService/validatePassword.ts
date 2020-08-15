@@ -1,13 +1,13 @@
 import _ from 'lodash';
-import { RedstoneError, InvalidInputErrorType } from '@Types';
+import { RedstoneError, InvalidInputErrorType, RedstoneResponse } from '@Types';
 
-function validatePassword(value: string) {
+function validatePassword(value: string, response?: RedstoneResponse) {
   if (!_.isString(value)) {
-    throw new RedstoneError(InvalidInputErrorType, '密码应为字符串类型');
+    throw new RedstoneError(InvalidInputErrorType, response.__('Password_should_be_string'));
   } else if (value.length < 6 || value.length > 64) {
-    throw new RedstoneError(InvalidInputErrorType, '密码长度应在 6-64 个字符内');
+    throw new RedstoneError(InvalidInputErrorType, response.__('Password_length_invalid'));
   } else if (!(value.match(/[A-z]/i) && value.match(/[0-9]/))) {
-    throw new RedstoneError(InvalidInputErrorType, '密码应为英文字符和数字结合');
+    throw new RedstoneError(InvalidInputErrorType, response.__('Password_should_combine_num_alpha'));
   }
 }
 
