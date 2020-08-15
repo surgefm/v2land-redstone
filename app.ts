@@ -17,6 +17,8 @@ import session from 'express-session';
 import { sessionConfig, sessionStore } from '@Configs/session';
 import http from '@Configs/http';
 import cors from 'cors';
+import i18n from 'i18n';
+import cookieParser from 'cookie-parser';
 import securityConfig from '@Configs/security';
 
 import loadRoutes from './loadRoutes';
@@ -28,6 +30,12 @@ import { errorHandler } from '@Responses';
 const app = express();
 const server = Http.createServer(app);
 const socket = socketIO(server);
+
+i18n.configure({
+  locales: ['en', 'zh_Hans'],
+  directory: __dirname + '/assets/locales',
+  cookie: 'next-i18next',
+});
 
 export async function liftServer(app: Express) {
   await loadSequelize();
@@ -44,6 +52,8 @@ export async function liftServer(app: Express) {
     store: sessionStore(),
   });
   app.use(sess);
+  app.use(cookieParser());
+  app.use(i18n.init);
   app.use(http.middleware.bearerAuthentication);
   app.use(http.middleware.noCache);
 
