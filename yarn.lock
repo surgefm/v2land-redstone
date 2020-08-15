@@ -564,6 +564,13 @@
   dependencies:
     "@types/node" "*"
 
+"@types/cookie-parser@^1.4.2":
+  version "1.4.2"
+  resolved "https://registry.npm.taobao.org/@types/cookie-parser/download/@types/cookie-parser-1.4.2.tgz?cache=0&sync_timestamp=1596837967192&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40types%2Fcookie-parser%2Fdownload%2F%40types%2Fcookie-parser-1.4.2.tgz#e4d5c5ffda82b80672a88a4281aaceefb1bd9df5"
+  integrity sha1-5NXF/9qCuAZyqIpCgarO77G9nfU=
+  dependencies:
+    "@types/express" "*"
+
 "@types/cookiejar@*":
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/@types/cookiejar/-/cookiejar-2.1.1.tgz#90b68446364baf9efd8e8349bb36bd3852b75b80"
@@ -620,6 +627,11 @@
     "@types/express-serve-static-core" "*"
     "@types/qs" "*"
     "@types/serve-static" "*"
+
+"@types/i18n@^0.8.7":
+  version "0.8.7"
+  resolved "https://registry.npm.taobao.org/@types/i18n/download/@types/i18n-0.8.7.tgz#f8aa1eba769747568dcea94e57a96bc5f6a852b6"
+  integrity sha1-+KoeunaXR1aNzqlOV6lrxfaoUrY=
 
 "@types/ioredis@*":
   version "4.14.9"
@@ -2145,6 +2157,14 @@ convert-source-map@1.X, convert-source-map@^1.4.0, convert-source-map@^1.5.0, co
   dependencies:
     safe-buffer "~5.1.1"
 
+cookie-parser@^1.4.5:
+  version "1.4.5"
+  resolved "https://registry.npm.taobao.org/cookie-parser/download/cookie-parser-1.4.5.tgz#3e572d4b7c0c80f9c61daf604e4336831b5d1d49"
+  integrity sha1-PlctS3wMgPnGHa9gTkM2gxtdHUk=
+  dependencies:
+    cookie "0.4.0"
+    cookie-signature "1.0.6"
+
 cookie-signature@1.0.6:
   version "1.0.6"
   resolved "https://registry.yarnpkg.com/cookie-signature/-/cookie-signature-1.0.6.tgz#e303a882b342cc3ee8ca513a79999734dab3ae2c"
@@ -2324,6 +2344,13 @@ debug-fabulous@1.X:
     memoizee "0.4.X"
     object-assign "4.X"
 
+debug@*, debug@^4.0.1, debug@^4.1.0, debug@^4.1.1, debug@~4.1.0:
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/debug/-/debug-4.1.1.tgz#3b72260255109c6b589cee050f1d516139664791"
+  integrity sha512-pYAIzeRo8J6KPEaJ0VWOh5Pzkbw/RetuzehGM7QRRX5he4fPHx2rdKMB256ehJCkX+XRQm16eZLqLNS8RSZXZw==
+  dependencies:
+    ms "^2.1.1"
+
 debug@2.6.9, debug@^2.2.0, debug@^2.3.3, debug@~2.6.8:
   version "2.6.9"
   resolved "https://registry.yarnpkg.com/debug/-/debug-2.6.9.tgz#5d128515df134ff327e90a4c93f4e077a536341f"
@@ -2342,13 +2369,6 @@ debug@3.2.6, debug@3.X, debug@^3.1.0, debug@^3.2.6:
   version "3.2.6"
   resolved "https://registry.yarnpkg.com/debug/-/debug-3.2.6.tgz#e83d17de16d8a7efb7717edbe5fb10135eee629b"
   integrity sha512-mel+jf7nrtEl5Pn1Qx46zARXKDpBbvzezse7p7LqINmdoIk8PYP5SySaxEmYv6TZ0JyEKA1hsCId6DIhgITtWQ==
-  dependencies:
-    ms "^2.1.1"
-
-debug@^4.0.1, debug@^4.1.0, debug@^4.1.1, debug@~4.1.0:
-  version "4.1.1"
-  resolved "https://registry.yarnpkg.com/debug/-/debug-4.1.1.tgz#3b72260255109c6b589cee050f1d516139664791"
-  integrity sha512-pYAIzeRo8J6KPEaJ0VWOh5Pzkbw/RetuzehGM7QRRX5he4fPHx2rdKMB256ehJCkX+XRQm16eZLqLNS8RSZXZw==
   dependencies:
     ms "^2.1.1"
 
@@ -4101,6 +4121,18 @@ husky@^4.2.3:
     slash "^3.0.0"
     which-pm-runs "^1.0.0"
 
+i18n@^0.11.1:
+  version "0.11.1"
+  resolved "https://registry.npm.taobao.org/i18n/download/i18n-0.11.1.tgz?cache=0&sync_timestamp=1597053929314&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fi18n%2Fdownload%2Fi18n-0.11.1.tgz#f06a37afbb37bd3e9714ce15f436dccc6146ded2"
+  integrity sha1-8Go3r7s3vT6XFM4V9DbczGFG3tI=
+  dependencies:
+    debug "*"
+    make-plural "^6.2.1"
+    math-interval-parser "^2.0.1"
+    messageformat "^2.3.0"
+    mustache "^4.0.1"
+    sprintf-js "^1.1.2"
+
 iconv-lite@0.4.24, iconv-lite@^0.4.24, iconv-lite@^0.4.4, iconv-lite@~0.4.11:
   version "0.4.24"
   resolved "https://registry.yarnpkg.com/iconv-lite/-/iconv-lite-0.4.24.tgz#2022b4b25fbddc21d2f524974a474aafe733908b"
@@ -5616,6 +5648,18 @@ make-iterator@^1.0.0:
   dependencies:
     kind-of "^6.0.2"
 
+make-plural@^4.3.0:
+  version "4.3.0"
+  resolved "https://registry.npm.taobao.org/make-plural/download/make-plural-4.3.0.tgz#f23de08efdb0cac2e0c9ba9f315b0dff6b4c2735"
+  integrity sha1-8j3gjv2wysLgybqfMVsN/2tMJzU=
+  optionalDependencies:
+    minimist "^1.2.0"
+
+make-plural@^6.2.1:
+  version "6.2.2"
+  resolved "https://registry.npm.taobao.org/make-plural/download/make-plural-6.2.2.tgz#beb5fd751355e72660eeb2218bb98eec92853c6c"
+  integrity sha1-vrX9dRNV5yZg7rIhi7mO7JKFPGw=
+
 makeerror@1.0.x:
   version "1.0.11"
   resolved "https://registry.yarnpkg.com/makeerror/-/makeerror-1.0.11.tgz#e01a5c9109f2af79660e4e8b9587790184f5a96c"
@@ -5644,6 +5688,11 @@ matchdep@^2.0.0:
     micromatch "^3.0.4"
     resolve "^1.4.0"
     stack-trace "0.0.10"
+
+math-interval-parser@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.npm.taobao.org/math-interval-parser/download/math-interval-parser-2.0.1.tgz#e22cd6d15a0a7f4c03aec560db76513da615bed4"
+  integrity sha1-4izW0VoKf0wDrsVg23ZRPaYVvtQ=
 
 math-random@^1.0.1:
   version "1.0.4"
@@ -5692,6 +5741,25 @@ merge-stream@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/merge-stream/-/merge-stream-2.0.0.tgz#52823629a14dd00c9770fb6ad47dc6310f2c1f60"
   integrity sha512-abv/qOcuPfk3URPfDzmZU1LKmuw8kT+0nIHvKrKgFrwifol/doWcdA4ZqsWQ8ENrFKkd67Mfpo/LovbIUsbt3w==
+
+messageformat-formatters@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.npm.taobao.org/messageformat-formatters/download/messageformat-formatters-2.0.1.tgz#0492c1402a48775f751c9b17c0354e92be012b08"
+  integrity sha1-BJLBQCpId191HJsXwDVOkr4BKwg=
+
+messageformat-parser@^4.1.2:
+  version "4.1.3"
+  resolved "https://registry.npm.taobao.org/messageformat-parser/download/messageformat-parser-4.1.3.tgz#b824787f57fcda7d50769f5b63e8d4fda68f5b9e"
+  integrity sha1-uCR4f1f82n1Qdp9bY+jU/aaPW54=
+
+messageformat@^2.3.0:
+  version "2.3.0"
+  resolved "https://registry.npm.taobao.org/messageformat/download/messageformat-2.3.0.tgz#de263c49029d5eae65d7ee25e0754f57f425ad91"
+  integrity sha1-3iY8SQKdXq5l1+4l4HVPV/QlrZE=
+  dependencies:
+    make-plural "^4.3.0"
+    messageformat-formatters "^2.0.1"
+    messageformat-parser "^4.1.2"
 
 methods@^1.1.1, methods@^1.1.2, methods@~1.1.2:
   version "1.1.2"
@@ -5960,6 +6028,11 @@ multipipe@^0.1.2:
   integrity sha1-Ko8t33Du1WTf8tV/HhoTfZ8FB4s=
   dependencies:
     duplexer2 "0.0.2"
+
+mustache@^4.0.1:
+  version "4.0.1"
+  resolved "https://registry.npm.taobao.org/mustache/download/mustache-4.0.1.tgz#d99beb031701ad433338e7ea65e0489416c854a2"
+  integrity sha1-2ZvrAxcBrUMzOOfqZeBIlBbIVKI=
 
 mute-stdout@^1.0.0:
   version "1.0.1"
@@ -8061,6 +8134,11 @@ split@^1.0.0:
   integrity sha512-mTyOoPbrivtXnwnIxZRFYRrPNtEFKlpB2fvjSnCQUiAA6qAZzqwna5envK4uk6OIeP17CsdF3rSBGYVBsU0Tkg==
   dependencies:
     through "2"
+
+sprintf-js@^1.1.2:
+  version "1.1.2"
+  resolved "https://registry.npm.taobao.org/sprintf-js/download/sprintf-js-1.1.2.tgz#da1765262bf8c0f571749f2ad6c26300207ae673"
+  integrity sha1-2hdlJiv4wPVxdJ8q1sJjACB65nM=
 
 sprintf-js@~1.0.2:
   version "1.0.3"
