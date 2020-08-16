@@ -10,7 +10,7 @@ async function register(req: RedstoneRequest, res: RedstoneResponse) {
 
   if (!data.username || !data.email || !data.password || !data.nickname) {
     return res.status(400).json({
-      message: res.__('Lack_arguments') + '： ' + 'username，email，nickname, password.',
+      message: res.__('Lack_arguments') + ': ' + 'username, email, nickname, password.',
     });
   }
 
