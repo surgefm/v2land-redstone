@@ -2,8 +2,8 @@
   "Password_should_be_string": "The type of password should be a string",
   "Password_should_combine_num_alpha": "The password should be a combination of numbers and alphabets",
   "Password_length_invalid" : "The password should have a length between 6 and 64",
-  "Register_success" : "You have registered successfully. Please check for a validation mail sent to your mail within 3 days.",
-  "Lack_arguments": "Lacking arguments",
+  "Register_success" : "You have registered successfully. Please check your inbox for a validation email to activate your account within three days.",
+  "Miss_arguments": "Missing arguments",
   "Username_used": "This username has already been used.",
-  "Mail_address_used": "This mail address has already been used."
+  "Mail_address_used": "This email address has already been used."
 }

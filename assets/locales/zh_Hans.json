@@ -3,7 +3,7 @@
   "Password_should_combine_num_alpha": "密码应为英文字符和数字结合",
   "Password_length_invalid": "密码长度应在 6-64 个字符内",
   "Register_success" : "注册成功，请在三天内至邮箱查收验证邮件",
-  "Lack_arguments": "缺少参数",
+  "Miss_arguments": "缺少参数",
   "Username_used": "该用户名已被占用",
   "Mail_address_used": "该邮箱已被占用"
 }
