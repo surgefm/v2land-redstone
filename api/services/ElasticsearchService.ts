@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import es from '@elastic/elasticsearch';
 const url = process.env.ES_URL;
 
