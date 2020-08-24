@@ -1,5 +1,6 @@
 import { RedstoneRequest, RedstoneResponse } from '@Types';
 import { SearchService } from '@Services';
+import { SearchType } from '../services/SearchService';
 
 export async function keywordSearch(req: RedstoneRequest, res: RedstoneResponse) {
   const keyword = req.query.keyword;
@@ -9,7 +10,16 @@ export async function keywordSearch(req: RedstoneRequest, res: RedstoneResponse)
     });
   }
 
-  const searchResults = await SearchService.keywordQueryUsingElasticsearch(keyword);
+  const searchType = req.query.search_type;
+  if (searchType !== undefined && !Object.values(SearchType).includes(searchType)) {
+    return res.status(500).json({
+      message: 'Wrong parameter: search_type is invalid.',
+    });
+  }
+
+  const { from, size } = req.query;
+
+  const searchResults = await SearchService.keywordQueryUsingElasticsearch(keyword, searchType, from, size);
   return res.status(200).json({
     results: searchResults,
   });

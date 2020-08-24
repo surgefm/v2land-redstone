@@ -1,66 +1,42 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import * as ElasticsearchService from '../ElasticsearchService';
+import SearchType from './searchType';
 
-async function keywordQueryUsingElasticsearch (keyword: string) {
+async function keywordQueryUsingElasticsearch(
+  keyword: string,
+  type?: SearchType | SearchType[],
+  from = 0,
+  size = 20
+) {
   if (!ElasticsearchService.client) return {};
-  const queryBulk = [
-    { index: 'events' },
-    {
-      query: {
-        bool: {
-          must: {
-            multi_match: {
-              query: keyword,
-              fields: ['name', 'description'],
-            },
-          },
-          filter: { term: { 'status': 'admitted' } },
-        },
+  const searchBody: ElasticsearchService.SearchBodyMultiMatch = {
+    query: {
+      multi_match: {
+        // Match title, abstract, etc.
+        query: keyword,
+        fields: ['title', 'abstract', 'content', 'author', 'name', 'description'],
       },
-      size: 10,
+      filter: { term: { status: 'admitted' } },
+      from,
+      size,
     },
-    { index: 'stacks' },
-    {
-      query: {
-        bool: {
-          must: {
-            multi_match: {
-              query: keyword,
-              fields: ['title', 'description'],
-            },
-          },
-          filter: { term: { 'status': 'admitted' } },
-        },
-      },
-      size: 10,
-    },
-    { index: 'news' },
-    {
-      query: {
-        bool: {
-          must: {
-            multi_match: {
-              query: keyword,
-              fields: ['title', 'abstract'],
-            },
-          },
-          filter: { term: { 'status': 'admitted' } },
-        },
-      },
-      size: 10,
-    },
-    { index: 'clients' },
-    { query: { match: { username: keyword } }, size: 10 },
-  ];
+  };
 
-  const { body } = await ElasticsearchService.msearch({ body: queryBulk });
-  const { responses } = body;
-  const results: { [index: string]: any } = {};
-  for (let i = 0; i < 4; i++) {
-    const type = ['events', 'stacks', 'news', 'clients'][i];
-    results[type] = responses[i].hits;
+  // If search type is not provided, search among all types
+  if (type === undefined) {
+    const allSearchTypes = Object.keys(SearchType).map((k) => k as SearchType);
+    type = allSearchTypes;
   }
-  return results;
+
+  const { body } = await ElasticsearchService.client.search<
+    // TODO: create a module to hold source type definition
+    ElasticsearchService.SearchResponse<any>,
+    ElasticsearchService.SearchBodyMultiMatch
+  >({
+    index: type,
+    body: searchBody,
+  });
+  return body.hits;
 }
 
 export default keywordQueryUsingElasticsearch;
