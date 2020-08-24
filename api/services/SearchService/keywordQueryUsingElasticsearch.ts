@@ -16,7 +16,6 @@ async function keywordQueryUsingElasticsearch(
         query: keyword,
         fields: ['title', 'abstract', 'content', 'author', 'name', 'description'],
       },
-      filter: { term: { status: 'admitted' } },
       from,
       size,
     },
