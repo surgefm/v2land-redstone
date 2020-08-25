@@ -27,11 +27,7 @@ async function keywordQueryUsingElasticsearch(
     type = allSearchTypes;
   }
 
-  const { body } = await ElasticsearchService.client.search<
-    // TODO: create a module to hold source type definition
-    ElasticsearchService.SearchResponse<any>,
-    ElasticsearchService.SearchBodyMultiMatch
-  >({
+  const { body } = await ElasticsearchService.client.search({
     index: type,
     body: searchBody,
   });
