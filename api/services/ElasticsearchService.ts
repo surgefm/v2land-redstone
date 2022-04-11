@@ -14,7 +14,7 @@ export async function update(query: es.RequestParams.Update) {
 
 export async function bulk(query: es.RequestParams.Bulk) {
   return new Promise((resolve, reject) => {
-    if (!client) return resolve();
+    if (!client) return resolve(null);
     client.bulk(query, (err: Error, res: es.ApiResponse) => {
       if (err) return reject(err);
       resolve(res);

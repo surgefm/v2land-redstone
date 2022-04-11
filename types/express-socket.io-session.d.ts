@@ -8,11 +8,12 @@
 declare module 'express-socket.io-session' {
   import socketio from 'socket.io';
   import express from 'express';
+  import * as session from 'express-session';
   import { Client as RedstoneClient } from '@Models';
 
   module 'socket.io' {
     interface Handshake {
-      session?: Express.Session & {
+      session?: session.Session & {
         currentClient?: RedstoneClient;
         clientId?: number;
       };

@@ -23,7 +23,7 @@ export const sequelize = new Sequelize({
   password: postgresql.password,
   host: postgresql.host,
   port: postgresql.port,
-  modelPaths: Object.keys(models).map(model => (models as any)[model]),
+  modelPaths: Object.keys(models).map(model => (models as any)[model]).filter(x => x),
   native: true,
   ssl: true,
 
@@ -39,6 +39,7 @@ export const sequelize = new Sequelize({
 
 async function loadSequelize() {
   await sequelize.authenticate();
+  await sequelize.sync();
 }
 
 export default loadSequelize;

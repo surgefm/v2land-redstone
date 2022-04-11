@@ -16,7 +16,7 @@ export async function tweet(auth: Auth, status: string) {
       'status',
       err => {
         if (err) return reject(err);
-        resolve();
+        resolve(null);
       });
   });
 }

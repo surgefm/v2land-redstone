@@ -7,10 +7,12 @@ WORKDIR /usr/src/app
 # RUN npm install --only=production
 
 # Bundle app source
-COPY . .
+COPY package.json .
 
 # Install app dependencies
 RUN yarn install
+
+COPY . .
 
 LABEL name="redstone"
 

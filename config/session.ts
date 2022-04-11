@@ -16,7 +16,8 @@ import parseDomain from 'parse-domain';
 import globals from './globals';
 import { sequelize } from '@Models';
 
-import { classicRedis } from '@Services/RedisService';
+import { redisUrl } from '@Services/RedisService';
+import { createClient, RedisClientType } from 'redis';
 import sessionRedis from 'connect-redis';
 
 import expressSession from 'express-session';
@@ -47,16 +48,20 @@ const sessionConfig = {
 
 if (process.env.REDIS_HOST) {
   const RedisStore = sessionRedis(expressSession);
+  const redisClient = createClient({ url: redisUrl, legacyMode: true });
+  redisClient.connect();
   sessionStore = () => new RedisStore({
-    client: classicRedis,
-    prefix: 'sess:',
+    client: redisClient as RedisClientType,
+    prefix: 'session:',
     ttl: 86400 * 7,
   });
 
   console.info('Using Redis as session storage.');
 } else {
   const SequelizeStore = sessionSequelize(expressSession.Store);
-  sessionStore = () => new SequelizeStore({ db: sequelize });
+  const store = new SequelizeStore({ db: sequelize });
+  store.sync();
+  sessionStore = () => store;
 
   console.info('Using PostgreSQL as session storage. One service instance at most.');
 }

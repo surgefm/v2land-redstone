@@ -19,15 +19,15 @@ abstract class NotificationMode {
   isInterval: boolean;
   keepLatestOnly = false;
 
-  abstract async new(input?: NotificationModeInput): Promise<Date>;
+  abstract new(input?: NotificationModeInput): Promise<Date>;
 
   async update(input?: NotificationModeInput): Promise<Date> {
     return null;
   }
 
-  abstract async notified(input?: NotificationModeInput): Promise<Date>;
+  abstract notified(input?: NotificationModeInput): Promise<Date>;
 
-  abstract async getTemplate(input?: NotificationModeInput): Promise<{
+  abstract getTemplate(input?: NotificationModeInput): Promise<{
     subject: string;
     message: string;
     button: string;

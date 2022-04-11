@@ -9,7 +9,7 @@ import RedstoneError, {
 } from './RedstoneError';
 
 interface RedstoneRequest extends Request {
-  sessionID?: string;
+  sessionID: string;
   currentClient?: Client;
   log: Logger;
 }
@@ -86,3 +86,10 @@ export {
   InvalidInputErrorType,
   ResourceNotFoundErrorType,
 };
+
+declare module 'express-session' {
+  interface SessionData {
+      clientId: number;
+      authenticated: boolean;
+  }
+}

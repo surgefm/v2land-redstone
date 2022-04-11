@@ -22,6 +22,7 @@ import securityConfig from '@Configs/security';
 import loadRoutes from './loadRoutes';
 import loadSequelize from './loadSequelize';
 import loadAcl from '@Services/AccessControlService/initialize';
+import { redis } from '@Services/RedisService';
 import { loadSocket } from './sockets';
 import { errorHandler } from '@Responses';
 
@@ -31,6 +32,8 @@ const socket = socketIO(server);
 
 export async function liftServer(app: Express) {
   await loadSequelize();
+  if (redis) await redis.connect();
+
   if (process.env.NODE_ENV === 'production') {
     app.use(pino());
   }

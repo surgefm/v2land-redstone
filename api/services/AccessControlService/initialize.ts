@@ -1,7 +1,10 @@
+import acl from './acl';
 import { guests, contributors, editors, admins } from './roles';
 import { allow, addRoleParents } from './operations';
 
 export default async function initialize(): Promise<void> {
+  await (acl as any).redis.connect();
+
   // Define guests’ permission
   await allow(guests, ['events', 'stacks', 'news'], 'view');
 

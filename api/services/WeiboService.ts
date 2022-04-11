@@ -13,7 +13,7 @@ export async function post(auth: Auth, status: string) {
       .type('form')
       .end(err => {
         if (err) return reject(err);
-        resolve();
+        resolve(null);
       });
   });
 }

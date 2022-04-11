@@ -11,7 +11,8 @@ export const redis = process.env.REDIS_HOST ? {
   host: process.env.REDIS_HOST || '127.0.0.1',
   port: +process.env.REDIS_PORT || 6379,
   password: process.env.REDIS_PWD,
-  prefix: process.env.REDIS_PREFIX || 'v2land-',
+  prefix: process.env.REDIS_PREFIX || 'surge-',
+  username: process.env.REDIS_USERNAME || 'default',
 } : {};
 
 export default { postgresql, redis };
