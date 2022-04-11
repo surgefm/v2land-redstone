@@ -47,15 +47,13 @@ export default function loadNewsroom(io: Server) {
       const resourceLocks = await ResourceLockService.getEventLockedResourceList(eventId);
       const roles = await AccessControlService.getEventClients(eventId);
       if (RedisService.redis) {
-        newsroom.in(roomName).clients(async (err: Error, clients: string[]) => {
-          if (err) throw err;
-          clients = clients.map(client => `socket:${client}`);
-          const clientIds = clients.length === 0 ? [] : _.uniq(await RedisService.mget(...clients));
-          cb(null, {
-            resourceLocks,
-            clients: clientIds,
-            roles,
-          });
+        const sockets = await newsroom.in(roomName).allSockets();
+        const clients = Array.from(sockets).map(client => `socket:${client}`);
+        const clientIds = clients.length === 0 ? [] : _.uniq(await RedisService.mget(...clients));
+        cb(null, {
+          resourceLocks,
+          clients: clientIds,
+          roles,
         });
       } else {
         cb(null, {
@@ -68,9 +66,9 @@ export default function loadNewsroom(io: Server) {
 
     const leaveNewsroom = async (eventId: number, cb: Function = () => {}) => {
       const { clientId } = socket.handshake.session;
-      const rooms = typeof eventId === 'number'
+      const rooms: string[] = typeof eventId === 'number'
         ? [getRoomName(eventId)]
-        : Object.keys(socket.rooms).map(key => socket.rooms[key]);
+        : Object.keys(socket.rooms).map(key => (socket.rooms as any)[key]);
 
       for (let i = 0; i < rooms.length; i++) {
         const split = rooms[i].split('-');
@@ -84,7 +82,7 @@ export default function loadNewsroom(io: Server) {
     };
 
     socket.on('leave newsroom', leaveNewsroom);
-    socket.on('disconnect', leaveNewsroom);
+    socket.on('disconnect', () => leaveNewsroom(null));
 
     addEventToStack(socket);
     addEventToTag(socket);
@@ -96,9 +94,9 @@ export default function loadNewsroom(io: Server) {
     inviteViewer(socket);
     lockResource(socket);
     makeCommit(socket);
-    removeEditor(socket);
-    removeManager(socket);
-    removeViewer(socket);
+    removeEditor(socket, io);
+    removeManager(socket, io);
+    removeViewer(socket, io);
     removeEventFromStack(socket);
     removeEventFromTag(socket);
     removeNewsFromEvent(socket);

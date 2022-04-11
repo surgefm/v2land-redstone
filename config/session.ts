@@ -30,9 +30,7 @@ const cookie = {
   domain: ((process.env.NODE_ENV === 'production' || process.env.CUSTOM_DOMAIN) && url)
     ? ('.' + url.domain + '.' + url.tld)
     : null,
-  secure: typeof process.env.SECURE_COOKIE !== 'undefined'
-    ? process.env.SECURE_COOKIE === 'true'
-    : process.env.NODE_ENV === 'production',
+  secure: false,
   maxAge: 7 * 24 * 60 * 60 * 1000,
 };
 

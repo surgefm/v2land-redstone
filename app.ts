@@ -5,7 +5,7 @@ dotenv.config();
 
 import express, { Express } from 'express';
 import Http from 'http';
-import socketIO from 'socket.io';
+import { Server as SocketIO } from 'socket.io';
 import responseTime from 'response-time';
 import bodyParser from 'body-parser';
 import compression from 'compression';
@@ -28,7 +28,13 @@ import { errorHandler } from '@Responses';
 
 const app = express();
 const server = Http.createServer(app);
-const socket = socketIO(server);
+const socket = new SocketIO(server, {
+  cors: securityConfig.cors,
+  cookie: {
+    name: 'redstone.sid',
+    httpOnly: false,
+  },
+});
 
 export async function liftServer(app: Express) {
   await loadSequelize();
@@ -55,7 +61,7 @@ export async function liftServer(app: Express) {
 
   app.use(errorHandler);
 
-  loadSocket(socket);
+  await loadSocket(socket);
 
   if (process.env.NODE_ENV !== 'test') {
     server.listen(1337, () => {

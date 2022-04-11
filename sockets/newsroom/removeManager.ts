@@ -1,11 +1,11 @@
-import { Socket } from 'socket.io';
+import { Server, Socket } from 'socket.io';
 import { Event, Client } from '@Models';
 import { AccessControlService, ResourceLockService } from '@Services';
 import { hasRole } from '@Services/AccessControlService/operations';
 import getRoomName from './getRoomName';
 import removeClientFromNewsroom from './removeClientFromNewsroom';
 
-export default function removeManager(socket: Socket) {
+export default function removeManager(socket: Socket, server: Server) {
   socket.on('remove manager', async (eventId: number, clientId: number, cb: Function = () => {}) => {
     const ownerId = socket.handshake.session.clientId;
     const haveAccess = await hasRole(ownerId, AccessControlService.getEventOwnerRolePlain(eventId));
@@ -22,6 +22,6 @@ export default function removeManager(socket: Socket) {
       socket.in(getRoomName(eventId)).emit('unlock resources', { eventId, resourceLocks });
     }
     cb(null, { resourceLocks });
-    await removeClientFromNewsroom(socket, eventId, clientId);
+    await removeClientFromNewsroom(server, eventId, clientId);
   });
 }

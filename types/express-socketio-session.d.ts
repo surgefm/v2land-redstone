@@ -1,43 +1,41 @@
 // Type definitions for express-socket.io-session 1.3
 // Project: https://github.com/oskosk/express-socket.io-session
 // Definitions by: AylaJK <https://github.com/AylaJK>
-// Modified by: simonzli <https://github.com/simonzli>
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
 // TypeScript Version: 2.3
 
-declare module 'express-socket.io-session' {
-  import socketio from 'socket.io';
-  import express from 'express';
-  import * as session from 'express-session';
-  import { Client as RedstoneClient } from '@Models';
+import socketio = require('socket.io');
+import express = require('express');
+import session = require('express-session');
+import { Client as RedstoneClient } from '@Models';
 
-  module 'socket.io' {
+// @Filename: /node_modules/socket.io/dist/socket.d.ts
+declare module 'socket.io/dist/socket' {
     interface Handshake {
-      session?: session.Session & {
-        currentClient?: RedstoneClient;
-        clientId?: number;
-      };
-      sessionID?: string;
+        session?: session.Session & Partial<session.SessionData> & {
+            currentClient?: RedstoneClient;
+            clientId?: number;
+        };
+        sessionID?: string | undefined;
     }
-  }
+}
 
-  function sharedsession(
+declare function sharedsession(
     expressSessionMiddleware: express.RequestHandler,
     cookieParserMiddleware: express.RequestHandler,
     options?: sharedsession.SharedSessionOptions): sharedsession.SocketIoSharedSessionMiddleware;
 
-  function sharedsession(
+declare function sharedsession(
     expressSessionMiddleware: express.RequestHandler,
     options?: sharedsession.SharedSessionOptions): sharedsession.SocketIoSharedSessionMiddleware;
 
-  namespace sharedsession {
+declare namespace sharedsession {
     interface SharedSessionOptions {
-      autoSave?: boolean;
-      saveUninitialized?: boolean;
+        autoSave?: boolean | undefined;
+        saveUninitialized?: boolean | undefined;
     }
 
     type SocketIoSharedSessionMiddleware = (socket: socketio.Socket, next: (err?: any) => void) => void;
-  }
-
-  export default sharedsession;
 }
+
+export = sharedsession;

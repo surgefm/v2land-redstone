@@ -1,10 +1,10 @@
-import { Socket } from 'socket.io';
+import { Server, Socket } from 'socket.io';
 import { Event, Client } from '@Models';
 import { AccessControlService } from '@Services';
 import getRoomName from './getRoomName';
 import removeClientFromNewsroom from './removeClientFromNewsroom';
 
-export default function removeViewer(socket: Socket) {
+export default function removeViewer(socket: Socket, server: Server) {
   socket.on('remove viewer', async (eventId: number, clientId: number, cb: Function = () => {}) => {
     const managerId = socket.handshake.session.clientId;
     const haveAccess = await AccessControlService.isAllowedToManageEvent(managerId, eventId);
@@ -17,6 +17,6 @@ export default function removeViewer(socket: Socket) {
     await AccessControlService.disallowClientToViewEvent(clientId, eventId);
     socket.in(getRoomName(eventId)).emit('remove viewer', { eventId, clientId });
     cb();
-    await removeClientFromNewsroom(socket, eventId, clientId);
+    await removeClientFromNewsroom(server, eventId, clientId);
   });
 }
