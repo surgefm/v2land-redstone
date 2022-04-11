@@ -164,7 +164,6 @@ RedisBackend.prototype = {
   //
   // Private methods
   //
-
   bucketKey: function(bucket, keys) {
     const self = this;
     if (Array.isArray(keys)) {

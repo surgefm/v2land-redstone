@@ -17,4 +17,4 @@ COPY . .
 LABEL name="redstone"
 
 EXPOSE 1337
-CMD NODE_ENV=production yarn start
+CMD NODE_ENV=production node dist/app.js
