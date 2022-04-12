@@ -40,7 +40,7 @@ export default function loadNewsroom(io: Server) {
         return cb('You have no access to the event');
       }
       const roomName = getRoomName(eventId);
-      socket.join(roomName);
+      await socket.join(roomName);
       await RedisService.hset(`socket:client-${clientId}-${eventId}`, socket.id, true);
 
       socket.in(roomName).emit('join newsroom', { eventId, clientId });

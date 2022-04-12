@@ -28,7 +28,7 @@ let sessionStore: () => expressSession.Store;
 const url = parseDomain(globals.api);
 const cookie = {
   domain: ((process.env.NODE_ENV === 'production' || process.env.CUSTOM_DOMAIN) && url)
-    ? ('.' + url.domain + '.' + url.tld)
+    ? '.surge.fm'
     : null,
   secure: false,
   maxAge: 7 * 24 * 60 * 60 * 1000,
@@ -36,10 +36,10 @@ const cookie = {
 
 const sessionConfig = {
   secret: process.env.SESSION_SECRET || '970a14748cf639a4aa3d7b0d60cc9cac',
-  resave: false,
-  saveUninitialized: true,
+  resave: true,
+  saveUninitialized: false,
   unset: 'destroy' as 'destroy',
-  name: 'redstone.sid',
+  name: 'surge.sid',
   proxy: true,
   cookie,
 };
