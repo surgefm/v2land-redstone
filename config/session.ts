@@ -16,8 +16,8 @@ import parseDomain from 'parse-domain';
 import globals from './globals';
 import { sequelize } from '@Models';
 
-import { redisUrl } from '@Services/RedisService';
-import { createClient, RedisClientType } from 'redis';
+import { redisConfig } from '@Services/RedisService';
+import Redis from 'ioredis';
 import sessionRedis from 'connect-redis';
 
 import expressSession from 'express-session';
@@ -46,10 +46,10 @@ const sessionConfig = {
 
 if (process.env.REDIS_HOST) {
   const RedisStore = sessionRedis(expressSession);
-  const redisClient = createClient({ url: redisUrl, legacyMode: true });
-  redisClient.connect();
+  const redisClient = new Redis(redisConfig);
+  // redisClient.connect();
   sessionStore = () => new RedisStore({
-    client: redisClient as RedisClientType,
+    client: redisClient,
     prefix: 'session:',
     ttl: 86400 * 7,
   });

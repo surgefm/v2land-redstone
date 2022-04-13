@@ -2,11 +2,18 @@ import { RedstoneRequest, RedstoneResponse } from '@Types';
 import { UtilService } from '@Services';
 
 import { S3 } from 'aws-sdk';
-const s3 = new S3({ apiVersion: '2006-03-01' });
+const s3 = new S3({
+  apiVersion: '2006-03-01',
+  endpoint: 'https://sfo3.digitaloceanspaces.com',
+  credentials: {
+    accessKeyId: process.env.S3_KEY,
+    secretAccessKey: process.env.S3_SECRET,
+  },
+});
 
 export async function upload(req: RedstoneRequest, res: RedstoneResponse) {
-  const { S3_ID, S3_KEY, S3_BUCKET } = process.env;
-  if (!(S3_ID && S3_KEY && S3_BUCKET)) {
+  const { S3_KEY, S3_BUCKET } = process.env;
+  if (!(S3_KEY && S3_BUCKET)) {
     return res.status(503).json({
       message: '暂不支持文件上传。如需开启该功能请联系管理员配置环境变量 S3_ID、S3_KEY 与 S3_BUCKET。',
     });

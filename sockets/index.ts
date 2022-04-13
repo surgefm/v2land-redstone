@@ -1,17 +1,16 @@
 import { Server } from 'socket.io';
 import { createAdapter } from '@socket.io/redis-adapter';
-import { createClient } from 'redis';
+import Redis from 'ioredis';
+
 import { isLoggedIn } from '@Sockets/middlewares';
-import { redis, redisUrl } from '@Services/RedisService';
+import { redis, redisConfig } from '@Services/RedisService';
 
 import loadNewsroom from './newsroom';
 
 export async function loadSocket(io: Server) {
   if (redis) {
-    const pubClient = createClient({ url: redisUrl });
-    await pubClient.connect();
+    const pubClient = new Redis(redisConfig);
     const subClient = pubClient.duplicate();
-    await subClient.connect();
     io.adapter(createAdapter(pubClient, subClient));
   }
 

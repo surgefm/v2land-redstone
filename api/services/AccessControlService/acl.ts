@@ -3,14 +3,14 @@ dotenv.config();
 
 import Acl from 'acl';
 import AclSeq from 'acl-sequelize';
-import { createClient } from 'redis';
+import Redis from 'ioredis';
 import { sequelize, Sequelize } from '@Models';
 import { datastores } from '@Configs';
 import RedisBackend from './redisBackend';
 
 const config = datastores.redis;
 const url = `rediss://${config.username}:${config.password}@${config.host}:${config.port}`;
-const redis = process.env.REDIS_HOST ? createClient({ url, legacyMode: true }) : null;
+const redis = process.env.REDIS_HOST ? new Redis(url) : null;
 
 const storageBackend: Acl.Backend<any> = config.host
   ? new RedisBackend(redis, 'surge-acl') as any as Acl.Backend<any>

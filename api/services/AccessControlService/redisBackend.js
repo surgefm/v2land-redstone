@@ -55,7 +55,7 @@ RedisBackend.prototype = {
 
     key = this.bucketKey(bucket, key);
 
-    this.redis.sMembers(key, cb);
+    this.redis.smembers(key, cb);
   },
 
   /**
@@ -101,7 +101,7 @@ RedisBackend.prototype = {
 	      .end();
 
     keys = this.bucketKey(bucket, keys);
-    this.redis.sUnion(keys, cb);
+    this.redis.sunion(keys, cb);
   },
 
   /**
@@ -116,10 +116,10 @@ RedisBackend.prototype = {
 
     if (Array.isArray(values)) {
       values.forEach(function(value) {
-        transaction.sAdd(key, value);
+        transaction.sadd(key, value);
       });
     } else {
-      transaction.sAdd(key, values);
+      transaction.sadd(key, values);
     }
   },
 
@@ -154,10 +154,10 @@ RedisBackend.prototype = {
 
     if (Array.isArray(values)) {
       values.forEach(function(value) {
-        transaction.sRem(key, value);
+        transaction.srem(key, value);
       });
     } else {
-      transaction.sRem(key, values);
+      transaction.srem(key, values);
     }
   },
 

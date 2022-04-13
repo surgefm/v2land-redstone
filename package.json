@@ -32,7 +32,7 @@
     "express": "^4.17.1",
     "express-pino-logger": "^4.0.0",
     "express-session": "^1.17.0",
-    "ioredis": "^4.16.1",
+    "ioredis": "^5.0.4",
     "leancloud-storage": "^4.5.2",
     "libpq": "^1.8.9",
     "moment-timezone": "^0.5.27",
