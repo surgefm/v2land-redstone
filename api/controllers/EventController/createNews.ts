@@ -5,7 +5,7 @@ import { EventService, RecordService, NewsService, NotificationService, StackSer
 import axios from 'axios';
 // const urlTrimmer = require('v2land-url-trimmer');
 
-async function createNews (req: RedstoneRequest, res: RedstoneResponse) {
+async function createNews(req: RedstoneRequest, res: RedstoneResponse) {
   const name = req.params.eventName;
   const data = req.body;
 
@@ -14,7 +14,7 @@ async function createNews (req: RedstoneRequest, res: RedstoneResponse) {
     client = await Client.findByPk(req.session.clientId);
   }
 
-  for (const attr of ['url', 'source', 'abstract', 'time']) {
+  for (const attr of ['url', 'source', 'title', 'time']) {
     if (!data[attr]) {
       return res.status(400).json({
         message: `缺少 ${attr} 参数`,
@@ -40,7 +40,7 @@ async function createNews (req: RedstoneRequest, res: RedstoneResponse) {
     }
   }
 
-  data.status = 'pending';
+  data.status = 'admitted';
 
   await sequelize.transaction(async transaction => {
     let news = await News.findOne({
@@ -63,7 +63,7 @@ async function createNews (req: RedstoneRequest, res: RedstoneResponse) {
 
     // Ask the Wayback Machine of Internet Archive to archive the webpage.
     try {
-      axios.get(`https://web.archive.org/save/${data.url}`);
+      await axios.get(`https://web.archive.org/save/${data.url}`);
     } catch (err) {}
 
     const time = new Date();
@@ -75,6 +75,7 @@ async function createNews (req: RedstoneRequest, res: RedstoneResponse) {
         title: data.title,
         time: data.time,
         comment: data.comment,
+        status: 'admitted',
       }, {
         transaction,
       });
@@ -120,12 +121,16 @@ async function createNews (req: RedstoneRequest, res: RedstoneResponse) {
     }
 
     res.status(201).json({
-      message: '提交成功，该新闻在社区管理员审核通过后将很快开放',
+      message: '提交成功',
       news,
     });
 
-    NotificationService.notifyWhenNewsCreated(news, client);
-    NewsService.updateElasticsearchIndex({ newsId: news.id });
+    try {
+      await NotificationService.notifyWhenNewsCreated(news, client);
+    } catch (err) {}
+    try {
+      await NewsService.updateElasticsearchIndex({ newsId: news.id });
+    } catch (err) {}
   });
 }
 

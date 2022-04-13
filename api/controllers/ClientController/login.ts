@@ -2,7 +2,7 @@ import * as bcrypt from 'bcrypt';
 import { RedstoneRequest, RedstoneResponse } from '@Types';
 import { ClientService } from '@Services';
 
-async function login (req: RedstoneRequest, res: RedstoneResponse) {
+async function login(req: RedstoneRequest, res: RedstoneResponse) {
   const data = req.body;
 
   const client = await ClientService.findClient(data.username, {

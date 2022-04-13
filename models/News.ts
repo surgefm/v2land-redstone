@@ -38,8 +38,8 @@ class News extends Model<News> {
   @Column(DataType.TEXT)
   title: string;
 
-  @Length({ min: 2, max: 203 })
-  @AllowNull(false)
+  @Length({ min: 0, max: 203 })
+  @AllowNull(true)
   @Column(DataType.TEXT)
   abstract: string;
 
