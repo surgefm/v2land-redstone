@@ -146,7 +146,13 @@ async function findEvent(
 
   if (plain) event = event.get({ plain }) as EventObj;
 
-  event.roles = await AccessControlService.getEventClients(event.id);
+  const [roles, contributors] = await Promise.all([
+    AccessControlService.getEventClients(event.id),
+    getContributors(event.id, { transaction }),
+  ]);
+  event.roles = roles;
+  event.contributors = contributors;
+
   event.stackCount = +event.stackCount;
   event.newsCount = 0;
   (event.offshelfNews as News[]).sort((a, b) => (new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()));
@@ -157,8 +163,6 @@ async function findEvent(
     event.newsCount += stack.newsCount;
     (stack.news as News[]).sort((a, b) => (new Date(a.time).getTime() - new Date(b.time).getTime()));
   }
-
-  event.contributors = await getContributors(event.id, { transaction });
 
   return event;
 }

@@ -1,12 +1,14 @@
 import getEventRoleClients from './getEventRoleClients';
 
 async function getEventClients(eventId: number) {
-  return {
-    owners: await getEventRoleClients(eventId, 'owner'),
-    managers: await getEventRoleClients(eventId, 'manager'),
-    editors: await getEventRoleClients(eventId, 'editor'),
-    viewers: await getEventRoleClients(eventId, 'viewer'),
-  };
+  const [owners, managers, editors, viewers] = await Promise.all([
+    getEventRoleClients(eventId, 'owner'),
+    getEventRoleClients(eventId, 'manager'),
+    getEventRoleClients(eventId, 'editor'),
+    getEventRoleClients(eventId, 'viewer'),
+  ]);
+
+  return { owners, managers, editors, viewers };
 }
 
 export default getEventClients;
