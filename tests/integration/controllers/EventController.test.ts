@@ -210,7 +210,7 @@ describe('EventController', function() {
           source: 'Surge',
           abstract: 'S U R G E',
           time: new Date(),
-          url: 'https://surge.fm/' + event.id,
+          url: 'https://langchao.org/' + event.id,
           status: 'admitted',
         });
         await EventStackNews.create({

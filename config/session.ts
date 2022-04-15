@@ -28,7 +28,7 @@ let sessionStore: () => expressSession.Store;
 const url = parseDomain(globals.api);
 const cookie = {
   domain: ((process.env.NODE_ENV === 'production' || process.env.CUSTOM_DOMAIN) && url)
-    ? '.surge.fm'
+    ? '.langchao.org'
     : null,
   secure: false,
   maxAge: 7 * 24 * 60 * 60 * 1000,
