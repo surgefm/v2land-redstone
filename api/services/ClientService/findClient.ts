@@ -1,4 +1,4 @@
-import { Auth, Subscription, Contact, Client } from '@Models';
+import { Auth, Subscription, Contact, Client, Event, HeaderImage } from '@Models';
 import { Transaction, Op, Includeable } from 'sequelize';
 
 async function findClient(
@@ -7,12 +7,14 @@ async function findClient(
     transaction,
     withAuths = true,
     withSubscriptions = true,
+    withEvents = false,
     withPassword = false,
     forceUpdate = false,
   }: {
     transaction?: Transaction;
     withAuths?: boolean;
     withSubscriptions?: boolean;
+    withEvents?: boolean;
     withPassword?: boolean;
     forceUpdate?: boolean;
   } = {}) {
@@ -64,6 +66,20 @@ async function findClient(
         model: Contact,
         where: { status: 'active' },
       }],
+    });
+  }
+
+  if (withEvents) {
+    include.push({
+      as: 'events',
+      model: Event,
+      order: [['updatedAt', 'DESC']],
+      where: { status: 'admitted' },
+      include: [{
+        model: HeaderImage,
+        required: false,
+      }],
+      required: false,
     });
   }
 

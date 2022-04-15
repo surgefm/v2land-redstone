@@ -4,7 +4,7 @@ import _ from 'lodash';
 
 const hasEventPermissionForSomeStatus = (errorMessage?: string) => async (req: RedstoneRequest, res: RedstoneResponse, next: NextFunction) => {
   const eventId = await EventService.getEventId(req.params);
-  const event = await EventService.findEvent(eventId);
+  const event = await EventService.findEvent(eventId, { eventOnly: true });
   let haveAccess = false;
   if (_.isUndefined(event)) {
     return res.status(404).json({

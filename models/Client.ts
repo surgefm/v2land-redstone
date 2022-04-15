@@ -22,6 +22,7 @@ import AuthorizationCode from './AuthorizationCode';
 import AuthorizationAccessToken from './AuthorizationAccessToken';
 import Tag from './Tag';
 import TagCurator from './TagCurator';
+import Event from './Event';
 
 @Table({
   modelName: 'client',
@@ -126,6 +127,9 @@ class Client extends Model<Client> {
 
   @BelongsToMany(() => Tag, () => TagCurator)
   tags: Array<Tag & {tagCurator: TagCurator}>;
+
+  @HasMany(() => Event, 'ownerId')
+  events: Event[];
 
   subscriptionCount?: number;
   isAdmin?: boolean;

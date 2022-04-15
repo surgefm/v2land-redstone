@@ -1,7 +1,7 @@
 import { RedstoneRequest, RedstoneResponse } from '@Types';
 import { ClientService } from '@Services';
 
-async function getClientDetail (req: RedstoneRequest, res: RedstoneResponse) {
+async function getClientDetail(req: RedstoneRequest, res: RedstoneResponse) {
   const clientId = req.session.clientId;
 
   if (!clientId) {
@@ -10,7 +10,7 @@ async function getClientDetail (req: RedstoneRequest, res: RedstoneResponse) {
     });
   }
 
-  const client = await ClientService.findClient(clientId);
+  const client = await ClientService.findClient(clientId, { withEvents: true });
   if (!client) {
     delete req.session.clientId;
     return res.status(404).json({

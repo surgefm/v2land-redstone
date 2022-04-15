@@ -43,7 +43,7 @@ WHERE
     LIMIT 10
 `;
 
-async function getEventList ({ mode, page, where, transaction }: {
+async function getEventList({ mode, page, where, transaction }: {
   mode: number | string;
   page: number | string;
   where: any;

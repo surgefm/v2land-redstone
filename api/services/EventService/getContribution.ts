@@ -31,6 +31,7 @@ async function getContribution(event: SimplifiedEventInterface, withData = true)
     include: [{
       model: Client,
       attributes: ClientService.sanitizedFields,
+      required: false,
     }],
     order: [['updatedAt', 'DESC']],
   });
