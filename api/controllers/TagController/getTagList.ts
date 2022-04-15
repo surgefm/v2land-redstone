@@ -22,7 +22,6 @@ async function getTagList(req: RedstoneRequest, res: RedstoneResponse) {
       as: 'events',
       where: { status: 'admitted' },
       through: { attributes: [] },
-      required: false,
     }, {
       model: Client,
       as: 'curators',
@@ -30,6 +29,7 @@ async function getTagList(req: RedstoneRequest, res: RedstoneResponse) {
       required: false,
       attributes: ClientService.sanitizedFields,
     }],
+    order: [['updatedAt', 'DESC']],
     limit: 15,
     offset: 15 * (+req.query.page || req.body.page || 1) - 15,
   });
