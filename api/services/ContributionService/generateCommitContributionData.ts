@@ -48,7 +48,7 @@ async function generateCommitContributionData(commit: Commit, { transaction }: {
     const stackContributionRecords = await Record.findAll({
       where: {
         ...timeConstraint,
-        target: { [Op.or]: stacks.map(s => s.id) },
+        target: { [Op.or]: stacks.length > 0 ? stacks.map(s => s.id) : [-1] },
         action: {
           [Op.or]: ['createStack', 'addNewsToStack'],
         },
