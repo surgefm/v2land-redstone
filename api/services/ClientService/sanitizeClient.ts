@@ -6,10 +6,11 @@ interface SanitizedClient {
   avatar: string;
   id: number;
   description: string;
+  role: string;
   events: Event[];
 }
 
-export const sanitizedFields = ['username', 'nickname', 'id', 'description', 'avatar'];
+export const sanitizedFields = ['username', 'nickname', 'id', 'description', 'avatar', 'role'];
 
 function sanitizeClient(client: Client): SanitizedClient {
   const temp: { [index: string]: any } = {};

@@ -90,6 +90,11 @@ class Client extends Model<Client> {
   @Column(DataType.TEXT)
   password: string;
 
+  @AllowNull(false)
+  @Default('contributor')
+  @Column(DataType.ENUM('admin', 'manager', 'contributor'))
+  role: string;
+
   @AllowNull(true)
   @Column(DataType.TEXT)
   avatar: string;

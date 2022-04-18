@@ -48,6 +48,7 @@ async function register(req: RedstoneRequest, res: RedstoneResponse) {
       nickname: data.nickname,
       password: hash,
       email: data.email,
+      role: 'contributor',
     }, {
       raw: true,
       transaction,
