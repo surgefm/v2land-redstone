@@ -3,12 +3,28 @@
 
 import contract from 'acl/lib/contract';
 import _ from 'lodash';
+import AclSeq from 'acl-sequelize';
+
+import { sequelize, Sequelize } from '@Models';
 
 function noop() {}
 
 function RedisBackend(redis, prefix) {
   this.redis = redis;
   this.prefix = prefix || 'acl';
+  this.pg = new AclSeq(sequelize, {
+    prefix: 'acl_',
+    defaultSchema: {
+      key: { type: Sequelize.STRING, primaryKey: true },
+      value: { type: Sequelize.TEXT },
+    },
+    schema: {
+      users: {
+        key: { type: Sequelize.INTEGER, primaryKey: true },
+        value: { type: Sequelize.TEXT },
+      },
+    },
+  });
 }
 
 RedisBackend.prototype = {
@@ -16,15 +32,17 @@ RedisBackend.prototype = {
      Begins a transaction
   */
   begin: function() {
-    return this.redis.multi();
+    return [this.redis.multi(), this.pg.begin()];
   },
 
   /**
      Ends a transaction (and executes it)
   */
-  end: async function(transaction, cb) {
-    contract(arguments).params('object', 'function').end();
-    await transaction.exec();
+  end: async function(transactions, cb) {
+    contract(arguments).params('array', 'function').end();
+    const [redisTransaction, pgTransaction] = transactions;
+    await new Promise(resolve => this.pg.end(pgTransaction, resolve));
+    await redisTransaction.exec();
     cb();
   },
 
@@ -34,6 +52,7 @@ RedisBackend.prototype = {
   clean: function(cb) {
     contract(arguments).params('function').end();
     const self = this;
+    self.pg.clean();
     self.redis.keys(self.prefix+'*', function(err, keys) {
       if (keys.length) {
         self.redis.del(keys, function() {
@@ -48,20 +67,27 @@ RedisBackend.prototype = {
   /**
      Gets the contents at the bucket's key.
   */
-  get: function(bucket, key, cb) {
+  get: async function(bucket, key, cb) {
     contract(arguments)
 	      .params('string', 'string|number', 'function')
 	      .end();
 
-    key = this.bucketKey(bucket, key);
+    const redisKey = this.bucketKey(bucket, key);
 
-    this.redis.smembers(key, cb);
+    let keys = await new Promise(resolve => this.redis.smembers(redisKey, resolve));
+    if (!keys) {
+      keys = await new Promise(resolve => this.pg.get(bucket, key, resolve));
+      if (keys && keys.length > 0) {
+        await this.redis.sadd(redisKey, ...keys)
+      }
+    }
+    cb(keys);
   },
 
   /**
     Gets an object mapping each passed bucket to the union of the specified keys inside that bucket.
   */
-  unions: function(buckets, keys, cb) {
+  unions: async function(buckets, keys, cb) {
     contract(arguments)
       .params('array', 'array', 'function')
       .end();
@@ -69,6 +95,14 @@ RedisBackend.prototype = {
     const redisKeys = {};
     const batch = this.redis.batch();
     const self = this;
+
+    const refresh = [];
+    for (let i = 0; i < buckets.length; i++) {
+      for (let j = 0; j < keys.length; j++) {
+        refresh.add(new Promise(resolve => this.get(buckets[i], keys[j], resolve)));
+      }
+    }
+    await Promise.all(refresh);
 
     buckets.forEach(function(bucket) {
       redisKeys[bucket] = self.bucketKey(bucket, keys);
@@ -95,11 +129,12 @@ RedisBackend.prototype = {
   /**
 		Returns the union of the values in the given keys.
 	*/
-  union: function(bucket, keys, cb) {
+  union: async function(bucket, keys, cb) {
     contract(arguments)
 	      .params('string', 'array', 'function')
 	      .end();
 
+    await Promise.all(keys.map(key => new Promise(resolve => this.get(bucket, key, resolve))));
     keys = this.bucketKey(bucket, keys);
     this.redis.sunion(keys, cb);
   },
@@ -107,31 +142,35 @@ RedisBackend.prototype = {
   /**
 		Adds values to a given key inside a bucket.
 	*/
-  add: function(transaction, bucket, key, values) {
+  add: async function(transactions, bucket, key, values) {
     contract(arguments)
-	      .params('object', 'string', 'string|number', 'string|array|number')
+	      .params('array', 'string', 'string|number', 'string|array|number')
       .end();
 
+    const [redisTransaction, pgTransaction] = transactions;
+    this.pg.add(pgTransaction, bucket, key, values);
     key = this.bucketKey(bucket, key);
 
     if (Array.isArray(values)) {
       values.forEach(function(value) {
-        transaction.sadd(key, value);
+        redisTransaction.sadd(key, value);
       });
     } else {
-      transaction.sadd(key, values);
+      redisTransaction.sadd(key, values);
     }
   },
 
   /**
      Delete the given key(s) at the bucket
   */
-  del: function(transaction, bucket, keys) {
+  del: function(transactions, bucket, keys) {
     contract(arguments)
-	      .params('object', 'string', 'string|array')
+	      .params('array', 'string', 'string|array')
 	      .end();
 
     const self = this;
+    const [redisTransaction, pgTransaction] = transactions;
+    this.pg.del(pgTransaction, bucket, keys);
 
     keys = Array.isArray(keys) ? keys : [keys];
 
@@ -139,25 +178,27 @@ RedisBackend.prototype = {
       return self.bucketKey(bucket, key);
     });
 
-    transaction.del(keys);
+    redisTransaction.del(keys);
   },
 
   /**
 		Removes values from a given key inside a bucket.
 	*/
-  remove: function(transaction, bucket, key, values) {
+  remove: function(transactions, bucket, key, values) {
     contract(arguments)
-	      .params('object', 'string', 'string|number', 'string|array|number')
+	      .params('array', 'string', 'string|number', 'string|array|number')
       .end();
 
+    const [redisTransaction, pgTransaction] = transactions;
+    this.pg.remove(pgTransaction, bucket, key, values);
     key = this.bucketKey(bucket, key);
 
     if (Array.isArray(values)) {
       values.forEach(function(value) {
-        transaction.srem(key, value);
+        redisTransaction.srem(key, value);
       });
     } else {
-      transaction.srem(key, values);
+      redisTransaction.srem(key, values);
     }
   },
 
