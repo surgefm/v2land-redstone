@@ -54,7 +54,7 @@ async function updateClient(req: RedstoneRequest, res: RedstoneResponse) {
     client,
   });
 
-  ClientService.updateElasticsearchIndex({ clientId: client.id });
+  ClientService.updateAlgoliaIndex({ clientId: client.id });
 }
 
 export default updateClient;

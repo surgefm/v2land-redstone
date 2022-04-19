@@ -4,7 +4,7 @@ import * as RecordService from '@Services/RecordService';
 import * as RedisService from '@Services/RedisService';
 import * as NotificationService from '@Services/NotificationService';
 import generatePinyin from './generatePinyin';
-import updateElasticsearchIndex from './updateElasticsearchIndex';
+import updateAlgoliaIndex from './updateAlgoliaIndex';
 
 async function updateEvent(event: Event, data: EventObj, client: Client) {
   const changes: any = {};
@@ -68,7 +68,7 @@ async function updateEvent(event: Event, data: EventObj, client: Client) {
     const client = await Client.findByPk(event.ownerId, { attributes: ['id'] });
     await RedisService.set(RedisService.getEventIdKey(event.name, client.username), event.id);
   }
-  updateElasticsearchIndex({ eventId: event.id });
+  updateAlgoliaIndex({ eventId: event.id });
 
   return event;
 }

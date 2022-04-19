@@ -3,7 +3,7 @@ import { News, sequelize } from '@Models';
 import { RecordService, EventService, NotificationService, NewsService } from '@Services';
 // import urlTrimmer = require('v2land-url-trimmer');
 
-async function updateNews (req: RedstoneRequest, res: RedstoneResponse) {
+async function updateNews(req: RedstoneRequest, res: RedstoneResponse) {
   const id = +req.params.news;
   const data = req.body;
 
@@ -130,7 +130,7 @@ async function updateNews (req: RedstoneRequest, res: RedstoneResponse) {
     });
   });
 
-  NewsService.updateElasticsearchIndex({ newsId: id });
+  NewsService.updateAlgoliaIndex({ newsId: id });
 }
 
 export default updateNews;

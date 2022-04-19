@@ -91,7 +91,7 @@ async function register(req: RedstoneRequest, res: RedstoneResponse) {
     });
 
     EmailService.register(client, verificationToken);
-    ClientService.updateElasticsearchIndex({ clientId: client.id });
+    ClientService.updateAlgoliaIndex({ clientId: client.id });
   });
 }
 

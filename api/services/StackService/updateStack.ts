@@ -3,7 +3,7 @@ import { StackObj } from '@Types';
 import * as NotificationService from '../NotificationService';
 import * as RecordService from '../RecordService';
 import addEvent from './addEvent';
-import updateElasticsearchIndex from './updateElasticsearchIndex';
+import updateAlgoliaIndex from './updateAlgoliaIndex';
 import { Transaction } from 'sequelize/types';
 
 async function updateStack({ id = -1, data = {}, clientId, transaction }: {
@@ -109,7 +109,7 @@ async function updateStack({ id = -1, data = {}, clientId, transaction }: {
       NotificationService.notifyWhenStackStatusChanged(oldStack, stack, clientId);
     }
 
-    updateElasticsearchIndex({ stackId: stack.id });
+    updateAlgoliaIndex({ stackId: stack.id });
   });
 
   return {

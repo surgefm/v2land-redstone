@@ -6,6 +6,7 @@ import findStack from './findStack';
 import getContribution from './getContribution';
 import removeEvent from './removeEvent';
 import removeNews from './removeNews';
+import updateAlgoliaIndex from './updateAlgoliaIndex';
 import updateElasticsearchIndex from './updateElasticsearchIndex';
 import updateStack from './updateStack';
 
@@ -18,6 +19,7 @@ export {
   getContribution,
   removeEvent,
   removeNews,
+  updateAlgoliaIndex,
   updateElasticsearchIndex,
   updateStack,
 };

@@ -2,7 +2,7 @@ import { RedstoneError, InvalidInputErrorType, ResourceNotFoundErrorType } from 
 import { Event, HeaderImage, sequelize } from '@Models';
 import * as RecordService from '@Services/RecordService';
 import isURL from '@Utils/urlValidator';
-import updateElasticsearchIndex from './updateElasticsearchIndex';
+import updateAlgoliaIndex from './updateAlgoliaIndex';
 
 async function updateHeaderImage(eventId: number, data: { [index: string]: string }, clientId: number) {
   const event = await Event.findByPk(eventId, {
@@ -77,7 +77,7 @@ async function updateHeaderImage(eventId: number, data: { [index: string]: strin
     }
   });
 
-  updateElasticsearchIndex({ eventId });
+  updateAlgoliaIndex({ eventId });
 
   return headerImage as HeaderImage;
 }
