@@ -1,6 +1,9 @@
 import algoliasearch, { SearchIndex } from 'algoliasearch';
 import { News, Event, Stack, Site, Tag, Client } from '@Models';
+import * as ClientService from '../ClientService';
 import { EventObj, StackObj } from '@Types';
+
+type PreprocessFn = (t: Record<string, any>) => Record<string, any>;
 
 const useAlgolia = process.env.ALGOLIA_APPID && process.env.ALGOLIA_API_KEY;
 export const client = algoliasearch(process.env.ALGOLIA_APPID, process.env.ALGOLIA_API_KEY);
@@ -41,31 +44,34 @@ const getPlainHelper = (obj: any) => {
   if (Array.isArray(obj)) {
     return obj.map(object => getPlain(object)) as Record<string, any>[];
   }
-  if (typeof (obj as any).get === 'function') {
-    return (obj as any).get({ plain: true }) as Record<string, any>;
+  if (typeof obj.get === 'function') {
+    obj = obj.get({ plain: true }) as Record<string, any>;
+  }
+  if (typeof obj.objectID === 'undefined') {
+    obj.objectID = obj.id;
   }
   return obj as Record<string, any>;
 };
 
-function getPlain(objects: any): Record<string, any> {
-  return getPlainHelper(objects) as Record<string, any>;
+function getPlain(objects: any, preprocess: PreprocessFn = a => a): Record<string, any> {
+  return preprocess(getPlainHelper(objects)) as Record<string, any>;
 }
 
-function getPlains(objects: any): Record<string, any>[] {
-  return getPlainHelper(objects) as Record<string, any>[];
+function getPlains(objects: any, preprocess: PreprocessFn = a => a): Record<string, any>[] {
+  return getPlainHelper(objects).map(preprocess) as Record<string, any>[];
 }
 
 
-const add = <Type>(index: SearchIndex) => {
+const add = <Type>(index: SearchIndex, preprocess: PreprocessFn = a => a) => {
   function addUtil(object: Type): Promise<string>;
   function addUtil(objects: Type[]): Promise<string[]>;
   async function addUtil(objects: Type | Type[]) {
     if (!useAlgolia) return;
     if (Array.isArray(objects)) {
-      const { objectIDs } = await index.saveObjects(getPlains(objects));
+      const { objectIDs } = await index.saveObjects(getPlains(objects, preprocess));
       return objectIDs;
     }
-    const { objectID } = await index.saveObject(getPlain(objects));
+    const { objectID } = await index.saveObject(getPlain(objects, preprocess));
     return objectID;
   }
   return addUtil;
@@ -74,23 +80,23 @@ const add = <Type>(index: SearchIndex) => {
 export const addNews = add<News>(newsIndex);
 export const addEvent = add<Event | EventObj>(eventIndex);
 export const addTag = add<Tag>(tagIndex);
-export const addClient = add<Client>(clientIndex);
+export const addClient = add<Client>(clientIndex, ClientService.sanitizeClient);
 export const addSite = add<Site>(siteIndex);
 export const addStack = add<Stack | StackObj>(stackIndex);
 
 
-const update = <Type>(index: SearchIndex) => {
+const update = <Type>(index: SearchIndex, preprocess: PreprocessFn = a => a) => {
   function updateUtil(object: Type): Promise<string>;
   function updateUtil(objects: Type[]): Promise<string[]>;
   async function updateUtil(objects: Type | Type[]) {
     if (!useAlgolia) return;
     if (Array.isArray(objects)) {
-      const { objectIDs } = await index.partialUpdateObjects(getPlains(objects), {
+      const { objectIDs } = await index.partialUpdateObjects(getPlains(objects, preprocess), {
         createIfNotExists: true,
       });
       return objectIDs;
     }
-    const { objectID } = await index.partialUpdateObject(getPlain(objects), {
+    const { objectID } = await index.partialUpdateObject(getPlain(objects, preprocess), {
       createIfNotExists: true,
     });
     return objectID;
@@ -101,6 +107,6 @@ const update = <Type>(index: SearchIndex) => {
 export const updateNews = update<News>(newsIndex);
 export const updateEvent = update<Event | EventObj>(eventIndex);
 export const updateTag = update<Tag>(tagIndex);
-export const updateClient = update<Client>(clientIndex);
+export const updateClient = update<Client>(clientIndex, ClientService.sanitizeClient);
 export const updateSite = update<Site>(siteIndex);
 export const updateStack = update<Stack | StackObj>(stackIndex);
