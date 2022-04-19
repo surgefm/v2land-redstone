@@ -57,7 +57,7 @@
     "urlencode": "^1.1.0",
     "uuid": "^3.3.3",
     "v2land-url-trimmer": "^0.0.10",
-    "validator": "^12.1.0"
+    "validator": "^13.7.0"
   },
   "devDependencies": {
     "@types/bcrypt": "^3.0.0",
