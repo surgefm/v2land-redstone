@@ -1,22 +1,37 @@
 import { Event, News, Stack, Client, Tag, Site } from '@Models';
-import { updateEvent, updateNews, updateStack, updateClient, updateTag, updateSite } from './index';
+import { updateAlgoliaIndex as updateEventAlgoliaIndex } from '../EventService';
+import { updateAlgoliaIndex as updateNewsAlgoliaIndex } from '../NewsService';
+import { updateAlgoliaIndex as updateTagAlgoliaIndex } from '../TagService';
+import { updateAlgoliaIndex as updateClientAlgoliaIndex } from '../ClientService';
+import { updateAlgoliaIndex as updateStackAlgoliaIndex } from '../StackService';
+import { updateSite } from './index';
 
 export const initializeAlgolia = async () => {
   try {
     const events = await Event.findAll();
-    await updateEvent(events);
+    for (const event of events) {
+      await updateEventAlgoliaIndex({ event });
+    }
 
     const news = await News.findAll();
-    await updateNews(news);
+    for (const n of news) {
+      await updateNewsAlgoliaIndex({ news: n });
+    }
 
     const stacks = await Stack.findAll();
-    await updateStack(stacks);
+    for (const stack of stacks) {
+      await updateStackAlgoliaIndex({ stack });
+    }
 
     const clients = await Client.findAll();
-    await updateClient(clients);
+    for (const client of clients) {
+      await updateClientAlgoliaIndex({ client });
+    }
 
     const tags = await Tag.findAll();
-    await updateTag(tags);
+    for (const tag of tags) {
+      await updateTagAlgoliaIndex({ tag });
+    }
 
     const sites = await Site.findAll();
     await updateSite(sites);

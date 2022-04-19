@@ -1,6 +1,6 @@
 import { Stack } from '@Models';
 import { StackObj } from '@Types';
-import { updateStack } from '../AlgoliaService';
+import { updateStack, deleteStack } from '../AlgoliaService';
 
 async function updateAlgoliaIndex({ stack, stackId }: {
   stack?: Stack | StackObj;
@@ -8,6 +8,10 @@ async function updateAlgoliaIndex({ stack, stackId }: {
 }) {
   if (!stack) {
     stack = await Stack.findByPk(stackId);
+  }
+
+  if (stack.status !== 'admitted' || stack.order < 0) {
+    return deleteStack(stack.id);
   }
 
   return updateStack(stack);

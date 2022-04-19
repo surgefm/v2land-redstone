@@ -1,5 +1,5 @@
 import { Tag } from '@Models';
-import { updateStack } from '../AlgoliaService';
+import { updateTag, deleteTag } from '../AlgoliaService';
 
 async function updateAlgoliaIndex({ tag, tagId }: {
   tag?: Tag;
@@ -9,7 +9,11 @@ async function updateAlgoliaIndex({ tag, tagId }: {
     tag = await Tag.findByPk(tagId);
   }
 
-  return updateStack(tag);
+  if (tag.status !== 'admitted') {
+    return deleteTag(tag.id);
+  }
+
+  return updateTag(tag);
 }
 
 export default updateAlgoliaIndex;

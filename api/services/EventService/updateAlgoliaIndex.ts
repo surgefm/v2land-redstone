@@ -1,6 +1,6 @@
 import { Event, HeaderImage } from '@Models';
 import { EventObj } from '@Types';
-import { updateEvent } from '../AlgoliaService';
+import { updateEvent, deleteEvent } from '../AlgoliaService';
 
 async function updateAlgoliaIndex({ event, eventId }: {
   event?: EventObj;
@@ -15,6 +15,10 @@ async function updateAlgoliaIndex({ event, eventId }: {
         required: false,
       }],
     });
+  }
+
+  if (event.status !== 'admitted') {
+    return deleteEvent(event.id);
   }
 
   return updateEvent(event);

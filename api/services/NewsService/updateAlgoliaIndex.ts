@@ -1,5 +1,5 @@
 import { News } from '@Models';
-import { updateNews } from '../AlgoliaService';
+import { updateNews, deleteNews } from '../AlgoliaService';
 
 async function updateAlgoliaIndex({ news, newsId }: {
   news?: News;
@@ -9,6 +9,10 @@ async function updateAlgoliaIndex({ news, newsId }: {
     news = await News.findOne({
       where: { id: newsId },
     });
+  }
+
+  if (!['admitted', 'pending'].includes(news.status)) {
+    return deleteNews(news.id);
   }
 
   return updateNews(news);

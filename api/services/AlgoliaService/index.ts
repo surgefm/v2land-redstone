@@ -5,6 +5,16 @@ import { EventObj, StackObj } from '@Types';
 
 type PreprocessFn = (t: Record<string, any>) => Record<string, any>;
 
+interface Id extends Record<string, any> {
+  id: number;
+}
+
+interface ObjectID extends Record<string, any> {
+  objectID: number;
+}
+
+type IdObject = Id | ObjectID;
+
 const useAlgolia = process.env.ALGOLIA_APPID && process.env.ALGOLIA_API_KEY;
 export const client = algoliasearch(process.env.ALGOLIA_APPID, process.env.ALGOLIA_API_KEY);
 export const newsIndex = client.initIndex('news');
@@ -33,13 +43,6 @@ const searchIndex = (index: SearchIndex) => async (query: string, page = 1) => {
   return hits;
 };
 
-export const searchNews = searchIndex(newsIndex);
-export const searchEvents = searchIndex(eventIndex);
-export const searchTags = searchIndex(tagIndex);
-export const searchClients = searchIndex(clientIndex);
-export const searchSites = searchIndex(siteIndex);
-export const searchStacks = searchIndex(stackIndex);
-
 const getPlainHelper = (obj: any) => {
   if (Array.isArray(obj)) {
     return obj.map(object => getPlain(object)) as Record<string, any>[];
@@ -61,7 +64,6 @@ function getPlains(objects: any, preprocess: PreprocessFn = a => a): Record<stri
   return getPlainHelper(objects).map(preprocess) as Record<string, any>[];
 }
 
-
 const add = <Type>(index: SearchIndex, preprocess: PreprocessFn = a => a) => {
   function addUtil(object: Type): Promise<string>;
   function addUtil(objects: Type[]): Promise<string[]>;
@@ -76,13 +78,6 @@ const add = <Type>(index: SearchIndex, preprocess: PreprocessFn = a => a) => {
   }
   return addUtil;
 };
-
-export const addNews = add<News>(newsIndex);
-export const addEvent = add<Event | EventObj>(eventIndex);
-export const addTag = add<Tag>(tagIndex);
-export const addClient = add<Client>(clientIndex, ClientService.sanitizeClient);
-export const addSite = add<Site>(siteIndex);
-export const addStack = add<Stack | StackObj>(stackIndex);
 
 
 const update = <Type>(index: SearchIndex, preprocess: PreprocessFn = a => a) => {
@@ -104,9 +99,49 @@ const update = <Type>(index: SearchIndex, preprocess: PreprocessFn = a => a) => 
   return updateUtil;
 };
 
+
+const del = (index: SearchIndex) => {
+  const getId = (object: number | IdObject) => {
+    if (typeof object === 'number') return `${object}`;
+    if (typeof (object as any).id === 'undefined') return `${(object as ObjectID).objectID}`;
+    return `${(object as Id).id}`;
+  };
+
+  async function delUtil(objectIDs: number | number[] | IdObject | IdObject[]) {
+    if (Array.isArray(objectIDs)) {
+      return index.deleteObjects(objectIDs.map(getId));
+    }
+    return index.deleteObject(getId(objectIDs));
+  }
+
+  return delUtil;
+};
+
+
+export const searchNews = searchIndex(newsIndex);
+export const searchEvents = searchIndex(eventIndex);
+export const searchTags = searchIndex(tagIndex);
+export const searchClients = searchIndex(clientIndex);
+export const searchSites = searchIndex(siteIndex);
+export const searchStacks = searchIndex(stackIndex);
+
+export const addNews = add<News>(newsIndex);
+export const addEvent = add<Event | EventObj>(eventIndex);
+export const addTag = add<Tag>(tagIndex);
+export const addClient = add<Client>(clientIndex, ClientService.sanitizeClient);
+export const addSite = add<Site>(siteIndex);
+export const addStack = add<Stack | StackObj>(stackIndex);
+
 export const updateNews = update<News>(newsIndex);
 export const updateEvent = update<Event | EventObj>(eventIndex);
 export const updateTag = update<Tag>(tagIndex);
 export const updateClient = update<Client>(clientIndex, ClientService.sanitizeClient);
 export const updateSite = update<Site>(siteIndex);
 export const updateStack = update<Stack | StackObj>(stackIndex);
+
+export const deleteNews = del(newsIndex);
+export const deleteEvent = del(eventIndex);
+export const deleteTag = del(tagIndex);
+export const deleteClient = del(clientIndex);
+export const deleteSite = del(siteIndex);
+export const deleteStack = del(stackIndex);
