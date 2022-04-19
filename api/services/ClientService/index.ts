@@ -2,6 +2,7 @@ import findClient from './findClient';
 import getClientId from './getClientId';
 import sanitizeClient, { sanitizedFields } from './sanitizeClient';
 import tokenGenerator from './tokenGenerator';
+import updateAlgoliaIndex from './updateAlgoliaIndex';
 import updateElasticsearchIndex from './updateElasticsearchIndex';
 import validatePassword from './validatePassword';
 import validateSettings from './validateSettings';
@@ -12,6 +13,7 @@ export {
   sanitizeClient,
   sanitizedFields,
   tokenGenerator,
+  updateAlgoliaIndex,
   updateElasticsearchIndex,
   validatePassword,
   validateSettings,

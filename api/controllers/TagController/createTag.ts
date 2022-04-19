@@ -1,6 +1,6 @@
 import { Tag, sequelize } from '@Models';
 import { RedstoneRequest, RedstoneResponse } from '@Types';
-import { RecordService, EventService } from '@Services';
+import { RecordService, EventService, TagService } from '@Services';
 
 async function createTag(req: RedstoneRequest, res: RedstoneResponse) {
   if (!req.body.name) {
@@ -38,6 +38,8 @@ async function createTag(req: RedstoneRequest, res: RedstoneResponse) {
       tag,
     });
   });
+
+  TagService.updateAlgoliaIndex({ tagId: tag.id });
 }
 
 export default createTag;

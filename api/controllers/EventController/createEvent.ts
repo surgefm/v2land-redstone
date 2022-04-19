@@ -50,7 +50,7 @@ async function createEvent(req: RedstoneRequest, res: RedstoneResponse) {
   });
 
   NotificationService.notifyWhenEventCreated(event, req.session.clientId);
-  EventService.updateElasticsearchIndex({ event });
+  EventService.updateAlgoliaIndex({ event });
 }
 
 export default createEvent;

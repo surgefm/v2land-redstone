@@ -1,6 +1,6 @@
 import { Tag, sequelize } from '@Models';
 import { RedstoneRequest, RedstoneResponse } from '@Types';
-import { RecordService, EventService } from '@Services';
+import { RecordService, EventService, TagService } from '@Services';
 
 async function updateTag(req: RedstoneRequest, res: RedstoneResponse) {
   const tag = await Tag.findByPk(req.params.tagId);
@@ -99,6 +99,8 @@ async function updateTag(req: RedstoneRequest, res: RedstoneResponse) {
       message: '成功修改话题',
     });
   });
+
+  TagService.updateAlgoliaIndex({ tagId: tag.id });
 }
 
 export default updateTag;

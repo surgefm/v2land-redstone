@@ -11,6 +11,7 @@ import getEventList from './getEventList';
 import removeNews from './removeNews';
 import removeTag from './removeTag';
 import updateAdmittedLatestNews from './updateAdmittedLatestNews';
+import updateAlgoliaIndex from './updateAlgoliaIndex';
 import updateElasticsearchIndex from './updateElasticsearchIndex';
 import updateEvent from './updateEvent';
 import updateHeaderImage from './updateHeaderImage';
@@ -29,6 +30,7 @@ export {
   removeNews,
   removeTag,
   updateAdmittedLatestNews,
+  updateAlgoliaIndex,
   updateElasticsearchIndex,
   updateEvent,
   updateHeaderImage,
