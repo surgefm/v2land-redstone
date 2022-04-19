@@ -74,14 +74,18 @@ RedisBackend.prototype = {
 
     const redisKey = this.bucketKey(bucket, key);
 
-    let keys = await new Promise(resolve => this.redis.smembers(redisKey, resolve));
-    if (!keys) {
-      keys = await new Promise(resolve => this.pg.get(bucket, key, resolve));
-      if (keys && keys.length > 0) {
-        await this.redis.sadd(redisKey, ...keys)
+    try {
+      let keys = await this.redis.smembers(redisKey);
+      if (keys.length === 0) {
+        keys = (await (new Promise(resolve => this.pg.get(bucket, key, resolve)))) || [];
+        if (keys.length > 0) {
+          await this.redis.sadd(redisKey, ...keys)
+        }
       }
+      cb(null, keys);
+    } catch (err) {
+      cb(err);
     }
-    cb(keys);
   },
 
   /**
@@ -99,7 +103,7 @@ RedisBackend.prototype = {
     const refresh = [];
     for (let i = 0; i < buckets.length; i++) {
       for (let j = 0; j < keys.length; j++) {
-        refresh.add(new Promise(resolve => this.get(buckets[i], keys[j], resolve)));
+        refresh.add(new Promise(this.get(buckets[i], keys[j])));
       }
     }
     await Promise.all(refresh);
