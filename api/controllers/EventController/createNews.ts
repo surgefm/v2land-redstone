@@ -62,9 +62,11 @@ async function createNews(req: RedstoneRequest, res: RedstoneResponse) {
     }
 
     // Ask the Wayback Machine of Internet Archive to archive the webpage.
-    try {
-      await axios.get(`https://web.archive.org/save/${data.url}`);
-    } catch (err) {}
+    (async () => {
+      try {
+        await axios.get(`https://web.archive.org/save/${data.url}`);
+      } catch (err) {}
+    })();
 
     const time = new Date();
     if (!news) {
