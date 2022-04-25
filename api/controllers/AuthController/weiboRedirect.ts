@@ -5,7 +5,7 @@ import { RecordService, AuthService } from '@Services';
 import { RedstoneRequest, RedstoneResponse } from '@Types';
 import axios from 'axios';
 
-async function weiboRedirect (req: RedstoneRequest, res: RedstoneResponse) {
+async function weiboRedirect(req: RedstoneRequest, res: RedstoneResponse) {
   if (!(req.query && req.query.code && req.query.authId)) {
     return res.status(400).json({
       message: '请求缺少 code 或 authId',

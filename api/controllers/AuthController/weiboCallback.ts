@@ -2,7 +2,7 @@ import { Auth } from '@Models';
 import { globals } from '@Configs';
 import { RedstoneRequest, RedstoneResponse } from '@Types';
 
-async function weiboCallback (req: RedstoneRequest, res: RedstoneResponse) {
+async function weiboCallback(req: RedstoneRequest, res: RedstoneResponse) {
   if (!(req.query && req.query.code && req.query.state)) {
     return res.status(400).json({
       message: '请求缺少 code 或 state 参数',

@@ -85,6 +85,9 @@ export default {
     'weibo': true,
     'weiboRedirect': true,
     'weiboCallback': true,
+    'google': true,
+    'googleRedirect': true,
+    'googleCallback': true,
     '*': false,
   },
 

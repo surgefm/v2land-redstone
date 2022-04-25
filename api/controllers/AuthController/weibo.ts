@@ -3,7 +3,7 @@ import { Auth } from '@Models';
 import { oauth, globals } from '@Configs';
 import { RedstoneRequest, RedstoneResponse } from '@Types';
 
-async function weibo (req: RedstoneRequest, res: RedstoneResponse) {
+async function weibo(req: RedstoneRequest, res: RedstoneResponse) {
   const oa = oauth.weibo;
 
   if (!oa) {

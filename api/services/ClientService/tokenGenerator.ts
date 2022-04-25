@@ -1,7 +1,7 @@
 import uuidv4 from 'uuid/v4';
 import crypto from 'crypto';
 
-function tokenGenerator () {
+function tokenGenerator() {
   const token = uuidv4();
   return crypto
     .createHash('sha256')

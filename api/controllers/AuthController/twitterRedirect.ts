@@ -3,7 +3,7 @@ import { oauth } from '@Configs';
 import { AuthService, RecordService } from '@Services';
 import { RedstoneRequest, RedstoneResponse } from '@Types';
 
-async function twitterRedirect (req: RedstoneRequest, res: RedstoneResponse) {
+async function twitterRedirect(req: RedstoneRequest, res: RedstoneResponse) {
   if (!(req.query && req.query.token && req.query.verifier)) {
     return res.status(400).json({
       message: '请求缺少 token 或 verifier',

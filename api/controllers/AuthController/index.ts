@@ -7,6 +7,9 @@ import unauthorize from './unauthorize';
 import weibo from './weibo';
 import weiboCallback from './weiboCallback';
 import weiboRedirect from './weiboRedirect';
+import google from './google';
+import googleCallback from './googleCallback';
+import googleRedirect from './googleRedirect';
 
 export {
   authorize,
@@ -18,4 +21,7 @@ export {
   weibo,
   weiboCallback,
   weiboRedirect,
+  google,
+  googleCallback,
+  googleRedirect,
 };

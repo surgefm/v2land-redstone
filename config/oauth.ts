@@ -1,9 +1,12 @@
 import { OAuth, OAuth2 } from 'oauth';
+import { google as g } from 'googleapis';
+import { OAuth2Client } from 'google-auth-library/build/src/auth/oauth2client';
 import globals from './globals';
 
 const env = process.env;
 let twitter: OAuth = null;
 let weibo: OAuth2 = null;
+let google: OAuth2Client = null;
 
 if (env.TWITTER_KEY && env.TWITTER_SECRET) {
   twitter = new OAuth(
@@ -28,7 +31,16 @@ if (env.WEIBO_KEY && env.WEIBO_SECRET) {
   );
 }
 
+if (env.GOOGLE_CLIENT_ID && env.GOOGLE_SECRET) {
+  google = new g.auth.OAuth2(
+    env.GOOGLE_CLIENT_ID,
+    env.GOOGLE_SECRET,
+    `${globals.api}/auth/google/callback`,
+  );
+}
+
 export default {
   twitter,
   weibo,
+  google,
 };
