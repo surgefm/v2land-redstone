@@ -1,15 +1,6 @@
 import { RedstoneRequest, RedstoneResponse } from '@Types';
 import { UtilService } from '@Services';
-
-import { S3 } from 'aws-sdk';
-const s3 = new S3({
-  apiVersion: '2006-03-01',
-  endpoint: 'https://sfo3.digitaloceanspaces.com',
-  credentials: {
-    accessKeyId: process.env.S3_KEY,
-    secretAccessKey: process.env.S3_SECRET,
-  },
-});
+import { s3 } from '@Services/UploadService';
 
 export async function upload(req: RedstoneRequest, res: RedstoneResponse) {
   const { S3_KEY, S3_BUCKET } = process.env;

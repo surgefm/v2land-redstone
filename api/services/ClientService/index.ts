@@ -1,5 +1,6 @@
 import findClient from './findClient';
 import getClientId from './getClientId';
+import randomlyGenerateUsername from './randomlyGenerateUsername';
 import sanitizeClient, { sanitizedFields } from './sanitizeClient';
 import tokenGenerator from './tokenGenerator';
 import updateAlgoliaIndex from './updateAlgoliaIndex';
@@ -10,6 +11,7 @@ import validateSettings from './validateSettings';
 export {
   findClient,
   getClientId,
+  randomlyGenerateUsername,
   sanitizeClient,
   sanitizedFields,
   tokenGenerator,

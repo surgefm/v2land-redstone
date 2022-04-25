@@ -1,7 +1,7 @@
 import { Auth } from '@Models';
 import { RedstoneRequest, RedstoneResponse } from '@Types';
 
-async function twitterCallback (req: RedstoneRequest, res: RedstoneResponse) {
+async function twitterCallback(req: RedstoneRequest, res: RedstoneResponse) {
   if (!(req.query && req.query.oauth_token && req.query.oauth_verifier)) {
     return res.status(400).json({
       message: '请求缺少 token 或 verifier',

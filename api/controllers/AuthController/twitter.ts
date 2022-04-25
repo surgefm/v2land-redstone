@@ -2,7 +2,7 @@ import { Auth } from '@Models';
 import { oauth } from '@Configs';
 import { RedstoneRequest, RedstoneResponse } from '@Types';
 
-async function twitter (req: RedstoneRequest, res: RedstoneResponse) {
+async function twitter(req: RedstoneRequest, res: RedstoneResponse) {
   const oa = oauth.twitter;
 
   if (!oa) {

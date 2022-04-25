@@ -24,4 +24,5 @@ export * as TagService from './TagService';
 export * as TelegramService from './TelegramService';
 export * as TwitterService from './TwitterService';
 export * as UtilService from './UtilService';
+export * as UploadService from './UploadService';
 export * as WeiboService from './WeiboService';

@@ -1,6 +1,6 @@
 import * as _ from 'lodash';
 
-function validateNumber (value: any, defaultValue: number) {
+function validateNumber(value: any, defaultValue: number) {
   if (_.isNumber(value)) {
     return value as number;
   } else if (_.isString(value)) {
