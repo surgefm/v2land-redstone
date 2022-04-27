@@ -92,7 +92,7 @@ class Client extends Model<Client> {
 
   @AllowNull(false)
   @Default('contributor')
-  @Column(DataType.ENUM('admin', 'manager', 'contributor'))
+  @Column(DataType.ENUM('admin', 'manager', 'contributor', 'editor'))
   role: string;
 
   @AllowNull(true)
@@ -138,6 +138,7 @@ class Client extends Model<Client> {
 
   subscriptionCount?: number;
   isAdmin?: boolean;
+  isManager?: boolean;
   isEditor?: boolean;
 }
 

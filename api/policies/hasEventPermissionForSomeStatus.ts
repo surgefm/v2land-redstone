@@ -24,8 +24,7 @@ const hasEventPermissionForSomeStatus = (errorMessage?: string) => async (req: R
     } else if (event.status === 'rejected') {
       haveAccess = await AccessControlService.hasRole(req.session.clientId, AccessControlService.getEventOwnerRolePlain(eventId));
     }
-    haveAccess = haveAccess || await AccessControlService.hasRole(req.session.clientId, AccessControlService.roles.editors);
-    haveAccess = haveAccess || await AccessControlService.hasRole(req.session.clientId, AccessControlService.roles.admins);
+    haveAccess = haveAccess || await AccessControlService.isClientManager(req.session.clientId);
   }
   if (haveAccess) return next();
 

@@ -1,6 +1,6 @@
 import { Client } from '@Models';
-import { guests, contributors, editors, admins } from './roles';
-import { allow, addRoleParents, addUserRoles } from './operations';
+import { guests, contributors, editors, managers, admins } from './roles';
+import { allow, addRoleParents, addUserRoles, removeAllow } from './operations';
 
 export default async function initialize(): Promise<void> {
   // Define guests’ permission
@@ -14,18 +14,31 @@ export default async function initialize(): Promise<void> {
 
   // Define editors’ permission
   await addRoleParents(editors, contributors);
-  await allow(editors, 'all-tags', '*');
   await allow(editors, 'headlines', '*');
   await allow(editors, 'news', ['edit']);
+  await allow(editors, 'all-admitted-events', ['view', 'edit']);
+  await removeAllow(editors, 'all-events', ['view', 'edit']);
+
+  // Define managers’ permission
+  await addRoleParents(managers, editors);
+  await allow(managers, 'all-tags', '*');
+  await allow(editors, 'all-events', ['view', 'edit']);
 
   // Define admins’ permission
   await addRoleParents(admins, editors);
-  await allow(admins, 'all-events', ['view', 'edit']);
   await allow(admins, 'no-admin-roles', ['view', 'create', 'edit', 'delete']);
   await allow(admins, 'admin-roles', 'view');
 
-  const adminClients = await Client.findAll({ where: { role: 'admin' } });
-  for (const client of adminClients) {
-    await addUserRoles(client.id, admins);
+  const clients = await Client.findAll();
+  for (const client of clients) {
+    if (client.role === 'admin') {
+      await addUserRoles(client.id, admins);
+    } else if (client.role === 'manager') {
+      await addUserRoles(client.id, managers);
+    } else if (client.role === 'editor') {
+      await addUserRoles(client.id, editors);
+    } else {
+      await addUserRoles(client.id, contributors);
+    }
   }
 }

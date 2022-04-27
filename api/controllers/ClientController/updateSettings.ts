@@ -2,7 +2,7 @@ import { RedstoneRequest, RedstoneResponse } from '@Types';
 import { Record, sequelize } from '@Models';
 import { ClientService } from '@Services';
 
-async function updateSettings (req: RedstoneRequest, res: RedstoneResponse) {
+async function updateSettings(req: RedstoneRequest, res: RedstoneResponse) {
   if (!req.body || !req.body.settings) {
     return res.status(400).json({
       message: '缺少修改信息',
