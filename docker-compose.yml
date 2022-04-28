@@ -1,0 +1,14 @@
+version: '3.8'
+services:
+  web:
+    build: .
+    ports:
+      - "1337:1337"
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+      - logvolume01:/var/log
+    command: node node_modules/gulp-cli/bin/gulp.js watch
+volumes:
+  logvolume01:
+    driver: local

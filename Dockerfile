@@ -8,6 +8,7 @@ WORKDIR /usr/src/app
 
 # Bundle app source
 COPY package.json .
+COPY yarn.lock .
 
 # Install app dependencies
 RUN yarn install

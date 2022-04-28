@@ -1,6 +1,5 @@
-import { Client } from '@Models';
 import { guests, contributors, editors, managers, admins } from './roles';
-import { allow, addRoleParents, addUserRoles, removeAllow } from './operations';
+import { allow, addRoleParents, removeAllow } from './operations';
 
 export default async function initialize(): Promise<void> {
   // Define guests’ permission
@@ -29,16 +28,16 @@ export default async function initialize(): Promise<void> {
   await allow(admins, 'no-admin-roles', ['view', 'create', 'edit', 'delete']);
   await allow(admins, 'admin-roles', 'view');
 
-  const clients = await Client.findAll();
-  for (const client of clients) {
-    if (client.role === 'admin') {
-      await addUserRoles(client.id, admins);
-    } else if (client.role === 'manager') {
-      await addUserRoles(client.id, managers);
-    } else if (client.role === 'editor') {
-      await addUserRoles(client.id, editors);
-    } else {
-      await addUserRoles(client.id, contributors);
-    }
-  }
+  // const clients = await Client.findAll();
+  // for (const client of clients) {
+  //   if (client.role === 'admin') {
+  //     await addUserRoles(client.id, admins);
+  //   } else if (client.role === 'manager') {
+  //     await addUserRoles(client.id, managers);
+  //   } else if (client.role === 'editor') {
+  //     await addUserRoles(client.id, editors);
+  //   } else {
+  //     await addUserRoles(client.id, contributors);
+  //   }
+  // }
 }
