@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import { Auth, Client, sequelize } from '@Models';
 import { oauth, globals } from '@Configs';
-import { RecordService, AuthService } from '@Services';
+import { RecordService, AuthService, ClientService } from '@Services';
+import { hasS3, uploadFromUrl } from '@Services/UploadService';
 import { RedstoneRequest, RedstoneResponse } from '@Types';
 import axios from 'axios';
 
@@ -67,8 +68,7 @@ async function weiboRedirect(req: RedstoneRequest, res: RedstoneResponse) {
   account.refreshToken = refreshToken;
   await account.save();
 
-  if (account.createdAt.toString() == account.updatedAt.toString() &&
-    req.session.clientId) {
+  if (!account.owner && req.session.clientId) {
     await sequelize.transaction(async transaction => {
       await account.update({
         owner: req.session.clientId,
@@ -82,42 +82,37 @@ async function weiboRedirect(req: RedstoneRequest, res: RedstoneResponse) {
       }, { transaction });
     });
     res.status(201).json(AuthService.sanitize(account));
-  } else if (account.owner && (!req.session.clientId ||
-    (req.session.clientId === account.owner))) {
+  } else if (account.owner) {
     await account.update({ profile: { ...data } });
     req.session.clientId = account.owner;
     res.status(200).json(AuthService.sanitize(account));
   } else {
     const profile = { ...data };
-    profile.expireTime = Date.now() + 1000 * 60 * 60 * 12; // expires in 12 hours.
-    profile.owner = req.sessionID;
-    await account.update({ profile });
 
-    if (!account.owner && !req.session.clientId) {
-      account = AuthService.sanitize(account);
-
-      return res.status(202).json({
-        name: 'authentication required',
-        message: '请在登录后绑定第三方账号',
-        auth: account,
-      });
-    } else {
-      const conflict = await Client.findByPk(account.owner);
-      if (!conflict) {
-        await account.update({
-          owner: req.session.clientId,
-          profile: { ...data },
-        });
-        return res.status(201).json(AuthService.sanitize(account));
-      }
-      account = AuthService.sanitize(account);
-      res.status(202).json({
-        name: 'already connected',
-        message: `该微博账号已被用户 ${conflict.username} 绑定，请选择是否解绑`,
-        conflict: conflict.username,
-        auth: account,
-      });
+    let avatar: string;
+    if (hasS3 && profile.avatar_hd) {
+      avatar = await uploadFromUrl(profile.avatar_hd, '.jpg');
     }
+
+    const newClient = await ClientService.createClient({
+      username: await ClientService.randomlyGenerateUsername(profile.domain),
+      nickname: profile.screen_name,
+      description: profile.description,
+      avatar,
+      inviteCode: auth.inviteCode,
+    });
+    await account.update({
+      profile,
+      owner: newClient.id,
+    });
+    account = AuthService.sanitize(account);
+    req.session.clientId = newClient.id;
+
+    return res.status(201).json({
+      message: '注册成功',
+      auth: account,
+      client: newClient,
+    });
   }
 }
 

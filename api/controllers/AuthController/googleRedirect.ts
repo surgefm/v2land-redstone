@@ -8,7 +8,7 @@ import { oauth } from '@Configs';
 import { RecordService, AuthService, ClientService } from '@Services';
 import { RedstoneRequest, RedstoneResponse } from '@Types';
 import { hasS3, uploadFromUrl } from '@Services/UploadService';
-import { charset } from '@Services/ClientService/randomlyGenerateUsername';
+import { charset } from '@Services/UtilService/generateRandomAlphabetString';
 
 async function googleRedirect(req: RedstoneRequest, res: RedstoneResponse) {
   if (!(req.query && req.query.code && req.query.authId)) {
@@ -132,14 +132,14 @@ async function googleRedirect(req: RedstoneRequest, res: RedstoneResponse) {
       avatar = await uploadFromUrl(avatarUrl, 'jpg');
     }
 
-    const newClient = await Client.create({
+    const newClient = await ClientService.createClient({
       username,
       nickname,
-      password: '',
+      hashedPassword: '',
       avatar,
       email: profile.email,
       emailVerified: true,
-      role: 'contributor',
+      inviteCode: auth.inviteCode,
     });
 
     await account.update({ profile, owner: newClient.id });

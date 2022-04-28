@@ -21,6 +21,7 @@ async function google(req: RedstoneRequest, res: RedstoneResponse) {
     site: 'google',
     owner: req.session.clientId,
     redirect: req.query ? req.query.redirect : '',
+    inviteCode: req.query ? req.query.inviteCode : '',
   });
 
   const callback = globals.api + '/auth/google/callback';

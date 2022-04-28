@@ -21,6 +21,9 @@ class Auth extends Model<Auth> {
   site: string;
 
   @Column(DataType.TEXT)
+  inviteCode?: string;
+
+  @Column(DataType.TEXT)
   profileId?: string; // 微博/Twitter 的用户 uid
 
   @Column(DataType.JSONB)

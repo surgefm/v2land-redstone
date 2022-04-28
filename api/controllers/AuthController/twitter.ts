@@ -28,6 +28,7 @@ async function twitter(req: RedstoneRequest, res: RedstoneResponse) {
       tokenSecret,
       owner: req.session.clientId,
       redirect: req.query ? req.query.redirect : '',
+      inviteCode: req.query ? req.query.inviteCode : '',
     });
 
     let redirect = 'https://twitter.com/oauth/authenticate?oauth_token=';

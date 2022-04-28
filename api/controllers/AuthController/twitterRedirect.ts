@@ -1,6 +1,7 @@
 import { Auth, Client, sequelize } from '@Models';
 import { oauth } from '@Configs';
-import { AuthService, RecordService } from '@Services';
+import { AuthService, ClientService, RecordService } from '@Services';
+import { hasS3, uploadFromUrl } from '@Services/UploadService';
 import { RedstoneRequest, RedstoneResponse } from '@Types';
 
 async function twitterRedirect(req: RedstoneRequest, res: RedstoneResponse) {
@@ -77,8 +78,7 @@ async function twitterRedirect(req: RedstoneRequest, res: RedstoneResponse) {
   account.accessTokenSecret = accessTokenSecret;
   await account.save();
 
-  if (account.createdAt.toString() == account.updatedAt.toString()
-    && req.session.clientId) {
+  if (!account.owner && req.session.clientId) {
     await sequelize.transaction(async transaction => {
       await account.update({
         owner: req.session.clientId,
@@ -101,34 +101,31 @@ async function twitterRedirect(req: RedstoneRequest, res: RedstoneResponse) {
     res.status(200).json(AuthService.sanitize(account));
   } else {
     const profile = { ...response };
-    profile.expireTime = Date.now() + 1000 * 60 * 60 * 12; // expires in 12 hours.
-    profile.owner = req.sessionID;
-    await account.update({ profile });
 
-    if (!account.owner && !req.session.clientId) {
-      account = AuthService.sanitize(account);
-
-      res.status(202).json({
-        name: 'authentication required',
-        message: '请在登录后绑定第三方账号',
-        auth: account,
-      });
-    } else {
-      const conflict = await Client.findByPk(account.owner);
-      if (!conflict) {
-        account.owner = req.session.clientId;
-        account.profile = { ...response };
-        await account.save();
-        return res.status(201).json(AuthService.sanitize(account));
-      }
-      account = AuthService.sanitize(account);
-      res.status(202).json({
-        name: 'already connected',
-        message: `该 Twitter 账号已被用户 ${conflict.username} 绑定，请选择是否解绑`,
-        conflict: conflict.username,
-        auth: account,
-      });
+    let avatar: string;
+    if (hasS3 && profile.avatar_hd) {
+      avatar = await uploadFromUrl(profile.profile_image_url, '.jpg');
     }
+
+    const newClient = await ClientService.createClient({
+      username: await ClientService.randomlyGenerateUsername(profile.screen_name),
+      nickname: profile.name,
+      description: profile.description,
+      avatar,
+      inviteCode: auth.inviteCode,
+    });
+    await account.update({
+      profile,
+      owner: newClient.id,
+    });
+    account = AuthService.sanitize(account);
+    req.session.clientId = newClient.id;
+
+    return res.status(201).json({
+      message: '注册成功',
+      auth: account,
+      client: newClient,
+    });
   }
 }
 

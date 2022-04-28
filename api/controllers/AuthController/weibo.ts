@@ -16,6 +16,7 @@ async function weibo(req: RedstoneRequest, res: RedstoneResponse) {
     site: 'weibo',
     owner: req.session.clientId,
     redirect: req.query ? req.query.redirect : '',
+    inviteCode: req.query ? req.query.inviteCode : '',
   });
 
   const callback = globals.api + '/auth/weibo/callback';

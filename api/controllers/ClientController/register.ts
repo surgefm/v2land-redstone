@@ -1,6 +1,6 @@
 import * as bcrypt from 'bcrypt';
 import { Client, Record, sequelize } from '@Models';
-import { ClientService, EmailService, AccessControlService, RedisService } from '@Services';
+import { ClientService, EmailService, AccessControlService, RedisService, InviteCodeService } from '@Services';
 import { RedstoneRequest, RedstoneResponse } from '@Types';
 
 async function register(req: RedstoneRequest, res: RedstoneResponse) {
@@ -43,44 +43,13 @@ async function register(req: RedstoneRequest, res: RedstoneResponse) {
       });
     }
 
-    client = await Client.create({
+    client = await ClientService.createClient({
       username: data.username,
       nickname: data.nickname,
-      password: hash,
+      hashedPassword: hash,
       email: data.email,
-      role: 'contributor',
-    }, {
-      raw: true,
-      transaction,
-    });
-
-    await AccessControlService.allowClientToEditRole(client.id, client.id);
-    await AccessControlService.addUserRoles(client.id, AccessControlService.roles.contributors);
-    const verificationToken = ClientService.tokenGenerator();
-
-    await Record.create({
-      model: 'Client',
-      operation: 'create',
-      data: client,
-      target: client.id,
-      action: 'createClient',
-      client: req.session.clientId,
-    }, { transaction });
-
-    await Record.create({
-      model: 'Miscellaneous',
-      operation: 'create',
-      data: {
-        clientId: client.id,
-        verificationToken,
-        expire: new Date(Date.now() + 1000 * 60 * 60 * 24 * 3),
-      },
-      target: client.id,
-      action: 'createClientVerificationToken',
-      client: req.session.clientId,
-    }, { transaction });
-
-    await RedisService.set(RedisService.getClientIdKey(client.username), client.id);
+      inviteCode: data.inviteCode,
+    }, transaction);
 
     req.session.clientId = client.id;
     const clientObj: any = client.get({ plain: true });
@@ -89,9 +58,6 @@ async function register(req: RedstoneRequest, res: RedstoneResponse) {
       message: '注册成功，请在三天内至邮箱查收验证邮件',
       client: clientObj,
     });
-
-    EmailService.register(client, verificationToken);
-    ClientService.updateAlgoliaIndex({ clientId: client.id });
   });
 }
 

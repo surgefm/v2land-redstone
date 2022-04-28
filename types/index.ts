@@ -91,6 +91,5 @@ declare module 'express-session' {
   interface SessionData {
     clientId: number;
     authenticated: boolean;
-    inviteCode?: string;
   }
 }
