@@ -8,6 +8,7 @@ export * as ContactService from './ContactService';
 export * as ElasticsearchService from './ElasticsearchService';
 export * as EmailService from './EmailService';
 export * as EventService from './EventService';
+export * as InviteCodeService from './InviteCodeService';
 export * as LeanCloudService from './LeanCloudService';
 export * as ModeService from './ModeService';
 export * as NewsService from './NewsService';

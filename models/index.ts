@@ -11,6 +11,7 @@ import EventContributor from './EventContributor';
 import EventStackNews from './EventStackNews';
 import EventTag from './EventTag';
 import HeaderImage from './HeaderImage';
+import InviteCode from './InviteCode';
 import News from './News';
 import Notification from './Notification';
 import Record from './Record';
@@ -40,6 +41,7 @@ export {
   EventStackNews,
   EventTag,
   HeaderImage,
+  InviteCode,
   News,
   Notification,
   Record,
