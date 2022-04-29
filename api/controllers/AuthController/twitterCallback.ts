@@ -21,7 +21,7 @@ async function twitterCallback(req: RedstoneRequest, res: RedstoneResponse) {
   res.status(200).send(
     `<!DOCTYPE html>` +
     `<body>
-    <script>window.location="${auth.redirect}` +
+    <script>window.location="${auth.redirect || '/auth/twitter/redirect?'}` +
     `&token=${token}` +
     `&verifier=${verifier}` +
     `&site=twitter"</script>

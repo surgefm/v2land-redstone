@@ -1,4 +1,4 @@
-import { Auth, Client, sequelize } from '@Models';
+import { Auth, sequelize } from '@Models';
 import { oauth } from '@Configs';
 import { AuthService, ClientService, RecordService } from '@Services';
 import { hasS3, uploadFromUrl } from '@Services/UploadService';

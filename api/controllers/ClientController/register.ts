@@ -1,6 +1,6 @@
 import * as bcrypt from 'bcrypt';
-import { Client, Record, sequelize } from '@Models';
-import { ClientService, EmailService, AccessControlService, RedisService, InviteCodeService } from '@Services';
+import { sequelize } from '@Models';
+import { ClientService } from '@Services';
 import { RedstoneRequest, RedstoneResponse } from '@Types';
 
 async function register(req: RedstoneRequest, res: RedstoneResponse) {

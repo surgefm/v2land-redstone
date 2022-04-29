@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import { Auth, Client, sequelize } from '@Models';
+import { Auth, sequelize } from '@Models';
 import { oauth, globals } from '@Configs';
 import { RecordService, AuthService, ClientService } from '@Services';
 import { hasS3, uploadFromUrl } from '@Services/UploadService';
