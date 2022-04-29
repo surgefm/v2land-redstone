@@ -37,7 +37,7 @@ const cookie = {
 const sessionConfig = {
   secret: process.env.SESSION_SECRET || '970a14748cf639a4aa3d7b0d60cc9cac',
   resave: true,
-  saveUninitialized: false,
+  saveUninitialized: true,
   unset: 'destroy' as 'destroy',
   name: 'surge.sid',
   proxy: true,
