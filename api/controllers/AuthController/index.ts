@@ -10,6 +10,7 @@ import weiboRedirect from './weiboRedirect';
 import google from './google';
 import googleCallback from './googleCallback';
 import googleRedirect from './googleRedirect';
+import telegramRedirect from './telegramRedirect';
 
 export {
   authorize,
@@ -24,4 +25,5 @@ export {
   google,
   googleCallback,
   googleRedirect,
+  telegramRedirect,
 };

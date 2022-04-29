@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import axios from 'axios';
-const { TELE_TOKEN } = process.env;
 import { globals } from '@Configs';
+
+export const { TELE_TOKEN } = process.env;
 
 /**
  * reference: https://core.telegram.org/bots/api#sendmessage

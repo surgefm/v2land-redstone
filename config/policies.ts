@@ -88,6 +88,7 @@ export default {
     'google': true,
     'googleRedirect': true,
     'googleCallback': true,
+    'telegramRedirect': true,
     '*': false,
   },
 
