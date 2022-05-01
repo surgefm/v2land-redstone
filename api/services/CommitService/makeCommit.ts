@@ -78,7 +78,7 @@ async function makeCommit(
     await ContributionService.generateCommitContributionData(commit, { transaction });
     commit.data = {
       ...commit.data,
-      contributors: await EventService.getContributors(eventObj.id),
+      contributors: await EventService.getContributors(eventObj.id, { transaction }),
     };
     await commit.save({ transaction });
 
