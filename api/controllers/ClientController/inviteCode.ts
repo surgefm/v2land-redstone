@@ -1,11 +1,12 @@
 import { RedstoneRequest, RedstoneResponse } from '@Types';
-import { globals } from '@Configs';
+import { InviteCodeService } from '@Services';
 
 async function inviteCode(req: RedstoneRequest, res: RedstoneResponse) {
-  if (req.query && req.query.code === globals.inviteCode) {
-    res.status(200).json({ message: 'Correct.' });
+  const invite = await InviteCodeService.isValid(req.query && req.query.inviteCode);
+  if (invite) {
+    res.status(200).json({ invite });
   } else {
-    res.status(400).json({ message: 'Wrong' });
+    res.status(400).json({ message: 'Invalid code.' });
   }
 }
 
