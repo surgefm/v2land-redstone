@@ -6,7 +6,7 @@ import { RedstoneRequest, RedstoneResponse } from '@Types';
 import { RecordService, AuthService, UploadService, ClientService } from '@Services';
 import { TELE_TOKEN } from '@Services/TelegramService';
 
-async function twitter(req: RedstoneRequest, res: RedstoneResponse) {
+async function telegramRedirect(req: RedstoneRequest, res: RedstoneResponse) {
   if (!TELE_TOKEN) {
     return res.status(503).json({
       message: '暂不支持 Telegram 绑定',
@@ -57,7 +57,7 @@ async function twitter(req: RedstoneRequest, res: RedstoneResponse) {
   }
 
   let avatar: string;
-  if (UploadService.hasS3) {
+  if (UploadService.hasS3 && photo_url) {
     avatar = await UploadService.uploadFromUrl(photo_url, '.jpg');
   }
   const clientUsername = await ClientService.randomlyGenerateUsername(username);
@@ -87,4 +87,4 @@ async function twitter(req: RedstoneRequest, res: RedstoneResponse) {
   });
 }
 
-export default twitter;
+export default telegramRedirect;

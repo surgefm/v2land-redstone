@@ -42,7 +42,7 @@ async function createClient({
       description,
       password: hashedPassword,
       avatar,
-      email: email,
+      email,
       emailVerified,
       role,
     }, {

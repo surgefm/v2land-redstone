@@ -80,7 +80,7 @@ async function googleRedirect(req: RedstoneRequest, res: RedstoneResponse) {
     res.status(200).json(AuthService.sanitize(account));
   } else if (sameEmailClient) {
     sameEmailClient.emailVerified = true;
-    if (!sameEmailClient.avatar && hasS3) {
+    if (!sameEmailClient.avatar && hasS3 && profile.picture) {
       const avatarUrl = profile.picture.replace('=s96-c', '=s512-c');
       sameEmailClient.avatar = await uploadFromUrl(avatarUrl, 'jpg');
     }
@@ -127,7 +127,7 @@ async function googleRedirect(req: RedstoneRequest, res: RedstoneResponse) {
     nickname = nickname.slice(0, 16);
 
     let avatar: string;
-    if (hasS3) {
+    if (hasS3 && profile.picture) {
       const avatarUrl = profile.picture.replace('=s96-c', '=s512-c');
       avatar = await uploadFromUrl(avatarUrl, 'jpg');
     }
