@@ -1,13 +1,17 @@
 import { Client } from '@Models';
+import { Transaction } from 'sequelize';
 import { updateClient } from '../AlgoliaService';
 import sanitizeClient from './sanitizeClient';
 
 async function updateAlgoliaIndex(
-  { client, clientId }: { client?: Client; clientId: number } | {client: Client; clientId?: number},
+  { client, clientId, transaction }:
+  { client?: Client; clientId: number; transaction?: Transaction } |
+  { client: Client; clientId?: number; transaction?: Transaction },
 ) {
   if (!client) {
     client = await Client.findOne({
       where: { id: clientId },
+      transaction,
     });
   }
 

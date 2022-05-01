@@ -51,7 +51,7 @@ async function createClient({
     });
 
     if (code) {
-      await InviteCodeService.useInviteCode(code, client);
+      await InviteCodeService.useInviteCode(code, client, transaction);
     }
 
     await AccessControlService.allowClientToEditRole(client.id, client.id);
@@ -84,7 +84,7 @@ async function createClient({
     }
   }, transaction);
 
-  updateAlgoliaIndex({ clientId: client.id });
+  updateAlgoliaIndex({ clientId: client.id, transaction });
   await RedisService.set(RedisService.getClientIdKey(client.username), client.id);
 
   return client;

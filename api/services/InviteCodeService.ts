@@ -1,4 +1,5 @@
 import { InviteCode, Client } from '@Models';
+import { Transaction } from 'sequelize';
 import { findClient } from './ClientService';
 import { generateRandomAlphabetString } from './UtilService';
 
@@ -23,7 +24,7 @@ export const isValid = async (code: string): Promise<false | InviteCode> => {
   return invite;
 };
 
-export const useInviteCode = async (code: InviteCode, user: Client): Promise<void> => {
+export const useInviteCode = async (code: InviteCode, user: Client, transaction?: Transaction): Promise<void> => {
   code.userId = user.id;
-  await code.save();
+  await code.save({ transaction });
 };
