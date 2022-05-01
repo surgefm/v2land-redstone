@@ -35,6 +35,9 @@ async function updateClient(req: RedstoneRequest, res: RedstoneResponse) {
 
   await sequelize.transaction(async transaction => {
     const origClient = client.get({ plain: true });
+    if (changes.username) {
+      await RedisService.del(RedisService.getClientIdKey(client.username));
+    }
     await client.update(changes, { transaction });
     await RecordService.update({
       data: changes,
