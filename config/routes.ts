@@ -15,6 +15,7 @@ export default {
   '/client/logout': 'ClientController.logout',
   'GET /client/verify': 'ClientController.verifyToken',
   'POST /client/verify': 'ClientController.verifyToken',
+  'GET /client/inviteCode': 'ClientController.getInviteCode',
   'GET /client/:clientName': 'ClientController.findClient',
   'PUT /client/:clientName': 'ClientController.updateClient',
 

@@ -61,6 +61,7 @@ export default {
     'getClientList': 'isLoggedIn',
     'getClientDetail': 'isLoggedIn',
     'logout': 'isLoggedIn',
+    'getInviteCode': 'isLoggedIn',
     '*': false,
   },
 

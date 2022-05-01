@@ -2,6 +2,7 @@ import changePassword from './changePassword';
 import findClient from './findClient';
 import getClientDetail from './getClientDetail';
 import getClientList from './getClientList';
+import getInviteCode from './getInviteCode';
 import inviteCode from './inviteCode';
 import login from './login';
 import logout from './logout';
@@ -15,6 +16,7 @@ export {
   findClient,
   getClientDetail,
   getClientList,
+  getInviteCode,
   inviteCode,
   login,
   logout,
