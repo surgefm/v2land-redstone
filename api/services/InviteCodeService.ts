@@ -5,7 +5,6 @@ import { generateRandomAlphabetString } from './UtilService';
 
 export const createInviteCode = async (ownerId: Client | number | string): Promise<string> => {
   const owner = await findClient(ownerId);
-  if (owner.role !== 'admin' && owner.role !== 'manager') return;
   let code = `${owner.id}-${generateRandomAlphabetString()}`;
   while (await InviteCode.findOne({ where: { code } })) {
     code = `${owner.id}-${generateRandomAlphabetString()}`;
