@@ -9,7 +9,7 @@ export default {
   *                                                                          *
   ***************************************************************************/
 
-    origin: (process.env.CORS || 'http://localhost:3000,https://langchao.org,https://v2land.net').split(','),
+    origin: (process.env.CORS || 'http://localhost:3000,http://local.langchao.org:3000,https://langchao.org,https://v2land.net').split(','),
 
     /** *************************************************************************
   *                                                                          *
