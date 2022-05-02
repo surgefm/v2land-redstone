@@ -7,7 +7,7 @@ export const getNewsroomChatId = (eventId: number) => {
 };
 
 export const getClientChatId = (...clientIds: number[]) => {
-  const ids = clientIds.sort();
+  const ids = [...new Set(clientIds).values()].sort();
   return `chat-clients:${ids.join('-')}`;
 };
 
@@ -17,13 +17,13 @@ export const getChatId = (type: 'client' | 'newsroom', ids: number | number[]) =
 };
 
 
-export function getChat(type: 'client', ...clientIds: number[]): Promise<Chat>;
+export function getChat(type: 'client', clientIds: number[]): Promise<Chat>;
 export function getChat(type: 'newsroom', eventId: number): Promise<Chat>;
-export async function getChat(type: 'client' | 'newsroom', ...ids: number[]) {
+export async function getChat(type: 'client' | 'newsroom', ids: number | number[]) {
   if (type === 'client') {
-    return Chat.findByPk(getClientChatId(...ids));
+    return Chat.findByPk(getClientChatId(...ids as number[]));
   }
-  return Chat.findByPk(getNewsroomChatId(ids[0]));
+  return Chat.findByPk(getNewsroomChatId(ids as number));
 }
 
 
