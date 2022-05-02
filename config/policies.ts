@@ -124,4 +124,8 @@ export default {
     'updateClientPermission': ['isLoggedIn', hasRolePermission('edit', '用户没有更改请求的用户信息的权限')],
   },
 
+  ChatController: {
+    'loadChatMessages': ['isLoggedIn'],
+  },
+
 } as { [index: string]: { [index: string]: boolean | string | string[] | object } };

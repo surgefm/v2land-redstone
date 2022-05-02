@@ -1,4 +1,5 @@
 import * as AuthController from './AuthController';
+import * as ChatController from './ChatController';
 import * as ClientController from './ClientController';
 import * as EventController from './EventController';
 import * as HeaderImageController from './HeaderImageController';
@@ -17,10 +18,11 @@ export type ControllerType = typeof AuthController | typeof ClientController |
   typeof EventController | typeof HeaderImageController | typeof NewsController |
   typeof NotificationController | typeof OAuth2Controller | typeof SearchController |
   typeof StackController | typeof SubscriptionController | typeof TagController |
-  typeof UploadController | typeof RoleController;
+  typeof UploadController | typeof RoleController | typeof ChatController;
 
 export {
   AuthController,
+  ChatController,
   ClientController,
   EventController,
   HeaderImageController,
@@ -37,6 +39,7 @@ export {
 
 export default {
   AuthController,
+  ChatController,
   ClientController,
   EventController,
   HeaderImageController,
