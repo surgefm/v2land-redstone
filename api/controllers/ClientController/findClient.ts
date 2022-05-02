@@ -13,10 +13,10 @@ async function findClient(req: RedstoneRequest, res: RedstoneResponse) {
   }
 
   if (req.session.clientId === client.id) {
-    return res.status(200).json({ client });
+    return res.status(200).json({ client: ClientService.sanitizeClient(client, true) });
   } else if (req.session.clientId) {
     if (await AccessControlService.isClientAdmin(req.session.clientId)) {
-      return res.status(200).json({ client });
+      return res.status(200).json({ client: ClientService.sanitizeClient(client, true) });
     }
   }
 
