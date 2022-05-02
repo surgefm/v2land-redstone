@@ -1,6 +1,6 @@
 import { Socket } from 'socket.io';
 import session from 'express-session';
-import { RedisService } from '@Services';
+import * as RedisService from '@Services/RedisService';
 import { sessionConfig, sessionStore } from '@Configs/session';
 import { Client } from '@Models';
 
