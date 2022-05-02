@@ -8,11 +8,11 @@ import updateNewsNotifications from './updateNewsNotifications';
 import updateStackNotifications from './updateStackNotifications';
 import * as ModeService from '../ModeService';
 
-async function getNextTime (mode: string, event: EventObj) {
+async function getNextTime(mode: string, event: EventObj) {
   return ModeService.getMode(mode).new({ event });
 }
 
-async function notified (mode: string, event: EventObj) {
+async function notified(mode: string, event: EventObj) {
   return ModeService.getMode(mode).notified({ event });
 }
 

@@ -54,12 +54,11 @@ export async function liftServer(app: Express) {
   app.use(http.middleware.bearerAuthentication);
   app.use(http.middleware.noCache);
 
+  await loadSocket(socket);
   loadRoutes(app);
   await loadAcl();
 
   app.use(errorHandler);
-
-  await loadSocket(socket);
 
   if (process.env.NODE_ENV !== 'test') {
     server.listen(1337, () => {

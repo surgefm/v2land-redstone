@@ -7,11 +7,15 @@ import { redis, redisConfig } from '@Services/RedisService';
 
 import loadNewsroom from './newsroom';
 
-export async function loadSocket(io: Server) {
+export let socket: Server;
+
+export async function loadSocket(io?: Server) {
+  if (socket) return socket;
+
   if (redis) {
     const pubClient = new Redis(redisConfig);
     const subClient = pubClient.duplicate();
-    const key = process.env.NODE_ENV === 'production' ? 'surgefm-prod-' : 'surgefm-dev-'
+    const key = process.env.NODE_ENV === 'production' ? 'surgefm-prod-' : 'surgefm-dev-';
     io.adapter(createAdapter(pubClient, subClient, { key }));
   }
 
@@ -24,4 +28,5 @@ export async function loadSocket(io: Server) {
   });
 
   loadNewsroom(io);
+  socket = io;
 }
