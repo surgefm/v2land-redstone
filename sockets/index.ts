@@ -5,6 +5,7 @@ import Redis from 'ioredis';
 import { isLoggedIn } from '@Sockets/middlewares';
 import { redis, redisConfig } from '@Services/RedisService';
 
+import loadChatroom from './chatroom';
 import loadNewsroom from './newsroom';
 
 export let socket: Server;
@@ -27,6 +28,7 @@ export async function loadSocket(io?: Server) {
     });
   });
 
+  loadChatroom(io);
   loadNewsroom(io);
   socket = io;
 }

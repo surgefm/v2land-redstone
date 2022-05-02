@@ -1,15 +1,14 @@
 import { Chat, ChatMember } from '@Models';
 import { BroadcastOperator } from 'socket.io';
 import { DefaultEventsMap } from 'socket.io/dist/typed-events';
-import { loadSocket } from '~/sockets';
 
 export const getNewsroomChatId = (eventId: number) => {
-  return `newsroom-chat:${eventId}`;
+  return `chat-newsroom:${eventId}`;
 };
 
 export const getClientChatId = (...clientIds: number[]) => {
   const ids = clientIds.sort();
-  return `client-chat:${ids.join('-')}`;
+  return `chat-clients:${ids.join('-')}`;
 };
 
 export const getChatId = (type: 'client' | 'newsroom', ids: number | number[]) => {
@@ -61,6 +60,7 @@ export function getChatSocket(type: 'client', clientIds: number[]): Promise<Broa
 export function getChatSocket(type: 'newsroom', eventId: number): Promise<BroadcastOperator<DefaultEventsMap, any>>;
 export function getChatSocket(chatId: string): Promise<BroadcastOperator<DefaultEventsMap, any>>;
 export async function getChatSocket(type: 'client' | 'newsroom' | string, ids?: number | number[]) {
+  const { loadSocket } = await import('@Sockets');
   const server = await loadSocket();
   if (type === 'client') {
     return server.in(getClientChatId(...(ids as number[])));
