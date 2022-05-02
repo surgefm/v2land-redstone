@@ -2,6 +2,9 @@ import Auth from './Auth';
 import AuthorizationAccessToken from './AuthorizationAccessToken';
 import AuthorizationClient from './AuthorizationClient';
 import AuthorizationCode from './AuthorizationCode';
+import Chat from './Chat';
+import ChatMember from './ChatMember';
+import ChatMessage from './ChatMessage';
 import Client from './Client';
 import Commit from './Commit';
 import Contact from './Contact';
@@ -32,6 +35,9 @@ export {
   AuthorizationAccessToken,
   AuthorizationClient,
   AuthorizationCode,
+  Chat,
+  ChatMember,
+  ChatMessage,
   Client,
   Commit,
   Contact,
