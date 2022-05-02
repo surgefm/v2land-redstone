@@ -1,6 +1,7 @@
 import createClient from './createClient';
 import findClient from './findClient';
 import getClientId from './getClientId';
+import getEventsClientContributedTo from './getEventsClientContributedTo';
 import randomlyGenerateUsername from './randomlyGenerateUsername';
 import sanitizeClient, { sanitizedFields } from './sanitizeClient';
 import tokenGenerator from './tokenGenerator';
@@ -13,6 +14,7 @@ export {
   createClient,
   findClient,
   getClientId,
+  getEventsClientContributedTo,
   randomlyGenerateUsername,
   sanitizeClient,
   sanitizedFields,

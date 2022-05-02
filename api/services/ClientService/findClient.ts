@@ -1,5 +1,6 @@
-import { Auth, Subscription, Contact, Client, Event, HeaderImage } from '@Models';
+import { Auth, Subscription, Contact, Client } from '@Models';
 import { Transaction, Op, Includeable } from 'sequelize';
+import getEventsClientContributedTo from './getEventsClientContributedTo';
 
 async function findClient(
   clientName: string | number | Client,
@@ -69,26 +70,16 @@ async function findClient(
     });
   }
 
-  if (withEvents) {
-    include.push({
-      as: 'events',
-      model: Event,
-      order: [['updatedAt', 'DESC']],
-      where: { status: 'admitted' },
-      include: [{
-        model: HeaderImage,
-        required: false,
-      }],
-      required: false,
-    });
-  }
-
   const client = await Client.findOne({
     where,
     attributes: { exclude: withPassword ? [] : ['password'] },
     include,
     transaction,
   });
+
+  if (withEvents) {
+    client.events = await getEventsClientContributedTo(client.id);
+  }
 
   return client;
 }
