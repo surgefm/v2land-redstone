@@ -8,8 +8,11 @@ import getAllPendingEvents from './getAllPendingEvents';
 import getEvent from './getEvent';
 import getEventList from './getEventList';
 import getPendingNews from './getPendingNews';
+import getStars from './getStars';
 import makeCommit from './makeCommit';
 import removeTag from './removeTag';
+import star from './star';
+import unstar from './unstar';
 import updateEvent from './updateEvent';
 import updateHeaderImage from './updateHeaderImage';
 
@@ -24,8 +27,11 @@ export {
   getEvent,
   getEventList,
   getPendingNews,
+  getStars,
   makeCommit,
   removeTag,
+  star,
+  unstar,
   updateEvent,
   updateHeaderImage,
 };

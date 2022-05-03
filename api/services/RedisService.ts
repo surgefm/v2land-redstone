@@ -103,3 +103,15 @@ export async function rpop(key: string) {
   if (!result) return result;
   return JSON.parse(result);
 }
+
+export async function incr(key: string, by = 1) {
+  if (!redis) return;
+  const result = await redis.incrby(datastores.redis.prefix + key, by);
+  return result;
+}
+
+export async function decr(key: string, by = 1) {
+  if (!redis) return;
+  const result = await redis.decrby(datastores.redis.prefix + key, by);
+  return result;
+}

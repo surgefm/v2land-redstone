@@ -1,5 +1,5 @@
 import { RedstoneRequest, RedstoneResponse, EventObj } from '@Types';
-import { EventService, CommitService, AccessControlService } from '@Services';
+import { EventService, CommitService, AccessControlService, StarService } from '@Services';
 
 async function getEvent(req: RedstoneRequest, res: RedstoneResponse) {
   const eventId = await EventService.getEventId(req.params);
@@ -18,6 +18,7 @@ async function getEvent(req: RedstoneRequest, res: RedstoneResponse) {
   };
 
   const roles = await AccessControlService.getEventClients(eventId);
+  const starCount = await StarService.countStars(eventId);
 
   let deniedAccess = false;
   if (showLatest) {
@@ -29,18 +30,24 @@ async function getEvent(req: RedstoneRequest, res: RedstoneResponse) {
   }
 
   const commit = await CommitService.getLatestCommit(eventId);
+  const commitData = commit ? {
+    ...commit.data,
+    roles,
+    starCount,
+  } : null;
 
   if (commit && !showLatest || (showLatest && deniedAccess)) {
     commit.data.roles = roles;
-    if (deniedAccess) return noAccess(commit.data);
-    return res.status(200).json(commit.data);
+    if (deniedAccess) return noAccess(commitData);
+    return res.status(200).json(commitData);
   }
 
   // If there is no commit or client wants the latest version.
   const event = await EventService.findEvent(eventId, { plain: true, getNewsroomContent: true });
   event.contribution = await EventService.getContribution(event, true);
   event.roles = roles;
-  if (deniedAccess) return noAccess(commit ? commit.data : null);
+  event.starCount = starCount;
+  if (deniedAccess) return noAccess(commit ? commitData : null);
   res.status(200).json(event);
 }
 

@@ -27,6 +27,7 @@ import Tag from './Tag';
 import Record from './Record';
 import Client from './Client';
 import EventContributor from './EventContributor';
+import Star from './Star';
 
 @Table({
   modelName: 'event',
@@ -91,6 +92,9 @@ class Event extends Model<Event> {
   @HasMany(() => Subscription, 'eventId')
   subscriptions: Subscription[];
 
+  @HasMany(() => Star, 'eventId')
+  stars: Star[];
+
   @ForeignKey(() => News)
   @Column
   latestAdmittedNewsId: number;
@@ -123,6 +127,7 @@ class Event extends Model<Event> {
 
   stackCount?: number;
   newsCount?: number;
+  starCount?: number;
   commitTime?: Date;
   contribution?: Record[];
   roles?: {

@@ -24,6 +24,7 @@ import ResourceLock from './ResourceLock';
 import Site from './Site';
 import SiteAccount from './SiteAccount';
 import Stack from './Stack';
+import Star from './Star';
 import Subscription from './Subscription';
 import Tag from './Tag';
 import TagCurator from './TagCurator';
@@ -57,6 +58,7 @@ export {
   Site,
   SiteAccount,
   Stack,
+  Star,
   Subscription,
   Tag,
   TagCurator,

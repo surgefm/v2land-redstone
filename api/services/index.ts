@@ -21,6 +21,7 @@ export * as ResourceLockService from './ResourceLockService';
 export * as SearchService from './SearchService';
 export * as SlackService from './SlackService';
 export * as StackService from './StackService';
+export * as StarService from './StarService';
 export * as SubscriptionService from './SubscriptionService';
 export * as TagService from './TagService';
 export * as TelegramService from './TelegramService';
