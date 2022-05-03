@@ -4,14 +4,13 @@ import {
   Model,
   TableOptions,
   ForeignKey,
-  HasOne,
   HasMany,
   PrimaryKey,
   DataType,
 } from 'sequelize-typescript';
 
-import Client from './Client';
 import Event from './Event';
+import ChatMember from './ChatMember';
 
 @Table({
   modelName: 'chat',
@@ -22,15 +21,12 @@ class Chat extends Model<Chat> {
   @Column(DataType.TEXT)
   id: string;
 
-  @HasMany(() => Client, 'chatId')
-  members: Client[];
+  @HasMany(() => ChatMember)
+  members: ChatMember[];
 
   @ForeignKey(() => Event)
   @Column
   eventId: number;
-
-  @HasOne(() => Event, 'eventId')
-  event: Event;
 }
 
 export default Chat;
