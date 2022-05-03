@@ -23,6 +23,7 @@ import AuthorizationAccessToken from './AuthorizationAccessToken';
 import Tag from './Tag';
 import TagCurator from './TagCurator';
 import Event from './Event';
+import Star from './Star';
 
 @Table({
   modelName: 'client',
@@ -129,6 +130,9 @@ class Client extends Model<Client> {
 
   @HasMany(() => AuthorizationAccessToken, 'owner')
   authorizationAccessTokens: AuthorizationAccessToken[];
+
+  @HasMany(() => Star, 'clientId')
+  stars: Star[];
 
   @BelongsToMany(() => Tag, () => TagCurator)
   tags: Array<Tag & {tagCurator: TagCurator}>;

@@ -1,6 +1,7 @@
 import { Event, HeaderImage, Stack, News, Tag, Sequelize, Client, Site, SiteAccount } from '@Models';
 import { EventObj } from '@Types';
 import * as AccessControlService from '@Services/AccessControlService';
+import * as StarService from '@Services/StarService';
 import { Op, Transaction } from 'sequelize';
 import _ from 'lodash';
 import getContributors from './getContributors';
@@ -163,6 +164,8 @@ async function findEvent(
     event.newsCount += stack.newsCount;
     (stack.news as News[]).sort((a, b) => (new Date(a.time).getTime() - new Date(b.time).getTime()));
   }
+
+  event.starCount = await StarService.countStars(event.id);
 
   return event;
 }

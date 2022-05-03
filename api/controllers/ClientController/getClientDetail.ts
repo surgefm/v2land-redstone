@@ -10,7 +10,7 @@ async function getClientDetail(req: RedstoneRequest, res: RedstoneResponse) {
     });
   }
 
-  const client = await ClientService.findClient(clientId, { withEvents: true });
+  const client = await ClientService.findClient(clientId, { withEvents: true, withStars: true });
   if (!client) {
     delete req.session.clientId;
     return res.status(404).json({
@@ -18,7 +18,7 @@ async function getClientDetail(req: RedstoneRequest, res: RedstoneResponse) {
     });
   }
 
-  res.status(200).json({ client });
+  res.status(200).json({ client: ClientService.sanitizeClient(client, true) });
 }
 
 export default getClientDetail;

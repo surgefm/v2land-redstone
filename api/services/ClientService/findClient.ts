@@ -1,5 +1,7 @@
 import { Auth, Subscription, Contact, Client } from '@Models';
 import { Transaction, Op, Includeable } from 'sequelize';
+import * as StarService from '@Services/StarService';
+
 import getEventsClientContributedTo from './getEventsClientContributedTo';
 
 async function findClient(
@@ -9,6 +11,7 @@ async function findClient(
     withAuths = true,
     withSubscriptions = true,
     withEvents = false,
+    withStars = false,
     withPassword = false,
     forceUpdate = false,
   }: {
@@ -16,6 +19,7 @@ async function findClient(
     withAuths?: boolean;
     withSubscriptions?: boolean;
     withEvents?: boolean;
+    withStars?: boolean;
     withPassword?: boolean;
     forceUpdate?: boolean;
   } = {}) {
@@ -79,6 +83,10 @@ async function findClient(
 
   if (withEvents) {
     client.events = await getEventsClientContributedTo(client.id);
+  }
+
+  if (withStars) {
+    client.stars = await StarService.getClientStars(client.id);
   }
 
   return client;

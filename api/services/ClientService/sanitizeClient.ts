@@ -13,7 +13,7 @@ interface SanitizedClient {
 
 export const sanitizedFields = ['username', 'nickname', 'id', 'description', 'avatar', 'role'];
 const otherFields = [
-  'email', 'emailVerified', 'settings', 'records', 'auths',
+  'email', 'emailVerified', 'settings', 'records', 'auths', 'stars',
   'subscriptions', 'contacts', 'reports', 'tags', 'events', 'subscriptionCount',
 ];
 
