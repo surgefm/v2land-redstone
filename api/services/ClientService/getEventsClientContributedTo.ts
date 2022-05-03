@@ -1,5 +1,6 @@
 import { Transaction } from 'sequelize';
-import { sequelize, Event, HeaderImage, Sequelize } from '@Models';
+import { sequelize, Event, HeaderImage, Tag, EventTag, Sequelize } from '@Models';
+import * as StarService from '@Services/StarService';
 
 async function getEventsClientContributedTo(clientId: number, { transaction }: { transaction?: Transaction } = {}) {
   const events = await sequelize.query<Event>(`
@@ -22,6 +23,10 @@ async function getEventsClientContributedTo(clientId: number, { transaction }: {
 
   await Promise.all(events.map(async e => {
     e.headerImage = await HeaderImage.findOne({ where: { eventId: e.id }, transaction });
+    const eventTags = await EventTag.findAll({ where: { eventId: e.id } });
+    e.tags = await Promise.all(eventTags.map(async t => Tag.findByPk(t.tagId)));
+    e.tags = e.tags.filter(t => t.status === 'visible');
+    e.starCount = await StarService.countStars(e.id);
   }));
 
   return events;

@@ -117,7 +117,7 @@ class Event extends Model<Event> {
   parent: Event;
 
   @BelongsToMany(() => Tag, () => EventTag)
-  tags: (Tag & {EventTag: EventTag})[];
+  tags: (Tag & {EventTag: EventTag})[] | Tag[];
 
   @BelongsToMany(() => News, () => EventStackNews)
   news: (News & {EventStackNews: EventStackNews})[];

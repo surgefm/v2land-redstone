@@ -1,6 +1,6 @@
 import { RedstoneRequest, RedstoneResponse } from '@Types';
 import { Event, HeaderImage, News, Tag, sequelize, Commit, Sequelize } from '@Models';
-import { UtilService, EventService, AccessControlService, RedisService } from '@Services';
+import { UtilService, EventService, AccessControlService, RedisService, StarService } from '@Services';
 import _ from 'lodash';
 
 async function getEventList(req: RedstoneRequest, res: RedstoneResponse) {
@@ -143,6 +143,9 @@ async function getEventList(req: RedstoneRequest, res: RedstoneResponse) {
         delete commit.data.stacks;
         commit.data.time = (commit as any).t;
       }
+      await Promise.all(commits.map(async c => {
+        c.data.starCount = await StarService.countStars(c.eventId);
+      }));
       const data = commits.map(c => c.data);
       res.status(200).json({ eventList: commits.map(c => c.data) });
       await RedisService.set(key, data);
