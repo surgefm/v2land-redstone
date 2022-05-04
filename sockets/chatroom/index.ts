@@ -10,6 +10,7 @@ export default function loadChatroom(io: Server) {
   newsroom.use(isLoggedIn);
   newsroom.on('connection', (socket) => {
     socket.on('join chatroom', async (type: 'client' | 'newsroom', ids: number | number[], cb: Function = () => {}) => {
+      console.log('hihi', socket.handshake);
       const { clientId } = socket.handshake.session;
       const hasAccess = type === 'client'
         ? await AccessControlService.isAllowedToViewClientChat(clientId, ids as number[])

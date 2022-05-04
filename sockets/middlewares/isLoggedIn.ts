@@ -25,8 +25,6 @@ export default async function isLoggedIn(socket: Socket, next: ( err?: any ) => 
   const { clientId } = socket.handshake.session;
   const client = await Client.findByPk(clientId);
   socket.handshake.session.currentClient = client;
-  if (RedisService.redis) {
-    await RedisService.set(`socket:${socket.id}`, clientId);
-  }
+  await RedisService.set(`socket:${socket.id}`, clientId);
   next();
 }

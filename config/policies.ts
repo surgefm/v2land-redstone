@@ -128,6 +128,7 @@ export default {
   },
 
   ChatController: {
+    'getPopularChatrooms': true,
     'loadChatMessages': ['isLoggedIn'],
   },
 

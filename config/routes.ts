@@ -91,6 +91,7 @@ export default {
   'POST /role/permission/edit': 'RoleController.updateClientPermission',
   'DELETE /role/permission/edit': 'RoleController.updateClientPermission',
 
+  'GET /chat': 'ChatController.getPopularChatrooms',
   'POST /chat/messages': 'ChatController.loadChatMessages',
 
 } as { [index: string]: string | { view: string } };
