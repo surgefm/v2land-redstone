@@ -1,6 +1,9 @@
-import { Chat, ChatMember } from '@Models';
+import uuidv4 from 'uuid/v4';
 import { BroadcastOperator } from 'socket.io';
 import { DefaultEventsMap } from 'socket.io/dist/typed-events';
+import { Chat, ChatMember } from '@Models';
+import chatroomPath from '@Sockets/chatroom/chatroomPath';
+
 
 export const getNewsroomChatId = (eventId: number) => {
   return `chat-newsroom:${eventId}`;
@@ -39,6 +42,7 @@ export async function getOrCreateChat(type: 'client' | 'newsroom', ids: number |
       id: clientChatId,
     });
     await Promise.all(_ids.map(id => ChatMember.create({
+      id: uuidv4(),
       chatId: clientChatId,
       clientId: id,
     })));
@@ -63,9 +67,9 @@ export async function getChatSocket(type: 'client' | 'newsroom' | string, ids?: 
   const { loadSocket } = await import('@Sockets');
   const server = await loadSocket();
   if (type === 'client') {
-    return server.in(getClientChatId(...(ids as number[])));
+    return server.of(chatroomPath).in(getClientChatId(...(ids as number[])));
   } else if (type === 'newsroom') {
-    return server.in(getNewsroomChatId(ids as number));
+    return server.of(chatroomPath).in(getNewsroomChatId(ids as number));
   }
   return server.in(type);
 }

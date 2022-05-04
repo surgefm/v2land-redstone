@@ -1,3 +1,4 @@
+import uuidv4 from 'uuid/v4';
 import { ChatMessage, ChatMember } from '@Models';
 import { getOrCreateChat, getChatSocket } from './utils';
 
@@ -11,13 +12,19 @@ export const sendMessage = async (type: 'client' | 'newsroom', authorId: number,
       clientId: authorId,
     };
     const existingChatMember = await ChatMember.findOne({ where: data });
-    if (!existingChatMember) await ChatMember.create(data);
+    if (!existingChatMember) {
+      await ChatMember.create({
+        id: uuidv4(),
+        ...data,
+      });
+    }
   }
 
   const chatMessage = await ChatMessage.create({
+    id: uuidv4(),
     chatId: chat.id,
     authorId,
-    message,
+    text: message,
   });
 
   socket.emit('send message', chatMessage.get({ plain: true }));
