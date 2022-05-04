@@ -71,5 +71,5 @@ export async function getChatSocket(type: 'client' | 'newsroom' | string, ids?: 
   } else if (type === 'newsroom') {
     return server.of(chatroomPath).in(getNewsroomChatId(ids as number));
   }
-  return server.in(type);
+  return server.of(chatroomPath).in(type);
 }

@@ -1,6 +1,6 @@
 import { Client, Event } from '@Models';
 
-interface SanitizedClient {
+export interface SanitizedClient {
   username: string;
   nickname: string;
   avatar: string;

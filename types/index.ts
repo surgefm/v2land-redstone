@@ -8,6 +8,8 @@ import RedstoneError, {
   InvalidInputErrorType, ResourceNotFoundErrorType,
 } from './RedstoneError';
 
+export { SanitizedClient } from '@Services/ClientService/sanitizeClient';
+
 interface RedstoneRequest extends Request {
   sessionID: string;
   currentClient?: Client;
