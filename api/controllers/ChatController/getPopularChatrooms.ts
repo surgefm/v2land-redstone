@@ -111,6 +111,8 @@ async function getPopularChatrooms(req: RedstoneRequest, res: RedstoneResponse) 
       count += 1;
     }
 
+    if (page === 1 && count < pageSize) continue;
+
     const addEventEdit = (eventId: number, record: Record) => {
       if (!eventEdits[eventId]) eventEdits[eventId] = [];
       eventEdits[eventId].push(record);
