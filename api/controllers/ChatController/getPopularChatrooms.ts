@@ -1,3 +1,5 @@
+import { RemoteSocket } from 'socket.io';
+import { DefaultEventsMap } from 'socket.io/dist/typed-events';
 import { RedstoneRequest, RedstoneResponse, SanitizedClient, EventObj } from '@Types';
 import { RedisService, ChatService, ClientService, EventService } from '@Services';
 import { ChatMessage, Record, EventStackNews, sequelize, Sequelize } from '@Models';
@@ -36,7 +38,6 @@ async function getPopularChatrooms(req: RedstoneRequest, res: RedstoneResponse) 
     SELECT * FROM "chatMessage"
     WHERE "chatId" LIKE 'chat-newsroom%' AND "createdAt" >= $1
     ORDER BY "createdAt" DESC
-    LIMIT ${pageSize}
   `;
 
   const messageSql = `
@@ -50,7 +51,7 @@ async function getPopularChatrooms(req: RedstoneRequest, res: RedstoneResponse) 
   let i = 0;
   let j = 0;
 
-  while (chats.length < 10) {
+  while (chats.filter(c => c.count > 0).length < 10) {
     let moreMessages: ChatMessage[];
     if (page === 0) {
       moreMessages = await sequelize.query<ChatMessage>(firstMessageSql, {
@@ -60,7 +61,7 @@ async function getPopularChatrooms(req: RedstoneRequest, res: RedstoneResponse) 
     } else {
       moreMessages = await sequelize.query<ChatMessage>(messageSql, {
         type: Sequelize.QueryTypes.SELECT,
-        bind: [page === 0 ? new Date() : messages[messages.length - 1].createdAt],
+        bind: [messages.length === 0 ? new Date() : messages[messages.length - 1].createdAt],
       });
     }
     messages = [...messages, ...moreMessages];
@@ -83,7 +84,7 @@ async function getPopularChatrooms(req: RedstoneRequest, res: RedstoneResponse) 
         },
       },
       order: [['createdAt', 'DESC']],
-      limit: pageSize,
+      limit: page === 0 ? undefined : pageSize,
     });
 
     edits = [...edits, ...records];
@@ -163,6 +164,8 @@ async function getPopularChatrooms(req: RedstoneRequest, res: RedstoneResponse) 
       const eventMessage = (eventMessages[eventId] || [])
         .filter(m => m.createdAt >= latest);
 
+      if (eventRecords.length === 0 && eventMessage.length === 0) return;
+
       chats.push({
         eventId: +eventId,
         event,
@@ -176,6 +179,7 @@ async function getPopularChatrooms(req: RedstoneRequest, res: RedstoneResponse) 
       });
     }));
 
+    console.log(messages.length, edits.length);
     chats.sort((a, b) => b.count - a.count);
     chats = chats.slice(0, 10);
   }
@@ -205,7 +209,12 @@ async function getPopularChatrooms(req: RedstoneRequest, res: RedstoneResponse) 
     chat.editorIdsNow = [...new Set(chat.editorIdsNow)];
     chat.speakerIdsNow = [...new Set(chat.speakerIdsNow)];
     const chatterSocket = await ChatService.getChatSocket('newsroom', chat.eventId);
-    const sockets = await chatterSocket.fetchSockets();
+    let sockets: RemoteSocket<DefaultEventsMap, any>[] = [];
+    try {
+      sockets = await chatterSocket.fetchSockets();
+    } catch (err) {
+      // Do nothing
+    }
     const clientIds = await Promise.all(sockets.map(socket => {
       return RedisService.get(`socket:${socket.id}`);
     }));
