@@ -6,7 +6,9 @@ interface PopularChat {
   chatId: string;
   eventId: number;
   editorIds: number[];
+  editorIdsNow: number[];
   speakerIds: number[];
+  speakerIdsNow: number[];
   chatterIds?: number[];
   count: number;
   eventOwner?: SanitizedClient;
@@ -19,7 +21,7 @@ async function getPopularChatrooms(req: RedstoneRequest, res: RedstoneResponse) 
   const existing = await RedisService.get(key);
   if (existing) return res.status(200).json({ chatrooms: existing });
 
-  const pageSize = 100;
+  const pageSize = 200;
 
   let messages: ChatMessage[] = [];
   const eventEdits: { [index: string]: Record[] } = {};
@@ -83,6 +85,7 @@ async function getPopularChatrooms(req: RedstoneRequest, res: RedstoneResponse) 
     const latest = messages[i].createdAt < edits[j].createdAt
       ? messages[i].createdAt
       : edits[j].createdAt;
+    const latestDate = new Date(latest);
 
     const addEventEdit = (eventId: number, record: Record) => {
       if (!eventEdits[eventId]) eventEdits[eventId] = [];
@@ -112,7 +115,8 @@ async function getPopularChatrooms(req: RedstoneRequest, res: RedstoneResponse) 
       eventIds.add(eventId);
     }
 
-    const within = new Date(Date.now() - 12 * 60 * 60 * 1000).toISOString();
+    const within = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+    const withinDate = new Date(within);
 
     chats = [];
     await Promise.all([...eventIds].map(async eventId => {
@@ -123,15 +127,15 @@ async function getPopularChatrooms(req: RedstoneRequest, res: RedstoneResponse) 
       if (event.status !== 'admitted') return;
 
       const eventRecords = (eventEdits[eventId] || []).filter((r, idx) => {
-        if (r.createdAt <= latest) return false;
+        if (r.createdAt < latestDate) return false;
         if (idx === 0) return true;
         return !(r.action === 'updateStackOrders' &&
-          eventEdits[+eventId][idx - 1].action === 'updateStackOrders');
+          eventEdits[eventId][idx - 1].action === 'updateStackOrders');
       });
 
       const chatId = ChatService.getChatId('newsroom', +eventId);
       const eventMessage = (eventMessages[eventId] || [])
-        .filter(m => m.createdAt <= latest);
+        .filter(m => m.createdAt >= latestDate);
 
       chats.push({
         eventId: +eventId,
@@ -139,8 +143,10 @@ async function getPopularChatrooms(req: RedstoneRequest, res: RedstoneResponse) 
         chatId,
         count: eventRecords.length + eventMessage.length,
         updatedAt: eventRecords.length > 0 ? eventRecords[0].createdAt : event.updatedAt,
-        editorIds: eventRecords.filter(r => r.createdAt >= within).map(r => r.owner),
-        speakerIds: eventMessage.filter(m => m.createdAt >= within).map(m => m.authorId),
+        editorIds: eventRecords.map(r => r.owner),
+        editorIdsNow: eventRecords.filter(r => r.createdAt >= withinDate).map(r => r.owner),
+        speakerIds: eventMessage.map(m => m.authorId),
+        speakerIdsNow: eventMessage.filter(m => m.createdAt >= withinDate).map(m => m.authorId),
       });
     }));
 
@@ -154,8 +160,24 @@ async function getPopularChatrooms(req: RedstoneRequest, res: RedstoneResponse) 
       withSubscriptions: false,
     });
     chat.eventOwner = ClientService.sanitizeClient(owner);
-    chat.editorIds = [...new Set(chat.editorIds)];
-    chat.speakerIds = [...new Set(chat.speakerIds)];
+    const editorIds: number[] = [];
+    for (let i = 0; i < chat.editorIds.length; i++) {
+      if (!editorIds.includes(chat.editorIds[i])) {
+        editorIds.push(chat.editorIds[i]);
+      }
+    }
+
+    const speakerIds: number[] = [];
+    for (let i = 0; i < chat.speakerIds.length; i++) {
+      if (!speakerIds.includes(chat.speakerIds[i])) {
+        speakerIds.push(chat.speakerIds[i]);
+      }
+    }
+
+    chat.editorIds = editorIds;
+    chat.speakerIds = speakerIds;
+    chat.editorIdsNow = [...new Set(chat.editorIdsNow)];
+    chat.speakerIdsNow = [...new Set(chat.speakerIdsNow)];
     const chatterSocket = await ChatService.getChatSocket('newsroom', chat.eventId);
     const sockets = await chatterSocket.fetchSockets();
     const clientIds = await Promise.all(sockets.map(socket => {
@@ -165,7 +187,7 @@ async function getPopularChatrooms(req: RedstoneRequest, res: RedstoneResponse) 
   }));
 
   await RedisService.set(key, chats);
-  await RedisService.expire(key, 60);
+  await RedisService.expire(key, 30);
 
   res.status(200).json({ chatrooms: chats });
 }
