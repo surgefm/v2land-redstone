@@ -142,7 +142,7 @@ async function getPopularChatrooms(req: RedstoneRequest, res: RedstoneResponse) 
       eventIds.add(eventId);
     }
 
-    const within = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+    const within = new Date(Date.now() - 30 * 60 * 1000).toISOString();
     const withinDate = new Date(within);
 
     chats = [];
