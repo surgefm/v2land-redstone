@@ -32,6 +32,13 @@ async function getPopularChatrooms(req: RedstoneRequest, res: RedstoneResponse) 
   let chats: PopularChat[] = [];
   let page = 0;
 
+  const firstMessageSql = `
+    SELECT * FROM "chatMessage"
+    WHERE "chatId" LIKE 'chat-newsroom%' AND "createdAt" >= $1
+    ORDER BY "createdAt" DESC
+    LIMIT ${pageSize}
+  `;
+
   const messageSql = `
     SELECT * FROM "chatMessage"
     WHERE "chatId" LIKE 'chat-newsroom%' AND "createdAt" < $1
@@ -44,11 +51,18 @@ async function getPopularChatrooms(req: RedstoneRequest, res: RedstoneResponse) 
   let j = 0;
 
   while (chats.length < 10) {
-    const moreMessages = await sequelize.query<ChatMessage>(messageSql, {
-      type: Sequelize.QueryTypes.SELECT,
-      bind: [page === 0 ? new Date() : messages[messages.length - 1].createdAt],
-    });
-
+    let moreMessages: ChatMessage[];
+    if (page === 0) {
+      moreMessages = await sequelize.query<ChatMessage>(firstMessageSql, {
+        type: Sequelize.QueryTypes.SELECT,
+        bind: [new Date(Date.now() - 12 * 60 * 60 * 1000)],
+      });
+    } else {
+      moreMessages = await sequelize.query<ChatMessage>(messageSql, {
+        type: Sequelize.QueryTypes.SELECT,
+        bind: [page === 0 ? new Date() : messages[messages.length - 1].createdAt],
+      });
+    }
     messages = [...messages, ...moreMessages];
 
     const records = await Record.findAll({
@@ -62,8 +76,10 @@ async function getPopularChatrooms(req: RedstoneRequest, res: RedstoneResponse) 
             'makeCommitForEvent',
           ],
         },
-        createdAt: {
-          [Sequelize.Op.lt]: page === 0 ? new Date() : edits[edits.length - 1].createdAt,
+        createdAt: page === 0 ? {
+          [Sequelize.Op.gte]: new Date(Date.now() - 12 * 60 * 60 * 1000),
+        } : {
+          [Sequelize.Op.lt]: edits.length > 0 ? edits[edits.length - 1].createdAt : Date.now(),
         },
       },
       order: [['createdAt', 'DESC']],
@@ -72,20 +88,28 @@ async function getPopularChatrooms(req: RedstoneRequest, res: RedstoneResponse) 
 
     edits = [...edits, ...records];
 
-    if (moreMessages.length === 0 && records.length === 0) break;
+    if (page !== 0 && moreMessages.length === 0 && records.length === 0) break;
 
     page += 1;
 
-    while (count < page * pageSize) {
-      if (i < messages.length - 1 && messages[i].createdAt < edits[j].createdAt) i += 1;
-      else j += 1;
+    let latest: Date = new Date();
+    while (count < page * pageSize && (i < messages.length - 1 || j < edits.length - 1)) {
+      if (i >= messages.length - 1) {
+        j += 1;
+        latest = edits[j].createdAt;
+      } else if (j >= edits.length - 1) {
+        i += 1;
+        latest = messages[i].createdAt;
+      } else if (messages[i].createdAt < edits[j].createdAt) {
+        i += 1;
+        latest = messages[i].createdAt;
+      } else {
+        j += 1;
+        latest = edits[j].createdAt;
+      }
+
       count += 1;
-      if (i === messages.length - 1 && j === edits.length - 1) break;
     }
-    const latest = messages[i].createdAt < edits[j].createdAt
-      ? messages[i].createdAt
-      : edits[j].createdAt;
-    const latestDate = new Date(latest);
 
     const addEventEdit = (eventId: number, record: Record) => {
       if (!eventEdits[eventId]) eventEdits[eventId] = [];
@@ -127,7 +151,7 @@ async function getPopularChatrooms(req: RedstoneRequest, res: RedstoneResponse) 
       if (event.status !== 'admitted') return;
 
       const eventRecords = (eventEdits[eventId] || []).filter((r, idx) => {
-        if (r.createdAt < latestDate) return false;
+        if (r.createdAt < latest) return false;
         if (idx === 0) return true;
         return !(r.action === 'updateStackOrders' &&
           eventEdits[eventId][idx - 1].action === 'updateStackOrders');
@@ -135,7 +159,7 @@ async function getPopularChatrooms(req: RedstoneRequest, res: RedstoneResponse) 
 
       const chatId = ChatService.getChatId('newsroom', +eventId);
       const eventMessage = (eventMessages[eventId] || [])
-        .filter(m => m.createdAt >= latestDate);
+        .filter(m => m.createdAt >= latest);
 
       chats.push({
         eventId: +eventId,
