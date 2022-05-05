@@ -1,5 +1,5 @@
 import { Socket } from 'socket.io';
-import { Event, News } from '@Models';
+import { Event, News, Client } from '@Models';
 import { EventService, AccessControlService } from '@Services';
 import getRoomName from './getRoomName';
 
@@ -18,7 +18,7 @@ export default function addNewsToEvent(socket: Socket) {
         eventStackNews: esn,
         event,
         news,
-        client: socket.handshake.session.currentClient,
+        client: await Client.findByPk(clientId),
       });
     }
     cb();

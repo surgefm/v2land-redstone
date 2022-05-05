@@ -85,7 +85,6 @@ async function getPopularChatrooms(req: RedstoneRequest, res: RedstoneResponse) 
       : edits[j].createdAt;
 
     const addEventEdit = (eventId: number, record: Record) => {
-      if (!eventId) console.log(record.get({ plain: true }));
       if (!eventEdits[eventId]) eventEdits[eventId] = [];
       eventEdits[eventId].push(record);
       eventIds.add(eventId);
@@ -107,16 +106,13 @@ async function getPopularChatrooms(req: RedstoneRequest, res: RedstoneResponse) 
     }
 
     for (const message of moreMessages) {
-      console.log(message.chatId, message.chatId.slice('chat-newsroom:'.length));
       const eventId = +message.chatId.slice('chat-newsroom:'.length);
       if (!eventMessages[eventId]) eventMessages[eventId] = [];
       eventMessages[eventId].push(message);
       eventIds.add(eventId);
     }
 
-    console.log(Object.keys(eventMessages));
-
-    const withinHour = new Date(Date.now() - 60 * 60 * 1000).toISOString();
+    const within = new Date(Date.now() - 12 * 60 * 60 * 1000).toISOString();
 
     chats = [];
     await Promise.all([...eventIds].map(async eventId => {
@@ -143,8 +139,8 @@ async function getPopularChatrooms(req: RedstoneRequest, res: RedstoneResponse) 
         chatId,
         count: eventRecords.length + eventMessage.length,
         updatedAt: eventRecords.length > 0 ? eventRecords[0].createdAt : event.updatedAt,
-        editorIds: eventRecords.filter(r => r.createdAt >= withinHour).map(r => r.owner),
-        speakerIds: eventMessage.filter(m => m.createdAt >= withinHour).map(m => m.authorId),
+        editorIds: eventRecords.filter(r => r.createdAt >= within).map(r => r.owner),
+        speakerIds: eventMessage.filter(m => m.createdAt >= within).map(m => m.authorId),
       });
     }));
 

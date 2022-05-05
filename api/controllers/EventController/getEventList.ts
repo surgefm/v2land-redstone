@@ -149,7 +149,7 @@ async function getEventList(req: RedstoneRequest, res: RedstoneResponse) {
       const data = commits.map(c => c.data);
       res.status(200).json({ eventList: commits.map(c => c.data) });
       await RedisService.set(key, data);
-      await RedisService.expire(key, 15);
+      await RedisService.expire(key, 30);
     }
   });
 }

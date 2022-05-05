@@ -16,7 +16,7 @@ export async function loadSocket(io?: Server) {
   if (redis) {
     const pubClient = new Redis(redisConfig);
     const subClient = pubClient.duplicate();
-    const key = process.env.NODE_ENV === 'production' ? 'surgefm-prod-' : 'surgefm-dev-';
+    const key = process.env.NODE_ENV === 'production' ? 'surgefm-prod-' : process.env.REDIS_KEY || 'surgefm-dev-';
     io.adapter(createAdapter(pubClient, subClient, { key }));
   }
 

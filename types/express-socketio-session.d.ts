@@ -7,13 +7,11 @@
 import socketio = require('socket.io');
 import express = require('express');
 import session = require('express-session');
-import { Client as RedstoneClient } from '@Models';
 
 // @Filename: /node_modules/socket.io/dist/socket.d.ts
 declare module 'socket.io/dist/socket' {
     interface Handshake {
         session?: session.Session & Partial<session.SessionData> & {
-            currentClient?: RedstoneClient;
             clientId?: number;
         };
         sessionID?: string | undefined;

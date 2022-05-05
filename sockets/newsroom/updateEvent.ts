@@ -1,5 +1,6 @@
 import { Socket } from 'socket.io';
 import { EventObj } from '@Types';
+import { Client } from '@Models';
 import { EventService, AccessControlService } from '@Services';
 
 import getRoomName from './getRoomName';
@@ -14,7 +15,7 @@ export default function updateEvent(socket: Socket) {
     if (!event) return cb('Event not found');
 
     try {
-      const e = await EventService.updateEvent(event, data, socket.handshake.session.currentClient);
+      const e = await EventService.updateEvent(event, data, await Client.findByPk(clientId));
       const { id, name, description } = e;
       if (e !== null) {
         socket.to(getRoomName(eventId)).emit('update event information', { event: { id, name, description } });

@@ -1,5 +1,5 @@
 import { Socket } from 'socket.io';
-import { Event, Stack } from '@Models';
+import { Event, Stack, Client } from '@Models';
 import { StackService, AccessControlService } from '@Services';
 import getRoomName from './getRoomName';
 
@@ -18,7 +18,7 @@ export default function addEventToStack(socket: Socket) {
         socket.in(getRoomName(stack.eventId)).emit('add event to stack', {
           eventId,
           stackId,
-          client: socket.handshake.session.currentClient,
+          client: await Client.findByPk(clientId),
         });
       }
       cb();
