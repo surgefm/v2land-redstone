@@ -15,7 +15,7 @@ export default function loadChatroom(io: Server) {
         ? await AccessControlService.isAllowedToViewClientChat(clientId, ids as number[])
         : await AccessControlService.isAllowedToViewNewsroomChat(clientId, ids as number);
       if (!hasAccess) {
-        return cb('You have no access to the chatroom');
+        return cb('You don’t have access to the chatroom');
       }
       const roomName = ChatService.getChatId(type, ids);
       await socket.join(roomName);

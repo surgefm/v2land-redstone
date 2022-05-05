@@ -3,6 +3,8 @@ import { ChatMessage, ChatMember } from '@Models';
 import { getOrCreateChat, getChatSocket } from './utils';
 
 export const sendMessage = async (type: 'client' | 'newsroom', authorId: number, message: string, ids: number | number[]) => {
+  if (message.trim().length === 0) return;
+
   const chat = await getOrCreateChat(type as 'client', ids as number[]);
   const socket = await getChatSocket(type as 'client', ids as number[]);
 

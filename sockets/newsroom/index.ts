@@ -1,4 +1,5 @@
 import { Server } from 'socket.io';
+import { Event } from '@Models';
 import { ResourceLockService, AccessControlService, RedisService } from '@Services';
 import { isLoggedIn } from '@Sockets/middlewares';
 import _ from 'lodash';
@@ -35,9 +36,12 @@ export default function loadNewsroom(io: Server) {
   newsroom.on('connection', (socket) => {
     socket.on('join newsroom', async (eventId: number, cb: Function = () => {}) => {
       const { clientId } = socket.handshake.session;
-      const hasAccess = await AccessControlService.isAllowedToViewEvent(clientId, eventId);
+      const event = await Event.findByPk(eventId);
+      const hasAccess = event.status === 'admitted' ||
+        await AccessControlService.isAllowedToViewEvent(clientId, eventId);
+
       if (!hasAccess) {
-        return cb('You have no access to the event');
+        return cb('You don’t have access to the newsroom');
       }
       const roomName = getRoomName(eventId);
       await socket.join(roomName);
