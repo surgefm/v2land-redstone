@@ -1,7 +1,7 @@
 import pinyin from 'pinyin';
 
 async function generatePinyin(name: string) {
-  const array = pinyin(name, {
+  const array = pinyin(name.toLowerCase(), {
     segment: false,
     style: 0,
   });
@@ -15,7 +15,7 @@ async function generatePinyin(name: string) {
 
   return characters.length > 1
     ? characters.join('-')
-    : null;
+    : characters[0];
 }
 
 export default generatePinyin;

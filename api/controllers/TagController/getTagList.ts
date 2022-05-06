@@ -15,7 +15,7 @@ async function getTagList(req: RedstoneRequest, res: RedstoneResponse) {
     }
   }
 
-  const tags = await Tag.findAll({
+  const { rows, count } = await Tag.findAndCountAll({
     where: UtilService.convertWhereQuery(where),
     include: [{
       model: Event,
@@ -34,7 +34,7 @@ async function getTagList(req: RedstoneRequest, res: RedstoneResponse) {
     offset: 15 * (+req.query.page || req.body.page || 1) - 15,
   });
 
-  res.status(200).json({ tags });
+  res.status(200).json({ tags: rows, count });
 }
 
 export default getTagList;
