@@ -112,8 +112,6 @@ async function getPopularChatrooms(req: RedstoneRequest, res: RedstoneResponse) 
       count += 1;
     }
 
-    if (page === 1 && count < pageSize) continue;
-
     const addEventEdit = (eventId: number, record: Record) => {
       if (!eventEdits[eventId]) eventEdits[eventId] = [];
       eventEdits[eventId].push(record);
@@ -141,6 +139,8 @@ async function getPopularChatrooms(req: RedstoneRequest, res: RedstoneResponse) 
       eventMessages[eventId].push(message);
       eventIds.add(eventId);
     }
+
+    if (page === 1 && count < pageSize) continue;
 
     const within = new Date(Date.now() - 30 * 60 * 1000).toISOString();
     const withinDate = new Date(within);
@@ -179,7 +179,6 @@ async function getPopularChatrooms(req: RedstoneRequest, res: RedstoneResponse) 
       });
     }));
 
-    console.log(messages.length, edits.length);
     chats.sort((a, b) => b.count - a.count);
     chats = chats.slice(0, 10);
   }
