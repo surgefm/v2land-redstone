@@ -2,14 +2,10 @@ import { Tag, sequelize, Sequelize } from '@Models';
 import { RedstoneRequest, RedstoneResponse } from '@Types';
 import { UtilService, RedisService } from '@Services';
 
-async function getTagListByAlphabet(req: RedstoneRequest, res: RedstoneResponse) {
-  const { alphabet } = UtilService;
-  const { letter } = req.params;
-  if (!alphabet.includes(letter)) return res.status(400).json({ message: 'Invalid input' });
-
+const getTags = async (letter: string) => {
   const key = `tag-list-alphabet-${letter}-60`;
   const existing = await RedisService.get(key);
-  if (existing) return res.status(200).json({ tags: existing });
+  if (existing) return existing;
 
   const tags = await sequelize.query<Tag>(`
     SELECT * FROM tag
@@ -26,6 +22,26 @@ async function getTagListByAlphabet(req: RedstoneRequest, res: RedstoneResponse)
 
   await RedisService.set(key, tags);
   await RedisService.expire(key, 60);
+
+  return tags;
+};
+
+async function getTagListByAlphabet(req: RedstoneRequest, res: RedstoneResponse) {
+  const { alphabet } = UtilService;
+  const { letter } = req.params;
+  if (!alphabet.includes(letter) && letter !== 'all') {
+    return res.status(400).json({ message: 'Invalid input' });
+  }
+
+  if (letter === 'all') {
+    const allTags: { [index: string]: Tag } = {};
+    await Promise.all(alphabet.map(async letter => {
+      allTags[letter] = await getTags(letter);
+    }));
+    return res.status(200).json({ allTags });
+  }
+
+  const tags = await getTags(letter);
   return res.status(200).json({ tags });
 }
 
