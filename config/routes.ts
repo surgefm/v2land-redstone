@@ -80,6 +80,7 @@ export default {
   'POST /tag/list': 'TagController.getTagList',
   'POST /tag': 'TagController.createTag',
   'GET /tag/stats': 'TagController.getTagListStats',
+  'GET /tag/list/:letter': 'TagController.getTagListByAlphabet',
   'PUT /tag/:tagId': 'TagController.updateTag',
   'GET /tag/:tagId': 'TagController.getTag',
   'POST /tag/:tagId/curator': 'TagController.addCurator',

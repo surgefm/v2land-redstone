@@ -115,6 +115,7 @@ export default {
     'updateTag': ['isLoggedIn', hasTagPermission('edit', '用户没有更改该话题的权限')],
     'getTag': true,
     'getTagList': true,
+    'getTagListByAlphabet': true,
     'getTagListStats': true,
     'addCurator': ['isLoggedIn', 'isEditor'],
     'removeCurator': ['isLoggedIn', 'isEditor'],

@@ -1,4 +1,4 @@
-import { Tag, Event } from '@Models';
+import { sequelize, Sequelize } from '@Models';
 import { RedstoneRequest, RedstoneResponse } from '@Types';
 import { UtilService, RedisService } from '@Services';
 
@@ -11,24 +11,20 @@ async function getTagListStats(req: RedstoneRequest, res: RedstoneResponse) {
   const { alphabet } = UtilService;
 
   const getStat = async (letter: string) => {
-    const where = {
-      status: 'visible',
-      slug: {
-        startsWith: letter,
-      },
-    };
-
-    const count = await Tag.count({
-      where: UtilService.convertWhereQuery(where),
-      include: [{
-        model: Event,
-        as: 'events',
-        where: { status: 'admitted' },
-        through: { attributes: [] },
-      }],
+    const count = await sequelize.query(`
+      SELECT COUNT(*) FROM tag
+      WHERE status = 'visible'
+        AND slug LIKE '${letter}%'
+        AND EXISTS(
+          SELECT 1
+            FROM "eventTag", event
+          WHERE tag.id = "eventTag"."tagId" AND "eventTag"."eventId" = event.id AND event.status = 'admitted'
+        )
+    `, {
+      type: Sequelize.QueryTypes.SELECT,
     });
 
-    stats[letter] = count;
+    stats[letter] = +(count[0] as any).count;
   };
 
   await Promise.all(alphabet.map(getStat));
