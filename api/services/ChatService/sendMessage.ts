@@ -8,18 +8,16 @@ export const sendMessage = async (type: 'client' | 'newsroom', authorId: number,
   const chat = await getOrCreateChat(type as 'client', ids as number[]);
   const socket = await getChatSocket(type as 'client', ids as number[]);
 
-  if (type === 'newsroom') {
-    const data = {
-      chatId: chat.id,
-      clientId: authorId,
-    };
-    const existingChatMember = await ChatMember.findOne({ where: data });
-    if (!existingChatMember) {
-      await ChatMember.create({
-        id: uuidv4(),
-        ...data,
-      });
-    }
+  const data = {
+    chatId: chat.id,
+    clientId: authorId,
+  };
+  const existingChatMember = await ChatMember.findOne({ where: data });
+  if (!existingChatMember) {
+    await ChatMember.create({
+      id: uuidv4(),
+      ...data,
+    });
   }
 
   const chatMessage = await ChatMessage.create({

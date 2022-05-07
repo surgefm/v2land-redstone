@@ -73,3 +73,12 @@ export async function getChatSocket(type: 'client' | 'newsroom' | string, ids?: 
   }
   return server.of(chatroomPath).in(type);
 }
+
+
+export function revealChatroom(chatId: string): ['client', number[]] | ['newsroom', number] {
+  const [typeStr, idStr] = chatId.split(':');
+  return [
+    typeStr === 'chat-newsroom' ? 'newsroom' : 'client',
+    typeStr === 'chat-newsroom' ? +idStr : +idStr.split('-').map(s => +s),
+  ] as ['client', number[]] | ['newsroom', number];
+}

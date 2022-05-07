@@ -39,6 +39,9 @@ class ChatMember extends Model<ChatMember> {
 
   @BelongsTo(() => Chat, 'chatId')
   chat: Chat;
+
+  @Column(DataType.TIME)
+  lastRead: Date;
 }
 
 export default ChatMember;

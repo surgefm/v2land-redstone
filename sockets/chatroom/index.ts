@@ -21,6 +21,7 @@ export default function loadChatroom(io: Server) {
       await socket.join(roomName);
       cb(null, {
         messages: await ChatService.loadMessages(type, ids),
+        members: await ChatService.getChatMembers(type, ids),
       });
     });
 
@@ -33,6 +34,12 @@ export default function loadChatroom(io: Server) {
         return cb('You have no access to the chatroom');
       }
       await ChatService.sendMessage(type, clientId, message, ids);
+      cb();
+    });
+
+    socket.on('read message', async (messageId: string, cb: Function = () => {}) => {
+      const { clientId } = socket.handshake.session;
+      await ChatService.readMessage(clientId, messageId);
       cb();
     });
   });
