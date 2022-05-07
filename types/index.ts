@@ -57,6 +57,7 @@ interface EventObj extends SimplifiedEventInterface {
   starCount?: number;
   temporaryStack?: News[];
   contributors?: EventContributor[];
+  needContributor?: boolean;
   lastUpdate?: Date;
   get?: Function;
 }

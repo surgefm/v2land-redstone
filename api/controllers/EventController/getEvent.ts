@@ -38,6 +38,7 @@ async function getEvent(req: RedstoneRequest, res: RedstoneResponse) {
     ...commit.data,
     roles,
     starCount,
+    needContributor: e.needContributor,
   } : null;
 
   if (commit && !showLatest || (showLatest && deniedAccess)) {

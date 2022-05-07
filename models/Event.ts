@@ -37,9 +37,9 @@ class Event extends Model<Event> {
   @AllowNull(false)
   @Is('EventName', (value) => {
     if (!_.isString(value) || value.length === 0) {
-      throw new Error('事件名不得为空');
+      throw new Error('时间线名不得为空');
     } else if (value.trim() !== value) {
-      throw new Error('事件名两端不应含有空格');
+      throw new Error('时间线名两端不应含有空格');
     }
 
     let allDigit = true;
@@ -50,15 +50,17 @@ class Event extends Model<Event> {
       }
     }
     if (allDigit) {
-      throw new Error('事件名不得全为数字');
+      throw new Error('时间线名不得全为数字');
     }
 
-    const reserved = ['register', 'new', 'setting', 'admin',
+    const reserved = [
+      'register', 'new', 'setting', 'admin', 'dashboard', 'trending',
       'about', 'subscription', 'index', 'login', 'verify', 'list',
-      'pending', 'post'];
+      'pending', 'post', 'topic', 'event', 'home', 'logout', 'signup',
+    ];
 
     if (reserved.includes(value)) {
-      throw new Error(`事件名不得为以下文字：${reserved.join(', ')}`);
+      throw new Error(`时间线名不得为以下文字：${reserved.join(', ')}`);
     }
   })
   @Column(DataType.TEXT)
@@ -76,6 +78,10 @@ class Event extends Model<Event> {
   @Default('pending')
   @Column(DataType.ENUM('pending', 'admitted', 'rejected', 'hidden', 'removed'))
   status: string;
+
+  @Default(false)
+  @Column(DataType.BOOLEAN)
+  needContributor: boolean;
 
   @HasOne(() => HeaderImage, 'eventId')
   headerImage: HeaderImage;

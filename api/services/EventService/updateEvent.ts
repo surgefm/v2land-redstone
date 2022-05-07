@@ -8,8 +8,8 @@ import updateAlgoliaIndex from './updateAlgoliaIndex';
 
 async function updateEvent(event: Event, data: EventObj, client: Client) {
   const changes: any = {};
-  for (const attribute of ['name', 'description', 'status']) {
-    if (data[attribute] && data[attribute] !== (event as EventObj)[attribute]) {
+  for (const attribute of ['name', 'description', 'status', 'needContributor']) {
+    if (data[attribute] !== 'undefined' && data[attribute] !== (event as EventObj)[attribute]) {
       changes[attribute] = data[attribute];
     }
   }
@@ -27,6 +27,7 @@ async function updateEvent(event: Event, data: EventObj, client: Client) {
     };
 
     if (changes.status) {
+      const oldStatus = event.status;
       event.status = changes.status;
       await event.save({ transaction });
 
@@ -34,7 +35,21 @@ async function updateEvent(event: Event, data: EventObj, client: Client) {
         ...query,
         action: 'updateEventStatus',
         data: { status: changes.status },
-        before: event.status,
+        before: oldStatus,
+        target: event.id,
+      }, { transaction });
+    }
+
+    if (changes.needContributor !== undefined) {
+      const oldNeedContributor = event.needContributor;
+      event.needContributor = changes.needContributor;
+      await event.save({ transaction });
+
+      await RecordService.update({
+        ...query,
+        action: changes.needContributor ? 'openApplication' : 'closeApplication',
+        data: { needContributor: changes.needContributor },
+        before: oldNeedContributor,
         target: event.id,
       }, { transaction });
     }
@@ -42,6 +57,8 @@ async function updateEvent(event: Event, data: EventObj, client: Client) {
     NotificationService.notifyWhenEventStatusChanged(event, changes, client);
 
     delete changes.status;
+    delete changes.needContributor;
+
     const before: any = {};
     for (const i of Object.keys(changes)) {
       before[i] = (event as EventObj)[i];

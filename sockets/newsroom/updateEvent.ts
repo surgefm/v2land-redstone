@@ -16,9 +16,9 @@ export default function updateEvent(socket: Socket) {
 
     try {
       const e = await EventService.updateEvent(event, data, await Client.findByPk(clientId));
-      const { id, name, description } = e;
+      const { id, name, description, needContributor } = e;
       if (e !== null) {
-        socket.to(getRoomName(eventId)).emit('update event information', { event: { id, name, description } });
+        socket.to(getRoomName(eventId)).emit('update event information', { event: { id, name, description, needContributor } });
       }
       cb();
     } catch (err) {
