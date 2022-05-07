@@ -8,7 +8,7 @@ import * as UtilService from '@Services/UtilService';
 import updateElasticsearchIndex from './updateElasticsearchIndex';
 
 async function createStack(eventId: number | string, data: StackObj, clientId: number, transaction?: Transaction) {
-  const { title, description, order, time } = data;
+  const { title, description, order, time, stackEventId } = data;
 
   if (!title) {
     throw new RedstoneError(InvalidInputErrorType, '缺少参数：title');
@@ -36,6 +36,7 @@ async function createStack(eventId: number | string, data: StackObj, clientId: n
       description,
       order: order || -1,
       eventId: event.id,
+      stackEventId,
       time,
     };
     stack = await Stack.create(data, { transaction });
