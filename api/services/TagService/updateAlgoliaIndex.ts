@@ -9,7 +9,7 @@ async function updateAlgoliaIndex({ tag, tagId }: {
     tag = await Tag.findByPk(tagId);
   }
 
-  if (tag.status !== 'admitted') {
+  if (tag.status !== 'visible') {
     return deleteTag(tag.id);
   }
 
