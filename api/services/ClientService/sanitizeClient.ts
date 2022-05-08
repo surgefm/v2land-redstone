@@ -11,7 +11,7 @@ export interface SanitizedClient {
   objectID?: number;
 }
 
-export const sanitizedFields = ['username', 'nickname', 'id', 'description', 'avatar', 'role', 'stars'];
+export const sanitizedFields = ['username', 'nickname', 'id', 'description', 'avatar', 'role'];
 const otherFields = [
   'email', 'emailVerified', 'settings', 'records', 'auths',
   'subscriptions', 'contacts', 'reports', 'tags', 'events', 'subscriptionCount',
@@ -19,7 +19,7 @@ const otherFields = [
 
 function sanitizeClient(client: Client, forAdmin = false): SanitizedClient {
   const temp: { [index: string]: any } = {};
-  for (const attr of [...sanitizedFields, 'events']) {
+  for (const attr of [...sanitizedFields, 'events', 'stars']) {
     temp[attr] = (client as any)[attr];
   }
 
