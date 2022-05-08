@@ -11,9 +11,9 @@ export interface SanitizedClient {
   objectID?: number;
 }
 
-export const sanitizedFields = ['username', 'nickname', 'id', 'description', 'avatar', 'role'];
+export const sanitizedFields = ['username', 'nickname', 'id', 'description', 'avatar', 'role', 'stars'];
 const otherFields = [
-  'email', 'emailVerified', 'settings', 'records', 'auths', 'stars',
+  'email', 'emailVerified', 'settings', 'records', 'auths',
   'subscriptions', 'contacts', 'reports', 'tags', 'events', 'subscriptionCount',
 ];
 
