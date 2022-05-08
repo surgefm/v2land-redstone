@@ -12,12 +12,12 @@ export const isAllowedToViewClientChat = async (clientId: number, ids: number[])
   return ids.includes(clientId);
 };
 
-export const isAllowedToChatInNewsroom = async (authorId: number, eventId: number) => {
-  return isAllowedToViewEvent(authorId, eventId);
-};
-
 export const isAllowedToViewNewsroomChat = async (authorId: number, eventId: number) => {
   const event = await Event.findByPk(Math.abs(+eventId));
   if (event.status === 'admitted') return true;
   return isAllowedToViewEvent(authorId, eventId);
+};
+
+export const isAllowedToChatInNewsroom = async (authorId: number, eventId: number) => {
+  return isAllowedToViewNewsroomChat(authorId, eventId);
 };
