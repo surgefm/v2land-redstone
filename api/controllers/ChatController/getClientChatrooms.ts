@@ -21,7 +21,13 @@ interface ClientChat {
 
 async function getChatroomInfo(chatId: string, clientId: number) {
   const chatMember = await ChatMember.findOne({
-    where: { chatId, clientId },
+    where: {
+      chatId,
+      clientId,
+      lastSpoke: {
+        [Sequelize.Op.ne]: null,
+      },
+    },
   });
   if (!chatMember) return;
 
@@ -43,7 +49,7 @@ async function getChatroomInfo(chatId: string, clientId: number) {
         SELECT *
           FROM record
           WHERE (action IN ('createStack', 'addNewsToStack') AND data->>'eventId' = '${eventId}')
-          OR (action IN ('makeCommitForEvent', 'updateStackOrders', 'addNewsToEvent') AND target = ${eventId})
+          OR (action IN ('makeCommitForEvent', 'updateStackOrders', 'addNewsToEvent', 'createEvent') AND target = ${eventId})
           ORDER BY "createdAt" DESC
           LIMIT 100
       `, {

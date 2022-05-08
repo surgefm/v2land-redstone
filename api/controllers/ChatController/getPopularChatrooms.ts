@@ -5,6 +5,7 @@ import { RedisService, ChatService, ClientService, EventService } from '@Service
 import { ChatMessage, Record, EventStackNews, sequelize, Sequelize } from '@Models';
 
 interface PopularChat {
+  id: string;
   chatId: string;
   eventId: number;
   editorIds: number[];
@@ -169,6 +170,7 @@ async function getPopularChatrooms(req: RedstoneRequest, res: RedstoneResponse) 
       chats.push({
         eventId: +eventId,
         event,
+        id: chatId,
         chatId,
         count: eventRecords.length + eventMessage.length,
         updatedAt: eventRecords.length > 0 ? eventRecords[0].createdAt : event.updatedAt,

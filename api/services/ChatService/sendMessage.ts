@@ -12,9 +12,9 @@ export const sendMessage = async (type: 'client' | 'newsroom', authorId: number,
     chatId: chat.id,
     clientId: authorId,
   };
-  const existingChatMember = await ChatMember.findOne({ where: data });
-  if (!existingChatMember) {
-    await ChatMember.create({
+  let chatMember = await ChatMember.findOne({ where: data });
+  if (!chatMember) {
+    chatMember = await ChatMember.create({
       id: uuidv4(),
       ...data,
     });
@@ -26,6 +26,9 @@ export const sendMessage = async (type: 'client' | 'newsroom', authorId: number,
     authorId,
     text: message,
   });
+
+  chatMember.lastSpoke = chatMessage.createdAt;
+  await chatMember.save();
 
   socket.emit('send message', chatMessage.get({ plain: true }));
 };

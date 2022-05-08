@@ -42,6 +42,9 @@ class ChatMember extends Model<ChatMember> {
 
   @Column(DataType.TIME)
   lastRead: Date;
+
+  @Column(DataType.TIME)
+  lastSpoke: Date;
 }
 
 export default ChatMember;
