@@ -27,6 +27,20 @@ describe('ClientController', function() {
         })
         .expect(201, done);
     });
+
+    it('should return an error message when the username is forbidden', async function() {
+      await agent
+        .post('/client/register')
+        .send({
+          username: 'login',
+          nickname: 'testChangePwd',
+          password: 'testChangePassword1',
+          email: testEmail,
+        })
+        .expect(400, {
+          message: '用户名不合法',
+        });
+    });
   });
 
   describe('#changePassword()', function() {
