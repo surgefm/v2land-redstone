@@ -40,12 +40,17 @@ export async function sendMessage(
     reply_markup: replyMarkup,
   };
 
-  return axios.post(
-    `https://api.telegram.org/bot${ TELE_TOKEN }/sendMessage`,
-    JSON.stringify(data), {
-      headers: { 'Content-Type': 'application/json' },
-    }
-  );
+  try {
+    const response = await axios.post(
+      `https://api.telegram.org/bot${ TELE_TOKEN }/sendMessage`,
+      JSON.stringify(data), {
+        headers: { 'Content-Type': 'application/json' },
+      }
+    );
+    return response;
+  } catch (err) {
+    console.error('Error sending telegram message', err);
+  }
 }
 
 export async function sendText(text: string, parseMode?: string, disableWebPagePreview?: boolean) {
