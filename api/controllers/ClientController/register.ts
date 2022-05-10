@@ -14,7 +14,6 @@ async function register(req: RedstoneRequest, res: RedstoneResponse) {
     });
   }
 
-  ClientService.validateUsername(data.username);
   ClientService.validatePassword(data.password);
 
   await sequelize.transaction(async transaction => {

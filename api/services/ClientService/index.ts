@@ -9,7 +9,6 @@ import updateAlgoliaIndex from './updateAlgoliaIndex';
 import updateElasticsearchIndex from './updateElasticsearchIndex';
 import validatePassword from './validatePassword';
 import validateSettings from './validateSettings';
-import validateUsername from './validateUsername';
 
 export {
   createClient,
@@ -24,5 +23,4 @@ export {
   updateElasticsearchIndex,
   validatePassword,
   validateSettings,
-  validateUsername,
 };
