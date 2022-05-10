@@ -16,6 +16,7 @@ async function updateAlgoliaIndex(
   }
 
   let clientObj: any = client;
+  if (!clientObj) return;
   if (client.get) {
     clientObj = client.get({ plain: true });
   }
