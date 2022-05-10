@@ -50,6 +50,12 @@ class Client extends Model<Client> {
     if (allDigit) {
       throw new Error('用户名不得全为数字');
     }
+
+    const forbiddenUsernameSet: Set<string> = new Set<string>(['event', 'topic', 'register',
+      'login', 'logout', 'about', 'dashboard', 'trending', 'topics', 'settings', 'signup']);
+    if (forbiddenUsernameSet.has(value)) {
+      throw new Error('用户名不合法');
+    }
   })
   @AllowNull(false)
   @Unique(true)
