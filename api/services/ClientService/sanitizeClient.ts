@@ -19,7 +19,7 @@ const otherFields = [
 
 function sanitizeClient(client: Client, forAdmin = false): SanitizedClient {
   const temp: { [index: string]: any } = {};
-  for (const attr of [...sanitizedFields, 'events', 'stars']) {
+  for (const attr of [...sanitizedFields, 'events', 'stars', 'curatorRoles']) {
     temp[attr] = (client as any)[attr];
   }
 

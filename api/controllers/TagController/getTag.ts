@@ -1,6 +1,6 @@
 import { Tag, Event, News, Client } from '@Models';
 import { RedstoneRequest, RedstoneResponse } from '@Types';
-import { ClientService, TagService } from '@Services';
+import { ClientService } from '@Services';
 
 async function getTag(req: RedstoneRequest, res: RedstoneResponse) {
   const tag = await Tag.findByPk(req.params.tagId, {
@@ -43,7 +43,11 @@ async function getTag(req: RedstoneRequest, res: RedstoneResponse) {
       .filter(t => t !== tag.id)
       .map(t => Tag.findByPk(t))
   );
-  tagObj.children = await TagService.getAllChildTags({ tag });
+  tagObj.children = await Tag.findAll({
+    where: {
+      parentId: tag.id,
+    },
+  });
   return res.status(200).json({ tag: tagObj });
 }
 

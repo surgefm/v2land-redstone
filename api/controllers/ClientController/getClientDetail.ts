@@ -10,7 +10,10 @@ async function getClientDetail(req: RedstoneRequest, res: RedstoneResponse) {
     });
   }
 
-  const client = await ClientService.findClient(clientId, { withStars: true });
+  const client = await ClientService.findClient(clientId, {
+    withStars: true,
+    withCuratorRoles: true,
+  });
   if (!client) {
     delete req.session.clientId;
     return res.status(404).json({

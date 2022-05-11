@@ -1,4 +1,4 @@
-import { Auth, Subscription, Contact, Client } from '@Models';
+import { Auth, Subscription, Contact, Client, TagCurator } from '@Models';
 import { Transaction, Op, Includeable } from 'sequelize';
 import * as StarService from '@Services/StarService';
 
@@ -14,6 +14,7 @@ async function findClient(
     withStars = false,
     withPassword = false,
     forceUpdate = false,
+    withCuratorRoles = false,
   }: {
     transaction?: Transaction;
     withAuths?: boolean;
@@ -21,6 +22,7 @@ async function findClient(
     withEvents?: boolean;
     withStars?: boolean;
     withPassword?: boolean;
+    withCuratorRoles?: boolean;
     forceUpdate?: boolean;
   } = {}) {
   if (clientName instanceof Client) {
@@ -87,6 +89,14 @@ async function findClient(
 
   if (withStars) {
     client.stars = await StarService.getClientStars(client.id);
+  }
+
+  if (withCuratorRoles) {
+    client.curatorRoles = await TagCurator.findAll({
+      where: {
+        curatorId: client.id,
+      },
+    });
   }
 
   return client;
