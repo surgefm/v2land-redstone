@@ -9,7 +9,15 @@
  * below by its filename, minus the extension, (e.g. "authenticated")
  */
 
-import { hasPermission, hasEventPermission, hasStackPermission, hasEventPermissionForSomeStatus, hasRolePermission, hasTagPermission } from '@Policies';
+import {
+  hasPermission,
+  hasEventPermission,
+  hasStackPermission,
+  hasEventPermissionForSomeStatus,
+  hasRolePermission,
+  hasTagPermission,
+  hasTagParentPermission,
+} from '@Policies';
 
 export default {
   NewsController: {
@@ -117,8 +125,8 @@ export default {
     'getTagList': true,
     'getTagListByAlphabet': true,
     'getTagListStats': true,
-    'addCurator': ['isLoggedIn', 'isEditor'],
-    'removeCurator': ['isLoggedIn', 'isEditor'],
+    'addCurator': ['isLoggedIn', hasTagParentPermission('edit', '用户没有给该话题添加主持人的权限')],
+    'removeCurator': ['isLoggedIn', hasTagParentPermission('edit', '用户没有给该话题添加主持人的权限')],
     '*': false,
   },
 

@@ -4,6 +4,11 @@ import { TagService } from '@Services';
 async function addCurator(req: RedstoneRequest, res: RedstoneResponse) {
   const tagId = +req.params.tagId;
   const curatorId = req.body.curatorId;
+  if (!curatorId) {
+    return res.status(400).json({
+      message: '缺失参数: curatorId',
+    });
+  }
   const tagCurator = await TagService.addCurator(tagId, curatorId, req.currentClient);
   if (tagCurator) {
     res.status(201).json({

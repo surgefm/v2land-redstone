@@ -3,6 +3,7 @@ import hasPermission from './hasPermission';
 import hasEventPermission from './hasEventPermission';
 import hasEventPermissionForSomeStatus from './hasEventPermissionForSomeStatus';
 import hasStackPermission from './hasStackPermission';
+import hasTagParentPermission from './hasTagParentPermission';
 import hasTagPermission from './hasTagPermission';
 import isAdmin from './isAdmin';
 import isLoggedIn from './isLoggedIn';
@@ -15,7 +16,7 @@ import hasRolePermission from './hasRolePermission';
 export type PolicyMiddleware = typeof forbiddenRoute | typeof hasPermission | typeof hasEventPermission |
   typeof hasEventPermissionForSomeStatus | typeof isAdmin | typeof isLoggedIn | typeof isEditor |
   typeof sessionAuth | typeof uploadFile | typeof hasRolePermission | typeof hasStackPermission |
-  typeof hasTagPermission | typeof isManager;
+  typeof hasTagPermission | typeof isManager | typeof hasTagParentPermission;
 
 export {
   forbiddenRoute,
@@ -23,6 +24,7 @@ export {
   hasEventPermission,
   hasEventPermissionForSomeStatus,
   hasStackPermission,
+  hasTagParentPermission,
   hasTagPermission,
   isAdmin,
   isLoggedIn,
@@ -39,6 +41,7 @@ export default {
   hasEventPermission,
   hasEventPermissionForSomeStatus,
   hasStackPermission,
+  hasTagParentPermission,
   hasTagPermission,
   isAdmin,
   isLoggedIn,
