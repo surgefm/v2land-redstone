@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@elastic/elasticsearch": "^7.6.1",
+    "@postlight/mercury-parser": "^2.2.1",
     "@socket.io/redis-adapter": "^7.1.0",
     "acl": "^0.4.11",
     "acl-sequelize": "^0.3.5",
@@ -82,6 +83,7 @@
     "@types/oauth": "^0.9.1",
     "@types/passport": "^1.0.7",
     "@types/pinyin": "^2.8.1",
+    "@types/postlight__mercury-parser": "^2.2.4",
     "@types/qs": "^6.9.0",
     "@types/response-time": "^2.3.4",
     "@types/sequelize": "^4.28.8",

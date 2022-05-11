@@ -135,4 +135,8 @@ export default {
     'loadChatMessages': ['isLoggedIn'],
   },
 
+  ExtractionController: {
+    'extract': ['isLoggedIn'],
+  },
+
 } as { [index: string]: { [index: string]: boolean | string | string[] | object } };

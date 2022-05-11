@@ -97,4 +97,6 @@ export default {
   'GET /chat/my': 'ChatController.getClientChatrooms',
   'POST /chat/messages': 'ChatController.loadChatMessages',
 
+  'GET /extract': 'ExtractionController.extract',
+
 } as { [index: string]: string | { view: string } };
