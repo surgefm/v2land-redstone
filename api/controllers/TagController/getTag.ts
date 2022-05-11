@@ -39,9 +39,11 @@ async function getTag(req: RedstoneRequest, res: RedstoneResponse) {
     },
   });
 
-  const events = await Promise.all(eventTags.map(t => Event.findOne({
+  const eventIds = Array.from(new Set(eventTags.map(t => t.eventId)));
+
+  const events = await Promise.all(eventIds.map(id => Event.findOne({
     where: {
-      id: t.eventId,
+      id,
       status: 'admitted',
     },
     include: [{
