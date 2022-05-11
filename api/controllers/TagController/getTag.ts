@@ -1,21 +1,10 @@
-import { Tag, Event, News, Client } from '@Models';
+import { Tag, Event, EventTag, News, Client, Sequelize } from '@Models';
 import { RedstoneRequest, RedstoneResponse } from '@Types';
-import { ClientService } from '@Services';
+import { ClientService, TagService } from '@Services';
 
 async function getTag(req: RedstoneRequest, res: RedstoneResponse) {
   const tag = await Tag.findByPk(req.params.tagId, {
     include: [{
-      model: Event,
-      as: 'events',
-      where: { status: 'admitted' },
-      through: { attributes: [] },
-      include: [{
-        model: News,
-        as: 'latestAdmittedNews',
-        required: false,
-      }],
-      required: false,
-    }, {
       model: Client,
       as: 'curators',
       through: { attributes: [] },
@@ -37,7 +26,33 @@ async function getTag(req: RedstoneRequest, res: RedstoneResponse) {
     });
   }
 
+  const allChildTags = await TagService.getAllChildTags({ tag });
+  const ids = [tag.id, ...allChildTags.map(t => t.id)];
+
   const tagObj = tag.get({ plain: true }) as any;
+
+  const eventTags = await EventTag.findAll({
+    where: {
+      tagId: {
+        [Sequelize.Op.in]: ids,
+      },
+    },
+  });
+
+  const events = await Promise.all(eventTags.map(t => Event.findOne({
+    where: {
+      id: t.eventId,
+      status: 'admitted',
+    },
+    include: [{
+      model: News,
+      as: 'latestAdmittedNews',
+      required: false,
+    }],
+  })));
+
+  tagObj.events = events.filter(e => e).sort((a, b) => b.updatedAt - a.updatedAt);
+
   tagObj.parents = await Promise.all(
     (tag.hierarchyPath || [])
       .filter(t => t !== tag.id)
