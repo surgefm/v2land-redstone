@@ -3,11 +3,9 @@ import { AccessControlService } from '@Services';
 import { Tag } from '@Models';
 
 const hasTagParentPermission = (action: string, errorMessage?: string) => async (req: RedstoneRequest, res: RedstoneResponse, next: NextFunction) => {
-  console.log(action);
   if (await AccessControlService.isAllowed(req.session.clientId, 'all-tags', action)) return next();
   const tagId = +req.params.tagId;
   const tag = await Tag.findByPk(tagId);
-  console.log(tag);
   let haveAccess = true;
   if (!tag.parentId) haveAccess = false;
   if (haveAccess) {
