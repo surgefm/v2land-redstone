@@ -5,7 +5,7 @@ import { RecordService, EventService, TagService } from '@Services';
 async function createTag(req: RedstoneRequest, res: RedstoneResponse) {
   if (!req.body.name) {
     return res.status(400).json({
-      message: '缺少参数：name。',
+      message: '缺少参数: name。',
     });
   }
 
@@ -24,6 +24,8 @@ async function createTag(req: RedstoneRequest, res: RedstoneResponse) {
 
   await sequelize.transaction(async transaction => {
     tag = await Tag.create({ name, description, slug }, { transaction });
+    tag.hierarchyPath = [tag.id];
+    await tag.save({ transaction });
 
     await RecordService.create({
       data: tag,

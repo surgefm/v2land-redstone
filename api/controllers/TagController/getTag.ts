@@ -1,6 +1,6 @@
 import { Tag, Event, News, Client } from '@Models';
 import { RedstoneRequest, RedstoneResponse } from '@Types';
-import { ClientService } from '@Services';
+import { ClientService, TagService } from '@Services';
 
 async function getTag(req: RedstoneRequest, res: RedstoneResponse) {
   const tag = await Tag.findByPk(req.params.tagId, {
@@ -36,7 +36,15 @@ async function getTag(req: RedstoneRequest, res: RedstoneResponse) {
       message: '无法找到该标签',
     });
   }
-  return res.status(200).json({ tag });
+
+  const tagObj = tag.get({ plain: true }) as any;
+  tagObj.parents = await Promise.all(
+    (tag.hierarchyPath || [])
+      .filter(t => t !== tag.id)
+      .map(t => Tag.findByPk(t))
+  );
+  tagObj.children = await TagService.getAllChildTags({ tag });
+  return res.status(200).json({ tag: tagObj });
 }
 
 export default getTag;

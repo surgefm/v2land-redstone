@@ -42,6 +42,7 @@ declare module 'acl' {
       }
 
       interface Acl {
+          removeRoleParents: any;
           addUserRoles: (userId: Value, roles: strings, cb?: Callback) => Promise<void>;
           removeUserRoles: (userId: Value, roles: strings, cb?: Callback) => Promise<void>;
           userRoles: (userId: Value, cb?: (err: Error, roles: string[]) => any) => Promise<string[]>;
@@ -118,7 +119,7 @@ declare module 'acl' {
           permissions: strings;
       }
 
-      interface MemoryBackend extends Backend<Action[]> {}
+      type MemoryBackend = Backend<Action[]>
       interface MemoryBackendStatic {
           new (): MemoryBackend;
       }
@@ -166,13 +167,13 @@ declare module 'acl' {
       }
 
       // for redis backend
-      interface RedisBackend extends Backend<redis.RedisClientType> {}
+      type RedisBackend = Backend<redis.RedisClientType>
       interface RedisBackendStatic {
           new (redis: redis.RedisClientType, prefix?: string): RedisBackend;
       }
 
       // for mongodb backend
-      interface MongodbBackend extends Backend<Callback> {}
+      type MongodbBackend = Backend<Callback>
       interface MongodbBackendStatic {
           new (db: mongo.Db, prefix?: string, useSingle?: boolean): MongodbBackend;
       }

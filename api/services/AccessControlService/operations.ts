@@ -29,6 +29,7 @@ export const removeAllow: typeof acl.removeAllow = acl.removeAllow.bind(acl);
 export const removePermissions: typeof acl.removePermissions = acl.removePermissions.bind(acl);
 export const removeResource: typeof acl.removeResource = acl.removeResource.bind(acl);
 export const removeRole: typeof acl.removeRole = acl.removeRole.bind(acl);
+export const removeRoleParents: typeof acl.removeRoleParents = acl.removeRoleParents.bind(acl);
 export const removeUserRoles: typeof acl.removeUserRoles = acl.removeUserRoles.bind(acl);
 export const userRoles: typeof acl.userRoles = acl.userRoles.bind(acl);
 export const whatResources: typeof acl.whatResources = acl.whatResources.bind(acl);

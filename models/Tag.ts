@@ -34,6 +34,9 @@ class Tag extends Model<Tag> {
   @Column(DataType.TEXT)
   description: string;
 
+  @Column(DataType.ARRAY(DataType.INTEGER))
+  hierarchyPath: number[];
+
   @AllowNull
   @ForeignKey(() => Tag)
   @Column(DataType.INTEGER)
@@ -41,6 +44,14 @@ class Tag extends Model<Tag> {
 
   @BelongsTo(() => Tag)
   redirectTo: Tag;
+
+  @AllowNull
+  @ForeignKey(() => Tag)
+  @Column(DataType.INTEGER)
+  parentId: number;
+
+  @BelongsTo(() => Tag)
+  parent: Tag;
 
   @Default('visible')
   @Column(DataType.ENUM('visible', 'hidden'))
