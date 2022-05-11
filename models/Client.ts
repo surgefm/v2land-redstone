@@ -33,22 +33,18 @@ class Client extends Model<Client> {
   @Is('Username', (value) => {
     if (!_.isString(value) || value.length < 2 || value.length > 16) {
       throw new Error('用户名长度应在 2-16 个字符内');
-    } else if (/\r?\n|\r| |@/.test(value)) {
+    }
+    
+    if (/\r?\n|\r| |@/.test(value)) {
       throw new Error('用户名不得含有 @ 或空格。');
     }
 
-    let allDigit = true;
-    for (const char of value) {
-      if (!/[a-zA-Z0-9]/.test(char)) {
-        throw new Error('用户名不得含有除 a-z，A-Z，0-9 外的字符');
-      }
-      if (!/\d/.test(char)) {
-        allDigit = false;
-        break;
-      }
+    if (/[^a-zA-Z0-9]/.test(value)) {
+      throw new Error('用户名不得含有除 a-z，A-Z，0-9 外的字符');
     }
-    if (allDigit) {
-      throw new Error('用户名不得全为数字');
+  
+    if (/^\d+$/.test(value)) {
+      throw new Error('用户名不得全为数字'); 
     }
 
     const unavailableUsernameSet: Set<string> = new Set<string>(['event', 'topic', 'register',
