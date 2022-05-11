@@ -35,10 +35,6 @@ class Client extends Model<Client> {
       throw new Error('用户名长度应在 2-16 个字符内');
     }
     
-    if (/\r?\n|\r| |@/.test(value)) {
-      throw new Error('用户名不得含有 @ 或空格。');
-    }
-
     if (/[^a-zA-Z0-9]/.test(value)) {
       throw new Error('用户名不得含有除 a-z，A-Z，0-9 外的字符');
     }
