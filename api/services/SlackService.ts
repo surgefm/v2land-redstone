@@ -7,12 +7,17 @@ export async function sendText(text: string) {
     console.log('send slack', { text });
     return;
   }
-  return axios.post(
-    SLACK_URL,
-    JSON.stringify({
-      text,
-    }), {
-      headers: { 'Content-Type': 'application/json' },
-    }
-  );
+  try {
+    const res = await axios.post(
+      SLACK_URL,
+      JSON.stringify({
+        text,
+      }), {
+        headers: { 'Content-Type': 'application/json' },
+      }
+    );
+    return res;
+  } catch (err) {
+    console.error('Failed to send Slack message:', err);
+  }
 }
