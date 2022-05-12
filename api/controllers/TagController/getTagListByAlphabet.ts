@@ -13,8 +13,11 @@ const getTags = async (letter: string) => {
       AND slug LIKE '${letter}%'
       AND EXISTS(
         SELECT 1
-          FROM "eventTag", event
-        WHERE tag.id = "eventTag"."tagId" AND "eventTag"."eventId" = event.id AND event.status = 'admitted'
+          FROM "eventTag", event, tag as t
+         WHERE t."hierarchyPath" @> tag."hierarchyPath"
+           AND t.id = "eventTag"."tagId"
+           AND "eventTag"."eventId" = event.id
+           AND event.status = 'admitted'
       )
   `, {
     type: Sequelize.QueryTypes.SELECT,
