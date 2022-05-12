@@ -1,6 +1,6 @@
-import { Tag, Event, EventTag, News, Client, Sequelize } from '@Models';
+import { Tag, Event, EventTag, News, Client, Sequelize, TagCuration } from '@Models';
 import { RedstoneRequest, RedstoneResponse } from '@Types';
-import { ClientService, TagService } from '@Services';
+import { ClientService, TagService, EventService } from '@Services';
 
 async function getTag(req: RedstoneRequest, res: RedstoneResponse) {
   const tag = await Tag.findByPk(req.params.tagId, {
@@ -41,19 +41,35 @@ async function getTag(req: RedstoneRequest, res: RedstoneResponse) {
 
   const eventIds = Array.from(new Set(eventTags.map(t => t.eventId)));
 
-  const events = await Promise.all(eventIds.map(id => Event.findOne({
-    where: {
-      id,
-      status: 'admitted',
-    },
-    include: [{
-      model: News,
-      as: 'latestAdmittedNews',
-      required: false,
-    }],
-  })));
+  const events = await Promise.all(eventIds.map(async id => {
+    const event = await Event.findOne({
+      where: {
+        id,
+        status: 'admitted',
+      },
+      include: [{
+        model: News,
+        as: 'latestAdmittedNews',
+        required: false,
+      }],
+    });
+    if (!event) return;
+    const eventObj = event.get({ plain: true }) as any;
+    eventObj.curations = await EventService.getCurations(event.id);
+    return eventObj;
+  }));
 
-  tagObj.events = events.filter(e => e).sort((a, b) => b.updatedAt - a.updatedAt);
+  tagObj.events = events.filter(e => e).sort((a, b) => {
+    const isACertified = a.curations.find((c: TagCuration) => c.state === 'certified');
+    const isBCertified = b.curations.find((c: TagCuration) => c.state === 'certified');
+    const isAWarned = a.curations.find((c: TagCuration) => c.state === 'warning');
+    const isBWarned = b.curations.find((c: TagCuration) => c.state === 'warning');
+    if (isAWarned && !isBWarned) return 1;
+    if (!isAWarned && isBWarned) return -1;
+    if (isACertified && !isBCertified) return -1;
+    if (!isACertified && isBCertified) return 1;
+    return a.updatedAt > b.updatedAt ? -1 : 1;
+  });
 
   tagObj.parents = await Promise.all(
     (tag.hierarchyPath || [])

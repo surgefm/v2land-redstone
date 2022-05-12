@@ -27,6 +27,7 @@ import Stack from './Stack';
 import Star from './Star';
 import Subscription from './Subscription';
 import Tag from './Tag';
+import TagCuration from './TagCuration';
 import TagCurator from './TagCurator';
 import { sequelize } from '~/loadSequelize';
 import Sequelize from 'sequelize';
@@ -61,6 +62,7 @@ export {
   Star,
   Subscription,
   Tag,
+  TagCuration,
   TagCurator,
   sequelize,
   Sequelize,

@@ -1,3 +1,4 @@
+import addCuration from './addCuration';
 import addCurator from './addCurator';
 import createTag from './createTag';
 import getTag from './getTag';
@@ -8,6 +9,7 @@ import removeCurator from './removeCurator';
 import updateTag from './updateTag';
 
 export {
+  addCuration,
   addCurator,
   createTag,
   getTag,

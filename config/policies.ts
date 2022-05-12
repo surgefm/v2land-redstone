@@ -126,6 +126,7 @@ export default {
     'getTagListByAlphabet': true,
     'getTagListStats': true,
     'addCurator': ['isLoggedIn', hasTagParentPermission('edit', '用户没有给该话题添加主持人的权限')],
+    'addCuration': ['isLoggedIn', hasTagPermission('edit', '用户没有更改该话题的权限')],
     'removeCurator': ['isLoggedIn', hasTagParentPermission('edit', '用户没有给该话题添加主持人的权限')],
     '*': false,
   },

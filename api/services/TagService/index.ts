@@ -1,3 +1,4 @@
+import addCuration from './addCuration';
 import addCurator from './addCurator';
 import getAllChildTags from './getAllChildTags';
 import removeCurator from './removeCurator';
@@ -6,6 +7,7 @@ import propagateHierarchyChange from './propagateHierarchyChange';
 import updateAlgoliaIndex from './updateAlgoliaIndex';
 
 export {
+  addCuration,
   addCurator,
   getAllChildTags,
   getTagHierarchyPath,

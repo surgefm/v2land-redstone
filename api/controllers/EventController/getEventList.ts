@@ -145,6 +145,7 @@ async function getEventList(req: RedstoneRequest, res: RedstoneResponse) {
       }
       await Promise.all(commits.map(async c => {
         c.data.starCount = await StarService.countStars(c.eventId);
+        c.data.curations = await EventService.getCurations(c.eventId);
       }));
       const data = commits.map(c => c.data);
       res.status(200).json({ eventList: commits.map(c => c.data) });

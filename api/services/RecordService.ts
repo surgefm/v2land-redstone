@@ -4,8 +4,10 @@ import { CreateOptions } from 'sequelize/types';
 interface RecordData {
   model: string;
   action: string;
-  target: number;
+  target?: number;
+  targetUUID?: string;
   subtarget?: number;
+  subtargetUUID?: string;
   owner?: number;
   client?: number;
   data?: any;

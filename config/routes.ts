@@ -83,6 +83,7 @@ export default {
   'GET /tag/list/:letter': 'TagController.getTagListByAlphabet',
   'PUT /tag/:tagId': 'TagController.updateTag',
   'GET /tag/:tagId': 'TagController.getTag',
+  'POST /tag/:tagId/event/:eventId': 'TagController.addCuration',
   'POST /tag/:tagId/curator': 'TagController.addCurator',
   'DELETE /tag/:tagId/curator/:curatorId': 'TagController.removeCurator',
 

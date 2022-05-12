@@ -32,8 +32,13 @@ class Record extends Model<Record> {
   @Column(DataType.TEXT)
   model: string;
 
+  @AllowNull
   @Column(DataType.INTEGER)
   target?: number;
+
+  @AllowNull
+  @Column(DataType.TEXT)
+  targetUUID?: number;
 
   /**
    * In the case of a through model, there are two target resources.
@@ -43,6 +48,10 @@ class Record extends Model<Record> {
   @AllowNull
   @Column(DataType.INTEGER)
   subtarget?: number;
+
+  @AllowNull
+  @Column(DataType.TEXT)
+  subtargetUUID?: number;
 
   @Column(DataType.ENUM(
     'create',

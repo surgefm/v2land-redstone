@@ -22,6 +22,7 @@ async function getEvent(req: RedstoneRequest, res: RedstoneResponse) {
 
   const roles = await AccessControlService.getEventClients(eventId);
   const starCount = await StarService.countStars(eventId);
+  const curations = await EventService.getCurations(eventId);
 
   let deniedAccess = false;
   if (showLatest) {
@@ -39,6 +40,7 @@ async function getEvent(req: RedstoneRequest, res: RedstoneResponse) {
     roles,
     starCount,
     needContributor: e.needContributor,
+    curations,
   } : null;
 
   if (commit && !showLatest || (showLatest && deniedAccess)) {
@@ -54,6 +56,7 @@ async function getEvent(req: RedstoneRequest, res: RedstoneResponse) {
   event.contribution = await EventService.getContribution(event, true);
   event.roles = roles;
   event.starCount = starCount;
+  event.curations = curations;
   res.status(200).json(event);
 }
 
