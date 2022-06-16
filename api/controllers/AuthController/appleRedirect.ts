@@ -23,6 +23,7 @@ async function appleRedirect(req: RedstoneRequest, res: RedstoneResponse) {
   const r = JSON.parse(decodeURIComponent(req.query.res));
   const { authorization, user } = r;
   const { id_token } = authorization;
+  const { name } = user || {};
 
   let id: string;
   let email: string;
@@ -64,11 +65,11 @@ async function appleRedirect(req: RedstoneRequest, res: RedstoneResponse) {
     }
   }
 
-  const username = user ? user.first_name + user.last_name : id;
+  const username = name ? user.firstName + name.lastName : id;
   const clientUsername = await ClientService.randomlyGenerateUsername(username);
-  let nickname = (user ? `${user.first_name} ${user.last_name}` : id).slice(0, 16);
+  let nickname = (name ? `${name.firstName} ${name.lastName}` : id).slice(0, 16).trim();
   if (nickname.length < 2) {
-    nickname = id.slice(0, 16);
+    nickname = id.slice(0, 16).trim();
   }
 
   const newClient = await ClientService.createClient({
