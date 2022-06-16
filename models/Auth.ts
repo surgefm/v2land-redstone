@@ -17,7 +17,7 @@ import Client from './Client';
 } as TableOptions)
 class Auth extends Model<Auth> {
   @AllowNull(false)
-  @Column(DataType.ENUM('twitter', 'weibo', 'email', 'google', 'telegram', 'github'))
+  @Column(DataType.ENUM('twitter', 'weibo', 'email', 'google', 'telegram', 'github', 'apple'))
   site: string;
 
   @Column(DataType.TEXT)

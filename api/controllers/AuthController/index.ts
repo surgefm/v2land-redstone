@@ -1,3 +1,4 @@
+import appleRedirect from './appleRedirect';
 import authorize from './authorize';
 import options from './options';
 import twitter from './twitter';
@@ -13,6 +14,7 @@ import googleRedirect from './googleRedirect';
 import telegramRedirect from './telegramRedirect';
 
 export {
+  appleRedirect,
   authorize,
   options,
   twitter,

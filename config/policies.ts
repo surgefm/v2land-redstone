@@ -101,6 +101,7 @@ export default {
     'googleRedirect': true,
     'googleCallback': true,
     'telegramRedirect': true,
+    'appleRedirect': true,
     '*': false,
   },
 

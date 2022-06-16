@@ -70,6 +70,7 @@ export default {
   'GET /auth/google/callback': 'AuthController.googleCallback',
   'GET /auth/google/redirect': 'AuthController.googleRedirect',
   'GET /auth/telegram/redirect': 'AuthController.telegramRedirect',
+  'GET /auth/apple/redirect': 'AuthController.appleRedirect',
 
   'GET /oauth2/grant': 'OAuth2Controller.grant',
 
