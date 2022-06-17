@@ -1,0 +1,1 @@
+{"version":3,"sources":["../config/dbMigrations/a1-Client.js"],"names":[],"mappings":"AAAA,MAAM,iBAAiB,GAAG,OAAO,CAAC,+BAA+B,CAAC,CAAC;AAEnE,MAAM,CAAC,OAAO,GAAG,iBAAiB,CAAC,QAAQ,CAAC,CAAC","file":"a1-Client.js","sourcesContent":["const generateMigration = require('../../utils/generateMigration');\n\nmodule.exports = generateMigration('client');\n"],"sourceRoot":"../../../src"}
