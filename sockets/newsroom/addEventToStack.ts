@@ -1,7 +1,6 @@
 import { Socket } from 'socket.io';
-import { Event, Stack, Client } from '@Models';
+import { Event, Stack } from '@Models';
 import { StackService, AccessControlService } from '@Services';
-import getRoomName from './getRoomName';
 
 export default function addEventToStack(socket: Socket) {
   socket.on('add event to stack', async (eventId: number, stackId: number, cb: Function = () => {}) => {
@@ -13,14 +12,7 @@ export default function addEventToStack(socket: Socket) {
     const event = await Event.findByPk(eventId);
     if (!event) return cb('Event not found');
     try {
-      const s = await StackService.addEvent(stackId, eventId, clientId);
-      if (s) {
-        socket.in(getRoomName(stack.eventId)).emit('add event to stack', {
-          eventId,
-          stackId,
-          client: await Client.findByPk(clientId),
-        });
-      }
+      await StackService.addEvent(stackId, eventId, clientId);
       cb();
     } catch (err) {
       cb(err.message);

@@ -127,6 +127,14 @@ async function createNews(req: RedstoneRequest, res: RedstoneResponse) {
       news,
     });
 
+    const socket = await EventService.getNewsroomSocket(event.id);
+    socket.emit('add news to event', {
+      eventStackNews: eventNews,
+      event,
+      news,
+      client: await Client.findByPk(req.session.clientId),
+    });
+
     try {
       await NotificationService.notifyWhenNewsCreated(news, client);
     } catch (err) {}

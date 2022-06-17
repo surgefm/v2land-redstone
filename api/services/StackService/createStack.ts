@@ -1,4 +1,4 @@
-import { Stack } from '@Models';
+import { Client, Stack } from '@Models';
 import { Transaction } from 'sequelize';
 import { StackObj, RedstoneError, InvalidInputErrorType, ResourceNotFoundErrorType } from '@Types';
 
@@ -49,6 +49,14 @@ async function createStack(eventId: number | string, data: StackObj, clientId: n
       action: 'createStack',
     }, { transaction });
   }, transaction);
+
+
+  const socket = await EventService.getNewsroomSocket(stack.eventId);
+  socket.emit('add event to stack', {
+    eventId,
+    stackId: stack.id,
+    client: await Client.findByPk(clientId),
+  });
 
   updateElasticsearchIndex({ stackId: stack.id });
   return stack;

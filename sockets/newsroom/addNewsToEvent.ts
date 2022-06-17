@@ -1,7 +1,6 @@
 import { Socket } from 'socket.io';
-import { Event, News, Client } from '@Models';
+import { Event, News } from '@Models';
 import { EventService, AccessControlService } from '@Services';
-import getRoomName from './getRoomName';
 
 export default function addNewsToEvent(socket: Socket) {
   socket.on('add news to event', async (newsId: number, eventId: number, cb: Function = () => {}) => {
@@ -12,15 +11,7 @@ export default function addNewsToEvent(socket: Socket) {
     if (!event) return cb('Event not found');
     const news = await News.findByPk(newsId);
     if (!news) return cb('News not found');
-    const esn = await EventService.addNews(eventId, newsId, clientId);
-    if (esn) {
-      socket.in(getRoomName(event.id)).emit('add news to event', {
-        eventStackNews: esn,
-        event,
-        news,
-        client: await Client.findByPk(clientId),
-      });
-    }
+    await EventService.addNews(eventId, newsId, clientId);
     cb();
   });
 }

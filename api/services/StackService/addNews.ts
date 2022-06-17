@@ -1,6 +1,7 @@
-import { EventStackNews, News, sequelize, Stack } from '@Models';
+import { Client, EventStackNews, News, sequelize, Stack } from '@Models';
 import { RedstoneError, ResourceNotFoundErrorType } from '@Types';
 import * as RecordService from '@Services/RecordService';
+import { getNewsroomSocket } from '@Services/EventService';
 
 async function addNews(stackId: number, newsId: number, clientId: number) {
   const stack = await Stack.findByPk(stackId);
@@ -80,6 +81,14 @@ async function addNews(stackId: number, newsId: number, clientId: number) {
       action: 'addNewsToStack',
       createdAt: time,
     }, { transaction });
+  });
+
+  const socket = await getNewsroomSocket(stack.eventId);
+  socket.emit('add news to stack', {
+    eventStackNews,
+    stack,
+    news,
+    client: await Client.findByPk(clientId),
   });
 
   return eventStackNews;

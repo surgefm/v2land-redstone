@@ -1,7 +1,6 @@
 import { Socket } from 'socket.io';
-import { Stack, News, Client } from '@Models';
+import { Stack, News } from '@Models';
 import { StackService, AccessControlService } from '@Services';
-import getRoomName from './getRoomName';
 
 export default function addNewsToStack(socket: Socket) {
   socket.on('add news to stack', async (newsId: number, stackId: number, cb: Function = () => {}) => {
@@ -12,15 +11,7 @@ export default function addNewsToStack(socket: Socket) {
     if (!haveAccess) return cb('You are not allowed to edit this event.');
     const news = await News.findByPk(newsId);
     if (!news) return cb('News not found');
-    const esn = await StackService.addNews(stackId, newsId, clientId);
-    if (esn) {
-      socket.in(getRoomName(stack.eventId)).emit('add news to stack', {
-        eventStackNews: esn,
-        stack,
-        news,
-        client: await Client.findByPk(clientId),
-      });
-    }
+    await StackService.addNews(stackId, newsId, clientId);
     cb();
   });
 }

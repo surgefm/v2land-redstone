@@ -9,6 +9,7 @@ import getContributors from './getContributors';
 import getCurations from './getCurations';
 import getEventId from './getEventId';
 import getEventList from './getEventList';
+import getNewsroomSocket from './getNewsroomSocket';
 import removeNews from './removeNews';
 import removeTag from './removeTag';
 import updateAdmittedLatestNews from './updateAdmittedLatestNews';
@@ -29,6 +30,7 @@ export {
   getCurations,
   getEventId,
   getEventList,
+  getNewsroomSocket,
   removeNews,
   removeTag,
   updateAdmittedLatestNews,
