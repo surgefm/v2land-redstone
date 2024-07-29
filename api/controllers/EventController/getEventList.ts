@@ -47,7 +47,7 @@ async function getEventList(req: RedstoneRequest, res: RedstoneResponse) {
     });
   }
 
-  const key = `event-list-query-${JSON.stringify(where)}`;
+  const key = `event-list-query-${JSON.stringify(where)}-${page}`;
 
   await sequelize.transaction(async transaction => {
     if ((where || getLatest) && req.session && req.session.clientId) {
