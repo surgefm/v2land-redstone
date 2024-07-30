@@ -2,7 +2,7 @@ import { RedstoneRequest, RedstoneResponse, EventObj } from '@Types';
 import { Event } from '@Models';
 import { EventService } from '@Services';
 
-async function getPendingNews (req: RedstoneRequest, res: RedstoneResponse) {
+async function getPendingNews(req: RedstoneRequest, res: RedstoneResponse) {
   const name = req.params.eventName;
   let event: EventObj | Event = await EventService.findEvent(name);
 

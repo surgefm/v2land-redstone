@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/camelcase */
 /* eslint-disable camelcase */
-import crypto from 'crypto';
+import crypto, { BinaryLike } from 'crypto';
 import { Auth } from '@Models';
 import { RedstoneRequest, RedstoneResponse } from '@Types';
 import { RecordService, AuthService, UploadService, ClientService } from '@Services';
@@ -19,10 +19,10 @@ async function telegramRedirect(req: RedstoneRequest, res: RedstoneResponse) {
     });
   }
 
-  const r = JSON.parse(decodeURIComponent(req.query.res));
+  const r = JSON.parse(decodeURIComponent(req.query.res as string));
   const { first_name, last_name, id, photo_url, username, hash } = r;
   const dataCheckString = Object.keys(r).filter(r => r !== 'hash').sort().map(k => `${k}=${r[k]}`).join('\n');
-  const secretKey = crypto.createHash('sha256').update(TELE_TOKEN).digest();
+  const secretKey = crypto.createHash('sha256').update(TELE_TOKEN).digest() as unknown as BinaryLike;
   const hashed = crypto.createHmac('sha256', secretKey).update(dataCheckString).digest('hex');
   if (hashed !== hash) {
     return res.status(404).json({
@@ -66,7 +66,7 @@ async function telegramRedirect(req: RedstoneRequest, res: RedstoneResponse) {
     username: clientUsername,
     nickname: `${first_name} ${last_name}`,
     avatar,
-    inviteCode: req.query.inviteCode || '',
+    inviteCode: (req.query.inviteCode as string) || '',
   });
 
   const auth = existingAuth || await Auth.create({

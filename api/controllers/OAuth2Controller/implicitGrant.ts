@@ -3,11 +3,11 @@ import { AuthorizationClient } from '@Models';
 import { OAuth2Service } from '@Services';
 import isLoggedIn from '@Policies/isLoggedIn';
 
-async function implicitGrant (req: RedstoneRequest, res: RedstoneResponse) {
+async function implicitGrant(req: RedstoneRequest, res: RedstoneResponse) {
   await isLoggedIn(req, res, () => granting(req, res));
 }
 
-async function granting (req: RedstoneRequest, res: RedstoneResponse) {
+async function granting(req: RedstoneRequest, res: RedstoneResponse) {
   const authorizationClientId = req.query.authorizationClientId;
   const clientId = req.session.clientId;
 
@@ -18,7 +18,7 @@ async function granting (req: RedstoneRequest, res: RedstoneResponse) {
     });
   }
 
-  const accessToken = await OAuth2Service.getNewAccessToken(clientId, authorizationClientId, true);
+  const accessToken = await OAuth2Service.getNewAccessToken(clientId, parseInt(authorizationClientId as string), true);
   return res.status(201).json({
     message: '操作成功',
     accessToken,

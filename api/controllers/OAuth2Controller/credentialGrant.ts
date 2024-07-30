@@ -3,7 +3,7 @@ import { AuthorizationClient } from '@Models';
 import { ClientService, OAuth2Service } from '@Services';
 import * as bcrypt from 'bcrypt';
 
-async function credentialGrant (req: RedstoneRequest, res: RedstoneResponse) {
+async function credentialGrant(req: RedstoneRequest, res: RedstoneResponse) {
   const data = req.query;
 
   const { authorizationClientId } = data;
@@ -19,7 +19,7 @@ async function credentialGrant (req: RedstoneRequest, res: RedstoneResponse) {
     });
   }
 
-  const client = await ClientService.findClient(data.username, {
+  const client = await ClientService.findClient(data.username as string, {
     withAuths: false,
     withSubscriptions: false,
     withPassword: true,
@@ -32,7 +32,7 @@ async function credentialGrant (req: RedstoneRequest, res: RedstoneResponse) {
     });
   }
 
-  const accessToken = await OAuth2Service.getNewAccessToken(client.id, authorizationClientId, false);
+  const accessToken = await OAuth2Service.getNewAccessToken(client.id, parseInt(authorizationClientId as string), false);
   return res.status(201).json({
     message: '操作成功',
     accessToken,

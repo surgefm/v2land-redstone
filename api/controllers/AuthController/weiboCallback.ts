@@ -10,7 +10,7 @@ async function weiboCallback(req: RedstoneRequest, res: RedstoneResponse) {
   }
 
   const { code, state } = req.query;
-  const auth = await Auth.findByPk(state);
+  const auth = await Auth.findByPk(state as string);
 
   if (!auth) {
     return res.status(404).json({

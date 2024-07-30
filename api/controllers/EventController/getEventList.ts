@@ -12,7 +12,7 @@ async function getEventList(req: RedstoneRequest, res: RedstoneResponse) {
 
   switch (req.method) {
   case 'GET':
-    page = req.query.page;
+    page = parseInt(req.query.page as string || '1');
     // 0: oldest event first (by first stack);
     // 1: newest event first (by latest news)
     mode = req.query.mode;

@@ -19,14 +19,14 @@ async function weiboRedirect(req: RedstoneRequest, res: RedstoneResponse) {
   const getAccessToken = (): Promise<{ accessToken: string; refreshToken?: string}> => {
     return new Promise((resolve) => {
       oa.getOAuthAccessToken(
-        code,
+        code as string,
         {
           'redirect_uri': globals.api + '/auth/weibo/callback',
           'grant_type': 'authorization_code',
         },
         (err, accessToken, refreshToken) => {
           if (err) {
-            req.log.error(err);
+            req.log.error(err as any);
             return res.status(400).json({
               message: '在验证绑定状况时发生了错误',
             });
@@ -38,7 +38,7 @@ async function weiboRedirect(req: RedstoneRequest, res: RedstoneResponse) {
   };
 
   const { accessToken, refreshToken } = await getAccessToken();
-  const auth = await Auth.findByPk(authId);
+  const auth = await Auth.findByPk(authId as string);
   if (!auth) {
     return res.status(404).json({
       message: '未找到该绑定信息',

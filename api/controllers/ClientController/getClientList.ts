@@ -9,7 +9,7 @@ async function getClientList(req: RedstoneRequest, res: RedstoneResponse) {
   if (req.body && req.body.page) {
     page = req.body.page;
   } else if (req.query && req.query.page) {
-    page = req.query.page;
+    page = parseInt(req.query.page as string || '1');
   }
 
   if (req.body && req.body.where) {

@@ -24,9 +24,9 @@ async function twitterRedirect(req: RedstoneRequest, res: RedstoneResponse) {
   const getAccessToken = (): Promise<{ accessToken: string; accessTokenSecret: string }> => {
     return new Promise((resolve) => {
       oa.getOAuthAccessToken(
-        token,
+        token as string,
         auth.tokenSecret,
-        verifier,
+        verifier as string,
         (err, accessToken, accessTokenSecret) => {
           if (err) {
             req.log.error(err);

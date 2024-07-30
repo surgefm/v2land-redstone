@@ -2,7 +2,7 @@ import Mercury from '@postlight/mercury-parser';
 import { RedstoneRequest, RedstoneResponse } from '@Types';
 
 export async function extract(req: RedstoneRequest, res: RedstoneResponse) {
-  const url = encodeURI(decodeURIComponent(req.query.url));
+  const url = encodeURI(decodeURIComponent(req.query.url as string));
   if (!url) {
     return res.status(400).json({
       message: 'Missing parameter: url.',

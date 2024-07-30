@@ -20,7 +20,7 @@ async function appleRedirect(req: RedstoneRequest, res: RedstoneResponse) {
     });
   }
 
-  const r = JSON.parse(decodeURIComponent(req.query.res));
+  const r = JSON.parse(decodeURIComponent(req.query.res as string));
   const { authorization, user } = r;
   const { id_token } = authorization;
   const { name } = user || {};
@@ -75,7 +75,7 @@ async function appleRedirect(req: RedstoneRequest, res: RedstoneResponse) {
   const newClient = await ClientService.createClient({
     username: clientUsername,
     nickname,
-    inviteCode: req.query.inviteCode || '',
+    inviteCode: (req.query.inviteCode as string) || '',
     email,
     emailVerified: true,
   });

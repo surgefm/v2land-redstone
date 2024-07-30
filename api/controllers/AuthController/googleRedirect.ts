@@ -20,12 +20,12 @@ async function googleRedirect(req: RedstoneRequest, res: RedstoneResponse) {
   const oa = oauth.google;
   const { code, authId } = req.query;
 
-  const { tokens } = await oa.getToken(code);
+  const { tokens } = await oa.getToken(code as string);
   const accessToken = tokens.access_token;
   const refreshToken = tokens.refresh_token;
   oa.setCredentials(tokens);
 
-  const auth = await Auth.findByPk(authId);
+  const auth = await Auth.findByPk(authId as string);
   if (!auth) {
     return res.status(404).json({
       message: '未找到该绑定信息',
