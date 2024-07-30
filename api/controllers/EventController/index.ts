@@ -10,6 +10,7 @@ import getEventList from './getEventList';
 import getPendingNews from './getPendingNews';
 import getStars from './getStars';
 import makeCommit from './makeCommit';
+import notifySubscriber from './notifySubscriber';
 import removeTag from './removeTag';
 import star from './star';
 import unstar from './unstar';
@@ -29,6 +30,7 @@ export {
   getPendingNews,
   getStars,
   makeCommit,
+  notifySubscriber,
   removeTag,
   star,
   unstar,

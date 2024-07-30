@@ -16,6 +16,10 @@ export function getEventIdKey(eventName: string, clientName: string | number) {
   return `event-name-mem-${eventName}@${(clientName + '').toLowerCase()}`;
 }
 
+export function getSubscriptionCacheKey(eventId: number) {
+  return `event-subscription-mem-${eventId}`;
+}
+
 export async function get(key: string) {
   if (!redis) return;
   const data = await redis.get(datastores.redis.prefix + key);

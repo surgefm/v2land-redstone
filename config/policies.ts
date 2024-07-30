@@ -44,6 +44,7 @@ export default {
     'removeTag': ['isLoggedIn', hasPermission('tags', 'remove', '用户没有移除标签的权限')],
     'makeCommit': ['isLoggedIn', hasEventPermission('edit', '用户没有编辑事件的权限')],
     'forkEvent': ['isLoggedIn', hasPermission('events', 'create', '用户没有复制事件的权限')],
+    'notifySubscriber': ['isLoggedIn', hasEventPermission('edit', '用户没有编辑事件的权限')],
     'star': ['isLoggedIn'],
     'unstar': ['isLoggedIn'],
     'getStars': true,
@@ -80,6 +81,7 @@ export default {
     'removeContact': true,
     'unsubscribe': true,
     'subscribe': true,
+    'pwaSubscribe': true,
     '*': false,
   },
 

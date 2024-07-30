@@ -39,6 +39,7 @@ export default {
   'PUT /event/:eventName/header_image': 'EventController.updateHeaderImage',
   'GET /event/@:username/:eventName': 'EventController.getEvent',
   'GET /event/:eventName': 'EventController.getEvent',
+  'POST /event/:eventName/notify': 'EventController.notifySubscriber',
 
   'GET /stack/:stackId': 'StackController.getStack',
   'POST /stack/list': 'StackController.getStackList',
@@ -56,6 +57,7 @@ export default {
   'GET /subscription/unsubscribe/contact': 'SubscriptionController.removeContact',
   'GET /subscription/unsubscribe': 'SubscriptionController.unsubscribe',
   'POST /subscription/:eventName': 'SubscriptionController.subscribe',
+  'POST /subscription/:eventName/pwa': 'SubscriptionController.pwaSubscribe',
 
   'GET /auth/options': 'AuthController.options',
   'POST /auth': 'AuthController.authorize',
