@@ -1,0 +1,1 @@
+{"version":3,"sources":["../config/dbMigrations/a9-Contact.js"],"names":[],"mappings":"AAAA,MAAM,iBAAiB,GAAG,OAAO,CAAC,+BAA+B,CAAC,CAAC;AAEnE,MAAM,CAAC,OAAO,GAAG,iBAAiB,CAAC,SAAS,CAAC,CAAC","file":"a9-Contact.js","sourcesContent":["const generateMigration = require('../../utils/generateMigration');\n\nmodule.exports = generateMigration('contact');\n"],"sourceRoot":"../../../src"}
