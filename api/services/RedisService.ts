@@ -79,6 +79,11 @@ export async function hdel(key: string, field: string) {
   return redis.hdel(datastores.redis.prefix + key, field);
 }
 
+export async function hlen(key: string) {
+  if (!redis) return;
+  return redis.hlen(datastores.redis.prefix + key);
+}
+
 export async function lpush(key: string, ...values: any[]) {
   if (!redis) return;
   return redis.lpush(datastores.redis.prefix + key, ...values.map(value => JSON.stringify(value)));

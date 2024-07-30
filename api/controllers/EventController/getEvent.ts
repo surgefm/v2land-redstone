@@ -1,6 +1,6 @@
 import { RedstoneRequest, RedstoneResponse, EventObj } from '@Types';
 import { Event } from '@Models';
-import { EventService, CommitService, AccessControlService, StarService } from '@Services';
+import { EventService, CommitService, AccessControlService, StarService, RedisService } from '@Services';
 
 async function getEvent(req: RedstoneRequest, res: RedstoneResponse) {
   const eventId = await EventService.getEventId(req.params);
@@ -22,6 +22,7 @@ async function getEvent(req: RedstoneRequest, res: RedstoneResponse) {
 
   const roles = await AccessControlService.getEventClients(eventId);
   const starCount = await StarService.countStars(eventId);
+  const subscriptionCount = await RedisService.hlen(RedisService.getSubscriptionCacheKey(eventId));
   const curations = await EventService.getCurations(eventId);
 
   let deniedAccess = false;
@@ -39,6 +40,7 @@ async function getEvent(req: RedstoneRequest, res: RedstoneResponse) {
     ...commit.data,
     roles,
     starCount,
+    subscriptionCount,
     needContributor: e.needContributor,
     curations,
   } : null;
@@ -56,6 +58,7 @@ async function getEvent(req: RedstoneRequest, res: RedstoneResponse) {
   event.contribution = await EventService.getContribution(event, true);
   event.roles = roles;
   event.starCount = starCount;
+  event.subscriptionCount = subscriptionCount;
   event.curations = curations;
   res.status(200).json(event);
 }
