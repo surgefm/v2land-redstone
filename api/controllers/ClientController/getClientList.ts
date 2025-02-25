@@ -28,7 +28,7 @@ async function getClientList(req: RedstoneRequest, res: RedstoneResponse) {
   }
 
   const attributes = ['id', 'username'];
-  const clients = await Client.findAll({
+  const { rows, count } = await Client.findAndCountAll({
     where: where || {},
     order: [['updatedAt', 'DESC']],
     attributes,
@@ -36,7 +36,7 @@ async function getClientList(req: RedstoneRequest, res: RedstoneResponse) {
     limit: 10,
   });
 
-  res.status(200).json({ clientList: clients });
+  res.status(200).json({ clientList: rows, count });
 }
 
 export default getClientList;
