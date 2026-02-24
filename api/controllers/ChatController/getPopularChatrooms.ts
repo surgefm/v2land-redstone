@@ -141,8 +141,6 @@ async function getPopularChatrooms(req: RedstoneRequest, res: RedstoneResponse) 
       eventIds.add(eventId);
     }
 
-    if (page === 1 && count < pageSize) continue;
-
     const within = new Date(Date.now() - 30 * 60 * 1000).toISOString();
     const withinDate = new Date(within);
 

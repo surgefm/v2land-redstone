@@ -36,7 +36,7 @@ class Commit extends Model<Commit> {
   @Column(DataType.JSONB)
   diff: any;
 
-  @Column(DataType.TIME)
+  @Column(DataType.DATE)
   time: Date;
 
   @ForeignKey(() => Commit)

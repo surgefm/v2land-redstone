@@ -2,9 +2,13 @@ import Redis from 'ioredis';
 import { datastores } from '@Configs';
 
 const config = datastores.redis;
-export const redisUrl = `rediss://${config.username}:${config.password}@${config.host}:${config.port}`;
-export const redisConfig = redisUrl;
-export const classicRedis = process.env.REDIS_HOST ? new Redis(redisUrl) : null;
+const useTls = process.env.REDIS_SSL !== 'false';
+const redisAuth = config.password ? `${config.username}:${config.password}@` : '';
+export const redisUrl = `${useTls ? 'rediss' : 'redis'}://${redisAuth}${config.host}:${config.port}`;
+export const redisConfig: any = useTls
+  ? redisUrl
+  : { host: config.host, port: config.port, db: config.db || 0 };
+export const classicRedis = process.env.REDIS_HOST ? new Redis(redisConfig) : null;
 export const redis = classicRedis;
 
 

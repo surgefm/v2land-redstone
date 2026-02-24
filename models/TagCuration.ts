@@ -20,7 +20,7 @@ import Event from './Event';
 class TagCuration extends Model<TagCuration> {
   @IsUUID(4)
   @PrimaryKey
-  @Column(DataType.UUIDV4)
+  @Column({ type: DataType.UUID, defaultValue: DataType.UUIDV4 })
   id: string;
 
   @Column(DataType.TEXT)

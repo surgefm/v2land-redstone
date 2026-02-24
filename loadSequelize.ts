@@ -24,8 +24,8 @@ export const sequelize = new Sequelize({
   host: postgresql.host,
   port: postgresql.port,
   modelPaths: Object.keys(models).map(model => (models as any)[model]).filter(x => x),
-  native: true,
-  ssl: true,
+  native: process.env.POSTGRES_SSL !== 'false',
+  ssl: process.env.POSTGRES_SSL !== 'false',
 
   pool: {
     max: 22,

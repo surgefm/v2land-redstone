@@ -9,8 +9,13 @@ import { datastores } from '@Configs';
 import RedisBackend from './redisBackend';
 
 const config = datastores.redis;
-const url = `rediss://${config.username}:${config.password}@${config.host}:${config.port}`;
-const redis = process.env.REDIS_HOST ? new Redis(url) : null;
+const redis = process.env.REDIS_HOST
+  ? new Redis({
+    host: process.env.REDIS_HOST,
+    port: +(process.env.REDIS_PORT || 6379),
+    db: +(process.env.REDIS_DB || 0),
+  })
+  : null;
 
 const storageBackend: Acl.Backend<any> = config.host
   ? new RedisBackend(redis, 'surge-acl') as any as Acl.Backend<any>

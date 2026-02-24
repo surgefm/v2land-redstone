@@ -31,7 +31,7 @@ class EventContributor extends Model<EventContributor> {
   @Column
   parentId: number;
 
-  @Column(DataType.NUMBER)
+  @Column(DataType.FLOAT)
   points: number;
 }
 
