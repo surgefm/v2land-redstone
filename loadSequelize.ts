@@ -16,6 +16,8 @@ if (logging && process.env.NODE_ENV === 'production') {
   };
 }
 
+const useSSL = process.env.POSTGRES_SSL !== 'false';
+
 export const sequelize = new Sequelize({
   database: postgresql.database,
   dialect: 'postgres',
@@ -24,8 +26,8 @@ export const sequelize = new Sequelize({
   host: postgresql.host,
   port: postgresql.port,
   modelPaths: Object.keys(models).map(model => (models as any)[model]).filter(x => x),
-  native: process.env.POSTGRES_SSL !== 'false',
-  ssl: process.env.POSTGRES_SSL !== 'false',
+  native: useSSL,
+  ssl: useSSL,
 
   pool: {
     max: 22,

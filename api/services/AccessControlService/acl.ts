@@ -9,12 +9,13 @@ import { datastores } from '@Configs';
 import RedisBackend from './redisBackend';
 
 const config = datastores.redis;
+const useTls = process.env.REDIS_SSL !== 'false';
+const redisAuth = config.password ? `${config.username}:${config.password}@` : '';
+const aclRedisConfig: any = useTls
+  ? `${useTls ? 'rediss' : 'redis'}://${redisAuth}${config.host}:${config.port}`
+  : { host: config.host, port: config.port, db: (config as any).db || 0 };
 const redis = process.env.REDIS_HOST
-  ? new Redis({
-    host: process.env.REDIS_HOST,
-    port: +(process.env.REDIS_PORT || 6379),
-    db: +(process.env.REDIS_DB || 0),
-  })
+  ? new Redis(aclRedisConfig)
   : null;
 
 const storageBackend: Acl.Backend<any> = config.host
