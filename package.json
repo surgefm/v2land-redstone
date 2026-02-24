@@ -12,6 +12,8 @@
     "coverage": "make coverage"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.997.0",
+    "@aws-sdk/client-ses": "^3.997.0",
     "@elastic/elasticsearch": "^7.6.1",
     "@postlight/mercury-parser": "^2.2.1",
     "@socket.io/redis-adapter": "^7.1.0",
@@ -19,7 +21,6 @@
     "acl-sequelize": "^0.3.5",
     "algoliasearch": "^4.13.0",
     "apple-signin-auth": "^1.5.1",
-    "aws-sdk": "^2.814.0",
     "axios": "^0.21.2",
     "bcrypt": "^5.0.1",
     "bcryptjs": "^2.4.3",
@@ -34,6 +35,7 @@
     "delay": "^4.3.0",
     "dotenv": "^8.2.0",
     "download": "^8.0.0",
+    "exa-js": "^2.4.0",
     "express": "^4.17.1",
     "express-pino-logger": "^4.0.0",
     "express-session": "^1.17.0",
@@ -47,6 +49,7 @@
     "nodemailer": "^6.6.1",
     "nodemailer-express-handlebars": "^3.1.0",
     "oauth": "^0.9.15",
+    "openai": "^6.24.0",
     "parse-domain": "^2.3.4",
     "pg": "^8.0.0",
     "pg-native": "^3.0.0",

@@ -1,3 +1,4 @@
+import AgentStatus from './AgentStatus';
 import Auth from './Auth';
 import AuthorizationAccessToken from './AuthorizationAccessToken';
 import AuthorizationClient from './AuthorizationClient';
@@ -33,6 +34,7 @@ import { sequelize } from '~/loadSequelize';
 import Sequelize from 'sequelize';
 
 export {
+  AgentStatus,
   Auth,
   AuthorizationAccessToken,
   AuthorizationClient,

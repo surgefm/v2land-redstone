@@ -1,4 +1,5 @@
 export * as AccessControlService from './AccessControlService';
+export * as AgentService from './AgentService';
 export * as AlgoliaService from './AlgoliaService';
 export * as AuthService from './AuthService';
 export * as ChatService from './ChatService';

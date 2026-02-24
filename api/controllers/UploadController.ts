@@ -1,3 +1,5 @@
+import { PutObjectCommand } from '@aws-sdk/client-s3';
+
 import { RedstoneRequest, RedstoneResponse } from '@Types';
 import { UtilService } from '@Services';
 import { s3 } from '@Services/UploadService';
@@ -11,19 +13,17 @@ export async function upload(req: RedstoneRequest, res: RedstoneResponse) {
   }
 
   const filename = UtilService.generateFilename(req.file);
-  return new Promise((resolve, reject) => {
-    s3.upload({
+  await s3.send(
+      new PutObjectCommand({
       Bucket: S3_BUCKET,
       Key: filename,
       Body: req.file.buffer,
       ACL: 'public-read',
       StorageClass: 'INTELLIGENT_TIERING',
-    }, async (err) => {
-      if (err) return reject(err);
-      resolve(res.status(201).json({
-        message: '上传成功',
-        name: filename,
-      }));
-    });
+    })
+  );
+  res.status(201).json({
+    message: '上传成功',
+    name: filename,
   });
 }

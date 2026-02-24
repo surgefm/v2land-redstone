@@ -57,6 +57,7 @@ async function createStack(eventId: number | string, data: StackObj, clientId: n
     stackId: stack.id,
     client: await Client.findByPk(clientId),
   });
+  socket.emit('create stack', { stack });
 
   updateElasticsearchIndex({ stackId: stack.id });
   return stack;

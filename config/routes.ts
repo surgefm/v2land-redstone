@@ -41,6 +41,11 @@ export default {
   'GET /event/:eventName': 'EventController.getEvent',
   'POST /event/:eventName/notify': 'EventController.notifySubscriber',
 
+  'POST /event/:eventName/agent': 'AgentController.runAgent',
+  'GET /event/:eventName/agent': 'AgentController.getAgentStatus',
+  'GET /event/:eventName/agent/history': 'AgentController.getAgentHistory',
+  'DELETE /event/:eventName/agent': 'AgentController.stopAgent',
+
   'GET /stack/:stackId': 'StackController.getStack',
   'POST /stack/list': 'StackController.getStackList',
   'PUT /stack/list': 'StackController.updateMultipleStacks',

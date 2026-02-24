@@ -5,7 +5,13 @@ const hasEventPermission = (action: string, errorMessage?: string) => async (req
   if (await AccessControlService.isAllowed(req.session.clientId, 'all-events', action)) return next();
   const name = req.params.eventName;
   const eventId = await EventService.getEventId(name);
+  if (!eventId) {
+    return res.status(404).json({ message: '未找到该事件' });
+  }
   const event = await EventService.findEvent(eventId, { eventOnly: true });
+  if (!event) {
+    return res.status(404).json({ message: '未找到该事件' });
+  }
   if (event.status === 'admitted') {
     const permitted = await AccessControlService.isAllowed(req.session.clientId, 'all-admitted-events', action);
     if (permitted) return next();

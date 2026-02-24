@@ -151,4 +151,11 @@ export default {
     'extract': ['isLoggedIn'],
   },
 
+  AgentController: {
+    'runAgent': ['isLoggedIn', hasEventPermission('edit', '用户没有运行 Bot 的权限')],
+    'getAgentStatus': ['isLoggedIn'],
+    'stopAgent': ['isLoggedIn', hasEventPermission('edit', '用户没有停止 Bot 的权限')],
+    '*': false,
+  },
+
 } as { [index: string]: { [index: string]: boolean | string | string[] | object } };

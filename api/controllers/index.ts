@@ -1,3 +1,4 @@
+import * as AgentController from './AgentController';
 import * as AuthController from './AuthController';
 import * as ChatController from './ChatController';
 import * as ClientController from './ClientController';
@@ -15,7 +16,7 @@ import * as TagController from './TagController';
 import * as UploadController from './UploadController';
 import { ControllerAction } from '@Types';
 
-export type ControllerType = typeof AuthController | typeof ClientController |
+export type ControllerType = typeof AgentController | typeof AuthController | typeof ClientController |
   typeof EventController | typeof HeaderImageController | typeof NewsController |
   typeof NotificationController | typeof OAuth2Controller | typeof SearchController |
   typeof StackController | typeof SubscriptionController | typeof TagController |
@@ -23,6 +24,7 @@ export type ControllerType = typeof AuthController | typeof ClientController |
   typeof ExtractionController;
 
 export {
+  AgentController,
   AuthController,
   ChatController,
   ClientController,
@@ -41,6 +43,7 @@ export {
 };
 
 export default {
+  AgentController,
   AuthController,
   ChatController,
   ClientController,

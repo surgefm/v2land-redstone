@@ -1,6 +1,6 @@
 import * as nodemailer from 'nodemailer';
 import * as path from 'path';
-import * as aws from 'aws-sdk';
+import { SES } from '@aws-sdk/client-ses';
 import hbs from 'nodemailer-express-handlebars';
 
 let email: { transporter: nodemailer.Transporter } = { transporter: null };
@@ -15,8 +15,11 @@ const {
 
 if (SES_USER && SES_PASS) {
   const transporter = nodemailer.createTransport({
-    SES: new aws.SES({
+    SES: new SES({
+      // The key apiVersion is no longer supported in v3, and can be removed.
+      // @deprecated The client uses the "latest" apiVersion.
       apiVersion: '2010-12-01',
+
       region: SES_REGION || 'us-east-1',
     }),
     sendingRate: SES_RATE || 14,

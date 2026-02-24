@@ -2,7 +2,7 @@ import controllers from '@Controllers';
 import { routes, policies } from '@Configs';
 import policyMiddlewares, { PolicyMiddleware, forbiddenRoute } from '@Policies';
 import { RedstoneRequest, RedstoneResponse, NextFunction } from '@Types';
-import { Express } from 'express';
+import { Express, RequestHandler } from 'express';
 
 type PolicyRule = string | PolicyMiddleware;
 
@@ -20,9 +20,18 @@ async function loadRoutes(app: Express) {
   }
 }
 
-function getControllerAction(controller: string, action: string) {
-  return function(req: RedstoneRequest, res: RedstoneResponse, next: NextFunction) {
-    controllers[controller][action](req, res).catch(next);
+function wrapAsync(fn: PolicyMiddleware): RequestHandler {
+  return function(req, res, next) {
+    const result = (fn as Function)(req, res, next);
+    if (result && typeof (result as any).catch === 'function') {
+      (result as any).catch(next);
+    }
+  };
+}
+
+function getControllerAction(controller: string, action: string): RequestHandler {
+  return function(req, res, next) {
+    controllers[controller][action](req as RedstoneRequest, res as RedstoneResponse).catch(next);
   };
 }
 
@@ -58,15 +67,17 @@ function getPolicies(controller: string, action: string) {
 
   const middlewares: PolicyMiddleware[] = [];
   for (const policy of list) {
+    let middleware: PolicyMiddleware;
     if (typeof policy === 'function') {
-      middlewares.push(policy);
+      middleware = policy;
     } else {
       if (!(policy in policyMiddlewares)) {
         wrongConfig(controller, action);
         return [forbiddenRoute];
       }
-      middlewares.push(policyMiddlewares[policy]);
+      middleware = policyMiddlewares[policy];
     }
+    middlewares.push(wrapAsync(middleware));
   }
   return middlewares;
 }

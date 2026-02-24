@@ -8,8 +8,7 @@ import socketio = require('socket.io');
 import express = require('express');
 import session = require('express-session');
 
-// @Filename: /node_modules/socket.io/dist/socket.d.ts
-declare module 'socket.io/dist/socket' {
+declare module 'socket.io/dist/socket-types' {
     interface Handshake {
         session?: session.Session & Partial<session.SessionData> & {
             clientId?: number;

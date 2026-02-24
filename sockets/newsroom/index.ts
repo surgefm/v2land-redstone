@@ -6,6 +6,7 @@ import _ from 'lodash';
 
 import getRoomName from './getRoomName';
 import newsroomPath from './newsroomPath';
+import wrapSocket from '../wrapSocket';
 
 import addEventToStack from './addEventToStack';
 import addEventToTag from './addEventToTag';
@@ -33,15 +34,18 @@ import updateStackOrders from './updateStackOrders';
 export default function loadNewsroom(io: Server) {
   const newsroom = io.of(newsroomPath);
   newsroom.use(isLoggedIn);
-  newsroom.on('connection', (socket) => {
+  newsroom.on('connection', (rawSocket) => {
+    const socket = wrapSocket(rawSocket);
+
     socket.on('join newsroom', async (eventId: number, cb: Function = () => {}) => {
       const { clientId } = socket.handshake.session;
       const event = await Event.findByPk(eventId);
+      if (!event) return cb('Event not found');
       const hasAccess = event.status === 'admitted' ||
         await AccessControlService.isAllowedToViewEvent(clientId, eventId);
 
       if (!hasAccess) {
-        return cb('You don’t have access to the newsroom');
+        return cb('You don\'t have access to the newsroom');
       }
       const roomName = getRoomName(eventId);
       await socket.join(roomName);
@@ -86,7 +90,7 @@ export default function loadNewsroom(io: Server) {
     };
 
     socket.on('leave newsroom', leaveNewsroom);
-    socket.on('disconnect', () => leaveNewsroom(null));
+    rawSocket.on('disconnect', () => leaveNewsroom(null));
 
     addEventToStack(socket);
     addEventToTag(socket);

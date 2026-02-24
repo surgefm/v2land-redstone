@@ -57,6 +57,15 @@ export async function liftServer(app: Express) {
   loadRoutes(app);
   await loadAcl();
 
+  // Initialize @Bot account
+  try {
+    const { getOrCreateBotClient } = await import('@Services/AgentService');
+    await getOrCreateBotClient();
+    console.log('@Bot account initialized');
+  } catch (err) {
+    console.error('Failed to initialize @Bot account:', err);
+  }
+
   app.use(errorHandler);
 
   await loadSocket(socket);
