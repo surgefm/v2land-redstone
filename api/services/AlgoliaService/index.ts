@@ -16,13 +16,13 @@ interface ObjectID extends Record<string, any> {
 type IdObject = Id | ObjectID;
 
 const useAlgolia = process.env.ALGOLIA_APPID && process.env.ALGOLIA_API_KEY;
-export const client = algoliasearch(process.env.ALGOLIA_APPID, process.env.ALGOLIA_API_KEY);
-export const newsIndex = client.initIndex('news');
-export const eventIndex = client.initIndex('events');
-export const clientIndex = client.initIndex('clients');
-export const tagIndex = client.initIndex('tags');
-export const siteIndex = client.initIndex('sites');
-export const stackIndex = client.initIndex('stacks');
+export const client = useAlgolia ? algoliasearch(process.env.ALGOLIA_APPID!, process.env.ALGOLIA_API_KEY!) : null;
+export const newsIndex = client?.initIndex('news') ?? null;
+export const eventIndex = client?.initIndex('events') ?? null;
+export const clientIndex = client?.initIndex('clients') ?? null;
+export const tagIndex = client?.initIndex('tags') ?? null;
+export const siteIndex = client?.initIndex('sites') ?? null;
+export const stackIndex = client?.initIndex('stacks') ?? null;
 
 export const search = async (query: string, page = 1, indices = ['events', 'tags', 'clients']) => {
   if (!useAlgolia) return [];
@@ -108,6 +108,7 @@ const del = (index: SearchIndex) => {
   };
 
   async function delUtil(objectIDs: number | number[] | IdObject | IdObject[]) {
+    if (!useAlgolia) return;
     if (Array.isArray(objectIDs)) {
       return index.deleteObjects(objectIDs.map(getId));
     }

@@ -40,10 +40,10 @@ class ChatMember extends Model<ChatMember> {
   @BelongsTo(() => Chat, 'chatId')
   chat: Chat;
 
-  @Column(DataType.TIME)
+  @Column(DataType.DATE)
   lastRead: Date;
 
-  @Column(DataType.TIME)
+  @Column(DataType.DATE)
   lastSpoke: Date;
 }
 
