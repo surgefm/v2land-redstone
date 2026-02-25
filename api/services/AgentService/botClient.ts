@@ -14,11 +14,11 @@ export async function getOrCreateBotClient(): Promise<Client> {
     cachedBotClientId = null;
   }
 
-  let client = await Client.findOne({ where: { username: 'bot' } });
+  let client = await Client.findOne({ where: { username: 'Bot' } });
 
   if (!client) {
     client = await ClientService.createClient({
-      username: 'bot',
+      username: 'Bot',
       nickname: 'Bot',
       email: 'bot@surge.fm',
       emailVerified: true,
