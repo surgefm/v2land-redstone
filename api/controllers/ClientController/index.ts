@@ -10,6 +10,7 @@ import register from './register';
 import updateClient from './updateClient';
 import updateSettings from './updateSettings';
 import verifyToken from './verifyToken';
+import { createMcpToken, getMcpTokenStatus, revokeMcpToken } from './mcpToken';
 
 export {
   changePassword,
@@ -24,4 +25,7 @@ export {
   updateClient,
   updateSettings,
   verifyToken,
+  createMcpToken,
+  getMcpTokenStatus,
+  revokeMcpToken,
 };

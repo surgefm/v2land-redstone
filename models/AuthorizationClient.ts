@@ -7,8 +7,11 @@ import {
   AllowNull,
   Default,
   HasMany,
+  ForeignKey,
+  BelongsTo,
 } from 'sequelize-typescript';
 
+import Client from './Client';
 import AuthorizationCode from './AuthorizationCode';
 import AuthorizationAccessToken from './AuthorizationAccessToken';
 
@@ -30,6 +33,18 @@ class AuthorizationClient extends Model<AuthorizationClient> {
   @Default(false)
   @Column
   allowAuthorizationByCredentials: boolean;
+
+  @AllowNull(true)
+  @Column(DataType.TEXT)
+  secret?: string;
+
+  @AllowNull(true)
+  @ForeignKey(() => Client)
+  @Column
+  owner?: number;
+
+  @BelongsTo(() => Client, 'owner')
+  ownedBy?: Client;
 
   @HasMany(() => AuthorizationCode, 'authorizationClientId')
   authorizationCodes: AuthorizationCode[];

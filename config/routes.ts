@@ -16,6 +16,9 @@ export default {
   'GET /client/verify': 'ClientController.verifyToken',
   'POST /client/verify': 'ClientController.verifyToken',
   'GET /client/inviteCode': 'ClientController.getInviteCode',
+  'POST /client/mcp-token': 'ClientController.createMcpToken',
+  'GET /client/mcp-token': 'ClientController.getMcpTokenStatus',
+  'DELETE /client/mcp-token': 'ClientController.revokeMcpToken',
   'GET /client/:clientName': 'ClientController.findClient',
   'PUT /client/:clientName': 'ClientController.updateClient',
 
@@ -80,6 +83,7 @@ export default {
   'GET /auth/apple/redirect': 'AuthController.appleRedirect',
 
   'GET /oauth2/grant': 'OAuth2Controller.grant',
+  'POST /oauth2/token': 'OAuth2Controller.token',
 
   'POST /upload': 'UploadController.upload',
 

@@ -9,9 +9,11 @@
     "prod": "node node_modules/gulp-cli/bin/gulp.js build && NODE_ENV=production node dist/app.js",
     "start": "node node_modules/gulp-cli/bin/gulp.js server",
     "dev": "docker-compose rm -v -f && docker-compose build && docker-compose up",
-    "coverage": "make coverage"
+    "coverage": "make coverage",
+    "mcp": "node dist/mcp.js"
   },
   "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.26.0",
     "@aws-sdk/client-s3": "^3.997.0",
     "@aws-sdk/client-ses": "^3.997.0",
     "@elastic/elasticsearch": "^7.6.1",
@@ -68,7 +70,8 @@
     "uuid": "^3.3.3",
     "v2land-url-trimmer": "^0.0.10",
     "validator": "^13.7.0",
-    "web-push": "^3.6.7"
+    "web-push": "^3.6.7",
+    "zod": "^3.25.0"
   },
   "devDependencies": {
     "@types/bcrypt": "^3.0.0",

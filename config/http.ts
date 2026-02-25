@@ -55,12 +55,16 @@ export default {
       const accessTokenStr = authorization.slice(7);
       AuthorizationAccessToken.findOne({ where: { token: accessTokenStr } }).then((accessToken: any) => {
         if (accessToken == null) {
-          return res.status(400).json({
+          return res.status(401).json({
             message: '未找到该 AccessToken。',
           });
         } else if (accessToken.status == 'revoked') {
-          return res.status(400).json({
+          return res.status(401).json({
             message: '你的 AccessToken 已失效。',
+          });
+        } else if (new Date(accessToken.expire) < new Date()) {
+          return res.status(401).json({
+            message: '你的 AccessToken 已过期。',
           });
         }
 

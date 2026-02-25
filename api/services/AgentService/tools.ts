@@ -18,6 +18,7 @@ function getExa(): Exa {
 
 export interface ToolContext {
   eventId: number;
+  clientId: number;
   botClientId: number;
   runId: string;
 }
@@ -366,7 +367,7 @@ async function createStack(
       time: new Date(args.time),
       order: args.order || -1,
     },
-    ctx.botClientId,
+    ctx.clientId,
   );
 
   return JSON.stringify({
@@ -506,7 +507,7 @@ async function addNewsToStack(
   args: { newsId: number; stackId: number },
   ctx: ToolContext,
 ): Promise<string> {
-  await StackService.addNews(args.stackId, args.newsId, ctx.botClientId);
+  await StackService.addNews(args.stackId, args.newsId, ctx.clientId);
 
   return JSON.stringify({
     success: true,
@@ -527,7 +528,7 @@ async function updateStack(
   const result = await StackService.updateStack({
     id: args.stackId,
     data,
-    clientId: ctx.botClientId,
+    clientId: ctx.clientId,
   });
 
   if (result.status === 201) {
@@ -556,7 +557,7 @@ async function reorderStacks(
       StackService.updateStack({
         id: stackId,
         data: { order },
-        clientId: ctx.botClientId,
+        clientId: ctx.clientId,
         transaction,
       }),
     );

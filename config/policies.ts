@@ -74,6 +74,9 @@ export default {
     'getClientDetail': 'isLoggedIn',
     'logout': 'isLoggedIn',
     'getInviteCode': 'isLoggedIn',
+    'createMcpToken': 'isLoggedIn',
+    'getMcpTokenStatus': 'isLoggedIn',
+    'revokeMcpToken': 'isLoggedIn',
     '*': false,
   },
 

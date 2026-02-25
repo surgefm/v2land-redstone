@@ -122,7 +122,7 @@ export async function run(eventId: number, userMessage?: string): Promise<void> 
       apiKey: process.env.OPEN_ROUTER_API_KEY,
     });
 
-    const ctx: ToolContext = { eventId, botClientId, runId };
+    const ctx: ToolContext = { eventId, clientId: botClientId, botClientId, runId };
 
     // Agentic tool-calling loop
     for (let i = 0; i < MAX_ITERATIONS; i++) {

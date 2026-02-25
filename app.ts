@@ -24,6 +24,7 @@ import loadSequelize from './loadSequelize';
 import loadAcl from '@Services/AccessControlService/initialize';
 import { loadSocket } from './sockets';
 import { errorHandler } from '@Responses';
+import { mountOAuth } from './api/oauth';
 
 const app = express();
 const server = Http.createServer(app);
@@ -45,7 +46,9 @@ export async function liftServer(app: Express) {
   // app.use(favicon(path.join(__dirname, 'assets/favicon.ico')));
   app.use(cors(securityConfig.cors));
   app.use(bodyParser.json());
+  app.use(bodyParser.urlencoded({ extended: false }));
   app.use(compression());
+
   const sess = session({
     ...sessionConfig,
     store: sessionStore(),
@@ -54,16 +57,22 @@ export async function liftServer(app: Express) {
   app.use(http.middleware.bearerAuthentication);
   app.use(http.middleware.noCache);
 
+  // Mount OAuth2 endpoints (metadata, registration, authorize) after session
+  mountOAuth(app);
+
   loadRoutes(app);
   await loadAcl();
 
-  // Initialize @Bot account
+  // Initialize @Bot account and mount MCP server
   try {
     const { getOrCreateBotClient } = await import('@Services/AgentService');
-    await getOrCreateBotClient();
+    const botClient = await getOrCreateBotClient();
     console.log('@Bot account initialized');
+
+    const { mountMcp } = await import('./api/mcp');
+    mountMcp(app, botClient.id);
   } catch (err) {
-    console.error('Failed to initialize @Bot account:', err);
+    console.error('Failed to initialize @Bot account or MCP server:', err);
   }
 
   app.use(errorHandler);

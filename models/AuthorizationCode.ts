@@ -28,6 +28,14 @@ class AuthorizationCode extends Model<AuthorizationCode> {
   @Column(DataType.TEXT)
   url: string;
 
+  @AllowNull(true)
+  @Column(DataType.TEXT)
+  codeChallenge?: string;
+
+  @AllowNull(true)
+  @Column(DataType.TEXT)
+  codeChallengeMethod?: string;
+
   @ForeignKey(() => Client)
   @Column
   owner: number;
