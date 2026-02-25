@@ -128,9 +128,6 @@ package-lock.json
 .env
 .env.local
 
-dist
 .idea
 .nyc_output
 coverage
-
-*.pem

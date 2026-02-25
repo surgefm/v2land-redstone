@@ -1,0 +1,1 @@
+{"version":3,"sources":["../config/dbMigrations/a2-Stack.js"],"names":[],"mappings":"AAAA,MAAM,iBAAiB,GAAG,OAAO,CAAC,+BAA+B,CAAC,CAAC;AAEnE,MAAM,CAAC,OAAO,GAAG,iBAAiB,CAAC,OAAO,CAAC,CAAC","file":"a2-Stack.js","sourcesContent":["const generateMigration = require('../../utils/generateMigration');\n\nmodule.exports = generateMigration('stack');\n"],"sourceRoot":"../../../src"}

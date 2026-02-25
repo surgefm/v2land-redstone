@@ -1,0 +1,1 @@
+{"version":3,"sources":["../config/dbMigrations/b1-Report.js"],"names":[],"mappings":"AAAA,MAAM,iBAAiB,GAAG,OAAO,CAAC,+BAA+B,CAAC,CAAC;AAEnE,MAAM,CAAC,OAAO,GAAG,iBAAiB,CAAC,QAAQ,CAAC,CAAC","file":"b1-Report.js","sourcesContent":["const generateMigration = require('../../utils/generateMigration');\n\nmodule.exports = generateMigration('report');\n"],"sourceRoot":"../../../src"}

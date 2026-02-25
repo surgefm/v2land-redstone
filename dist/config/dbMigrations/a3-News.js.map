@@ -1,0 +1,1 @@
+{"version":3,"sources":["../config/dbMigrations/a3-News.js"],"names":[],"mappings":"AAAA,MAAM,iBAAiB,GAAG,OAAO,CAAC,+BAA+B,CAAC,CAAC;AAEnE,MAAM,CAAC,OAAO,GAAG,iBAAiB,CAAC,MAAM,CAAC,CAAC","file":"a3-News.js","sourcesContent":["const generateMigration = require('../../utils/generateMigration');\n\nmodule.exports = generateMigration('news');\n"],"sourceRoot":"../../../src"}

@@ -1,0 +1,1 @@
+{"version":3,"sources":["../api/policies/uploadFile.ts"],"names":[],"mappings":";;;;;AAAA,oDAA4B;AAE5B,kBAAe,IAAA,gBAAM,GAAE,CAAC,MAAM,CAAC,MAAM,CAAC,CAAC","file":"uploadFile.js","sourcesContent":["import multer from 'multer';\n\nexport default multer().single('file');\n"],"sourceRoot":"../../../src"}

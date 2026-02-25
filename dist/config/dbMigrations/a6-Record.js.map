@@ -1,0 +1,1 @@
+{"version":3,"sources":["../config/dbMigrations/a6-Record.js"],"names":[],"mappings":"AAAA,MAAM,iBAAiB,GAAG,OAAO,CAAC,+BAA+B,CAAC,CAAC;AAEnE,MAAM,CAAC,OAAO,GAAG,iBAAiB,CAAC,QAAQ,CAAC,CAAC","file":"a6-Record.js","sourcesContent":["const generateMigration = require('../../utils/generateMigration');\n\nmodule.exports = generateMigration('record');\n"],"sourceRoot":"../../../src"}

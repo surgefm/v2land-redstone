@@ -1,0 +1,1 @@
+{"version":3,"sources":["../api/services/SubscriptionService.ts"],"names":[],"mappings":";;;;;;AAAA,kEAAyC;AAEzC,SAAgB,qBAAqB;IACnC,OAAO,IAAA,uBAAY,GAAE,CAAC;AACxB,CAAC;AAFD,sDAEC","file":"SubscriptionService.js","sourcesContent":["import uniqueString from 'unique-string';\n\nexport function generateUnsubscribeId() {\n  return uniqueString();\n}\n"],"sourceRoot":"../../../src"}

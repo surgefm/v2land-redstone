@@ -1,0 +1,1 @@
+{"version":3,"sources":["../api/services/CommitService/index.ts"],"names":[],"mappings":";;;;;;AAAA,wEAAgD;AAI9C,0BAJK,yBAAe,CAIL;AAHjB,8DAAsC;AAIpC,qBAJK,oBAAU,CAIL","file":"index.js","sourcesContent":["import getLatestCommit from './getLatestCommit';\nimport makeCommit from './makeCommit';\n\nexport {\n  getLatestCommit,\n  makeCommit,\n};\n"],"sourceRoot":"../../../../src"}
