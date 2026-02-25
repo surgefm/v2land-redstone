@@ -25,7 +25,7 @@ export function createMcpServer(botClientId: number, clientId: number) {
   }
 
   function makeCtx(eventId: number): ToolContext {
-    return { eventId, clientId, botClientId, runId };
+    return { eventId, clientId, botClientId, runId, source: 'mcp' };
   }
 
   function textResult(text: string) {

@@ -21,6 +21,7 @@ export interface ToolContext {
   clientId: number;
   botClientId: number;
   runId: string;
+  source?: 'mcp' | 'agent';
 }
 
 export const TOOL_DEFINITIONS: ChatCompletionTool[] = [
@@ -239,6 +240,14 @@ export const TOOL_DEFINITIONS: ChatCompletionTool[] = [
   },
 ];
 
+function recordData(data: any, ctx: ToolContext): any {
+  const plain = typeof data?.get === 'function' ? data.get({ plain: true }) : data;
+  if (ctx.source === 'mcp') {
+    return { ...plain, viaMcp: true };
+  }
+  return plain;
+}
+
 export async function executeTool(
   name: string,
   args: Record<string, any>,
@@ -424,10 +433,10 @@ async function addNewsToEvent(
       await RecordService.create(
         {
           model: 'News',
-          data: news.get({ plain: true }),
+          data: recordData(news, ctx),
           target: news.id,
           action: 'createNews',
-          owner: ctx.botClientId,
+          owner: ctx.clientId,
           createdAt: time,
         },
         { transaction },
@@ -448,11 +457,11 @@ async function addNewsToEvent(
     await RecordService.create(
       {
         model: 'EventStackNews',
-        data: eventStackNews,
+        data: recordData(eventStackNews, ctx),
         target: ctx.eventId,
         subtarget: news.id,
         action: 'addNewsToEvent',
-        owner: ctx.botClientId,
+        owner: ctx.clientId,
         createdAt: time,
       },
       { transaction },
@@ -462,11 +471,11 @@ async function addNewsToEvent(
       await RecordService.create(
         {
           model: 'EventStackNews',
-          data: eventStackNews,
+          data: recordData(eventStackNews, ctx),
           target: args.stackId,
           subtarget: news.id,
           action: 'addNewsToStack',
-          owner: ctx.botClientId,
+          owner: ctx.clientId,
           createdAt: time,
         },
         { transaction },
@@ -476,12 +485,12 @@ async function addNewsToEvent(
     // Emit socket events for real-time newsroom updates
     const socket = await EventService.getNewsroomSocket(ctx.eventId);
     const event = await EventService.findEvent(ctx.eventId, { eventOnly: true });
-    const botClient = await Client.findByPk(ctx.botClientId);
+    const client = await Client.findByPk(ctx.clientId);
     socket.emit('add news to event', {
       eventStackNews,
       event,
       news,
-      client: botClient,
+      client,
     });
 
     if (args.stackId) {
@@ -490,7 +499,7 @@ async function addNewsToEvent(
         eventStackNews,
         stack,
         news,
-        client: botClient,
+        client,
       });
     }
   });
@@ -567,9 +576,9 @@ async function reorderStacks(
       {
         model: 'Event',
         target: ctx.eventId,
-        owner: ctx.botClientId,
+        owner: ctx.clientId,
         action: 'updateStackOrders',
-        data: { stacks },
+        data: recordData({ stacks }, ctx),
       },
       { transaction },
     );
@@ -591,7 +600,7 @@ async function sendChatMessage(
   args: { text: string },
   ctx: ToolContext,
 ): Promise<string> {
-  await ChatService.sendMessage('newsroom', ctx.botClientId, args.text, ctx.eventId);
+  await ChatService.sendMessage('newsroom', ctx.clientId, args.text, ctx.eventId);
 
   return JSON.stringify({ success: true });
 }
