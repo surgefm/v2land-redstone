@@ -1,13 +1,13 @@
 import Exa from 'exa-js';
 import { randomUUID } from 'crypto';
-import { Client, Event, News, Stack, EventStackNews, AgentStatus, sequelize } from '@Models';
+import { Client, Event, News, Stack, EventStackNews, AgentStatus, Subscription, sequelize } from '@Models';
 import * as EventService from '@Services/EventService';
 import * as StackService from '@Services/StackService';
 import * as AlgoliaService from '@Services/AlgoliaService';
 import * as RecordService from '@Services/RecordService';
 import * as ChatService from '@Services/ChatService';
 import * as RedisService from '@Services/RedisService';
-import { setClientEventOwner } from '@Services/AccessControlService';
+import { setClientEventOwner, isAllowedToEditEvent } from '@Services/AccessControlService';
 import * as AgentLock from './lock';
 import { SYSTEM_PROMPT } from '../../mcp/mcpInstruction';
 import type { ChatCompletionTool } from 'openai/resources/chat/completions';
@@ -289,6 +289,10 @@ export async function executeTool(
         return await searchEventsInDb(args as any);
       case 'get_editorial_guidelines':
         return await getEditorialGuidelines();
+      case 'get_followed_editable_events':
+        return await getFollowedEditableEvents(ctx);
+      case 'get_owned_editable_events':
+        return await getOwnedEditableEvents(ctx);
       default:
         return JSON.stringify({ error: `Unknown tool: ${name}` });
     }
@@ -831,4 +835,46 @@ async function searchEventsInDb(
 
 async function getEditorialGuidelines(): Promise<string> {
   return JSON.stringify({ guidelines: SYSTEM_PROMPT });
+}
+
+async function getFollowedEditableEvents(ctx: ToolContext): Promise<string> {
+  const subscriptions = await Subscription.findAll({
+    where: { subscriber: ctx.clientId, status: 'active' },
+    include: [{ model: Event, as: 'event' }],
+  });
+
+  const results: any[] = [];
+  for (const sub of subscriptions) {
+    const event = (sub as any).event as Event | null;
+    if (!event || event.status === 'removed') continue;
+    if (await isAllowedToEditEvent(ctx.clientId, event.id)) {
+      results.push({
+        id: event.id,
+        name: event.name,
+        description: event.description,
+        status: event.status,
+      });
+    }
+  }
+
+  return JSON.stringify({ events: results, count: results.length });
+}
+
+async function getOwnedEditableEvents(ctx: ToolContext): Promise<string> {
+  const events = await Event.findAll({
+    where: { ownerId: ctx.clientId },
+    attributes: ['id', 'name', 'description', 'status'],
+    order: [['id', 'DESC']],
+  });
+
+  const results = events
+    .filter(e => e.status !== 'removed')
+    .map(e => ({
+      id: e.id,
+      name: e.name,
+      description: e.description,
+      status: e.status,
+    }));
+
+  return JSON.stringify({ events: results, count: results.length });
 }

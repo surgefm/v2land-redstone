@@ -77,3 +77,7 @@ export const searchEventsSchema = {
 };
 
 export const getEditorialGuidelinesSchema = {};
+
+export const getFollowedEditableEventsSchema = {};
+
+export const getOwnedEditableEventsSchema = {};

@@ -227,6 +227,30 @@ export function createMcpServer(botClientId: number, clientId: number) {
     },
   );
 
+  server.registerTool(
+    'get_followed_editable_events',
+    {
+      description: 'Get events the current user is following (subscribed to) that they also have edit permission for. Returns event IDs, names, descriptions, and statuses.',
+      inputSchema: schemas.getFollowedEditableEventsSchema,
+    },
+    async () => {
+      const result = await executeTool('get_followed_editable_events', {}, makeCtx(0));
+      return textResult(result);
+    },
+  );
+
+  server.registerTool(
+    'get_owned_editable_events',
+    {
+      description: 'Get events the current user owns. Owners always have edit permission. Returns event IDs, names, descriptions, and statuses.',
+      inputSchema: schemas.getOwnedEditableEventsSchema,
+    },
+    async () => {
+      const result = await executeTool('get_owned_editable_events', {}, makeCtx(0));
+      return textResult(result);
+    },
+  );
+
   return server;
 }
 
@@ -243,7 +267,7 @@ export function mountMcp(app: Express, botClientId: number) {
     // Authentication gate — return RFC 9728 resource metadata hint on 401
     const clientId = (req as any).session?.clientId as number | undefined;
     if (!clientId) {
-      const serverUrl = process.env.API_URL || 'https://tunnel1337.zehua.li';
+      const serverUrl = process.env.API_URL || 'https://api.langchao.org';
       return res.status(401)
         .set('WWW-Authenticate', `Bearer resource_metadata="${serverUrl}/.well-known/oauth-protected-resource"`)
         .json({ error: 'Authentication required' });
