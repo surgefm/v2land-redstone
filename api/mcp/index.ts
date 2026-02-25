@@ -146,6 +146,35 @@ export function createMcpServer(botClientId: number, clientId: number) {
     },
   );
 
+  server.registerTool(
+    'create_event',
+    {
+      description: 'Create a new event/timeline. Returns the new event ID. Use set_event afterwards to start working on it.',
+      inputSchema: schemas.createEventSchema,
+    },
+    async (args: ToolArgs) => {
+      const result = await executeTool('create_event', args, makeCtx(0));
+      const parsed = JSON.parse(result);
+      if (parsed.eventId) {
+        sessionEventId = parsed.eventId;
+      }
+      return textResult(result);
+    },
+  );
+
+  server.registerTool(
+    'get_newsroom_link',
+    {
+      description: 'Get the newsroom URL for the current event so the user can review the timeline in their browser.',
+      inputSchema: schemas.getNewsroomLinkSchema,
+    },
+    async (args: ToolArgs) => {
+      const eventId = resolveEventId(args.eventId);
+      const result = await executeTool('get_newsroom_link', {}, makeCtx(eventId));
+      return textResult(result);
+    },
+  );
+
   return server;
 }
 

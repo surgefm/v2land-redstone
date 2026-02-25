@@ -1,10 +1,12 @@
 import Exa from 'exa-js';
 import { randomUUID } from 'crypto';
-import { Client, News, Stack, EventStackNews, AgentStatus, sequelize } from '@Models';
+import { Client, Event, News, Stack, EventStackNews, AgentStatus, sequelize } from '@Models';
 import * as EventService from '@Services/EventService';
 import * as StackService from '@Services/StackService';
 import * as RecordService from '@Services/RecordService';
 import * as ChatService from '@Services/ChatService';
+import * as RedisService from '@Services/RedisService';
+import { setClientEventOwner } from '@Services/AccessControlService';
 import * as AgentLock from './lock';
 import type { ChatCompletionTool } from 'openai/resources/chat/completions';
 
@@ -273,6 +275,10 @@ export async function executeTool(
         return await sendChatMessage(args as any, ctx);
       case 'ask_user_question':
         return await askUserQuestion(args as any, ctx);
+      case 'create_event':
+        return await createEvent(args as any, ctx);
+      case 'get_newsroom_link':
+        return await getNewsroomLink(ctx);
       default:
         return JSON.stringify({ error: `Unknown tool: ${name}` });
     }
@@ -682,4 +688,75 @@ async function askUserQuestion(
   }
 
   return JSON.stringify({ error: 'No response received within the time limit.' });
+}
+
+async function createEvent(
+  args: { name: string; description: string },
+  ctx: ToolContext,
+): Promise<string> {
+  const existing = await EventService.findEvent(args.name);
+  if (existing) {
+    throw new Error('An event with this name already exists.');
+  }
+
+  const pinyin = await EventService.generatePinyin(args.name);
+
+  let event: any;
+  await sequelize.transaction(async (transaction) => {
+    event = await Event.create(
+      {
+        name: args.name,
+        description: args.description,
+        status: 'admitted',
+        pinyin,
+        ownerId: ctx.clientId,
+      },
+      { transaction },
+    );
+
+    await RecordService.create(
+      {
+        model: 'Event',
+        data: recordData(event, ctx),
+        action: 'createEvent',
+        owner: ctx.clientId,
+        target: event.id,
+      },
+      { transaction },
+    );
+  });
+
+  await setClientEventOwner(ctx.clientId, event.id);
+
+  const client = await Client.findByPk(ctx.clientId);
+  const username = client?.username || 'surge';
+  await RedisService.set(RedisService.getEventIdKey(event.name, event.ownerId), event.id);
+  await RedisService.set(RedisService.getEventIdKey(event.name, username), event.id);
+
+  return JSON.stringify({
+    success: true,
+    eventId: event.id,
+    name: event.name,
+    pinyin: event.pinyin,
+  });
+}
+
+async function getNewsroomLink(ctx: ToolContext): Promise<string> {
+  const event = await EventService.findEvent(ctx.eventId, { eventOnly: true });
+  if (!event) {
+    throw new Error('Event not found.');
+  }
+
+  const client = await Client.findByPk(event.ownerId);
+  const username = client?.username || 'surge';
+  const siteBase = process.env.SITE_URL || 'https://langchao.org';
+  const eventPath = `/@${username}/${Math.abs(event.id)}-${event.pinyin}`;
+  const newsroomUrl = `${siteBase}${eventPath}/newsroom`;
+
+  return JSON.stringify({
+    success: true,
+    eventId: event.id,
+    eventName: event.name,
+    newsroomUrl,
+  });
 }

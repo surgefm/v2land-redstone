@@ -49,3 +49,12 @@ export const sendChatMessageSchema = {
   eventId: z.number().optional().describe('Event ID (uses session default if set via set_event)'),
   text: z.string().describe('Message text to send to the newsroom'),
 };
+
+export const createEventSchema = {
+  name: z.string().describe('Name of the event/timeline to create (must be unique)'),
+  description: z.string().describe('Description of the event'),
+};
+
+export const getNewsroomLinkSchema = {
+  eventId: z.number().optional().describe('Event ID (uses session default if set via set_event)'),
+};
