@@ -29,6 +29,8 @@
       "@Types/*": ["./types/*"],
       "@Utils": ["./utils"],
       "@Utils/*": ["./utils/*"],
+      "@MCP": ["./api/mcp"],
+      "@MCP/*": ["./api/mcp/*"],
       "@Modes": ["./api/modes"],
       "@Modes/*": ["./api/modes/*"],
       "@Responses": ["./api/responses"],

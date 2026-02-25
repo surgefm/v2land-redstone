@@ -133,6 +133,7 @@
     "@Services": "dist/api/services",
     "@Modes": "dist/api/modes",
     "@Responses": "dist/api/responses",
-    "@Sockets": "dist/sockets"
+    "@Sockets": "dist/sockets",
+    "@MCP": "dist/api/mcp"
   }
 }

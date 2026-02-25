@@ -3,11 +3,13 @@ import { randomUUID } from 'crypto';
 import { Client, Event, News, Stack, EventStackNews, AgentStatus, sequelize } from '@Models';
 import * as EventService from '@Services/EventService';
 import * as StackService from '@Services/StackService';
+import * as AlgoliaService from '@Services/AlgoliaService';
 import * as RecordService from '@Services/RecordService';
 import * as ChatService from '@Services/ChatService';
 import * as RedisService from '@Services/RedisService';
 import { setClientEventOwner } from '@Services/AccessControlService';
 import * as AgentLock from './lock';
+import { SYSTEM_PROMPT } from '../../mcp/mcpInstruction';
 import type { ChatCompletionTool } from 'openai/resources/chat/completions';
 
 let _exa: Exa | null = null;
@@ -279,6 +281,14 @@ export async function executeTool(
         return await createEvent(args as any, ctx);
       case 'get_newsroom_link':
         return await getNewsroomLink(ctx);
+      case 'update_event':
+        return await updateEventTool(args as any, ctx);
+      case 'remove_news_from_stack':
+        return await removeNewsFromStack(args as any, ctx);
+      case 'search_events':
+        return await searchEventsInDb(args as any);
+      case 'get_editorial_guidelines':
+        return await getEditorialGuidelines();
       default:
         return JSON.stringify({ error: `Unknown tool: ${name}` });
     }
@@ -759,4 +769,66 @@ async function getNewsroomLink(ctx: ToolContext): Promise<string> {
     eventName: event.name,
     newsroomUrl,
   });
+}
+
+async function updateEventTool(
+  args: { name?: string; description?: string },
+  ctx: ToolContext,
+): Promise<string> {
+  const event = await EventService.findEvent(ctx.eventId, { eventOnly: true });
+  if (!event) {
+    throw new Error('Event not found.');
+  }
+
+  const client = await Client.findByPk(ctx.clientId);
+  if (!client) {
+    throw new Error('Client not found.');
+  }
+
+  const updated = await EventService.updateEvent(event, args as any, client);
+
+  const socket = await EventService.getNewsroomSocket(ctx.eventId);
+  socket.emit('update event', updated);
+
+  return JSON.stringify({
+    success: true,
+    eventId: updated.id,
+    name: updated.name,
+    description: updated.description,
+  });
+}
+
+async function removeNewsFromStack(
+  args: { newsId: number; stackId: number },
+  ctx: ToolContext,
+): Promise<string> {
+  await StackService.removeNews(args.stackId, args.newsId, ctx.clientId);
+
+  const socket = await EventService.getNewsroomSocket(ctx.eventId);
+  socket.emit('remove news from stack', {
+    newsId: args.newsId,
+    stackId: args.stackId,
+    eventId: ctx.eventId,
+  });
+
+  return JSON.stringify({
+    success: true,
+    newsId: args.newsId,
+    stackId: args.stackId,
+  });
+}
+
+async function searchEventsInDb(
+  args: { query: string; page?: number },
+): Promise<string> {
+  const hits = await AlgoliaService.searchEvents(args.query, args.page ?? 1) as any[];
+
+  return JSON.stringify({
+    results: hits,
+    count: hits.length,
+  });
+}
+
+async function getEditorialGuidelines(): Promise<string> {
+  return JSON.stringify({ guidelines: SYSTEM_PROMPT });
 }

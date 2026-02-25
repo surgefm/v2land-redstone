@@ -175,6 +175,58 @@ export function createMcpServer(botClientId: number, clientId: number) {
     },
   );
 
+  server.registerTool(
+    'update_event',
+    {
+      description: "Update the current event's name or description.",
+      inputSchema: schemas.updateEventSchema,
+    },
+    async (args: ToolArgs) => {
+      const { eventId: argsEventId, ...toolArgs } = args;
+      const eventId = resolveEventId(argsEventId);
+      const result = await executeTool('update_event', toolArgs, makeCtx(eventId));
+      return textResult(result);
+    },
+  );
+
+  server.registerTool(
+    'remove_news_from_stack',
+    {
+      description: 'Move a news item out of a stack and back to off-shelf (unassign without deleting).',
+      inputSchema: schemas.removeNewsFromStackSchema,
+    },
+    async (args: ToolArgs) => {
+      const { eventId: argsEventId, ...toolArgs } = args;
+      const eventId = resolveEventId(argsEventId);
+      const result = await executeTool('remove_news_from_stack', toolArgs, makeCtx(eventId));
+      return textResult(result);
+    },
+  );
+
+  server.registerTool(
+    'search_events',
+    {
+      description: 'Search for events/timelines in the database by keyword. Returns matching events with their IDs. Use this to find an event ID before calling set_event.',
+      inputSchema: schemas.searchEventsSchema,
+    },
+    async (args: ToolArgs) => {
+      const result = await executeTool('search_events', args, makeCtx(0));
+      return textResult(result);
+    },
+  );
+
+  server.registerTool(
+    'get_editorial_guidelines',
+    {
+      description: 'Retrieve the editorial guidelines and workflow instructions for this newsroom assistant.',
+      inputSchema: schemas.getEditorialGuidelinesSchema,
+    },
+    async () => {
+      const result = await executeTool('get_editorial_guidelines', {}, makeCtx(0));
+      return textResult(result);
+    },
+  );
+
   return server;
 }
 

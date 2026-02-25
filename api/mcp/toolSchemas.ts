@@ -58,3 +58,22 @@ export const createEventSchema = {
 export const getNewsroomLinkSchema = {
   eventId: z.number().optional().describe('Event ID (uses session default if set via set_event)'),
 };
+
+export const updateEventSchema = {
+  eventId: z.number().optional().describe('Event ID (uses session default if set via set_event)'),
+  name: z.string().optional().describe('New name for the event'),
+  description: z.string().optional().describe('New description for the event'),
+};
+
+export const removeNewsFromStackSchema = {
+  eventId: z.number().optional().describe('Event ID (uses session default if set via set_event)'),
+  newsId: z.number().describe('ID of the news item to move back to off-shelf'),
+  stackId: z.number().describe('ID of the stack to remove the news from'),
+};
+
+export const searchEventsSchema = {
+  query: z.string().describe('Search query to find events/timelines in the database'),
+  page: z.number().optional().describe('Page number for pagination (default 1)'),
+};
+
+export const getEditorialGuidelinesSchema = {};
