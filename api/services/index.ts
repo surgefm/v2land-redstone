@@ -20,6 +20,7 @@ export * as RecordService from './RecordService';
 export * as RedisService from './RedisService';
 export * as ResourceLockService from './ResourceLockService';
 export * as SearchService from './SearchService';
+export * as SiteService from './SiteService';
 export * as SlackService from './SlackService';
 export * as StackService from './StackService';
 export * as StarService from './StarService';

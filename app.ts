@@ -71,6 +71,12 @@ export async function liftServer(app: Express) {
 
     const { mountMcp } = await import('./api/mcp');
     mountMcp(app, botClient.id);
+
+    // Backfill site icons for news without them (fire-and-forget)
+    const { ensureAllNewsHaveSiteIcons } = await import('@Services/SiteService');
+    ensureAllNewsHaveSiteIcons().catch((err: Error) =>
+      console.warn('SiteService startup backfill failed:', err.message),
+    );
   } catch (err) {
     console.error('Failed to initialize @Bot account or MCP server:', err);
   }

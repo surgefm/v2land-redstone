@@ -76,6 +76,11 @@ async function findEvent(
         order: [['time', 'DESC']],
         through: { attributes: [] },
         required: false,
+        include: [{
+          model: Site,
+          as: 'site',
+          required: false,
+        }],
       }, {
         model: Stack,
         as: 'stacks',

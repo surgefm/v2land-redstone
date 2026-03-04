@@ -11,6 +11,7 @@ export const s3 = hasS3 ? new S3Client({
   apiVersion: '2006-03-01',
 
   endpoint: 'https://sfo3.digitaloceanspaces.com',
+  region: 'sfo3',
 
   credentials: {
     accessKeyId: process.env.S3_KEY,

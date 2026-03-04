@@ -7,6 +7,7 @@ import * as AlgoliaService from '@Services/AlgoliaService';
 import * as RecordService from '@Services/RecordService';
 import * as ChatService from '@Services/ChatService';
 import * as RedisService from '@Services/RedisService';
+import * as SiteService from '@Services/SiteService';
 import { setClientEventOwner, isAllowedToEditEvent } from '@Services/AccessControlService';
 import * as AgentLock from './lock';
 import { SYSTEM_PROMPT } from '../../mcp/mcpInstruction';
@@ -523,6 +524,15 @@ async function addNewsToEvent(
       });
     }
   });
+
+  // Assign site icon (fire-and-forget, don't block response)
+  SiteService.findOrCreateBySourceName(args.source, args.url)
+    .then(async (site) => {
+      if (site) {
+        await News.update({ siteId: site.id }, { where: { id: newsId!, siteId: null as any } });
+      }
+    })
+    .catch((e) => console.warn('SiteService: failed to assign site to news:', e.message));
 
   return JSON.stringify({
     success: true,

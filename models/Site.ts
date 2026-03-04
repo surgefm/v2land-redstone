@@ -19,6 +19,9 @@ class Site extends Model<Site> {
   @Column(DataType.TEXT)
   name: string;
 
+  @Column(DataType.ARRAY(DataType.TEXT))
+  domains: string[];
+
   @AllowNull
   @Column(DataType.TEXT)
   description: string;

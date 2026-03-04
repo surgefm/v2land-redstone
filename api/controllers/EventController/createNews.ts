@@ -1,7 +1,7 @@
 /* eslint-disable no-empty */
 import { RedstoneRequest, RedstoneResponse, StackObj } from '@Types';
 import { Client, News, EventStackNews, sequelize } from '@Models';
-import { EventService, RecordService, NewsService, NotificationService, StackService } from '@Services';
+import { EventService, RecordService, NewsService, NotificationService, StackService, SiteService } from '@Services';
 import axios from 'axios';
 // const urlTrimmer = require('v2land-url-trimmer');
 
@@ -141,6 +141,15 @@ async function createNews(req: RedstoneRequest, res: RedstoneResponse) {
     try {
       await NewsService.updateElasticsearchIndex({ newsId: news.id });
     } catch (err) {}
+
+    // Assign site icon (fire-and-forget)
+    SiteService.findOrCreateBySourceName(data.source, data.url)
+      .then(async (site) => {
+        if (site) {
+          await News.update({ siteId: site.id }, { where: { id: news.id, siteId: null as any } });
+        }
+      })
+      .catch((e) => console.warn('SiteService: failed to assign site to news:', e.message));
   });
 }
 
