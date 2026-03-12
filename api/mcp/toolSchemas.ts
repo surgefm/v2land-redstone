@@ -38,6 +38,7 @@ export const updateStackSchema = {
   description: z.string().optional().describe('New description for the stack'),
   title: z.string().optional().describe('New title for the stack'),
   time: z.string().optional().describe('New date/time for the development (ISO 8601 format)'),
+  order: z.number().optional().describe('New display order for the stack (supports negative values)'),
 };
 
 export const reorderStacksSchema = {

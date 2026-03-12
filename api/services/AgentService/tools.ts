@@ -181,6 +181,10 @@ export const TOOL_DEFINITIONS: ChatCompletionTool[] = [
             type: 'string',
             description: 'New date/time for when the development described by this stack actually took place (ISO 8601 format)',
           },
+          order: {
+            type: 'number',
+            description: 'New display order for the stack (supports negative values)',
+          },
         },
         required: ['stackId'],
       },
@@ -556,13 +560,14 @@ async function addNewsToStack(
 }
 
 async function updateStack(
-  args: { stackId: number; description?: string; title?: string; time?: string },
+  args: { stackId: number; description?: string; title?: string; time?: string; order?: number },
   ctx: ToolContext,
 ): Promise<string> {
   const data: any = {};
   if (args.description !== undefined) data.description = args.description;
   if (args.title !== undefined) data.title = args.title;
   if (args.time !== undefined) data.time = new Date(args.time);
+  if (args.order !== undefined) data.order = args.order;
 
   const result = await StackService.updateStack({
     id: args.stackId,
