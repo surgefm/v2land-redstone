@@ -53,7 +53,23 @@ async function getEvent(req: RedstoneRequest, res: RedstoneResponse) {
 
   if (deniedAccess) return noAccess(commit ? commitData : null);
 
-  // If there is no commit or client wants the latest version.
+  if (!commit && !showLatest) {
+    // No commit exists yet — return event skeleton with empty content
+    // so the review page diff correctly shows all draft content as new additions.
+    const event = await EventService.findEvent(eventId, { eventOnly: true, plain: true });
+    if (!event) return res.status(404).json({ message: '未找到该事件' });
+    return res.status(200).json({
+      ...event,
+      stacks: [],
+      offshelfNews: [],
+      roles,
+      starCount,
+      subscriptionCount,
+      curations,
+    });
+  }
+
+  // Client wants the latest version.
   const event = await EventService.findEvent(eventId, { plain: true, getNewsroomContent: true });
   event.contribution = await EventService.getContribution(event, true);
   event.roles = roles;
