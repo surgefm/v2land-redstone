@@ -1,0 +1,1 @@
+{"version":3,"sources":["../config/dbMigrations/a4-Auth.js"],"names":[],"mappings":"AAAA,MAAM,iBAAiB,GAAG,OAAO,CAAC,+BAA+B,CAAC,CAAC;AAEnE,MAAM,CAAC,OAAO,GAAG,iBAAiB,CAAC,MAAM,CAAC,CAAC","file":"a4-Auth.js","sourcesContent":["const generateMigration = require('../../utils/generateMigration');\n\nmodule.exports = generateMigration('auth');\n"],"sourceRoot":"../../../src"}

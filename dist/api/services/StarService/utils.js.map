@@ -1,0 +1,1 @@
+{"version":3,"sources":["../api/services/StarService/utils.ts"],"names":[],"mappings":";;;AAAO,MAAM,MAAM,GAAG,CAAC,OAAe,EAAE,EAAE,CAAC,wBAAwB,OAAO,EAAE,CAAC;AAAhE,QAAA,MAAM,UAA0D","file":"utils.js","sourcesContent":["export const getKey = (eventId: number) => `event-star-count-mem-${eventId}`;\n"],"sourceRoot":"../../../../src"}
