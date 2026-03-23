@@ -791,7 +791,7 @@ async function getNewsroomLink(ctx: ToolContext): Promise<string> {
 }
 
 async function updateEventTool(
-  args: { name?: string; description?: string },
+  args: { name?: string; description?: string; status?: string },
   ctx: ToolContext,
 ): Promise<string> {
   const event = await EventService.findEvent(ctx.eventId, { eventOnly: true });
@@ -814,6 +814,7 @@ async function updateEventTool(
     eventId: updated.id,
     name: updated.name,
     description: updated.description,
+    status: updated.status,
   });
 }
 

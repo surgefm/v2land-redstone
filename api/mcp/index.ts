@@ -178,7 +178,7 @@ export function createMcpServer(botClientId: number, clientId: number) {
   server.registerTool(
     'update_event',
     {
-      description: "Update the current event's name or description.",
+      description: "Update the current event's name, description, or status.",
       inputSchema: schemas.updateEventSchema,
     },
     async (args: ToolArgs) => {

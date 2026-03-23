@@ -64,6 +64,7 @@ export const updateEventSchema = {
   eventId: z.number().optional().describe('Event ID (uses session default if set via set_event)'),
   name: z.string().optional().describe('New name for the event'),
   description: z.string().optional().describe('New description for the event'),
+  status: z.enum(['pending', 'admitted', 'hidden', 'removed']).optional().describe('New status for the event'),
 };
 
 export const removeNewsFromStackSchema = {
