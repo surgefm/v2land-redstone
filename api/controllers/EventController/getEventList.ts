@@ -106,26 +106,43 @@ async function getEventList(req: RedstoneRequest, res: RedstoneResponse) {
         return res.status(200).json({ eventList: redisData });
       }
 
-      const whereQuery = UtilService.generateWhereQuery({ data: where });
-      const whereClause = `WHERE ${whereQuery.query}`;
+      // Filter on the event table's live status instead of the commit snapshot,
+      // so that hidden/removed events are properly excluded.
+      const statusFilter = where.status || 'admitted';
+      const commitWhere = { ...where };
+      delete commitWhere.status;
+
+      let commitWhereClause = '';
+      let whereQuery: { query: string; values: any[] };
+      if (Object.keys(commitWhere).length > 0) {
+        whereQuery = UtilService.generateWhereQuery({ data: commitWhere });
+        commitWhereClause = `WHERE ${whereQuery.query} AND`;
+      } else {
+        whereQuery = { query: '', values: [] };
+        commitWhereClause = 'WHERE';
+      }
+
+      const statusParamIndex = whereQuery.values.length + 1;
+      whereQuery.values.push(statusFilter);
 
       const query = `
         SELECT *
         FROM (
           SELECT
-            DISTINCT ON ("eventId") "eventId",
-            (CASE WHEN "data"::json#>>'{stacks,0,time}' NOTNULL
-              THEN "data"::json#>>'{stacks,0,time}'
-            WHEN "data"::json#>>'{stacks,0,news,0}' NOTNULL
-              THEN "data"::json#>>'{stacks,0,news,0,time}'
-            WHEN "data"::json#>>'{latestAdmittedNews}' NOTNULL
-              THEN "data"::json#>>'{latestAdmittedNews,time}'
+            DISTINCT ON (c."eventId") c."eventId",
+            (CASE WHEN c."data"::json#>>'{stacks,0,time}' NOTNULL
+              THEN c."data"::json#>>'{stacks,0,time}'
+            WHEN c."data"::json#>>'{stacks,0,news,0}' NOTNULL
+              THEN c."data"::json#>>'{stacks,0,news,0,time}'
+            WHEN c."data"::json#>>'{latestAdmittedNews}' NOTNULL
+              THEN c."data"::json#>>'{latestAdmittedNews,time}'
               ELSE NULL
             END) as t,
-            *
-          FROM public.commit
-          ${whereClause} AND time NOTNULL
-          ORDER BY "eventId", "time" DESC
+            c.*
+          FROM public.commit c
+          INNER JOIN public.event e ON e.id = c."eventId"
+          ${commitWhereClause} e.status = $${statusParamIndex} AND c.time NOTNULL
+          ORDER BY c."eventId", c."time" DESC
         ) as commit
         WHERE t NOTNULL
         ORDER BY t DESC
