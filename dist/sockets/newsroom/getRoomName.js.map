@@ -1,0 +1,1 @@
+{"version":3,"sources":["../sockets/newsroom/getRoomName.ts"],"names":[],"mappings":";;AAAA,SAAwB,WAAW,CAAC,OAAe;IACjD,OAAO,YAAY,OAAO,EAAE,CAAC;AAC/B,CAAC;AAFD,8BAEC","file":"getRoomName.js","sourcesContent":["export default function getRoomName(eventId: number) {\n  return `newsroom-${eventId}`;\n}\n"],"sourceRoot":"../../../src"}
